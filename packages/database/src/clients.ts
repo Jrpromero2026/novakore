@@ -27,7 +27,9 @@ export function createNovaKoreBrowserClient(): NovaKoreClient {
  * Server client bound to the requesting user's session cookies.
  * All tenant reads/writes flow through this client so RLS applies.
  */
-export function createNovaKoreServerClient(cookies: CookieAdapter): NovaKoreClient {
+export function createNovaKoreServerClient(
+  cookies: CookieAdapter,
+): NovaKoreClient {
   const env = serverEnv();
   return createServerClient<Database>(
     env.NEXT_PUBLIC_SUPABASE_URL,

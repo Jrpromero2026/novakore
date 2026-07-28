@@ -15,6 +15,13 @@ Conventions (apply to every table unless stated):
 - "Draft + immutable snapshot" versioning per ADR-007: mutable draft rows,
   publishing writes frozen `*_versions` rows that learners consume.
 
+> **Phase 1A naming reconciliation (owner-approved, 2026-07-28).** The
+> implemented table names follow the owner's Phase 1A instruction where it
+> differs from this draft: `platform_admins` → `platform_administrators`,
+> `role_permissions` → `organization_role_permissions`,
+> `member_role_assignments` → `organization_member_roles`,
+> `terminology_overrides` → `organization_terminology`. Semantics unchanged.
+
 ## 1. Overview diagram
 
 ```mermaid

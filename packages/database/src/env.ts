@@ -12,7 +12,9 @@ import { z } from "zod";
  */
 
 const urlSchema = z.url({ error: "must be a valid URL" });
-const keySchema = z.string().min(20, { error: "looks too short to be a valid key" });
+const keySchema = z
+  .string()
+  .min(20, { error: "looks too short to be a valid key" });
 
 const serverEnvSchema = z.object({
   NEXT_PUBLIC_SUPABASE_URL: urlSchema,
@@ -80,7 +82,9 @@ export function publicEnv(): PublicEnv {
     const problems = parsed.error.issues
       .map((issue) => `  - ${issue.path.join(".")}: ${issue.message}`)
       .join("\n");
-    throw new Error(`Invalid or missing public environment variables:\n${problems}`);
+    throw new Error(
+      `Invalid or missing public environment variables:\n${problems}`,
+    );
   }
 
   cachedPublicEnv = parsed.data;
