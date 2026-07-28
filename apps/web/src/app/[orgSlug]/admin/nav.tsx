@@ -25,6 +25,21 @@ export function AdminNav({
   const items: NavItem[] = [
     { href: base, label: "Overview" },
     {
+      href: `${base}/learning`,
+      label: "Learning",
+      needsAny: ["paths.manage"],
+    },
+    {
+      href: `${base}/courses`,
+      label: "Courses",
+      needsAny: ["content.view_draft"],
+    },
+    {
+      href: `${base}/enrollments`,
+      label: "Enrollments",
+      needsAny: ["enrollment.manage"],
+    },
+    {
       href: `${base}/members`,
       label: "Members",
       needsAny: ["org.members.manage"],
@@ -45,6 +60,7 @@ export function AdminNav({
       label: "Branding",
       needsAny: ["org.branding.manage"],
     },
+    { href: `/${orgSlug}/learn`, label: "My learning" },
   ];
 
   return (

@@ -25,6 +25,7 @@ export const PERMISSIONS = [
   "enrollment.self",
   "progress.view.own",
   "progress.view.others",
+  "progress.override",
   "certificates.manage",
   "analytics.view",
   "audit.view",
