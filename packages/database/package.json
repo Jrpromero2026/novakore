@@ -8,7 +8,8 @@
   "scripts": {
     "typecheck": "tsc --noEmit",
     "test": "vitest",
-    "test:run": "vitest run"
+    "test:run": "vitest run",
+    "test:rls": "vitest run src/__tests__/rls-isolation.test.ts"
   },
   "dependencies": {
     "@supabase/ssr": "^0.12.3",
