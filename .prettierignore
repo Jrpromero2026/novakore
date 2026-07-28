@@ -1,0 +1,4 @@
+# Lockfiles and generated output (node_modules, .next, etc. are already
+# excluded via .gitignore, which Prettier 3 respects by default)
+package-lock.json
+next-env.d.ts

@@ -41,7 +41,19 @@ Run the web app in development:
 npm run dev
 ```
 
-Other root scripts: `npm run build`, `npm run start`, `npm run lint`, `npm run typecheck`.
+Other root scripts:
+
+| Script                 | Purpose                                            |
+| ---------------------- | -------------------------------------------------- |
+| `npm run build`        | Production build                                   |
+| `npm run start`        | Serve the production build                         |
+| `npm run lint`         | ESLint across workspaces                           |
+| `npm run typecheck`    | TypeScript `--noEmit` across workspaces            |
+| `npm run test`         | Vitest in watch mode                               |
+| `npm run test:run`     | Vitest single pass (CI mode)                       |
+| `npm run format`       | Prettier write                                     |
+| `npm run format:check` | Prettier check only                                |
+| `npm run verify`       | format:check + lint + typecheck + test:run + build |
 
 ## Notes
 
