@@ -17,6 +17,7 @@ import {
   Input,
   Textarea,
 } from "@/components/ui/primitives";
+import { ConfirmButton } from "@/components/ui/feedback";
 
 export function CreateAcademyPanel({
   orgSlug,
@@ -155,14 +156,14 @@ export function AcademyRow({
                 Restore
               </Button>
             ) : (
-              <Button
-                variant="danger"
+              <ConfirmButton
+                label="Archive"
+                confirmLabel="Archive it"
+                description="It disappears from active use and can be restored later."
                 className="text-xs"
                 disabled={statusPending}
-                onClick={() => setStatus("archived")}
-              >
-                Archive
-              </Button>
+                onConfirm={() => setStatus("archived")}
+              />
             )}
           </div>
         ) : null}

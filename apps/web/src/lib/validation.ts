@@ -1,4 +1,4 @@
-import { TERM_KEYS } from "@novakore/domain";
+import { TERM_KEYS, contrastRatio } from "@novakore/domain";
 import { z } from "zod";
 
 /**
@@ -91,25 +91,9 @@ export const roleSchema = z.object({
   description: z.union([z.literal(""), z.string().trim().max(500)]),
 });
 
-/**
- * Contrast guidance for tenant accents (branding requirement: validate or
- * flag unsafe combinations). Returns WCAG-ish relative luminance contrast
- * against white and near-black text.
- */
-export function contrastRatio(hexA: string, hexB: string): number {
-  const lum = (hex: string) => {
-    const n = parseInt(hex.slice(1), 16);
-    const channels = [(n >> 16) & 255, (n >> 8) & 255, n & 255].map((c) => {
-      const s = c / 255;
-      return s <= 0.03928 ? s / 12.92 : Math.pow((s + 0.055) / 1.055, 2.4);
-    });
-    return (
-      0.2126 * channels[0]! + 0.7152 * channels[1]! + 0.0722 * channels[2]!
-    );
-  };
-  const [l1, l2] = [lum(hexA), lum(hexB)].sort((a, b) => b - a);
-  return (l1! + 0.05) / (l2! + 0.05);
-}
+// Contrast math lives in @novakore/domain (single implementation shared by
+// the theme resolver, the brand studio, and these legacy helpers).
+export { contrastRatio };
 
 /** Flags accents that will not sustain readable white/black button text. */
 export function accentWarnings(input: {

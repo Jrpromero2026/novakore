@@ -1,38 +1,90 @@
-const HEX = /^#[0-9a-f]{6}$/i;
-const FONTS = new Set(["system", "geist", "serif"]);
-const RADII = new Set(["small", "medium", "large"]);
-
-export interface OrgTheme {
-  accent_light: string;
-  accent_dark: string;
-  font_family: string;
-  radius_scale: string;
-}
+import {
+  FONT_STACKS,
+  NOVAKORE_BASE,
+  RADIUS_MULTIPLIER,
+  resolveThemeTokens,
+  type TenantTheme,
+  type ThemeMode,
+  type ThemeTokens,
+} from "@novakore/domain";
 
 /**
- * Applies tenant branding as scoped CSS custom properties.
+ * Organization theme application (tenant-theming.md).
  *
- * CSS-injection boundary: values are re-validated here (defense in depth on
- * top of the database CHECK constraints) and only exact hex strings / enum
- * values are ever emitted. Arbitrary tenant CSS is impossible.
+ * Emits ONLY tokens that differ from the NovaKore base, per mode, computed
+ * by the same `resolveThemeTokens` resolver the brand-studio preview uses.
+ * Values are schema-validated hex (re-checked here — defense in depth);
+ * protected semantics never appear because the resolver never lets tenant
+ * input reach them. Arbitrary tenant CSS is impossible.
  */
-export function OrgThemeStyle({ theme }: { theme: OrgTheme }) {
-  const light = HEX.test(theme.accent_light) ? theme.accent_light : "#4f46e5";
-  const dark = HEX.test(theme.accent_dark) ? theme.accent_dark : "#818cf8";
-  const css = `:root{--accent-light-override:${light};--accent-dark-override:${dark};--accent:${light};}
-@media (prefers-color-scheme: dark){:root{--accent:${dark};}}
-:root[data-theme="light"]{--accent:${light};}
-:root[data-theme="dark"]{--accent:${dark};}`;
-  return <style>{css}</style>;
+
+const HEX = /^#[0-9a-f]{6}$/i;
+
+const TOKEN_TO_VAR: Record<keyof Omit<ThemeTokens, "secondary">, string> = {
+  background: "--background",
+  backgroundElevated: "--background-elevated",
+  backgroundSubtle: "--background-subtle",
+  surface: "--surface",
+  surfaceElevated: "--surface-elevated",
+  surfaceInteractive: "--surface-interactive",
+  textPrimary: "--text-primary",
+  textSecondary: "--text-secondary",
+  textMuted: "--text-muted",
+  textInverse: "--text-inverse",
+  borderDefault: "--border-default",
+  borderStrong: "--border-strong",
+  borderSubtle: "--border-subtle",
+  accent: "--accent",
+  accentHover: "--accent-hover",
+  accentActive: "--accent-active",
+  accentContrast: "--accent-contrast",
+  focusRing: "--focus-ring",
+  success: "--success",
+  warning: "--warning",
+  danger: "--danger",
+  info: "--info",
+};
+
+/** CSS declarations for tokens that differ from base; validated hex only. */
+export function themeOverrideDeclarations(
+  theme: TenantTheme | null,
+  mode: ThemeMode,
+): string {
+  if (!theme) return "";
+  const base = NOVAKORE_BASE[mode];
+  const resolved = resolveThemeTokens(theme, mode);
+  const declarations: string[] = [];
+  for (const [token, cssVar] of Object.entries(TOKEN_TO_VAR) as [
+    keyof typeof TOKEN_TO_VAR,
+    string,
+  ][]) {
+    const value = resolved[token];
+    if (value !== base[token] && HEX.test(value)) {
+      declarations.push(`${cssVar}:${value.toLowerCase()}`);
+    }
+  }
+  return declarations.join(";");
 }
 
-export function orgThemeDataAttributes(
-  theme: OrgTheme,
-): Record<string, string> {
-  return {
-    "data-font": FONTS.has(theme.font_family) ? theme.font_family : "geist",
-    "data-radius": RADII.has(theme.radius_scale)
-      ? theme.radius_scale
-      : "medium",
-  };
+export function OrgThemeStyle({ theme }: { theme: TenantTheme | null }) {
+  if (!theme) return null;
+  const light = themeOverrideDeclarations(theme, "light");
+  const dark = themeOverrideDeclarations(theme, "dark");
+  const fontStack = FONT_STACKS[theme.typography.interfaceFont];
+
+  // Enum-validated non-color preferences resolve to numeric/keyword values
+  // here — tenant strings never reach CSS directly.
+  const radiusUnit = RADIUS_MULTIPLIER[theme.shape.radiusProfile];
+
+  const css = [
+    `:root{--org-font:${fontStack};--radius-unit:${radiusUnit}}`,
+    light ? `:root{${light}}` : "",
+    dark ? `@media (prefers-color-scheme: dark){:root{${dark}}}` : "",
+    light ? `:root[data-theme="light"]{${light}}` : "",
+    dark ? `:root[data-theme="dark"]{${dark}}` : "",
+  ]
+    .filter(Boolean)
+    .join("\n");
+
+  return <style>{css}</style>;
 }

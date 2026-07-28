@@ -1,5 +1,6 @@
 import Link from "next/link";
 import type { ReactNode } from "react";
+import { PlatformMark } from "./brand";
 
 /** Access-denied state: honest, calm, with a way back. */
 export function AccessDenied({ backHref }: { backHref: string }) {
@@ -36,12 +37,8 @@ export function NoOrganization({
 }) {
   return (
     <div className="flex min-h-[60vh] flex-col items-center justify-center gap-3 text-center">
-      <p className="text-xs font-medium uppercase tracking-widest text-text-faint">
-        NovaKore
-      </p>
-      <h1 className="text-xl font-semibold tracking-tight text-text">
-        No organization yet
-      </h1>
+      <PlatformMark />
+      <h1 className="text-h2 text-text-primary">No organization yet</h1>
       <p className="max-w-md text-sm text-text-muted">
         {email ? (
           <>

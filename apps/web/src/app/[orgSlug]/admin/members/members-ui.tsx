@@ -19,6 +19,7 @@ import {
   Select,
   cx,
 } from "@/components/ui/primitives";
+import { ConfirmButton } from "@/components/ui/feedback";
 
 export function InvitePanel({ orgSlug }: { orgSlug: string }) {
   const [state, action, pending] = useActionState(
@@ -199,18 +200,28 @@ export function MemberRow({
             </Button>
           ) : null}
           {!isSelf ? (
-            <Button
-              variant="danger"
+            <ConfirmButton
+              label={
+                membership.status === "invited" ? "Revoke invite" : "Remove"
+              }
+              confirmLabel={
+                membership.status === "invited"
+                  ? "Revoke it"
+                  : "Remove permanently"
+              }
+              description={
+                membership.status === "invited"
+                  ? "This invitation will stop working."
+                  : "Removal is permanent history and ends their access."
+              }
               disabled={pending}
               className="text-xs"
-              onClick={() =>
+              onConfirm={() =>
                 run(() =>
                   setMembershipStatusAction(orgSlug, membership.id, "removed"),
                 )
               }
-            >
-              {membership.status === "invited" ? "Revoke invite" : "Remove"}
-            </Button>
+            />
           ) : null}
         </div>
       </div>

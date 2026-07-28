@@ -1,180 +1,270 @@
 @import "tailwindcss";
 
 /* ---------------------------------------------------------------------------
- * NovaKore theme tokens (Phase 1A foundation).
+ * NovaKore design tokens (Phase 1B — docs/brand/design-tokens.md).
  *
- * Light and dark are both first-class: every token has a value in each mode.
- * Tenant branding overrides ONLY the accent custom properties, injected as
- * validated hex values (see OrgThemeStyle) — tenants can never inject CSS.
+ * Resolution order: NovaKore base → organization overrides (OrgThemeStyle,
+ * validated hex only) → user light/dark preference → component state tokens.
+ * Protected semantics (success/warning/danger/info/focus) resolve from the
+ * base layer only. Dark-first; light mode fully specified.
  * ------------------------------------------------------------------------- */
 
 :root {
-  /* surfaces */
-  --background: #f7f6f3;
+  /* -- semantic color tokens: LIGHT (default; dark overrides below) -- */
+  --background: #f7f8fa; /* Cloud */
+  --background-elevated: #ffffff;
+  --background-subtle: #eff1f5;
   --surface: #ffffff;
-  --surface-raised: #ffffff;
-  --surface-sunken: #f1efeb;
-  --border: #e4e1da;
-  --border-strong: #cfcabf;
-
-  /* text */
-  --text: #1c1a17;
-  --text-muted: #6d675e;
-  --text-faint: #9b948a;
-
-  /* accent (platform default; tenant branding overrides at the org layout) */
-  --accent: #4f46e5;
+  --surface-elevated: #ffffff;
+  --surface-interactive: #eff1f5;
+  --text-primary: #101114;
+  --text-secondary: #4a5164;
+  --text-muted: #7c8498; /* Slate */
+  --text-inverse: #ffffff;
+  --border-default: #e3e6ec;
+  --border-strong: #bfc6d5; /* Steel */
+  --border-subtle: #edeff4;
+  --accent: #5a5cff; /* Electric Indigo */
+  --accent-hover: #494be8; /* Indigo Hover */
+  --accent-active: #3f41d1;
   --accent-contrast: #ffffff;
   --accent-soft: color-mix(in oklab, var(--accent) 10%, transparent);
-
-  /* status */
-  --positive: #15803d;
-  --warning: #b45309;
-  --danger: #b91c1c;
+  --focus-ring: #494be8;
+  --selection: #ececff; /* Indigo Soft */
+  --success: #18a957;
+  --warning: #d99614;
+  --danger: #d63b3b;
+  --info: #3b82f6;
   --danger-soft: color-mix(in oklab, var(--danger) 10%, transparent);
 
-  /* shape + rhythm (radius scales with tenant preference) */
+  /* -- typography -- */
+  --tracking-caps: 0.08em;
+
+  /* -- shape (radius profile scales the unit) -- */
   --radius-unit: 1;
   --radius-sm: calc(6px * var(--radius-unit));
   --radius-md: calc(10px * var(--radius-unit));
-  --radius-lg: calc(16px * var(--radius-unit));
+  --radius-lg: calc(14px * var(--radius-unit));
+  --radius-xl: calc(18px * var(--radius-unit));
 
-  /* elevation */
+  /* -- elevation (light: quiet layered shadows) -- */
   --shadow-raised:
-    0 1px 2px rgb(28 26 23 / 0.06), 0 4px 16px rgb(28 26 23 / 0.06);
+    0 1px 2px rgb(16 17 20 / 0.05), 0 4px 12px rgb(16 17 20 / 0.06);
   --shadow-overlay:
-    0 4px 12px rgb(28 26 23 / 0.12), 0 12px 40px rgb(28 26 23 / 0.18);
+    0 4px 12px rgb(16 17 20 / 0.1), 0 12px 32px rgb(16 17 20 / 0.16);
+
+  /* -- motion -- */
+  --motion-fast: 140ms;
+  --motion-standard: 200ms;
+  --motion-slow: 300ms;
+  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
+
+  /* -- layout -- */
+  --layout-page-max: 72rem;
+  --layout-form-max: 42rem;
+  --layout-sidebar: 13rem;
+  --layout-header: 3.25rem;
+
+  /* -- named z-index layers -- */
+  --z-nav: 30;
+  --z-panel: 40;
+  --z-overlay: 50;
+  --z-toast: 60;
 
   color-scheme: light;
 }
 
+/* Dark tokens: NovaKore is dark-first; separation via border + tone. */
 @media (prefers-color-scheme: dark) {
   :root {
-    --background: #12110f;
-    --surface: #1a1917;
-    --surface-raised: #201f1c;
-    --surface-sunken: #0d0c0b;
-    --border: #2c2a26;
-    --border-strong: #403d37;
-
-    --text: #eceae6;
-    --text-muted: #a29b90;
-    --text-faint: #6e685e;
-
-    --accent: #818cf8;
-    --accent-contrast: #101014;
-
-    --positive: #4ade80;
-    --warning: #fbbf24;
-    --danger: #f87171;
-
-    --shadow-raised: 0 1px 2px rgb(0 0 0 / 0.4), 0 4px 16px rgb(0 0 0 / 0.35);
+    --background: #0b0b0d; /* Obsidian */
+    --background-elevated: #17181c; /* Carbon */
+    --background-subtle: #101114;
+    --surface: #17181c;
+    --surface-elevated: #1c1e23;
+    --surface-interactive: #20232a;
+    --text-primary: #f2f3f7;
+    --text-secondary: #7c8498;
+    --text-muted: #565d6e;
+    --text-inverse: #101114;
+    --border-default: #24262b; /* Graphite */
+    --border-strong: #33363e;
+    --border-subtle: #1c1e23;
+    --accent: #5a5cff;
+    --accent-hover: #6d6fff;
+    --accent-active: #494be8;
+    --accent-contrast: #ffffff;
+    --accent-soft: color-mix(in oklab, var(--accent) 14%, transparent);
+    --focus-ring: #7b7dff;
+    --selection: color-mix(in oklab, var(--accent) 30%, transparent);
+    --success: #2fc272;
+    --warning: #e8ab3a;
+    --danger: #e25858;
+    --info: #5b9bf8;
+    --shadow-raised: 0 1px 2px rgb(0 0 0 / 0.45), 0 4px 12px rgb(0 0 0 / 0.35);
     --shadow-overlay:
-      0 4px 12px rgb(0 0 0 / 0.5), 0 12px 40px rgb(0 0 0 / 0.55);
-
+      0 4px 12px rgb(0 0 0 / 0.5), 0 12px 32px rgb(0 0 0 / 0.55);
     color-scheme: dark;
   }
 }
 
-/* Manual override wins over system preference (theme toggle). */
+/* Explicit user preference beats system preference (layer 3). */
 :root[data-theme="light"] {
-  --background: #f7f6f3;
+  --background: #f7f8fa;
+  --background-elevated: #ffffff;
+  --background-subtle: #eff1f5;
   --surface: #ffffff;
-  --surface-raised: #ffffff;
-  --surface-sunken: #f1efeb;
-  --border: #e4e1da;
-  --border-strong: #cfcabf;
-  --text: #1c1a17;
-  --text-muted: #6d675e;
-  --text-faint: #9b948a;
-  --accent: var(--accent-light-override, #4f46e5);
+  --surface-elevated: #ffffff;
+  --surface-interactive: #eff1f5;
+  --text-primary: #101114;
+  --text-secondary: #4a5164;
+  --text-muted: #7c8498;
+  --text-inverse: #ffffff;
+  --border-default: #e3e6ec;
+  --border-strong: #bfc6d5;
+  --border-subtle: #edeff4;
+  --accent: #5a5cff;
+  --accent-hover: #494be8;
+  --accent-active: #3f41d1;
   --accent-contrast: #ffffff;
-  --positive: #15803d;
-  --warning: #b45309;
-  --danger: #b91c1c;
+  --accent-soft: color-mix(in oklab, var(--accent) 10%, transparent);
+  --focus-ring: #494be8;
+  --selection: #ececff;
+  --success: #18a957;
+  --warning: #d99614;
+  --danger: #d63b3b;
+  --info: #3b82f6;
   --shadow-raised:
-    0 1px 2px rgb(28 26 23 / 0.06), 0 4px 16px rgb(28 26 23 / 0.06);
+    0 1px 2px rgb(16 17 20 / 0.05), 0 4px 12px rgb(16 17 20 / 0.06);
   --shadow-overlay:
-    0 4px 12px rgb(28 26 23 / 0.12), 0 12px 40px rgb(28 26 23 / 0.18);
+    0 4px 12px rgb(16 17 20 / 0.1), 0 12px 32px rgb(16 17 20 / 0.16);
   color-scheme: light;
 }
 
 :root[data-theme="dark"] {
-  --background: #12110f;
-  --surface: #1a1917;
-  --surface-raised: #201f1c;
-  --surface-sunken: #0d0c0b;
-  --border: #2c2a26;
-  --border-strong: #403d37;
-  --text: #eceae6;
-  --text-muted: #a29b90;
-  --text-faint: #6e685e;
-  --accent: var(--accent-dark-override, #818cf8);
-  --accent-contrast: #101014;
-  --positive: #4ade80;
-  --warning: #fbbf24;
-  --danger: #f87171;
-  --shadow-raised: 0 1px 2px rgb(0 0 0 / 0.4), 0 4px 16px rgb(0 0 0 / 0.35);
-  --shadow-overlay: 0 4px 12px rgb(0 0 0 / 0.5), 0 12px 40px rgb(0 0 0 / 0.55);
+  --background: #0b0b0d;
+  --background-elevated: #17181c;
+  --background-subtle: #101114;
+  --surface: #17181c;
+  --surface-elevated: #1c1e23;
+  --surface-interactive: #20232a;
+  --text-primary: #f2f3f7;
+  --text-secondary: #7c8498;
+  --text-muted: #565d6e;
+  --text-inverse: #101114;
+  --border-default: #24262b;
+  --border-strong: #33363e;
+  --border-subtle: #1c1e23;
+  --accent: #5a5cff;
+  --accent-hover: #6d6fff;
+  --accent-active: #494be8;
+  --accent-contrast: #ffffff;
+  --accent-soft: color-mix(in oklab, var(--accent) 14%, transparent);
+  --focus-ring: #7b7dff;
+  --selection: color-mix(in oklab, var(--accent) 30%, transparent);
+  --success: #2fc272;
+  --warning: #e8ab3a;
+  --danger: #e25858;
+  --info: #5b9bf8;
+  --shadow-raised: 0 1px 2px rgb(0 0 0 / 0.45), 0 4px 12px rgb(0 0 0 / 0.35);
+  --shadow-overlay: 0 4px 12px rgb(0 0 0 / 0.5), 0 12px 32px rgb(0 0 0 / 0.55);
   color-scheme: dark;
 }
 
-/* Tenant accent overrides (validated hex only, set by OrgThemeStyle). */
-:root {
-  --accent-resolved-light: var(--accent-light-override, #4f46e5);
-  --accent-resolved-dark: var(--accent-dark-override, #818cf8);
-}
-
+/* ---------------------------------------------------------------------------
+ * Tailwind mapping. New code prefers the semantic names; Phase 1A aliases
+ * (surface-sunken, surface-raised, text, text-faint, border) stay mapped so
+ * existing components keep working from the same variables.
+ * ------------------------------------------------------------------------- */
 @theme inline {
+  /* semantic names */
   --color-background: var(--background);
+  --color-background-elevated: var(--background-elevated);
+  --color-background-subtle: var(--background-subtle);
   --color-surface: var(--surface);
-  --color-surface-raised: var(--surface-raised);
-  --color-surface-sunken: var(--surface-sunken);
-  --color-border: var(--border);
-  --color-border-strong: var(--border-strong);
-  --color-text: var(--text);
+  --color-surface-elevated: var(--surface-elevated);
+  --color-surface-interactive: var(--surface-interactive);
+  --color-text-primary: var(--text-primary);
+  --color-text-secondary: var(--text-secondary);
   --color-text-muted: var(--text-muted);
-  --color-text-faint: var(--text-faint);
+  --color-text-inverse: var(--text-inverse);
+  --color-border-default: var(--border-default);
+  --color-border-strong: var(--border-strong);
+  --color-border-subtle: var(--border-subtle);
   --color-accent: var(--accent);
+  --color-accent-hover: var(--accent-hover);
+  --color-accent-active: var(--accent-active);
   --color-accent-contrast: var(--accent-contrast);
   --color-accent-soft: var(--accent-soft);
-  --color-positive: var(--positive);
+  --color-focus-ring: var(--focus-ring);
+  --color-success: var(--success);
   --color-warning: var(--warning);
   --color-danger: var(--danger);
   --color-danger-soft: var(--danger-soft);
+  --color-info: var(--info);
+  --color-positive: var(--success); /* Phase 1A alias */
+
+  /* Phase 1A aliases (same variables, prior utility names) */
+  --color-text: var(--text-primary);
+  --color-text-faint: var(--text-muted);
+  --color-surface-raised: var(--surface-elevated);
+  --color-surface-sunken: var(--background-subtle);
+  --color-border: var(--border-default);
+
   --radius-sm: var(--radius-sm);
   --radius-md: var(--radius-md);
   --radius-lg: var(--radius-lg);
+  --radius-xl: var(--radius-xl);
   --shadow-raised: var(--shadow-raised);
   --shadow-overlay: var(--shadow-overlay);
-  --font-sans: var(--font-geist-sans), system-ui, sans-serif;
+  --font-sans: var(--org-font, var(--font-geist-sans)), system-ui, sans-serif;
   --font-mono: var(--font-geist-mono), ui-monospace, monospace;
-}
 
-/* Tenant radius preference */
-:root[data-radius="small"] {
-  --radius-unit: 0.6;
-}
-:root[data-radius="large"] {
-  --radius-unit: 1.4;
-}
-
-/* Tenant font preference (curated set only) */
-:root[data-font="system"] body {
-  font-family:
-    system-ui,
-    -apple-system,
-    sans-serif;
-}
-:root[data-font="serif"] body {
-  font-family: Georgia, "Times New Roman", serif;
+  /* typography roles (size / line-height pairs) */
+  --text-display: 1.875rem;
+  --text-display--line-height: 1.15;
+  --text-display--font-weight: 600;
+  --text-h1: 1.5rem;
+  --text-h1--line-height: 1.2;
+  --text-h1--font-weight: 600;
+  --text-h2: 1.1875rem;
+  --text-h2--line-height: 1.25;
+  --text-h2--font-weight: 600;
+  --text-h3: 1rem;
+  --text-h3--line-height: 1.3;
+  --text-h3--font-weight: 600;
+  --text-title: 0.875rem;
+  --text-title--line-height: 1.35;
+  --text-title--font-weight: 550;
+  --text-body: 0.875rem;
+  --text-body--line-height: 1.55;
+  --text-body-sm: 0.8125rem;
+  --text-body-sm--line-height: 1.5;
+  --text-label: 0.75rem;
+  --text-label--line-height: 1.3;
+  --text-label--font-weight: 500;
+  --text-caption: 0.6875rem;
+  --text-caption--line-height: 1.35;
+  --text-caption--font-weight: 500;
+  --text-code: 0.8125rem;
+  --text-code--line-height: 1.5;
 }
 
 body {
   background: var(--background);
-  color: var(--text);
+  color: var(--text-primary);
   font-family: var(--font-sans);
   -webkit-font-smoothing: antialiased;
+}
+
+::selection {
+  background: var(--selection);
+}
+
+:focus-visible {
+  outline: 2px solid var(--focus-ring);
+  outline-offset: 2px;
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -184,9 +274,4 @@ body {
     animation-duration: 0.01ms !important;
     transition-duration: 0.01ms !important;
   }
-}
-
-:focus-visible {
-  outline: 2px solid var(--accent);
-  outline-offset: 2px;
 }

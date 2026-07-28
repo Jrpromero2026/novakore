@@ -6,6 +6,7 @@ import { signOutAction } from "@/lib/actions/auth";
 import { requireUser } from "@/lib/auth";
 import { supabaseServer } from "@/lib/supabase/server";
 import { NoOrganization } from "@/components/states";
+import { PlatformMark } from "@/components/brand";
 import { Badge, Button } from "@/components/ui/primitives";
 import { ThemeToggle } from "@/components/theme-toggle";
 
@@ -71,9 +72,7 @@ export default async function SelectOrgPage({
   return (
     <main className="mx-auto flex min-h-dvh w-full max-w-lg flex-col px-6 py-10">
       <div className="flex items-center justify-between">
-        <p className="text-xs font-medium uppercase tracking-[0.2em] text-text-faint">
-          NovaKore
-        </p>
+        <PlatformMark />
         <ThemeToggle />
       </div>
       <div className="mt-12 space-y-6">
