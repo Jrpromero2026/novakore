@@ -57,6 +57,17 @@ export default async function LessonEditorPage({
   } | null;
 
   // Draft-vs-published comparison summary (historical version untouched).
+  // Serialization must be key-order independent: jsonb normalizes key order,
+  // so a naive JSON.stringify flags every block as changed.
+  const stable = (value: unknown): string =>
+    Array.isArray(value)
+      ? `[${value.map(stable).join(",")}]`
+      : value !== null && typeof value === "object"
+        ? `{${Object.entries(value as Record<string, unknown>)
+            .sort(([a], [b]) => (a < b ? -1 : 1))
+            .map(([k, v]) => `${JSON.stringify(k)}:${stable(v)}`)
+            .join(",")}}`
+        : JSON.stringify(value);
   let comparison: {
     added: number;
     removed: number;
@@ -66,12 +77,12 @@ export default async function LessonEditorPage({
   if (published && Array.isArray(published.blocks)) {
     const publishedBlocks = published.blocks as { id: string; data: unknown }[];
     const publishedById = new Map(
-      publishedBlocks.map((b) => [b.id, JSON.stringify(b)]),
+      publishedBlocks.map((b) => [b.id, stable(b)]),
     );
     const draftById = new Map(
       draftBlocks.map((b) => [
         b.id,
-        JSON.stringify({
+        stable({
           id: b.id,
           type: b.type,
           schemaVersion: b.schemaVersion,

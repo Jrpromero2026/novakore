@@ -3,7 +3,7 @@ import { requireOrgContext, requirePermission } from "@/lib/org-context";
 import { getTerminology } from "@/lib/terminology";
 import { supabaseServer } from "@/lib/supabase/server";
 import { Card, CardHeader, EmptyState } from "@/components/ui/primitives";
-import { CreateSystemPanel, PathCard } from "./learning-ui";
+import { CreatePathPanel, CreateSystemPanel, PathCard } from "./learning-ui";
 
 export const metadata: Metadata = { title: "Learning" };
 
@@ -99,7 +99,7 @@ export default async function LearningPage({
                   courseTerm={term("course").singular}
                 />
               ))}
-            <PathCard.Create
+            <CreatePathPanel
               orgSlug={orgSlug}
               learningSystemId={system.id}
               pathTerm={term("learning_path").singular}

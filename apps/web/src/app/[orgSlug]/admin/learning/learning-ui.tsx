@@ -339,7 +339,9 @@ export function PathCard({
   );
 }
 
-PathCard.Create = function CreatePath({
+// Must be a module-level export: statics attached to a client component do
+// not survive the server→client reference boundary.
+export function CreatePathPanel({
   orgSlug,
   learningSystemId,
   pathTerm,
@@ -399,4 +401,4 @@ PathCard.Create = function CreatePath({
       ) : null}
     </div>
   );
-};
+}

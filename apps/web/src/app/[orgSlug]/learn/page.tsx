@@ -53,7 +53,10 @@ export default async function LearnerHomePage({
                         ? term("learning_path").singular
                         : term("course").singular}
                       {e.completedLessons > 0
-                        ? ` · ${e.completedLessons} ${term("lesson").plural.toLowerCase()} done`
+                        ? ` · ${e.completedLessons} ${(e.completedLessons === 1
+                            ? term("lesson").singular
+                            : term("lesson").plural
+                          ).toLowerCase()} done`
                         : ""}
                     </span>
                   </span>
