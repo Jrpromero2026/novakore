@@ -1,0 +1,20 @@
+{
+  "name": "novakore",
+  "version": "0.0.0",
+  "private": true,
+  "description": "NovaKore — an AI-native modular learning operating system.",
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
+  "engines": {
+    "node": ">=20.0.0"
+  },
+  "scripts": {
+    "dev": "npm run dev --workspace=@novakore/web",
+    "build": "npm run build --workspace=@novakore/web",
+    "start": "npm run start --workspace=@novakore/web",
+    "lint": "npm run lint --workspaces --if-present",
+    "typecheck": "npm run typecheck --workspaces --if-present"
+  }
+}
