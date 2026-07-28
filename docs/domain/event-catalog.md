@@ -1,6 +1,6 @@
-# Event Catalog (Phase 1C)
+# Event Catalog (Phase 1C–1D)
 
-The 11 registered analytics event types, their emitters, and idempotency
+The 24 registered analytics event types, their emitters, and idempotency
 keys. Envelope + taxonomy rules:
 [../architecture/analytics-and-events.md](../architecture/analytics-and-events.md);
 transport: [../architecture/transactional-outbox.md](../architecture/transactional-outbox.md).
@@ -25,6 +25,31 @@ carries the resolution chain (exact version ids where applicable);
 | `learning.progress.overridden` | lesson        | `override_progress`               | enrollment, lesson_version_id, new status; `data.reason` | `progress-overridden:<enrollment>:<lesson>:<epoch>` |
 | `content.lesson.published`     | lesson        | `publish_lesson`                  | lesson_version_id, course_id; `data.version_number`      | `lesson-published:<version>`                        |
 | `content.course.published`     | course        | `publish_course`                  | course_version_id; `data.version_number`                 | `course-published:<version>`                        |
+
+Phase 1D additions:
+
+| Type                                          | Subject               | Emitted by                                   | Context highlights                           | Idempotency key                                |
+| --------------------------------------------- | --------------------- | -------------------------------------------- | -------------------------------------------- | ---------------------------------------------- |
+| `content.assessment.created`                  | assessment            | insert trigger                               | `data.assessment_type`                       | `assessment-created:<assessment>`              |
+| `content.assessment.updated`                  | assessment            | update trigger (title/settings/type only)    | —                                            | `assessment-updated:<assessment>:<epoch>`      |
+| `content.assessment.published`                | assessment            | `publish_assessment`                         | assessment_version_id; `data.version_number` | `assessment-published:<version>`               |
+| `assessment.assignment.created`               | assessment_assignment | `assign_assessment`                          | lesson, assessment, pinned version           | `assessment-assigned:<assignment>`             |
+| `assessment.attempt.started`                  | assessment_attempt    | `start_assessment_attempt`                   | assignment, enrollment, pinned version       | `attempt-started:<attempt>`                    |
+| `assessment.attempt.submitted`                | assessment_attempt    | `submit_assessment_attempt`                  | version, enrollment                          | `attempt-submitted:<attempt>`                  |
+| `assessment.attempt.pending_review`           | assessment_attempt    | submit (subjective work)                     | version                                      | `attempt-pending-review:<attempt>`             |
+| `assessment.attempt.passed` / `.failed`       | assessment_attempt    | finalization (submit OR review — never both) | version, enrollment; `data.score_percent`    | `attempt-finalized:<attempt>`                  |
+| `assessment.review.completed`                 | assessment_attempt    | `complete_assessment_review`                 | version; `data.decision`                     | `review-completed:<review>`                    |
+| `credential.certificate.issued`               | issued_credential     | `app.issue_credential_internal`              | certificate, membership, attempt             | `credential-issued:<certificate>:<membership>` |
+| `credential.certificate.revoked`              | issued_credential     | `revoke_credential`                          | certificate; `data.reason`                   | `credential-revoked:<credential>`              |
+| `learning.completion.triggered_by_assessment` | lesson                | `app.apply_assessment_outcome`               | enrollment, attempt, assessment version      | `assessment-completion:<attempt>`              |
+
+The pass/fail pair shares ONE key (`attempt-finalized:<attempt>`): an
+attempt finalizes exactly once, through either the objective or the
+review path. Assessment-driven lesson completion reuses the learner
+path's `lesson-completed:<enrollment>:<lesson>` key, so a lesson
+completion is exactly-once regardless of which path caused it.
+`credential.certificate.expired` is intentionally NOT registered —
+expiration is lazy (no worker yet); the type ships with the worker.
 
 Key design notes:
 

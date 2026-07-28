@@ -339,3 +339,41 @@ unprocessed outbox accumulates harmlessly (bounded by event volume) until
 the worker lands. The event envelope in the analytics doc §2 is realized
 as flat columns (`actor_user_id` instead of the actor object — system/ai/
 integration actors arrive with those phases).
+
+---
+
+## ADR-019 — Assessment delivery: lesson-level assignments, RPC-gated learner payloads
+
+**Context.** Phase 1D had to attach assessments to learning content
+without reopening the frozen 1C course-version structure, and had to
+serve question content to learners whose RLS rightly cannot read
+`assessment_versions` (the rows carry correct-answer configuration).
+A generic polymorphic assignment target and client-side item filtering
+were both rejected.
+
+**Decision.** Three coupled choices:
+
+1. **Assignments attach to LESSONS** (`assessment_assignments`), pinning
+   an exact `assessment_version_id`, outside the course-version snapshot
+   — course versions stay untouched; the lesson viewer queries active
+   assignments at render time. Course-version/module/path-node targets
+   are future explicit assignment types, not a polymorphic column.
+   Completion coupling is a declared `completion_effect`
+   (`complete_lesson` | `none`) plus a hard gate inside
+   `record_lesson_progress`: a required completing assessment owns the
+   lesson's completion.
+2. **Learner item content flows only through
+   `get_assessment_attempt_payload`** — a SECURITY DEFINER constructive
+   allowlist (never subtractive stripping) mirrored by the domain's
+   `toLearnerItemView`. Correct answers, feedback config, and rubrics
+   structurally cannot reach a learner client.
+3. **File submissions are a guarded deferral**: the item type is fully
+   modeled against the future ADR-015 submissions bucket, and until it
+   exists learners record a bounded plain-text note routed to review —
+   the UI says so; nothing fakes an upload.
+
+**Consequences.** 1C architecture is untouched (no conflict arose);
+assignments re-pin by archive-and-attach (documented); the lesson viewer
+does one extra bounded query; adding new assignment targets later means
+new explicit columns/types, not schema surgery; the payload RPC is the
+single place to audit for answer leakage.
