@@ -151,7 +151,13 @@ phase.
 | `ai_messages`           | Messages within a conversation incl. citations and safety flags.                                                       | O     | immutable                       | n/a                        | 3     |
 | `source_documents`      | Tenant knowledge base: uploaded docs, extraction status, chunk/embedding refs.                                         | O     | uploaded → processed → archived | content-hash versioned     | 2     |
 
-### 2.9 Telemetry and integration
+### 2.9 Media (Phase 1B — D-07 resolved)
+
+| Entity         | Responsibility                                                                                                                                                                                                                                                | Scope                                     | Lifecycle                                       | Ver                | Phase |
+| -------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------- | ----------------------------------------------- | ------------------ | ----- |
+| `media_assets` | Metadata of record for stored binaries (branding now, content images 1C): kind, bucket/path, MIME, size, dimensions, alt text, checksum, ownership. Active-per-slot enforced by partial unique index; replacement retains history via `replaced_by_asset_id`. | O (nullable org only for platform assets) | pending → active → replaced / archived / failed | history-preserving | 1B    |
+
+### 2.9b Telemetry and integration
 
 | Entity                    | Responsibility                                                                                               | Scope | Lifecycle                       | Ver                     | Phase                           |
 | ------------------------- | ------------------------------------------------------------------------------------------------------------ | ----- | ------------------------------- | ----------------------- | ------------------------------- |
@@ -222,7 +228,7 @@ stateDiagram-v2
 
 ## 6. Open items
 
-- Media/file storage entity (`media_assets`) is implied by image/video/pdf
+- ~~Media/file storage entity (`media_assets`) is implied by image/video/pdf~~ **Resolved in Phase 1B** (ADR-015, §2.9); originally noted as implied by image/video/pdf
   blocks and branding logos; its design lands with Supabase Storage decision
   (pre-Supabase decision list, [risks-and-open-decisions.md](risks-and-open-decisions.md)).
 - Cross-org content sharing/marketplace is explicitly out of scope (Phase 4+,

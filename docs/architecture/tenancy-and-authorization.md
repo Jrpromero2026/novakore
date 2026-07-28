@@ -43,30 +43,31 @@ can(userId, orgId, permission, { academyId? }) =>
 Namespaced, additive-only. Phase 1 ships exactly these; later phases add codes
 (never repurpose).
 
-| Code                     | Meaning                                                |
-| ------------------------ | ------------------------------------------------------ |
-| `org.manage`             | Edit org profile/settings; manage academies            |
-| `org.members.manage`     | Invite, suspend, remove members                        |
-| `org.roles.manage`       | Create/edit custom roles and assignments               |
-| `org.branding.manage`    | Edit branding/theme                                    |
-| `org.terminology.manage` | Edit terminology overrides                             |
-| `academy.manage`         | Create/edit academies (org-wide) or the scoped academy |
-| `content.view_draft`     | See unpublished content                                |
-| `content.author`         | Create/edit draft courses, modules, lessons, blocks    |
-| `content.publish`        | Publish/unpublish versions                             |
-| `content.archive`        | Archive content                                        |
-| `paths.manage`           | Author learning paths, nodes, prerequisites            |
-| `assessment.author`      | Author assessments/items                               |
-| `assessment.grade`       | Grade attempts, view responses                         |
-| `enrollment.manage`      | Enroll/withdraw others; manage cohorts                 |
-| `enrollment.self`        | Self-enroll where allowed                              |
-| `progress.view.own`      | See own progress                                       |
-| `progress.view.others`   | See others' progress (scoped by academy assignment)    |
-| `certificates.manage`    | Templates, issuance definitions, revocation            |
-| `analytics.view`         | Org/academy analytics dashboards                       |
-| `audit.view`             | Read audit log                                         |
-| `integrations.manage`    | Connections, webhooks, API keys                        |
-| `ai.author.use`          | Use AI authoring tools                                 |
+| Code                     | Meaning                                                   |
+| ------------------------ | --------------------------------------------------------- |
+| `org.manage`             | Edit org profile/settings; manage academies               |
+| `org.members.manage`     | Invite, suspend, remove members                           |
+| `org.roles.manage`       | Create/edit custom roles and assignments                  |
+| `org.branding.manage`    | Edit branding/theme drafts; upload/archive brand assets   |
+| `org.branding.publish`   | Publish or revert the organization theme (added Phase 1B) |
+| `org.terminology.manage` | Edit terminology overrides                                |
+| `academy.manage`         | Create/edit academies (org-wide) or the scoped academy    |
+| `content.view_draft`     | See unpublished content                                   |
+| `content.author`         | Create/edit draft courses, modules, lessons, blocks       |
+| `content.publish`        | Publish/unpublish versions                                |
+| `content.archive`        | Archive content                                           |
+| `paths.manage`           | Author learning paths, nodes, prerequisites               |
+| `assessment.author`      | Author assessments/items                                  |
+| `assessment.grade`       | Grade attempts, view responses                            |
+| `enrollment.manage`      | Enroll/withdraw others; manage cohorts                    |
+| `enrollment.self`        | Self-enroll where allowed                                 |
+| `progress.view.own`      | See own progress                                          |
+| `progress.view.others`   | See others' progress (scoped by academy assignment)       |
+| `certificates.manage`    | Templates, issuance definitions, revocation               |
+| `analytics.view`         | Org/academy analytics dashboards                          |
+| `audit.view`             | Read audit log                                            |
+| `integrations.manage`    | Connections, webhooks, API keys                           |
+| `ai.author.use`          | Use AI authoring tools                                    |
 
 Later phases add: `assessment.review_appeals`, `competencies.manage`,
 `ai.tutor.use` (learner AI), `rules.manage`, `data.export`, etc.
@@ -81,6 +82,7 @@ Later phases add: `assessment.review_appeals`, `competencies.manage`,
 | org.members.manage     |   ✔   |     ✔     |                |        |            |          |         |         |          |
 | org.roles.manage       |   ✔   |     ✔     |                |        |            |          |         |         |          |
 | org.branding.manage    |   ✔   |     ✔     |                |        |            |          |         |         |          |
+| org.branding.publish   |   ✔   |     ✔     |                |        |            |          |         |         |          |
 | org.terminology.manage |   ✔   |     ✔     |                |        |            |          |         |         |          |
 | academy.manage         |   ✔   |     ✔     |       ✔*       |        |            |          |         |         |          |
 | content.view_draft     |   ✔   |     ✔     |       ✔*       |   ✔    |     ✔      |    ✔     |         |         |          |

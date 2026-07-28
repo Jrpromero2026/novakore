@@ -236,3 +236,45 @@ string positions.
 
 **Consequences.** Index locality, sortable ids, concurrent-edit-friendly
 reordering; requires a vetted fractional-index implementation (Phase 1B).
+
+---
+
+## ADR-015 — Media storage: Supabase Storage + governed metadata (resolves D-07)
+
+**Context.** Branding (Phase 1B) and content images (Phase 1C) need
+binary storage. Options: relational bytea/data-URLs (rejected: bloat,
+no CDN path), external object store (rejected: second vendor for no
+gain), Supabase Storage (already provisioned, RLS-capable).
+
+**Decision.** Supabase Storage with private buckets (`org-branding`,
+`platform-branding`) plus a `media_assets` metadata table as the record
+of truth. Deterministic tenant-scoped paths embedding the organization id;
+per-kind policy constants in `@novakore/domain` (`ASSET_POLICY`); signed
+URLs for serving; pending→active→replaced→archived lifecycle with
+retained history; SVG treated as hostile input (reject-not-rewrite gate +
+img-only rendering). Storage RLS and relational RLS must agree and are
+both tested against the real database.
+
+**Consequences.** No public buckets by default; uploads flow through the
+user-session client (no service-role usage); replacement preserves
+auditability; cleanup of stale pending rows is a documented operator
+action until the Phase 1C job runner exists. Details:
+[media-assets.md](media-assets.md).
+
+---
+
+## ADR-016 — Data access: supabase-js + typed domain modules, no ORM (resolves D-08)
+
+**Context.** Phase 1A used supabase-js with generated types and thin
+server actions. The question was whether to adopt an ORM/query-builder
+before the schema grows.
+
+**Decision.** Stay on supabase-js + generated database types + explicit
+per-domain data-access modules + domain validation + `can()` + RLS. No
+Prisma, Drizzle, GraphQL, or generic repository abstraction. Every
+mutating path follows the nine-step contract in
+[data-access-layer.md](data-access-layer.md).
+
+**Consequences.** Queries remain visibly RLS-shaped and auditable; some
+verbosity is accepted; the decision is revisited only via a superseding
+ADR backed by concrete pain evidence.
