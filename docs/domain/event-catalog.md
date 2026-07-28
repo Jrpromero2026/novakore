@@ -64,6 +64,7 @@ Key design notes:
   doc. Types follow `<domain>.<subject>.<verb-past>` (CHECK-enforced at
   the table).
 - Planned-not-implemented types from the taxonomy (e.g.
-  `learning.block.viewed`, `learning.node.unlocked`, `assessment.*`)
-  arrive with client telemetry (batch endpoint) and Phase 1D — nothing
-  emits them today, so they are not in `EVENT_TYPES` yet.
+  `learning.block.viewed`, `learning.node.unlocked`,
+  `credential.certificate.expired`) arrive with client telemetry and the
+  background workers — nothing emits them today, so they are not in
+  `EVENT_TYPES` yet.

@@ -357,6 +357,14 @@ describe.skipIf(!configured)(
       expect(error).toBeNull();
       attemptId = attempt as string;
 
+      // regression (browser QA): learners read the METADATA row of an
+      // assigned published assessment (title for the entry point) …
+      const { data: metadata } = await alphaLearner
+        .from("assessments")
+        .select("title")
+        .eq("id", assessmentId);
+      expect(metadata?.[0]?.title).toMatch(/Flow Assessment/);
+
       const { data: payload } = await alphaLearner.rpc(
         "get_assessment_attempt_payload",
         { p_attempt_id: attemptId },

@@ -1,7 +1,10 @@
 import { createServerClient } from "@supabase/ssr";
 import { NextResponse, type NextRequest } from "next/server";
 
-const PUBLIC_PATHS = ["/sign-in", "/auth/callback", "/auth/error"];
+// /verify is the deliberate anonymous surface: public credential
+// verification (privacy-safe RPC output only — see
+// docs/architecture/certificates-and-credentials.md §4).
+const PUBLIC_PATHS = ["/sign-in", "/auth/callback", "/auth/error", "/verify"];
 
 /**
  * Session refresh + coarse route protection (Next 16 proxy convention).
