@@ -9,7 +9,7 @@
     "typecheck": "tsc --noEmit",
     "test": "vitest",
     "test:run": "vitest run",
-    "test:rls": "vitest run src/__tests__/rls-isolation.test.ts"
+    "test:rls": "vitest run src/__tests__/"
   },
   "dependencies": {
     "@supabase/ssr": "^0.12.3",

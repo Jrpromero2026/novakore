@@ -107,3 +107,41 @@ describe("can() — deny-by-default permission resolution", () => {
     expect(orgWide.has("assessment.grade")).toBe(false);
   });
 });
+
+describe("branding permissions (Phase 1B)", () => {
+  const managerOnly = activeWith([
+    { permissions: ["org.branding.manage"], academyId: null },
+  ]);
+  const publisher = activeWith([
+    {
+      permissions: ["org.branding.manage", "org.branding.publish"],
+      academyId: null,
+    },
+  ]);
+
+  test("manage allows editing but never publishing", () => {
+    expect(can(managerOnly, "org.branding.manage")).toBe(true);
+    expect(can(managerOnly, "org.branding.publish")).toBe(false);
+  });
+
+  test("publish is a distinct grant", () => {
+    expect(can(publisher, "org.branding.publish")).toBe(true);
+  });
+
+  test("learner-shaped and academy-scoped grants confer no branding power", () => {
+    const learner = activeWith([
+      {
+        permissions: ["enrollment.self", "progress.view.own"],
+        academyId: null,
+      },
+    ]);
+    expect(can(learner, "org.branding.manage")).toBe(false);
+    expect(can(learner, "org.branding.publish")).toBe(false);
+
+    // branding is org-level: an academy-scoped grant must not qualify
+    const scoped = activeWith([
+      { permissions: ["org.branding.manage"], academyId: ACADEMY },
+    ]);
+    expect(can(scoped, "org.branding.manage")).toBe(false);
+  });
+});
