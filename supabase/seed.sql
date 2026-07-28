@@ -380,3 +380,76 @@ insert into public.progress_records (id, organization_id, enrollment_id, subject
   ('00000000-0000-4000-8000-000000000578', '00000000-0000-4000-8000-000000000102', '00000000-0000-4000-8000-000000000563', 'course', '00000000-0000-4000-8000-000000000513', null, '00000000-0000-4000-8000-000000000703', null, 'in_progress', null),
   ('00000000-0000-4000-8000-000000000579', '00000000-0000-4000-8000-000000000102', '00000000-0000-4000-8000-000000000563', 'lesson', '00000000-0000-4000-8000-000000000513', '00000000-0000-4000-8000-000000000536', '00000000-0000-4000-8000-000000000703', '00000000-0000-4000-8000-000000000716', 'completed', now())
 on conflict (id) do nothing;
+
+-- ---------------------------------------------------------------------------
+-- Phase 1D — BFH development-tenant assessment + credential fixtures.
+-- Two published assessments attached to the Foundations Program lessons:
+-- an objective check (immediate pass/fail) and a subjective evaluation
+-- (manual-review flow), plus a certificate on course completion.
+-- ---------------------------------------------------------------------------
+insert into public.assessments (id, organization_id, title, assessment_type, status, settings) values
+  ('00000000-0000-4000-8000-000000000801', '00000000-0000-4000-8000-000000000102',
+   'Movement Screening Check', 'knowledge_check', 'draft',
+   '{"schemaVersion":1,"passingPercent":70,"cooldownMinutes":0,"scorePolicy":"highest"}'),
+  ('00000000-0000-4000-8000-000000000802', '00000000-0000-4000-8000-000000000102',
+   'Client Intake Evaluation', 'assignment', 'draft',
+   '{"schemaVersion":1,"passingPercent":60,"cooldownMinutes":0,"scorePolicy":"highest"}')
+on conflict (id) do nothing;
+
+insert into public.assessment_items (id, organization_id, assessment_id, item_type, schema_version, data, position, required) values
+  ('00000000-0000-4000-8000-000000000811', '00000000-0000-4000-8000-000000000102',
+   '00000000-0000-4000-8000-000000000801', 'multiple_choice', 1,
+   '{"prompt":"What is the FIRST action in a movement screening session?","options":[{"id":"00000000-0000-4000-8000-0000000008a1","text":"Correct the client''s form immediately"},{"id":"00000000-0000-4000-8000-0000000008a2","text":"Observe movement patterns without correcting"},{"id":"00000000-0000-4000-8000-0000000008a3","text":"Prescribe a training block"}],"correctOptionId":"00000000-0000-4000-8000-0000000008a2","points":10}',
+   'a0', true),
+  ('00000000-0000-4000-8000-000000000812', '00000000-0000-4000-8000-000000000102',
+   '00000000-0000-4000-8000-000000000801', 'true_false', 1,
+   '{"prompt":"A movement screen should happen before programming begins.","correctValue":true,"points":5}',
+   'a1', true),
+  ('00000000-0000-4000-8000-000000000821', '00000000-0000-4000-8000-000000000102',
+   '00000000-0000-4000-8000-000000000802', 'long_answer', 1,
+   '{"prompt":"Describe how you would structure a first client intake conversation.","maxLength":4000,"points":20,"rubric":"Full marks: builds trust, surfaces constraints early, sets expectations for the certification journey."}',
+   'a0', true)
+on conflict (id) do nothing;
+
+insert into public.assessment_versions (id, organization_id, assessment_id, version_number, title, settings, items, published_by) values
+  ('00000000-0000-4000-8000-000000000831', '00000000-0000-4000-8000-000000000102',
+   '00000000-0000-4000-8000-000000000801', 1, 'Movement Screening Check',
+   '{"schemaVersion":1,"passingPercent":70,"cooldownMinutes":0,"scorePolicy":"highest"}',
+   '[{"id":"00000000-0000-4000-8000-000000000811","type":"multiple_choice","schemaVersion":1,"data":{"prompt":"What is the FIRST action in a movement screening session?","options":[{"id":"00000000-0000-4000-8000-0000000008a1","text":"Correct the client''s form immediately"},{"id":"00000000-0000-4000-8000-0000000008a2","text":"Observe movement patterns without correcting"},{"id":"00000000-0000-4000-8000-0000000008a3","text":"Prescribe a training block"}],"correctOptionId":"00000000-0000-4000-8000-0000000008a2","points":10},"position":"a0","required":true},{"id":"00000000-0000-4000-8000-000000000812","type":"true_false","schemaVersion":1,"data":{"prompt":"A movement screen should happen before programming begins.","correctValue":true,"points":5},"position":"a1","required":true}]',
+   '00000000-0000-4000-8000-000000000021'),
+  ('00000000-0000-4000-8000-000000000832', '00000000-0000-4000-8000-000000000102',
+   '00000000-0000-4000-8000-000000000802', 1, 'Client Intake Evaluation',
+   '{"schemaVersion":1,"passingPercent":60,"cooldownMinutes":0,"scorePolicy":"highest"}',
+   '[{"id":"00000000-0000-4000-8000-000000000821","type":"long_answer","schemaVersion":1,"data":{"prompt":"Describe how you would structure a first client intake conversation.","maxLength":4000,"points":20,"rubric":"Full marks: builds trust, surfaces constraints early, sets expectations for the certification journey."},"position":"a0","required":true}]',
+   '00000000-0000-4000-8000-000000000021')
+on conflict (id) do nothing;
+
+update public.assessments set current_published_version_id = '00000000-0000-4000-8000-000000000831', status = 'published'
+ where id = '00000000-0000-4000-8000-000000000801' and current_published_version_id is null;
+update public.assessments set current_published_version_id = '00000000-0000-4000-8000-000000000832', status = 'published'
+ where id = '00000000-0000-4000-8000-000000000802' and current_published_version_id is null;
+
+insert into public.assessment_assignments
+  (id, organization_id, course_id, lesson_id, assessment_id, assessment_version_id, required, completion_effect, position, status) values
+  ('00000000-0000-4000-8000-000000000841', '00000000-0000-4000-8000-000000000102',
+   '00000000-0000-4000-8000-000000000513', '00000000-0000-4000-8000-000000000536',
+   '00000000-0000-4000-8000-000000000801', '00000000-0000-4000-8000-000000000831',
+   true, 'complete_lesson', 'a0', 'active'),
+  ('00000000-0000-4000-8000-000000000842', '00000000-0000-4000-8000-000000000102',
+   '00000000-0000-4000-8000-000000000513', '00000000-0000-4000-8000-000000000537',
+   '00000000-0000-4000-8000-000000000802', '00000000-0000-4000-8000-000000000832',
+   true, 'complete_lesson', 'a0', 'active')
+on conflict (id) do nothing;
+
+insert into public.certificate_templates (id, organization_id, academy_id, name, template, status) values
+  ('00000000-0000-4000-8000-000000000851', '00000000-0000-4000-8000-000000000102',
+   '00000000-0000-4000-8000-000000000202', 'BFH Foundations Certificate',
+   '{"schemaVersion":1,"title":"Certificate of Completion","subtitle":"Foundations Program","bodyText":"has successfully completed the Foundations Program of the certification journey.","signatories":[{"name":"Jordan Ellis","role":"Head Coach Educator"}],"showVerification":true}',
+   'active')
+on conflict (id) do nothing;
+
+insert into public.certificates (id, organization_id, template_id, title, source_type, course_id, status) values
+  ('00000000-0000-4000-8000-000000000861', '00000000-0000-4000-8000-000000000102',
+   '00000000-0000-4000-8000-000000000851', 'Foundations Program Credential',
+   'course', '00000000-0000-4000-8000-000000000513', 'active')
+on conflict (id) do nothing;
