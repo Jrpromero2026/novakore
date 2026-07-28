@@ -278,3 +278,64 @@ mutating path follows the nine-step contract in
 **Consequences.** Queries remain visibly RLS-shaped and auditable; some
 verbosity is accepted; the decision is revisited only via a superseding
 ADR backed by concrete pain evidence.
+
+---
+
+## ADR-017 — Enrollments pin the published course version at creation (amends ADR-007)
+
+**Context.** ADR-007 left Phase 1 enrollments floating to the latest
+published version. Implementation exposed the cost: a learner mid-course
+whose course re-publishes would silently see restructured content, and
+"what did they see" evidence would require reconstructing publication
+timelines. Floating versions also make completion evaluation ambiguous
+(against which structure?).
+
+**Decision.** Course-target enrollments pin
+`enrollments.pinned_course_version_id` to the course's current published
+version at creation (`create_enrollment` refuses courses with no published
+version). Path-target enrollments pin per-course at first start: the first
+`record_lesson_progress` call creates the course-level `progress_records`
+row carrying the pinned `course_version_id`. All learner reads and all
+progress writes resolve course-progress pin → enrollment pin → current
+published, in that order; lesson progress additionally pins the exact
+`lesson_version_id` from the pinned structure. There is **no silent
+migration of active learners** — moving an enrollment to a newer version
+is a future explicit, audited operation.
+
+**Consequences.** Learners get a stable course for the life of the
+enrollment; completions remain valid evidence against their exact version
+even as newer versions publish; version-performance analytics gets honest
+cohorts. Cost: learners do not automatically receive content fixes
+(accepted; the future migration op is the remedy), and every read path
+must resolve the pin chain (centralized in `lib/data/learning.ts` and
+`record_lesson_progress`).
+
+---
+
+## ADR-018 — Analytics table + transactional outbox via app.emit_event
+
+**Context.** Phase 1C events must be trustworthy (a completion without its
+event, or vice versa, corrupts both analytics and future integrations),
+but no queue/worker infrastructure exists yet and Postgres partitioning
+now would be speculative.
+
+**Decision.** Two tables, one writer. `analytics_events` is a plain
+append-only indexed table (no partitioning yet; a partition playbook is
+documented in [analytics-and-events.md](analytics-and-events.md) with the
+trigger threshold). `outbox_events` is the transactional outbox for future
+fan-out (webhooks, aggregates). Both rows are written **only** by
+`app.emit_event(...)`, which every learning RPC calls inside the same
+transaction as its state change: the domain change and its event commit or
+roll back together. Idempotency: deterministic `idempotency_key` per
+logical event with `on conflict do nothing` — replayed operations emit
+nothing. `outbox_events` has zero client access (no policies, no grants
+for `authenticated`/`anon`); a worker with claim/retry/dead-letter
+semantics is deferred to the phase that needs fan-out
+([transactional-outbox.md](transactional-outbox.md)).
+
+**Consequences.** Events are exactly-once per logical action and can never
+diverge from state; tenants cannot observe or forge outbox traffic; the
+unprocessed outbox accumulates harmlessly (bounded by event volume) until
+the worker lands. The event envelope in the analytics doc §2 is realized
+as flat columns (`actor_user_id` instead of the actor object — system/ai/
+integration actors arrive with those phases).

@@ -43,6 +43,15 @@ Every taxonomy choice below traces to one of these.
 - Envelope changes bump `v`; readers support all versions (append-only log
   is never rewritten).
 
+**As implemented (Phase 1C, ADR-018):** the envelope is realized as flat
+columns on `analytics_events`; `actor` is `actor_user_id` for now (the
+`{kind, id}` actor object arrives with system/ai/integration emitters);
+the type taxonomy is CHECK-enforced at the table; `eventEnvelopeSchema` in
+`packages/domain/src/learning.ts` freezes the shape and registered types
+([../domain/event-catalog.md](../domain/event-catalog.md)). Ids are
+currently `gen_random_uuid()` — ordering comes from `occurred_at`
+indexes, not the id, until a UUIDv7 default lands.
+
 ## 3. Taxonomy (initial registered set)
 
 `<domain>.<subject>.<verb-past>`, additive-only registry.
@@ -68,18 +77,25 @@ check failures, replays, tutor asks in Phase 3), not from raw scroll spam.
 
 ## 4. Ingest and storage
 
-- **Phase 1 storage**: `analytics_events` append-only Postgres table.
-  UUIDv7 PK; indexed on `(organization_id, type, occurred_at)` and
-  `(organization_id, subject.kind, subject.id)`; monthly partitioning
-  planned from day one (declarative partitioning by `occurred_at`) so
-  growth never forces a migration crisis.
-- **Write paths**: server-emitted events (authoritative: completions,
-  grades, publishes) are written transactionally-adjacent to their state
-  change (transactional outbox pattern — state change and event commit
-  together; async fan-out reads the outbox). Client-emitted telemetry
-  (views, interactions) posts to a batch endpoint → validated → deduped
-  (`idempotency_key`) → inserted. Client events are advisory; nothing
-  authoritative ever originates client-side.
+- **Phase 1 storage (implemented)**: `analytics_events` append-only
+  Postgres table, indexed on `(organization_id, type, occurred_at)` and
+  `(organization_id, subject_kind, subject_id)`. **Partitioning is
+  deliberately deferred** (ADR-018) — a plain table now, with this
+  playbook on file: when the table approaches ~20M rows or event
+  insert/query latency measurably degrades, introduce declarative
+  monthly partitioning by `occurred_at` (create the partitioned twin,
+  backfill, swap in one migration window; per-partition indexes match
+  the ones above). The trigger threshold is checked in phase-gate
+  reviews so growth never forces a migration crisis.
+- **Write paths (implemented for server events)**: authoritative events
+  (completions, publishes, enrollment changes) are written by
+  `app.emit_event` **inside the same transaction** as their state change,
+  together with an `outbox_events` row for future fan-out — contract in
+  [transactional-outbox.md](transactional-outbox.md). Client-emitted
+  telemetry (views, interactions) remains future work: it will post to a
+  batch endpoint → validated → deduped (`idempotency_key`) → inserted.
+  Client events are advisory; nothing authoritative ever originates
+  client-side.
 - **Audit logs are separate** (`audit_logs`): different sensitivity,
   retention, and access (see tenancy doc). Analytics never absorbs audit.
 
