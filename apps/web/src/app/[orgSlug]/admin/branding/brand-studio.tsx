@@ -4,7 +4,9 @@ import { useMemo, useState, useTransition } from "react";
 import {
   ASSET_POLICY,
   FONT_CATALOG,
+  NOVAKORE_BASE,
   RADIUS_PROFILES,
+  THEME_SCHEMA_VERSION,
   contrastRatio,
   evaluateThemeContrast,
   formatBytes,
@@ -189,7 +191,32 @@ export function BrandStudio({
             <Button
               variant="secondary"
               disabled={pending}
-              onClick={() => run(() => revertBrandDraftAction(orgSlug))}
+              onClick={() =>
+                run(async () => {
+                  const outcome = await revertBrandDraftAction(orgSlug);
+                  if (outcome.ok) {
+                    const reverted = tenantThemeSchema.safeParse(outcome.data);
+                    setDraft(
+                      reverted.success
+                        ? reverted.data
+                        : {
+                            schemaVersion: THEME_SCHEMA_VERSION,
+                            colors: {
+                              accentLight: NOVAKORE_BASE.light.accent,
+                              accentDark: NOVAKORE_BASE.dark.accent,
+                            },
+                            typography: { interfaceFont: "geist" },
+                            shape: { radiusProfile: "balanced" },
+                            modes: {
+                              availability: "both",
+                              defaultMode: "system",
+                            },
+                          },
+                    );
+                  }
+                  return outcome;
+                })
+              }
             >
               Revert to published
             </Button>

@@ -6,6 +6,8 @@ export interface ActionState {
   errors?: Record<string, string>;
   /** Non-blocking advisories (e.g. accent contrast). */
   warnings?: string[];
+  /** Optional structured payload for callers that must sync client state. */
+  data?: unknown;
 }
 
 export const idle: ActionState = { ok: false };

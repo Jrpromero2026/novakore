@@ -169,6 +169,7 @@ export async function revertBrandDraftAction(
   return {
     ok: true,
     message: "Draft reverted to the last published configuration.",
+    data: row?.theme_published ?? null,
   };
 }
 

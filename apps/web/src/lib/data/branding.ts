@@ -19,6 +19,32 @@ export interface OrgBrandContext {
   theme: TenantTheme | null;
 }
 
+/**
+ * Phase 1A column defaults. A branding row still carrying these was never
+ * customized — it must fall back to the NovaKore platform theme, not be
+ * misread as a deliberate tenant palette.
+ */
+const LEGACY_DEFAULT_ACCENTS = new Set(["#4f46e5", "#818cf8"]);
+
+function legacyThemeOrNull(row: {
+  accent_light: string;
+  accent_dark: string;
+  secondary_accent_light?: string | null;
+  secondary_accent_dark?: string | null;
+  font_family?: string;
+  radius_scale?: string;
+}): TenantTheme | null {
+  const untouched =
+    LEGACY_DEFAULT_ACCENTS.has(row.accent_light.toLowerCase()) &&
+    LEGACY_DEFAULT_ACCENTS.has(row.accent_dark.toLowerCase());
+  if (untouched) return null;
+  try {
+    return themeFromLegacyBranding(row);
+  } catch {
+    return null;
+  }
+}
+
 export const getOrgBrandContext = cache(
   async (organizationId: string): Promise<OrgBrandContext> => {
     const supabase = await supabaseServer();
@@ -31,7 +57,8 @@ export const getOrgBrandContext = cache(
     if (!row) return { displayName: null, theme: null };
 
     // Prefer the published versioned theme when present (Phase 1B schema);
-    // fall back to converting the legacy flat columns; fall back to platform.
+    // fall back to converting genuinely customized legacy columns; otherwise
+    // the NovaKore platform theme applies.
     const published = (row as Record<string, unknown>)["theme_published"];
     if (published) {
       const parsed = tenantThemeSchema.safeParse(published);
@@ -39,14 +66,7 @@ export const getOrgBrandContext = cache(
         return { displayName: row.display_name, theme: parsed.data };
     }
 
-    try {
-      return {
-        displayName: row.display_name,
-        theme: themeFromLegacyBranding(row),
-      };
-    } catch {
-      return { displayName: row.display_name, theme: null };
-    }
+    return { displayName: row.display_name, theme: legacyThemeOrNull(row) };
   },
 );
 
@@ -82,12 +102,7 @@ export async function getBrandStudioRow(
     return parsed.success ? parsed.data : null;
   };
 
-  let legacyTheme: TenantTheme | null = null;
-  try {
-    legacyTheme = themeFromLegacyBranding(row);
-  } catch {
-    legacyTheme = null;
-  }
+  const legacyTheme = legacyThemeOrNull(row);
 
   return {
     displayName: row.display_name,
