@@ -124,6 +124,349 @@ export type Database = {
           },
         ];
       };
+      assessment_assignments: {
+        Row: {
+          assessment_id: string;
+          assessment_version_id: string;
+          available_from: string | null;
+          available_until: string | null;
+          completion_effect: string;
+          course_id: string;
+          created_at: string;
+          created_by: string | null;
+          id: string;
+          lesson_id: string;
+          organization_id: string;
+          position: string;
+          required: boolean;
+          status: string;
+          updated_at: string;
+        };
+        Insert: {
+          assessment_id: string;
+          assessment_version_id: string;
+          available_from?: string | null;
+          available_until?: string | null;
+          completion_effect?: string;
+          course_id: string;
+          created_at?: string;
+          created_by?: string | null;
+          id?: string;
+          lesson_id: string;
+          organization_id: string;
+          position?: string;
+          required?: boolean;
+          status?: string;
+          updated_at?: string;
+        };
+        Update: {
+          assessment_id?: string;
+          assessment_version_id?: string;
+          available_from?: string | null;
+          available_until?: string | null;
+          completion_effect?: string;
+          course_id?: string;
+          created_at?: string;
+          created_by?: string | null;
+          id?: string;
+          lesson_id?: string;
+          organization_id?: string;
+          position?: string;
+          required?: boolean;
+          status?: string;
+          updated_at?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "assessment_assignments_assessment_id_organization_id_fkey";
+            columns: ["assessment_id", "organization_id"];
+            isOneToOne: false;
+            referencedRelation: "assessments";
+            referencedColumns: ["id", "organization_id"];
+          },
+          {
+            foreignKeyName: "assessment_assignments_assessment_version_id_fkey";
+            columns: ["assessment_version_id"];
+            isOneToOne: false;
+            referencedRelation: "assessment_versions";
+            referencedColumns: ["id"];
+          },
+          {
+            foreignKeyName: "assessment_assignments_course_id_organization_id_fkey";
+            columns: ["course_id", "organization_id"];
+            isOneToOne: false;
+            referencedRelation: "courses";
+            referencedColumns: ["id", "organization_id"];
+          },
+          {
+            foreignKeyName: "assessment_assignments_lesson_id_organization_id_fkey";
+            columns: ["lesson_id", "organization_id"];
+            isOneToOne: false;
+            referencedRelation: "lessons";
+            referencedColumns: ["id", "organization_id"];
+          },
+        ];
+      };
+      assessment_attempts: {
+        Row: {
+          assessment_id: string;
+          assessment_version_id: string;
+          assignment_id: string;
+          attempt_number: number;
+          course_id: string;
+          created_at: string;
+          enrollment_id: string;
+          expires_at: string | null;
+          finalized_at: string | null;
+          id: string;
+          lesson_id: string;
+          membership_id: string;
+          organization_id: string;
+          passing_percent: number;
+          points_earned: number | null;
+          points_possible: number | null;
+          score_percent: number | null;
+          started_at: string;
+          status: string;
+          submitted_at: string | null;
+          time_limit_minutes: number | null;
+          updated_at: string;
+        };
+        Insert: {
+          assessment_id: string;
+          assessment_version_id: string;
+          assignment_id: string;
+          attempt_number: number;
+          course_id: string;
+          created_at?: string;
+          enrollment_id: string;
+          expires_at?: string | null;
+          finalized_at?: string | null;
+          id?: string;
+          lesson_id: string;
+          membership_id: string;
+          organization_id: string;
+          passing_percent: number;
+          points_earned?: number | null;
+          points_possible?: number | null;
+          score_percent?: number | null;
+          started_at?: string;
+          status?: string;
+          submitted_at?: string | null;
+          time_limit_minutes?: number | null;
+          updated_at?: string;
+        };
+        Update: {
+          assessment_id?: string;
+          assessment_version_id?: string;
+          assignment_id?: string;
+          attempt_number?: number;
+          course_id?: string;
+          created_at?: string;
+          enrollment_id?: string;
+          expires_at?: string | null;
+          finalized_at?: string | null;
+          id?: string;
+          lesson_id?: string;
+          membership_id?: string;
+          organization_id?: string;
+          passing_percent?: number;
+          points_earned?: number | null;
+          points_possible?: number | null;
+          score_percent?: number | null;
+          started_at?: string;
+          status?: string;
+          submitted_at?: string | null;
+          time_limit_minutes?: number | null;
+          updated_at?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "assessment_attempts_assessment_version_id_fkey";
+            columns: ["assessment_version_id"];
+            isOneToOne: false;
+            referencedRelation: "assessment_versions";
+            referencedColumns: ["id"];
+          },
+          {
+            foreignKeyName: "assessment_attempts_assignment_id_organization_id_fkey";
+            columns: ["assignment_id", "organization_id"];
+            isOneToOne: false;
+            referencedRelation: "assessment_assignments";
+            referencedColumns: ["id", "organization_id"];
+          },
+          {
+            foreignKeyName: "assessment_attempts_enrollment_id_organization_id_fkey";
+            columns: ["enrollment_id", "organization_id"];
+            isOneToOne: false;
+            referencedRelation: "enrollments";
+            referencedColumns: ["id", "organization_id"];
+          },
+          {
+            foreignKeyName: "assessment_attempts_membership_id_organization_id_fkey";
+            columns: ["membership_id", "organization_id"];
+            isOneToOne: false;
+            referencedRelation: "organization_memberships";
+            referencedColumns: ["id", "organization_id"];
+          },
+        ];
+      };
+      assessment_items: {
+        Row: {
+          assessment_id: string;
+          created_at: string;
+          data: Json;
+          id: string;
+          item_type: string;
+          organization_id: string;
+          position: string;
+          required: boolean;
+          schema_version: number;
+          updated_at: string;
+        };
+        Insert: {
+          assessment_id: string;
+          created_at?: string;
+          data: Json;
+          id?: string;
+          item_type: string;
+          organization_id: string;
+          position: string;
+          required?: boolean;
+          schema_version: number;
+          updated_at?: string;
+        };
+        Update: {
+          assessment_id?: string;
+          created_at?: string;
+          data?: Json;
+          id?: string;
+          item_type?: string;
+          organization_id?: string;
+          position?: string;
+          required?: boolean;
+          schema_version?: number;
+          updated_at?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "assessment_items_assessment_id_organization_id_fkey";
+            columns: ["assessment_id", "organization_id"];
+            isOneToOne: false;
+            referencedRelation: "assessments";
+            referencedColumns: ["id", "organization_id"];
+          },
+        ];
+      };
+      assessment_responses: {
+        Row: {
+          attempt_id: string;
+          correct: boolean | null;
+          created_at: string;
+          id: string;
+          item_id: string;
+          item_type: string;
+          needs_review: boolean;
+          organization_id: string;
+          points_earned: number | null;
+          points_possible: number | null;
+          response: Json;
+          reviewed_points: number | null;
+          reviewer_feedback: string | null;
+          updated_at: string;
+        };
+        Insert: {
+          attempt_id: string;
+          correct?: boolean | null;
+          created_at?: string;
+          id?: string;
+          item_id: string;
+          item_type: string;
+          needs_review?: boolean;
+          organization_id: string;
+          points_earned?: number | null;
+          points_possible?: number | null;
+          response: Json;
+          reviewed_points?: number | null;
+          reviewer_feedback?: string | null;
+          updated_at?: string;
+        };
+        Update: {
+          attempt_id?: string;
+          correct?: boolean | null;
+          created_at?: string;
+          id?: string;
+          item_id?: string;
+          item_type?: string;
+          needs_review?: boolean;
+          organization_id?: string;
+          points_earned?: number | null;
+          points_possible?: number | null;
+          response?: Json;
+          reviewed_points?: number | null;
+          reviewer_feedback?: string | null;
+          updated_at?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "assessment_responses_attempt_id_organization_id_fkey";
+            columns: ["attempt_id", "organization_id"];
+            isOneToOne: false;
+            referencedRelation: "assessment_attempts";
+            referencedColumns: ["id", "organization_id"];
+          },
+        ];
+      };
+      assessment_reviews: {
+        Row: {
+          attempt_id: string;
+          claimed_at: string | null;
+          completed_at: string | null;
+          created_at: string;
+          decision: string | null;
+          id: string;
+          organization_id: string;
+          overall_feedback: string | null;
+          reviewer_id: string | null;
+          status: string;
+          updated_at: string;
+        };
+        Insert: {
+          attempt_id: string;
+          claimed_at?: string | null;
+          completed_at?: string | null;
+          created_at?: string;
+          decision?: string | null;
+          id?: string;
+          organization_id: string;
+          overall_feedback?: string | null;
+          reviewer_id?: string | null;
+          status?: string;
+          updated_at?: string;
+        };
+        Update: {
+          attempt_id?: string;
+          claimed_at?: string | null;
+          completed_at?: string | null;
+          created_at?: string;
+          decision?: string | null;
+          id?: string;
+          organization_id?: string;
+          overall_feedback?: string | null;
+          reviewer_id?: string | null;
+          status?: string;
+          updated_at?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "assessment_reviews_attempt_id_organization_id_fkey";
+            columns: ["attempt_id", "organization_id"];
+            isOneToOne: false;
+            referencedRelation: "assessment_attempts";
+            referencedColumns: ["id", "organization_id"];
+          },
+        ];
+      };
       assessment_versions: {
         Row: {
           assessment_id: string;
@@ -269,6 +612,137 @@ export type Database = {
             isOneToOne: false;
             referencedRelation: "organizations";
             referencedColumns: ["id"];
+          },
+        ];
+      };
+      certificate_templates: {
+        Row: {
+          academy_id: string | null;
+          archived_at: string | null;
+          created_at: string;
+          created_by: string | null;
+          id: string;
+          name: string;
+          organization_id: string;
+          schema_version: number;
+          status: string;
+          template: Json;
+          updated_at: string;
+        };
+        Insert: {
+          academy_id?: string | null;
+          archived_at?: string | null;
+          created_at?: string;
+          created_by?: string | null;
+          id?: string;
+          name: string;
+          organization_id: string;
+          schema_version?: number;
+          status?: string;
+          template: Json;
+          updated_at?: string;
+        };
+        Update: {
+          academy_id?: string | null;
+          archived_at?: string | null;
+          created_at?: string;
+          created_by?: string | null;
+          id?: string;
+          name?: string;
+          organization_id?: string;
+          schema_version?: number;
+          status?: string;
+          template?: Json;
+          updated_at?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "certificate_templates_academy_id_organization_id_fkey";
+            columns: ["academy_id", "organization_id"];
+            isOneToOne: false;
+            referencedRelation: "academies";
+            referencedColumns: ["id", "organization_id"];
+          },
+          {
+            foreignKeyName: "certificate_templates_organization_id_fkey";
+            columns: ["organization_id"];
+            isOneToOne: false;
+            referencedRelation: "organizations";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
+      certificates: {
+        Row: {
+          assignment_id: string | null;
+          course_id: string | null;
+          created_at: string;
+          created_by: string | null;
+          id: string;
+          learning_path_id: string | null;
+          organization_id: string;
+          source_type: string;
+          status: string;
+          template_id: string;
+          title: string;
+          updated_at: string;
+        };
+        Insert: {
+          assignment_id?: string | null;
+          course_id?: string | null;
+          created_at?: string;
+          created_by?: string | null;
+          id?: string;
+          learning_path_id?: string | null;
+          organization_id: string;
+          source_type: string;
+          status?: string;
+          template_id: string;
+          title: string;
+          updated_at?: string;
+        };
+        Update: {
+          assignment_id?: string | null;
+          course_id?: string | null;
+          created_at?: string;
+          created_by?: string | null;
+          id?: string;
+          learning_path_id?: string | null;
+          organization_id?: string;
+          source_type?: string;
+          status?: string;
+          template_id?: string;
+          title?: string;
+          updated_at?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "certificates_assignment_id_organization_id_fkey";
+            columns: ["assignment_id", "organization_id"];
+            isOneToOne: false;
+            referencedRelation: "assessment_assignments";
+            referencedColumns: ["id", "organization_id"];
+          },
+          {
+            foreignKeyName: "certificates_course_id_organization_id_fkey";
+            columns: ["course_id", "organization_id"];
+            isOneToOne: false;
+            referencedRelation: "courses";
+            referencedColumns: ["id", "organization_id"];
+          },
+          {
+            foreignKeyName: "certificates_learning_path_id_organization_id_fkey";
+            columns: ["learning_path_id", "organization_id"];
+            isOneToOne: false;
+            referencedRelation: "learning_paths";
+            referencedColumns: ["id", "organization_id"];
+          },
+          {
+            foreignKeyName: "certificates_template_id_organization_id_fkey";
+            columns: ["template_id", "organization_id"];
+            isOneToOne: false;
+            referencedRelation: "certificate_templates";
+            referencedColumns: ["id", "organization_id"];
           },
         ];
       };
@@ -525,6 +999,111 @@ export type Database = {
             isOneToOne: false;
             referencedRelation: "course_versions";
             referencedColumns: ["id"];
+          },
+        ];
+      };
+      issued_credentials: {
+        Row: {
+          attempt_id: string | null;
+          certificate_id: string;
+          course_version_id: string | null;
+          created_at: string;
+          enrollment_id: string | null;
+          expires_at: string | null;
+          id: string;
+          issued_at: string;
+          issued_by: string | null;
+          membership_id: string;
+          organization_id: string;
+          recipient_name: string;
+          revocation_reason: string | null;
+          revoked_at: string | null;
+          revoked_by: string | null;
+          status: string;
+          template_snapshot: Json;
+          title: string;
+          updated_at: string;
+          verification_code: string;
+        };
+        Insert: {
+          attempt_id?: string | null;
+          certificate_id: string;
+          course_version_id?: string | null;
+          created_at?: string;
+          enrollment_id?: string | null;
+          expires_at?: string | null;
+          id?: string;
+          issued_at?: string;
+          issued_by?: string | null;
+          membership_id: string;
+          organization_id: string;
+          recipient_name: string;
+          revocation_reason?: string | null;
+          revoked_at?: string | null;
+          revoked_by?: string | null;
+          status?: string;
+          template_snapshot: Json;
+          title: string;
+          updated_at?: string;
+          verification_code: string;
+        };
+        Update: {
+          attempt_id?: string | null;
+          certificate_id?: string;
+          course_version_id?: string | null;
+          created_at?: string;
+          enrollment_id?: string | null;
+          expires_at?: string | null;
+          id?: string;
+          issued_at?: string;
+          issued_by?: string | null;
+          membership_id?: string;
+          organization_id?: string;
+          recipient_name?: string;
+          revocation_reason?: string | null;
+          revoked_at?: string | null;
+          revoked_by?: string | null;
+          status?: string;
+          template_snapshot?: Json;
+          title?: string;
+          updated_at?: string;
+          verification_code?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "issued_credentials_attempt_id_organization_id_fkey";
+            columns: ["attempt_id", "organization_id"];
+            isOneToOne: false;
+            referencedRelation: "assessment_attempts";
+            referencedColumns: ["id", "organization_id"];
+          },
+          {
+            foreignKeyName: "issued_credentials_certificate_id_organization_id_fkey";
+            columns: ["certificate_id", "organization_id"];
+            isOneToOne: false;
+            referencedRelation: "certificates";
+            referencedColumns: ["id", "organization_id"];
+          },
+          {
+            foreignKeyName: "issued_credentials_course_version_id_fkey";
+            columns: ["course_version_id"];
+            isOneToOne: false;
+            referencedRelation: "course_versions";
+            referencedColumns: ["id"];
+          },
+          {
+            foreignKeyName: "issued_credentials_enrollment_id_organization_id_fkey";
+            columns: ["enrollment_id", "organization_id"];
+            isOneToOne: false;
+            referencedRelation: "enrollments";
+            referencedColumns: ["id", "organization_id"];
+          },
+          {
+            foreignKeyName: "issued_credentials_membership_id_organization_id_fkey";
+            columns: ["membership_id", "organization_id"];
+            isOneToOne: false;
+            referencedRelation: "organization_memberships";
+            referencedColumns: ["id", "organization_id"];
           },
         ];
       };
@@ -1536,8 +2115,30 @@ export type Database = {
         Args: { p_organization_id: string };
         Returns: string;
       };
+      assign_assessment: {
+        Args: {
+          p_assessment_id: string;
+          p_completion_effect?: string;
+          p_lesson_id: string;
+          p_required?: boolean;
+        };
+        Returns: string;
+      };
       change_organization_slug: {
         Args: { p_new_slug: string; p_organization_id: string };
+        Returns: undefined;
+      };
+      claim_assessment_review: {
+        Args: { p_attempt_id: string };
+        Returns: undefined;
+      };
+      complete_assessment_review: {
+        Args: {
+          p_attempt_id: string;
+          p_item_feedback: Json;
+          p_item_scores: Json;
+          p_overall_feedback?: string;
+        };
         Returns: undefined;
       };
       create_enrollment: {
@@ -1549,6 +2150,10 @@ export type Database = {
         };
         Returns: string;
       };
+      get_assessment_attempt_payload: {
+        Args: { p_attempt_id: string };
+        Returns: Json;
+      };
       get_member_emails: {
         Args: { p_organization_id: string };
         Returns: {
@@ -1558,6 +2163,14 @@ export type Database = {
       };
       invite_member: {
         Args: { p_email: string; p_organization_id: string };
+        Returns: string;
+      };
+      issue_credential: {
+        Args: {
+          p_certificate_id: string;
+          p_membership_id: string;
+          p_recipient_name?: string;
+        };
         Returns: string;
       };
       override_progress: {
@@ -1573,6 +2186,10 @@ export type Database = {
         Args: { p_name: string; p_owner_email: string; p_slug: string };
         Returns: string;
       };
+      publish_assessment: {
+        Args: { p_assessment_id: string };
+        Returns: string;
+      };
       publish_course: { Args: { p_course_id: string }; Returns: string };
       publish_lesson: { Args: { p_lesson_id: string }; Returns: string };
       record_lesson_progress: {
@@ -1583,6 +2200,18 @@ export type Database = {
         };
         Returns: undefined;
       };
+      revoke_credential: {
+        Args: { p_credential_id: string; p_reason: string };
+        Returns: undefined;
+      };
+      save_assessment_response: {
+        Args: { p_attempt_id: string; p_item_id: string; p_response: Json };
+        Returns: undefined;
+      };
+      set_assessment_assignment_status: {
+        Args: { p_assignment_id: string; p_status: string };
+        Returns: undefined;
+      };
       set_enrollment_status: {
         Args: { p_enrollment_id: string; p_status: string };
         Returns: undefined;
@@ -1591,6 +2220,15 @@ export type Database = {
         Args: { p_membership_id: string; p_status: string };
         Returns: undefined;
       };
+      start_assessment_attempt: {
+        Args: { p_assignment_id: string; p_enrollment_id: string };
+        Returns: string;
+      };
+      submit_assessment_attempt: {
+        Args: { p_attempt_id: string };
+        Returns: undefined;
+      };
+      verify_credential: { Args: { p_code: string }; Returns: Json };
     };
     Enums: {
       [_ in never]: never;

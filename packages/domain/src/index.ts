@@ -5,3 +5,5 @@ export * from "./permissions";
 export * from "./theme";
 export * from "./media";
 export * from "./learning";
+export * from "./assessment";
+export * from "./bfh-contract";

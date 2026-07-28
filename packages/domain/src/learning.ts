@@ -323,6 +323,21 @@ export const EVENT_TYPES = [
   "learning.progress.overridden",
   "content.lesson.published",
   "content.course.published",
+  // Phase 1D — assessment + credential events. Names keep the frozen
+  // <domain>.<subject>.<verb-past> taxonomy (CHECK-enforced at the table).
+  "content.assessment.created",
+  "content.assessment.updated",
+  "content.assessment.published",
+  "assessment.assignment.created",
+  "assessment.attempt.started",
+  "assessment.attempt.submitted",
+  "assessment.attempt.pending_review",
+  "assessment.attempt.passed",
+  "assessment.attempt.failed",
+  "assessment.review.completed",
+  "credential.certificate.issued",
+  "credential.certificate.revoked",
+  "learning.completion.triggered_by_assessment",
 ] as const;
 export type EventType = (typeof EVENT_TYPES)[number];
 
