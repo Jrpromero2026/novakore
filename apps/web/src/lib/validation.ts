@@ -25,13 +25,6 @@ export const slugSchema = z
     error: "Slugs cannot contain consecutive hyphens.",
   });
 
-const hexColor = z
-  .string()
-  .trim()
-  .regex(/^#[0-9a-fA-F]{6}$/, {
-    error: "Use a 6-digit hex color like #6d28d9.",
-  });
-
 export const signInSchema = z.object({
   email: emailSchema,
   password: z.string().min(1, { error: "Enter your password." }),
@@ -47,14 +40,6 @@ export const organizationNameSchema = z.object({
     .trim()
     .min(2, { error: "Name must be at least 2 characters." })
     .max(120),
-});
-
-export const brandingSchema = z.object({
-  display_name: z.union([z.literal(""), z.string().trim().min(2).max(120)]),
-  accent_light: hexColor,
-  accent_dark: hexColor,
-  font_family: z.enum(["system", "geist", "serif"]),
-  radius_scale: z.enum(["small", "medium", "large"]),
 });
 
 export const terminologyEntrySchema = z.object({
@@ -94,28 +79,3 @@ export const roleSchema = z.object({
 // Contrast math lives in @novakore/domain (single implementation shared by
 // the theme resolver, the brand studio, and these legacy helpers).
 export { contrastRatio };
-
-/** Flags accents that will not sustain readable white/black button text. */
-export function accentWarnings(input: {
-  accent_light: string;
-  accent_dark: string;
-}): string[] {
-  const warnings: string[] = [];
-  if (
-    contrastRatio(input.accent_light, "#ffffff") < 3 &&
-    contrastRatio(input.accent_light, "#111111") < 3
-  ) {
-    warnings.push(
-      "Light-mode accent has low contrast with both white and black text.",
-    );
-  }
-  if (
-    contrastRatio(input.accent_dark, "#111111") < 3 &&
-    contrastRatio(input.accent_dark, "#ffffff") < 3
-  ) {
-    warnings.push(
-      "Dark-mode accent has low contrast with both white and black text.",
-    );
-  }
-  return warnings;
-}

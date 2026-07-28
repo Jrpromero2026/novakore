@@ -5,8 +5,6 @@ import { can, requireOrgContext } from "../org-context";
 import { supabaseServer } from "../supabase/server";
 import {
   academySchema,
-  accentWarnings,
-  brandingSchema,
   organizationNameSchema,
   roleSchema,
   terminologyEntrySchema,
@@ -38,49 +36,6 @@ export async function updateOrganizationNameAction(
   if (error) return { ok: false, message: dbErrorMessage(error) };
   revalidatePath(`/${orgSlug}/admin`, "layout");
   return { ok: true, message: "Organization name updated." };
-}
-
-export async function saveBrandingAction(
-  orgSlug: string,
-  _prev: ActionState,
-  formData: FormData,
-): Promise<ActionState> {
-  const ctx = await requireOrgContext(orgSlug);
-  if (!can(ctx, "org.branding.manage")) {
-    return {
-      ok: false,
-      message: "You do not have permission to edit branding.",
-    };
-  }
-  const parsed = brandingSchema.safeParse({
-    display_name: formData.get("display_name") ?? "",
-    accent_light: formData.get("accent_light"),
-    accent_dark: formData.get("accent_dark"),
-    font_family: formData.get("font_family"),
-    radius_scale: formData.get("radius_scale"),
-  });
-  if (!parsed.success) return fieldErrors(parsed.error);
-
-  const supabase = await supabaseServer();
-  const { error } = await supabase
-    .from("organization_branding")
-    .update({
-      display_name:
-        parsed.data.display_name === "" ? null : parsed.data.display_name,
-      accent_light: parsed.data.accent_light.toLowerCase(),
-      accent_dark: parsed.data.accent_dark.toLowerCase(),
-      font_family: parsed.data.font_family,
-      radius_scale: parsed.data.radius_scale,
-    })
-    .eq("organization_id", ctx.organization.id);
-  if (error) return { ok: false, message: dbErrorMessage(error) };
-
-  revalidatePath(`/${orgSlug}/admin`, "layout");
-  return {
-    ok: true,
-    message: "Branding saved.",
-    warnings: accentWarnings(parsed.data),
-  };
 }
 
 export async function saveTerminologyAction(
