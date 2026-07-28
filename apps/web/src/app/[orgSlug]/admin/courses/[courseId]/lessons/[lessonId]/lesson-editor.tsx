@@ -2,7 +2,6 @@
 
 import { useMemo, useState, useTransition } from "react";
 import {
-  BLOCK_TYPES,
   CURRENT_SCHEMA_VERSION,
   contentBlockSchema,
   type BlockType,
