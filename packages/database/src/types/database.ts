@@ -493,6 +493,13 @@ export type Database = {
         Args: { p_new_slug: string; p_organization_id: string };
         Returns: undefined;
       };
+      get_member_emails: {
+        Args: { p_organization_id: string };
+        Returns: {
+          membership_id: string;
+          email: string;
+        }[];
+      };
       invite_member: {
         Args: { p_email: string; p_organization_id: string };
         Returns: string;
