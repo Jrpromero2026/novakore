@@ -32,6 +32,7 @@ if (!configured) {
 // Seeded fixtures (supabase/seed.sql) — deterministic ids.
 const ORG_A = "00000000-0000-4000-8000-000000000101"; // Alpha Learning Collective
 const ORG_B = "00000000-0000-4000-8000-000000000102"; // Built For Her (Dev Tenant)
+const ORG_GAMMA = "00000000-0000-4000-8000-000000000103"; // fallback-branding fixture (alpha.owner also owns it)
 const ACADEMY_A = "00000000-0000-4000-8000-000000000201";
 const DEV_PASSWORD = "NovaKore-dev-password-1"; // dev-only seed password
 
@@ -97,7 +98,7 @@ describe.skipIf(!configured)(
         .from("organizations")
         .select("id, slug");
       expect(error).toBeNull();
-      expect(orgs?.map((o) => o.id)).toEqual([ORG_A]);
+      expect(orgs?.map((o) => o.id).sort()).toEqual([ORG_A, ORG_GAMMA]);
 
       const { data: bOrgs } = await bfhOwner.from("organizations").select("id");
       expect(bOrgs?.map((o) => o.id)).toEqual([ORG_B]);
@@ -446,7 +447,7 @@ describe.skipIf(!configured)(
         .select("id")
         .order("id");
       expect(error).toBeNull();
-      expect(orgs?.map((o) => o.id)).toEqual([ORG_A, ORG_B]);
+      expect(orgs?.map((o) => o.id)).toEqual([ORG_A, ORG_B, ORG_GAMMA]);
 
       // but platform admins are not org members: memberships stay invisible
       const { data: memberships } = await platformAdmin

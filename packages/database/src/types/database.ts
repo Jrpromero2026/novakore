@@ -109,41 +109,153 @@ export type Database = {
           },
         ];
       };
+      media_assets: {
+        Row: {
+          academy_id: string | null;
+          alt_text: string | null;
+          archived_at: string | null;
+          asset_kind: string;
+          byte_size: number;
+          checksum: string | null;
+          created_at: string;
+          created_by: string | null;
+          height: number | null;
+          id: string;
+          mime_type: string;
+          organization_id: string | null;
+          original_filename: string;
+          owner_user_id: string | null;
+          replaced_by_asset_id: string | null;
+          status: string;
+          storage_bucket: string;
+          storage_path: string;
+          updated_at: string;
+          width: number | null;
+        };
+        Insert: {
+          academy_id?: string | null;
+          alt_text?: string | null;
+          archived_at?: string | null;
+          asset_kind: string;
+          byte_size: number;
+          checksum?: string | null;
+          created_at?: string;
+          created_by?: string | null;
+          height?: number | null;
+          id?: string;
+          mime_type: string;
+          organization_id?: string | null;
+          original_filename: string;
+          owner_user_id?: string | null;
+          replaced_by_asset_id?: string | null;
+          status?: string;
+          storage_bucket: string;
+          storage_path: string;
+          updated_at?: string;
+          width?: number | null;
+        };
+        Update: {
+          academy_id?: string | null;
+          alt_text?: string | null;
+          archived_at?: string | null;
+          asset_kind?: string;
+          byte_size?: number;
+          checksum?: string | null;
+          created_at?: string;
+          created_by?: string | null;
+          height?: number | null;
+          id?: string;
+          mime_type?: string;
+          organization_id?: string | null;
+          original_filename?: string;
+          owner_user_id?: string | null;
+          replaced_by_asset_id?: string | null;
+          status?: string;
+          storage_bucket?: string;
+          storage_path?: string;
+          updated_at?: string;
+          width?: number | null;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "media_assets_academy_id_organization_id_fkey";
+            columns: ["academy_id", "organization_id"];
+            isOneToOne: false;
+            referencedRelation: "academies";
+            referencedColumns: ["id", "organization_id"];
+          },
+          {
+            foreignKeyName: "media_assets_organization_id_fkey";
+            columns: ["organization_id"];
+            isOneToOne: false;
+            referencedRelation: "organizations";
+            referencedColumns: ["id"];
+          },
+          {
+            foreignKeyName: "media_assets_replaced_by_asset_id_fkey";
+            columns: ["replaced_by_asset_id"];
+            isOneToOne: false;
+            referencedRelation: "media_assets";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
       organization_branding: {
         Row: {
           accent_dark: string;
           accent_light: string;
           display_name: string | null;
+          draft_updated_at: string | null;
+          draft_updated_by: string | null;
           font_family: string;
           logo_path: string | null;
           organization_id: string;
+          published_at: string | null;
+          published_by: string | null;
           radius_scale: string;
           secondary_accent_dark: string | null;
           secondary_accent_light: string | null;
+          theme_draft: Json | null;
+          theme_published: Json | null;
+          theme_schema_version: number;
           updated_at: string;
         };
         Insert: {
           accent_dark?: string;
           accent_light?: string;
           display_name?: string | null;
+          draft_updated_at?: string | null;
+          draft_updated_by?: string | null;
           font_family?: string;
           logo_path?: string | null;
           organization_id: string;
+          published_at?: string | null;
+          published_by?: string | null;
           radius_scale?: string;
           secondary_accent_dark?: string | null;
           secondary_accent_light?: string | null;
+          theme_draft?: Json | null;
+          theme_published?: Json | null;
+          theme_schema_version?: number;
           updated_at?: string;
         };
         Update: {
           accent_dark?: string;
           accent_light?: string;
           display_name?: string | null;
+          draft_updated_at?: string | null;
+          draft_updated_by?: string | null;
           font_family?: string;
           logo_path?: string | null;
           organization_id?: string;
+          published_at?: string | null;
+          published_by?: string | null;
           radius_scale?: string;
           secondary_accent_dark?: string | null;
           secondary_accent_light?: string | null;
+          theme_draft?: Json | null;
+          theme_published?: Json | null;
+          theme_schema_version?: number;
           updated_at?: string;
         };
         Relationships: [

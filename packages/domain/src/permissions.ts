@@ -11,6 +11,7 @@ export const PERMISSIONS = [
   "org.members.manage",
   "org.roles.manage",
   "org.branding.manage",
+  "org.branding.publish",
   "org.terminology.manage",
   "academy.manage",
   "content.view_draft",

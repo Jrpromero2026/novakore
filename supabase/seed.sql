@@ -176,3 +176,56 @@ insert into public.organization_terminology (organization_id, term_key, singular
   ('00000000-0000-4000-8000-000000000102', 'assessment',    'Evaluation', 'Evaluations', null),
   ('00000000-0000-4000-8000-000000000102', 'certificate',   'Credential', 'Credentials', null)
 on conflict (organization_id, term_key) do nothing;
+
+-- ---------------------------------------------------------------------------
+-- Phase 1B — published themes (versioned schema) for the seeded tenants,
+-- and a fallback organization with deliberately incomplete branding.
+-- Invalid theme values are exercised in tests only — never seeded.
+-- ---------------------------------------------------------------------------
+update public.organization_branding
+set theme_published = '{"schemaVersion":1,"colors":{"accentLight":"#6d28d9","accentDark":"#a78bfa"},"typography":{"interfaceFont":"system"},"shape":{"radiusProfile":"balanced"},"modes":{"availability":"both","defaultMode":"system"}}'::jsonb,
+    published_at = now()
+where organization_id = '00000000-0000-4000-8000-000000000101'
+  and theme_published is null;
+
+update public.organization_branding
+set theme_published = '{"schemaVersion":1,"colors":{"accentLight":"#be185d","accentDark":"#f472b6"},"typography":{"interfaceFont":"geist"},"shape":{"radiusProfile":"soft"},"modes":{"availability":"both","defaultMode":"system"}}'::jsonb,
+    published_at = now()
+where organization_id = '00000000-0000-4000-8000-000000000102'
+  and theme_published is null;
+
+-- Gamma Research Institute: fallback-behavior fixture — default branding row,
+-- no published theme, no assets. Alpha's owner also owns this org.
+insert into public.organizations (id, name, slug, status) values
+  ('00000000-0000-4000-8000-000000000103', 'Gamma Research Institute', 'gamma-research', 'active')
+on conflict (id) do nothing;
+
+insert into public.organization_settings (organization_id)
+values ('00000000-0000-4000-8000-000000000103')
+on conflict (organization_id) do nothing;
+
+insert into public.organization_branding (organization_id)
+values ('00000000-0000-4000-8000-000000000103')
+on conflict (organization_id) do nothing;
+
+do $$
+begin
+  if not exists (select 1 from public.organization_roles
+                 where organization_id = '00000000-0000-4000-8000-000000000103') then
+    perform app.create_system_roles('00000000-0000-4000-8000-000000000103');
+  end if;
+end;
+$$;
+
+insert into public.organization_memberships (id, organization_id, user_id, status, accepted_at)
+values ('00000000-0000-4000-8000-000000000315', '00000000-0000-4000-8000-000000000103',
+        '00000000-0000-4000-8000-000000000011', 'active', now())
+on conflict (id) do nothing;
+
+insert into public.organization_member_roles (id, organization_id, membership_id, role_id)
+select '00000000-0000-4000-8000-000000000421', '00000000-0000-4000-8000-000000000103',
+       '00000000-0000-4000-8000-000000000315', r.id
+from public.organization_roles r
+where r.organization_id = '00000000-0000-4000-8000-000000000103'
+  and r.key = 'organization_owner' and r.is_system
+on conflict (id) do nothing;
