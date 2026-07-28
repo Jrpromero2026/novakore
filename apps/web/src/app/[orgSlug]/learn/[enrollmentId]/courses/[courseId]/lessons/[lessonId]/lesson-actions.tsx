@@ -12,6 +12,7 @@ export function LessonActions({
   courseId,
   lessonId,
   completed,
+  assessmentGated = false,
   backHref,
 }: {
   orgSlug: string;
@@ -19,6 +20,8 @@ export function LessonActions({
   courseId: string;
   lessonId: string;
   completed: boolean;
+  /** A required assessment owns completion — hide self-complete. */
+  assessmentGated?: boolean;
   backHref: string;
 }) {
   const [state, setState] = useState<ActionState>(idle);
@@ -51,6 +54,10 @@ export function LessonActions({
       <div className="ml-auto">
         {completed ? (
           <p className="text-body-sm font-medium text-success">Completed ✓</p>
+        ) : assessmentGated ? (
+          <p className="text-body-sm text-text-muted">
+            Pass the assessment above to complete this lesson.
+          </p>
         ) : (
           <Button
             disabled={pending}

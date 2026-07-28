@@ -3,6 +3,7 @@ import Link from "next/link";
 import { requireOrgContext } from "@/lib/org-context";
 import { requireUser } from "@/lib/auth";
 import { getMyEnrollments } from "@/lib/data/learning";
+import { getMyCredentials } from "@/lib/data/assessments";
 import { getTerminology } from "@/lib/terminology";
 import {
   Badge,
@@ -22,7 +23,10 @@ export default async function LearnerHomePage({
   const ctx = await requireOrgContext(orgSlug);
   const user = await requireUser();
   const { term } = await getTerminology(ctx.organization.id);
-  const enrollments = await getMyEnrollments(ctx.organization.id, user.id);
+  const [enrollments, credentials] = await Promise.all([
+    getMyEnrollments(ctx.organization.id, user.id),
+    getMyCredentials(ctx.organization.id, user.id),
+  ]);
 
   return (
     <div className="space-y-6">
@@ -76,6 +80,53 @@ export default async function LearnerHomePage({
           />
         )}
       </Card>
+
+      {credentials.length > 0 ? (
+        <Card>
+          <CardHeader
+            title={`Your ${term("certificate").plural.toLowerCase()}`}
+            description="Each credential has a public verification link you can share."
+          />
+          <ul className="divide-y divide-border-subtle">
+            {credentials.map((cred) => (
+              <li
+                key={cred.id}
+                className="flex flex-wrap items-center gap-3 px-5 py-4"
+              >
+                <span className="min-w-0 flex-1">
+                  <span className="block truncate text-body font-medium text-text-primary">
+                    {cred.title}
+                  </span>
+                  <span className="text-caption text-text-muted">
+                    Issued {new Date(cred.issuedAt).toLocaleDateString()} to{" "}
+                    {cred.recipientName}
+                    {cred.expiresAt
+                      ? ` · valid until ${new Date(cred.expiresAt).toLocaleDateString()}`
+                      : ""}
+                  </span>
+                </span>
+                <Badge
+                  tone={
+                    cred.status === "active"
+                      ? "positive"
+                      : cred.status === "revoked"
+                        ? "danger"
+                        : "warning"
+                  }
+                >
+                  {cred.status}
+                </Badge>
+                <Link
+                  href={`/verify/${cred.verificationCode}`}
+                  className="font-mono text-caption text-accent hover:text-accent-hover"
+                >
+                  {cred.verificationCode}
+                </Link>
+              </li>
+            ))}
+          </ul>
+        </Card>
+      ) : null}
     </div>
   );
 }

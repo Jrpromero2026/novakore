@@ -717,7 +717,7 @@ describe.skipIf(!configured)(
     test("audit logs remain append-only even for owners", async () => {
       const { error: updateError } = await alphaOwner
         .from("audit_logs")
-        .update({ entity_type: "tampered" })
+        .update({ action: "tampered" })
         .eq("organization_id", ORG_A);
       expect(updateError).not.toBeNull();
       const { error: deleteError } = await alphaOwner

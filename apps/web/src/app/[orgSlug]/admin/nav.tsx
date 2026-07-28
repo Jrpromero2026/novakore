@@ -35,6 +35,21 @@ export function AdminNav({
       needsAny: ["content.view_draft"],
     },
     {
+      href: `${base}/assessments`,
+      label: "Assessments",
+      needsAny: ["assessment.author", "assessment.publish"],
+    },
+    {
+      href: `${base}/reviews`,
+      label: "Reviews",
+      needsAny: ["assessment.grade"],
+    },
+    {
+      href: `${base}/credentials`,
+      label: "Credentials",
+      needsAny: ["certificates.manage"],
+    },
+    {
       href: `${base}/enrollments`,
       label: "Enrollments",
       needsAny: ["enrollment.manage"],

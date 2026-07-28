@@ -4,9 +4,10 @@ import { notFound } from "next/navigation";
 import { requireOrgContext } from "@/lib/org-context";
 import { requireUser } from "@/lib/auth";
 import { getEnrolledCourse, parseFrozenBlocks } from "@/lib/data/learning";
+import { getLessonAssessments } from "@/lib/data/assessments";
 import { getTerminology } from "@/lib/terminology";
 import { supabaseServer } from "@/lib/supabase/server";
-import { Badge } from "@/components/ui/primitives";
+import { Badge, Card, CardHeader } from "@/components/ui/primitives";
 import { Alert } from "@/components/ui/feedback";
 import { BlockList } from "@/components/learning/block-renderer";
 import { LessonActions } from "./lesson-actions";
@@ -70,6 +71,15 @@ export default async function LessonViewerPage({
   }
   const blocks = parseFrozenBlocks(lessonVersion.blocks);
   const completed = access.state === "completed";
+  const assessments = await getLessonAssessments(
+    ctx.organization.id,
+    lessonId,
+    enrollmentId,
+  );
+  const requiredAssessmentPending = assessments.some(
+    (entry) =>
+      entry.required && !entry.attempts.some((a) => a.status === "passed"),
+  );
 
   return (
     <article className="space-y-6">
@@ -105,12 +115,80 @@ export default async function LessonViewerPage({
         </Alert>
       )}
 
+      {assessments.length > 0 ? (
+        <Card>
+          <CardHeader
+            title={term("assessment").plural}
+            description={
+              requiredAssessmentPending
+                ? `Passing is required to complete this ${term("lesson").singular.toLowerCase()}.`
+                : undefined
+            }
+          />
+          <ul className="divide-y divide-border-subtle">
+            {assessments.map((entry) => {
+              const latest = entry.attempts.at(-1);
+              const passed = entry.attempts.some((a) => a.status === "passed");
+              const open = entry.attempts.find(
+                (a) => a.status === "started" || a.status === "pending_review",
+              );
+              return (
+                <li key={entry.assignmentId}>
+                  <Link
+                    href={`/${orgSlug}/learn/${enrollmentId}/assessments/${entry.assignmentId}`}
+                    className="flex items-center gap-3 px-5 py-3.5 transition-colors hover:bg-surface-interactive"
+                  >
+                    <span className="min-w-0 flex-1">
+                      <span className="block truncate text-body font-medium text-text-primary">
+                        {entry.assessmentTitle}
+                      </span>
+                      <span className="text-caption text-text-muted">
+                        {entry.attempts.length === 0
+                          ? "Not attempted yet"
+                          : `Attempt ${latest!.attemptNumber}${
+                              latest!.scorePercent !== null
+                                ? ` · ${latest!.scorePercent}%`
+                                : ""
+                            }`}
+                      </span>
+                    </span>
+                    {entry.required ? (
+                      <Badge tone="accent">required</Badge>
+                    ) : null}
+                    <Badge
+                      tone={
+                        passed
+                          ? "positive"
+                          : open?.status === "pending_review"
+                            ? "warning"
+                            : latest?.status === "failed"
+                              ? "danger"
+                              : "neutral"
+                      }
+                    >
+                      {passed
+                        ? "Passed"
+                        : open
+                          ? open.status.replace(/_/g, " ")
+                          : latest
+                            ? latest.status.replace(/_/g, " ")
+                            : "Available"}
+                    </Badge>
+                  </Link>
+                </li>
+              );
+            })}
+          </ul>
+        </Card>
+      ) : null}
+
       <LessonActions
         orgSlug={orgSlug}
         enrollmentId={enrollmentId}
         courseId={courseId}
         lessonId={lessonId}
         completed={completed}
+        assessmentGated={requiredAssessmentPending}
         backHref={`/${orgSlug}/learn/${enrollmentId}/courses/${courseId}`}
       />
     </article>
