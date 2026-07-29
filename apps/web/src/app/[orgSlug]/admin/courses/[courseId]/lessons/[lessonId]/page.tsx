@@ -126,6 +126,7 @@ export default async function LessonEditorPage({
         lessonId={lessonId}
         initialBlocks={draftBlocks}
         canPublish={can(ctx, "content.publish")}
+        canManageLibrary={can(ctx, "library.manage")}
         published={
           published
             ? {

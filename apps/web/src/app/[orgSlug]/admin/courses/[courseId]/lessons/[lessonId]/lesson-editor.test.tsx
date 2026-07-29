@@ -7,6 +7,10 @@ vi.mock("@/lib/actions/learning", () => ({
   publishLessonAction: vi.fn(async () => ({ ok: true })),
   saveLessonBlocksAction: vi.fn(async () => ({ ok: true })),
 }));
+vi.mock("@/lib/actions/studio", () => ({
+  requestReviewAction: vi.fn(async () => ({ ok: true })),
+  saveBlockToLibraryAction: vi.fn(async () => ({ ok: true })),
+}));
 
 import { LessonEditor } from "./lesson-editor";
 

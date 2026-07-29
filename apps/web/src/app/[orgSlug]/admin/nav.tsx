@@ -25,6 +25,11 @@ export function AdminNav({
   const items: NavItem[] = [
     { href: base, label: "Overview" },
     {
+      href: `${base}/studio`,
+      label: "Studio",
+      needsAny: ["content.view_draft"],
+    },
+    {
       href: `${base}/learning`,
       label: "Learning",
       needsAny: ["paths.manage"],

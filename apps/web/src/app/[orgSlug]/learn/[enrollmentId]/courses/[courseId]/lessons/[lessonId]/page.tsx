@@ -5,6 +5,7 @@ import { requireOrgContext } from "@/lib/org-context";
 import { requireUser } from "@/lib/auth";
 import { getEnrolledCourse, parseFrozenBlocks } from "@/lib/data/learning";
 import { getLessonAssessments } from "@/lib/data/assessments";
+import { resolveMediaUrls } from "@/lib/data/media";
 import { getTerminology } from "@/lib/terminology";
 import { supabaseServer } from "@/lib/supabase/server";
 import { Badge, Card, CardHeader } from "@/components/ui/primitives";
@@ -70,6 +71,7 @@ export default async function LessonViewerPage({
     );
   }
   const blocks = parseFrozenBlocks(lessonVersion.blocks);
+  const mediaUrls = await resolveMediaUrls(blocks);
   const completed = access.state === "completed";
   const assessments = await getLessonAssessments(
     ctx.organization.id,
@@ -108,7 +110,7 @@ export default async function LessonViewerPage({
       </header>
 
       {blocks.length > 0 ? (
-        <BlockList blocks={blocks} />
+        <BlockList blocks={blocks} mediaUrls={mediaUrls} />
       ) : (
         <Alert tone="info" title="Empty lesson">
           This {term("lesson").singular.toLowerCase()} has no content yet.

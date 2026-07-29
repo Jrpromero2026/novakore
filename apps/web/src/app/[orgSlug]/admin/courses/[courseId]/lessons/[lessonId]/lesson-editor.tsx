@@ -11,6 +11,10 @@ import {
   publishLessonAction,
   saveLessonBlocksAction,
 } from "@/lib/actions/learning";
+import {
+  requestReviewAction,
+  saveBlockToLibraryAction,
+} from "@/lib/actions/studio";
 import { idle, type ActionState } from "@/lib/actions/types";
 import {
   ActionBanner,
@@ -43,11 +47,23 @@ const ADDABLE_TYPES: { type: BlockType; label: string }[] = [
   { type: "rich_text", label: "Text" },
   { type: "heading", label: "Heading" },
   { type: "callout", label: "Callout" },
+  { type: "quote", label: "Quote" },
   { type: "checklist", label: "Checklist" },
+  { type: "action_step", label: "Action step" },
+  { type: "reflection", label: "Reflection" },
+  { type: "accordion", label: "Accordion" },
+  { type: "tabs", label: "Tabs" },
+  { type: "timeline", label: "Timeline" },
+  { type: "comparison", label: "Comparison" },
+  { type: "flashcards", label: "Flashcards" },
+  { type: "knowledge_check", label: "Knowledge check" },
+  { type: "scenario", label: "Scenario" },
   { type: "video", label: "Video link" },
   { type: "file_link", label: "Resource link" },
   { type: "divider", label: "Divider" },
 ];
+
+const uid = () => crypto.randomUUID();
 
 function defaultData(type: BlockType): Record<string, unknown> {
   switch (type) {
@@ -57,8 +73,54 @@ function defaultData(type: BlockType): Record<string, unknown> {
       return { text: "Section heading", level: 2 };
     case "callout":
       return { tone: "info", body: "Something worth highlighting." };
+    case "quote":
+      return { text: "A memorable quotation." };
     case "checklist":
-      return { items: [{ id: crypto.randomUUID(), text: "First step" }] };
+      return { items: [{ id: uid(), text: "First step" }] };
+    case "action_step":
+      return { text: "Do this next." };
+    case "reflection":
+      return { prompt: "What stood out to you, and why?" };
+    case "accordion":
+      return { items: [{ id: uid(), title: "Section", body: "Details." }] };
+    case "tabs":
+      return {
+        tabs: [
+          { id: uid(), title: "Tab 1", body: "First tab." },
+          { id: uid(), title: "Tab 2", body: "Second tab." },
+        ],
+      };
+    case "timeline":
+      return {
+        events: [
+          { id: uid(), label: "First", description: "What happened." },
+          { id: uid(), label: "Then", description: "What followed." },
+        ],
+      };
+    case "comparison":
+      return {
+        leftTitle: "Option A",
+        rightTitle: "Option B",
+        rows: [{ id: uid(), left: "Point", right: "Counterpoint" }],
+      };
+    case "flashcards":
+      return { cards: [{ id: uid(), front: "Term", back: "Definition" }] };
+    case "knowledge_check": {
+      const correct = uid();
+      return {
+        prompt: "Which statement is correct?",
+        options: [
+          { id: correct, text: "The correct answer" },
+          { id: uid(), text: "A distractor" },
+        ],
+        correctOptionId: correct,
+      };
+    }
+    case "scenario":
+      return {
+        intro: "Set the scene here.",
+        steps: [{ id: uid(), situation: "The first decision point." }],
+      };
     case "video":
       return { url: "https://", title: "Video title" };
     case "file_link":
@@ -80,6 +142,7 @@ export function LessonEditor({
   lessonId,
   initialBlocks,
   canPublish,
+  canManageLibrary = false,
   published,
   comparison,
 }: {
@@ -87,6 +150,7 @@ export function LessonEditor({
   lessonId: string;
   initialBlocks: ContentBlock[];
   canPublish: boolean;
+  canManageLibrary?: boolean;
   published: { versionNumber: number; publishedAt: string } | null;
   comparison: {
     added: number;
@@ -192,6 +256,19 @@ export function LessonEditor({
             </Badge>
           ) : null}
           <div className="ml-auto flex items-center gap-2">
+            <Button
+              variant="ghost"
+              disabled={pending}
+              onClick={() =>
+                startTransition(async () =>
+                  setResult(
+                    await requestReviewAction(orgSlug, "lesson", lessonId, ""),
+                  ),
+                )
+              }
+            >
+              Request review
+            </Button>
             <Button
               variant="secondary"
               onClick={() => setShowPreview((v) => !v)}
@@ -305,6 +382,29 @@ export function LessonEditor({
                     >
                       ⧉
                     </Button>
+                    {canManageLibrary && check.ok ? (
+                      <Button
+                        variant="ghost"
+                        className="px-2 text-xs"
+                        aria-label="Save block to library"
+                        title="Save to reusable library"
+                        onClick={() =>
+                          startTransition(async () =>
+                            setResult(
+                              await saveBlockToLibraryAction(orgSlug, {
+                                title: `${block.type.replace(/_/g, " ")} block`,
+                                blockType: block.type,
+                                schemaVersion: block.schemaVersion,
+                                data: block.data,
+                                tags: [],
+                              }),
+                            ),
+                          )
+                        }
+                      >
+                        ★
+                      </Button>
+                    ) : null}
                     <Button
                       variant="danger"
                       className="px-2 text-xs"
@@ -387,10 +487,7 @@ function BlockFields({
   block: DraftBlock;
   onChange: (patch: Record<string, unknown>) => void;
 }) {
-  const data = block.data as Record<
-    string,
-    string | number | boolean | { id: string; text: string }[]
-  >;
+  const data = block.data as Record<string, unknown>;
   switch (block.type) {
     case "rich_text":
       return (
@@ -476,6 +573,324 @@ function BlockFields({
         />
       );
     }
+    case "quote":
+      return (
+        <div className="space-y-2">
+          <Textarea
+            aria-label="Quote text"
+            rows={2}
+            value={String(data.text ?? "")}
+            onChange={(e) => onChange({ text: e.target.value })}
+          />
+          <Input
+            aria-label="Attribution (optional)"
+            placeholder="Attribution (optional)"
+            value={String(data.attribution ?? "")}
+            onChange={(e) =>
+              onChange({
+                attribution: e.target.value === "" ? undefined : e.target.value,
+              })
+            }
+          />
+        </div>
+      );
+    case "action_step":
+      return (
+        <div className="space-y-2">
+          <Input
+            aria-label="Action step"
+            value={String(data.text ?? "")}
+            onChange={(e) => onChange({ text: e.target.value })}
+          />
+          <Textarea
+            aria-label="Note (optional)"
+            placeholder="Note (optional)"
+            rows={2}
+            value={String(data.note ?? "")}
+            onChange={(e) =>
+              onChange({
+                note: e.target.value === "" ? undefined : e.target.value,
+              })
+            }
+          />
+        </div>
+      );
+    case "reflection":
+      return (
+        <div className="space-y-2">
+          <Textarea
+            aria-label="Reflection prompt"
+            rows={2}
+            value={String(data.prompt ?? "")}
+            onChange={(e) => onChange({ prompt: e.target.value })}
+          />
+          <Textarea
+            aria-label="Guidance (optional)"
+            placeholder="Guidance (optional)"
+            rows={2}
+            value={String(data.guidance ?? "")}
+            onChange={(e) =>
+              onChange({
+                guidance: e.target.value === "" ? undefined : e.target.value,
+              })
+            }
+          />
+        </div>
+      );
+    case "flashcards": {
+      const cards = (data.cards ?? []) as {
+        id: string;
+        front: string;
+        back: string;
+      }[];
+      return (
+        <PairListEditor
+          label="Flashcards (front | back per line)"
+          leftKey="front"
+          rightKey="back"
+          rows={cards.map((c) => ({ id: c.id, left: c.front, right: c.back }))}
+          onChange={(rows) =>
+            onChange({
+              cards: rows.map((r) => ({
+                id: r.id,
+                front: r.left,
+                back: r.right,
+              })),
+            })
+          }
+        />
+      );
+    }
+    case "comparison": {
+      const rows = (data.rows ?? []) as {
+        id: string;
+        left: string;
+        right: string;
+      }[];
+      return (
+        <div className="space-y-2">
+          <div className="grid gap-2 sm:grid-cols-2">
+            <Input
+              aria-label="Left column title"
+              value={String(data.leftTitle ?? "")}
+              onChange={(e) => onChange({ leftTitle: e.target.value })}
+            />
+            <Input
+              aria-label="Right column title"
+              value={String(data.rightTitle ?? "")}
+              onChange={(e) => onChange({ rightTitle: e.target.value })}
+            />
+          </div>
+          <PairListEditor
+            label="Rows (left | right per line)"
+            leftKey="left"
+            rightKey="right"
+            rows={rows.map((r) => ({ id: r.id, left: r.left, right: r.right }))}
+            onChange={(next) => onChange({ rows: next })}
+          />
+        </div>
+      );
+    }
+    case "accordion": {
+      const items = (data.items ?? []) as {
+        id: string;
+        title: string;
+        body: string;
+      }[];
+      return (
+        <PairListEditor
+          label="Sections (title | body per line)"
+          leftKey="title"
+          rightKey="body"
+          rows={items.map((i) => ({ id: i.id, left: i.title, right: i.body }))}
+          onChange={(rows) =>
+            onChange({
+              items: rows.map((r) => ({
+                id: r.id,
+                title: r.left,
+                body: r.right,
+              })),
+            })
+          }
+        />
+      );
+    }
+    case "tabs": {
+      const tabs = (data.tabs ?? []) as {
+        id: string;
+        title: string;
+        body: string;
+      }[];
+      return (
+        <PairListEditor
+          label="Tabs (title | body per line, ≥2)"
+          leftKey="title"
+          rightKey="body"
+          rows={tabs.map((t) => ({ id: t.id, left: t.title, right: t.body }))}
+          onChange={(rows) =>
+            onChange({
+              tabs: rows.map((r) => ({
+                id: r.id,
+                title: r.left,
+                body: r.right,
+              })),
+            })
+          }
+        />
+      );
+    }
+    case "timeline": {
+      const events = (data.events ?? []) as {
+        id: string;
+        label: string;
+        description: string;
+      }[];
+      return (
+        <PairListEditor
+          label="Events (label | description per line, ≥2)"
+          leftKey="label"
+          rightKey="description"
+          rows={events.map((ev) => ({
+            id: ev.id,
+            left: ev.label,
+            right: ev.description,
+          }))}
+          onChange={(rows) =>
+            onChange({
+              events: rows.map((r) => ({
+                id: r.id,
+                label: r.left,
+                description: r.right,
+              })),
+            })
+          }
+        />
+      );
+    }
+    case "knowledge_check": {
+      const options = (data.options ?? []) as { id: string; text: string }[];
+      const correctId = String(data.correctOptionId ?? "");
+      return (
+        <div className="space-y-2">
+          <Textarea
+            aria-label="Knowledge check prompt"
+            rows={2}
+            value={String(data.prompt ?? "")}
+            onChange={(e) => onChange({ prompt: e.target.value })}
+          />
+          <ul className="space-y-1.5">
+            {options.map((option, oi) => (
+              <li key={option.id} className="flex items-center gap-2">
+                <input
+                  type="radio"
+                  name={`kc-${String(data.__id ?? "")}-${oi}`}
+                  aria-label={`Option ${oi + 1} is correct`}
+                  checked={option.id === correctId}
+                  onChange={() => onChange({ correctOptionId: option.id })}
+                />
+                <Input
+                  aria-label={`Option ${oi + 1}`}
+                  value={option.text}
+                  onChange={(e) =>
+                    onChange({
+                      options: options.map((o) =>
+                        o.id === option.id ? { ...o, text: e.target.value } : o,
+                      ),
+                    })
+                  }
+                />
+                <Button
+                  variant="ghost"
+                  className="px-2 text-xs"
+                  aria-label={`Remove option ${oi + 1}`}
+                  disabled={options.length <= 2}
+                  onClick={() =>
+                    onChange({
+                      options: options.filter((o) => o.id !== option.id),
+                    })
+                  }
+                >
+                  ✕
+                </Button>
+              </li>
+            ))}
+          </ul>
+          <Button
+            variant="ghost"
+            className="text-xs"
+            disabled={options.length >= 6}
+            onClick={() =>
+              onChange({
+                options: [
+                  ...options,
+                  { id: crypto.randomUUID(), text: "New option" },
+                ],
+              })
+            }
+          >
+            + Option
+          </Button>
+          <Textarea
+            aria-label="Explanation (optional)"
+            placeholder="Explanation shown after answering (optional)"
+            rows={2}
+            value={String(data.explanation ?? "")}
+            onChange={(e) =>
+              onChange({
+                explanation: e.target.value === "" ? undefined : e.target.value,
+              })
+            }
+          />
+        </div>
+      );
+    }
+    case "scenario": {
+      const steps = (data.steps ?? []) as {
+        id: string;
+        situation: string;
+        consideration?: string;
+      }[];
+      return (
+        <div className="space-y-2">
+          <Textarea
+            aria-label="Scenario intro"
+            rows={2}
+            value={String(data.intro ?? "")}
+            onChange={(e) => onChange({ intro: e.target.value })}
+          />
+          <Textarea
+            aria-label="Scenario steps (one situation per line)"
+            rows={Math.max(2, steps.length)}
+            value={steps.map((s) => s.situation).join("\n")}
+            onChange={(e) =>
+              onChange({
+                steps: e.target.value
+                  .split("\n")
+                  .filter((line) => line.trim().length > 0)
+                  .map((situation, i) => ({
+                    id: steps[i]?.id ?? crypto.randomUUID(),
+                    situation,
+                    ...(steps[i]?.consideration
+                      ? { consideration: steps[i]!.consideration }
+                      : {}),
+                  })),
+              })
+            }
+          />
+          <Textarea
+            aria-label="Debrief (optional)"
+            placeholder="Debrief (optional)"
+            rows={2}
+            value={String(data.debrief ?? "")}
+            onChange={(e) =>
+              onChange({
+                debrief: e.target.value === "" ? undefined : e.target.value,
+              })
+            }
+          />
+        </div>
+      );
+    }
     case "video":
       return (
         <div className="grid gap-2 sm:grid-cols-2">
@@ -521,4 +936,45 @@ function BlockFields({
         </p>
       );
   }
+}
+
+/**
+ * Compact editor for list-of-pairs blocks (flashcards, accordion, tabs,
+ * timeline, comparison rows). One `left | right` per line — stable ids are
+ * preserved by position, matching the checklist pattern.
+ */
+function PairListEditor({
+  label,
+  rows,
+  onChange,
+}: {
+  label: string;
+  leftKey: string;
+  rightKey: string;
+  rows: { id: string; left: string; right: string }[];
+  onChange: (rows: { id: string; left: string; right: string }[]) => void;
+}) {
+  return (
+    <Textarea
+      aria-label={label}
+      placeholder={label}
+      rows={Math.max(2, rows.length + 1)}
+      value={rows.map((r) => `${r.left} | ${r.right}`).join("\n")}
+      onChange={(e) =>
+        onChange(
+          e.target.value
+            .split("\n")
+            .filter((line) => line.trim().length > 0)
+            .map((line, i) => {
+              const [left, ...rest] = line.split("|");
+              return {
+                id: rows[i]?.id ?? crypto.randomUUID(),
+                left: (left ?? "").trim(),
+                right: rest.join("|").trim(),
+              };
+            }),
+        )
+      }
+    />
+  );
 }
