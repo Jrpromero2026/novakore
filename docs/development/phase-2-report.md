@@ -25,13 +25,15 @@ Phase 1D accepted at `69c8d16` (225 tests, 15 migrations, clean tree).
 
 ## 3. Owner decisions applied
 
-1. **Leaked-password protection** — previous state OFF; **still OFF**
-   (verified directly via the security advisor). It is an Auth
-   dashboard / Management-API setting and could not be toggled from this
-   environment (no management token; the app holds only the anon key). It
-   remains an owner dashboard action. No effect on seeded dev accounts
-   either way (their password is never checked against HIBP at rest). See
-   §28.
+1. **Leaked-password protection** — **ENABLED and verified** (Phase 2
+   closeout, 2026-07-29). The owner toggled it in the Auth dashboard (it
+   could not be set from this environment: no management token, app holds
+   only the anon key); the security advisor now reports the
+   `auth_leaked_password_protection` finding cleared. Seeded dev accounts
+   still authenticate — the full real-DB suite signs in as them and
+   passes (HIBP is only checked at signup/password-change, and the seed
+   inserts bcrypt hashes directly into `auth.users`, bypassing GoTrue), so
+   no seed/doc changes were needed. See §28.
 2. **Retake/passing defaults** — kept configurable per assessment draft,
    frozen into each published version, and never retroactively applied
    (unchanged from 1D). No Phase 2 change.
@@ -188,8 +190,11 @@ atomic `SKIP LOCKED` claim, HMAC signing, SSRF policy, 10s timeout, 4KB
 redacted response, bounded backoff, dead-letter after 6 attempts,
 outbox-event settlement, manual retry (permission-gated). Verified at the
 SQL layer end to end (claim → deliver → settle → outbox processed →
-success event). **Not yet scheduled** — a dashboard cron trigger is an
-owner action (§28). [../architecture/outbox-worker.md](../architecture/outbox-worker.md).
+success event). **Scheduled and live** (Phase 2 closeout): `pg_cron` job
+`novakore-webhook-worker` at `*/5 * * * *` invokes it via `net.http_post`
+with the public anon JWT; two scheduled runs (22:15, 22:20 UTC) returned
+HTTP 200 with no secrets in the response or edge logs.
+[../architecture/outbox-worker.md](../architecture/outbox-worker.md).
 
 ## 20. Webhook security
 
@@ -280,16 +285,17 @@ app.
 
 ## 28. Manual environment items (reported, not assumed)
 
-- **Leaked-password protection: STILL OFF** — advisor-confirmed; requires
-  the Auth dashboard / Management API (no management token here). Owner
-  action.
+- **Leaked-password protection: ENABLED** (2026-07-29, owner) —
+  advisor finding cleared; seeded sign-ins still pass the real-DB suite.
 - **SMTP**: Supabase built-in, unchanged.
 - **Storage CORS**: bucket defaults; nothing required changes — unverified.
 - **AI provider credentials**: none present; mock/deterministic in use.
 - **Edge Function deployment**: `webhook-worker` deployed ACTIVE
   (verify_jwt on).
-- **Edge Function schedule**: NOT scheduled — owner must add a cron
-  trigger to activate delivery.
+- **Edge Function schedule: LIVE** — `pg_cron` job
+  `novakore-webhook-worker` (`*/5 * * * *`) via `pg_net`; enabled by
+  migrations `20260729221240` + `20260729221909`. Verified: two scheduled
+  runs returned HTTP 200, no secrets logged.
 - **Webhook secrets**: per-endpoint, tenant-managed; none configured
   beyond QA test rows (revoked).
 - **Storage bucket configuration**: three private buckets created via
@@ -327,12 +333,11 @@ and G3 repositories untouched; no production Supabase project exists.
 
 ## 33. Owner actions required
 
-1. Enable leaked-password protection in the novakore-dev Auth dashboard
-   (or via the Management API) — the only quality-gate item not
-   completable from this environment.
-2. Schedule the `webhook-worker` Edge Function (dashboard cron, e.g.
-   every minute) to activate delivery; until then it runs only on manual
-   POST.
+1. ~~Enable leaked-password protection~~ — **DONE** (2026-07-29, owner);
+   advisor-verified, seeded auth still passes.
+2. ~~Schedule the `webhook-worker` Edge Function~~ — **DONE** (Phase 2
+   closeout); `pg_cron` `novakore-webhook-worker` `*/5 * * * *` via
+   `pg_net`, live and verified (HTTP 200, no secrets logged).
 3. (Optional) Provide `ANTHROPIC_API_KEY` + set
    `NOVAKORE_AI_PROVIDER=anthropic` server-side to verify live
    generation; the mock/deterministic providers cover everything else.

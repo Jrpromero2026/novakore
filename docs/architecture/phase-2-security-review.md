@@ -38,6 +38,8 @@ the defense and its verification.
 ## Residual / deferred (documented, owner-visible)
 
 - Public verification is unthrottled in dev (ADR-027 enforcement plan).
-- Webhook worker is deployed but not yet scheduled (owner action).
+- Webhook worker is deployed **and scheduled** (Phase 2 closeout):
+  `pg_cron` `novakore-webhook-worker` `*/5 * * * *` via `pg_net`,
+  verified live (HTTP 200, no secrets in response or logs).
 - PDF extraction and real file-submission upload are deferred, not faked.
-- Leaked-password protection status: see the Phase 2 report §manual items.
+- Leaked-password protection: **ENABLED** (2026-07-29), advisor-verified.

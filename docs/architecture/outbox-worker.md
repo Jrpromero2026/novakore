@@ -41,12 +41,43 @@ exposes only the public schema.
 `retry_webhook_delivery` (RPC, `integrations.manage`) resets a
 failed/dead-letter delivery to pending and re-arms the outbox event.
 
-## 4. Scheduling (owner action)
+## 4. Scheduling (LIVE — Phase 2 closeout, 2026-07-29)
 
-The function is deployed but NOT yet scheduled. To activate delivery,
-add a cron trigger in the Supabase dashboard (e.g. every minute) or a
-`pg_cron` + `net.http_post` invocation. Until then it runs only on manual
-POST. Documented in the Phase 2 report's owner-actions section.
+The worker is scheduled via `pg_cron` + `pg_net` (the mechanism the
+dashboard's Cron UI automates). Enabled by migrations
+`20260729221240_enable_pg_net_for_outbox_worker` and
+`20260729221909_reinstall_pg_net_in_extensions_schema` (pg_net lives in
+the `extensions` schema; pg_cron was already installed).
+
+- **Job** `novakore-webhook-worker`, schedule `*/5 * * * *` (every 5
+  minutes, dev cadence), `active`.
+- **Invocation** — `net.http_post` to
+  `/functions/v1/webhook-worker` with the **project anon JWT** as the
+  bearer. `verify_jwt` only requires a validly-signed project JWT; the
+  worker's privileged DB access comes from the service-role key in its
+  own function environment, so **no service-role secret lives in the cron
+  command** (the anon key is public by design). The cron command is
+  operational config held in `cron.job`, not a committed migration.
+- **Verified (2026-07-29)** — scheduled runs `runid 1`@22:15 and
+  `runid 2`@22:20 UTC both `succeeded`; the worker returned HTTP `200`
+  with `{"claimed":0,...}` (0 active endpoints), and neither the response
+  body nor the edge-function logs contained any secret material. The
+  full delivered/retry/dead-letter state machine is proven separately by
+  the domain + real-DB isolation tests.
+
+To re-create from scratch:
+
+```sql
+select cron.schedule('novakore-webhook-worker', '*/5 * * * *', $$
+  select net.http_post(
+    url := 'https://<project-ref>.supabase.co/functions/v1/webhook-worker',
+    headers := jsonb_build_object(
+      'Content-Type','application/json',
+      'Authorization','Bearer <project-anon-jwt>'),
+    body := '{}'::jsonb,
+    timeout_milliseconds := 20000);
+$$);
+```
 
 ## 5. Idempotency + safety
 
