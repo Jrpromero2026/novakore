@@ -338,6 +338,25 @@ export const EVENT_TYPES = [
   "credential.certificate.issued",
   "credential.certificate.revoked",
   "learning.completion.triggered_by_assessment",
+  // Phase 2 — Studio, library, AI, sources, media, review, webhooks.
+  "studio.session.opened",
+  "content.learning_path.created",
+  "content.path_node.added",
+  "content.lesson.previewed",
+  "review.request.created",
+  "review.request.decided",
+  "review.comment.created",
+  "ai.generation.requested",
+  "ai.generation.completed",
+  "ai.generation.failed",
+  "ai.generation.accepted",
+  "ai.generation.rejected",
+  "library.block.created",
+  "library.block.used",
+  "media.asset.uploaded",
+  "content.source_document.created",
+  "webhook.delivery.succeeded",
+  "webhook.delivery.failed",
 ] as const;
 export type EventType = (typeof EVENT_TYPES)[number];
 

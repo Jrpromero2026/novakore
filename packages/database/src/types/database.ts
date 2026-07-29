@@ -65,6 +65,118 @@ export type Database = {
           },
         ];
       };
+      ai_budgets: {
+        Row: {
+          monthly_limit_cents: number;
+          organization_id: string;
+          updated_at: string;
+          updated_by: string | null;
+        };
+        Insert: {
+          monthly_limit_cents?: number;
+          organization_id: string;
+          updated_at?: string;
+          updated_by?: string | null;
+        };
+        Update: {
+          monthly_limit_cents?: number;
+          organization_id?: string;
+          updated_at?: string;
+          updated_by?: string | null;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "ai_budgets_organization_id_fkey";
+            columns: ["organization_id"];
+            isOneToOne: true;
+            referencedRelation: "organizations";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
+      ai_generations: {
+        Row: {
+          actual_cents: number | null;
+          audience: string | null;
+          completed_at: string | null;
+          created_at: string;
+          error: string | null;
+          id: string;
+          input_tokens: number | null;
+          model_profile: string;
+          month_key: string;
+          objective: string;
+          operation: string;
+          organization_id: string;
+          output: Json | null;
+          output_tokens: number | null;
+          prompt_version: number;
+          provider: string;
+          provider_model: string | null;
+          reading_level: string | null;
+          requested_by: string;
+          reserved_cents: number;
+          source_document_ids: string[];
+          status: string;
+        };
+        Insert: {
+          actual_cents?: number | null;
+          audience?: string | null;
+          completed_at?: string | null;
+          created_at?: string;
+          error?: string | null;
+          id?: string;
+          input_tokens?: number | null;
+          model_profile: string;
+          month_key: string;
+          objective: string;
+          operation: string;
+          organization_id: string;
+          output?: Json | null;
+          output_tokens?: number | null;
+          prompt_version?: number;
+          provider: string;
+          provider_model?: string | null;
+          reading_level?: string | null;
+          requested_by: string;
+          reserved_cents: number;
+          source_document_ids?: string[];
+          status?: string;
+        };
+        Update: {
+          actual_cents?: number | null;
+          audience?: string | null;
+          completed_at?: string | null;
+          created_at?: string;
+          error?: string | null;
+          id?: string;
+          input_tokens?: number | null;
+          model_profile?: string;
+          month_key?: string;
+          objective?: string;
+          operation?: string;
+          organization_id?: string;
+          output?: Json | null;
+          output_tokens?: number | null;
+          prompt_version?: number;
+          provider?: string;
+          provider_model?: string | null;
+          reading_level?: string | null;
+          requested_by?: string;
+          reserved_cents?: number;
+          source_document_ids?: string[];
+          status?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "ai_generations_organization_id_fkey";
+            columns: ["organization_id"];
+            isOneToOne: false;
+            referencedRelation: "organizations";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
       analytics_events: {
         Row: {
           actor_user_id: string | null;
@@ -467,6 +579,69 @@ export type Database = {
           },
         ];
       };
+      assessment_submission_files: {
+        Row: {
+          attempt_id: string;
+          byte_size: number;
+          created_at: string;
+          file_name: string;
+          id: string;
+          item_id: string;
+          membership_id: string;
+          mime_type: string;
+          organization_id: string;
+          response_id: string | null;
+          status: string;
+          storage_path: string;
+          updated_at: string;
+        };
+        Insert: {
+          attempt_id: string;
+          byte_size: number;
+          created_at?: string;
+          file_name: string;
+          id?: string;
+          item_id: string;
+          membership_id: string;
+          mime_type: string;
+          organization_id: string;
+          response_id?: string | null;
+          status?: string;
+          storage_path: string;
+          updated_at?: string;
+        };
+        Update: {
+          attempt_id?: string;
+          byte_size?: number;
+          created_at?: string;
+          file_name?: string;
+          id?: string;
+          item_id?: string;
+          membership_id?: string;
+          mime_type?: string;
+          organization_id?: string;
+          response_id?: string | null;
+          status?: string;
+          storage_path?: string;
+          updated_at?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "assessment_submission_files_attempt_id_organization_id_fkey";
+            columns: ["attempt_id", "organization_id"];
+            isOneToOne: false;
+            referencedRelation: "assessment_attempts";
+            referencedColumns: ["id", "organization_id"];
+          },
+          {
+            foreignKeyName: "assessment_submission_files_membership_id_organization_id_fkey";
+            columns: ["membership_id", "organization_id"];
+            isOneToOne: false;
+            referencedRelation: "organization_memberships";
+            referencedColumns: ["id", "organization_id"];
+          },
+        ];
+      };
       assessment_versions: {
         Row: {
           assessment_id: string;
@@ -756,6 +931,7 @@ export type Database = {
           organization_id: string;
           position: string;
           schema_version: number;
+          source_reusable_block_id: string | null;
           updated_at: string;
         };
         Insert: {
@@ -767,6 +943,7 @@ export type Database = {
           organization_id: string;
           position: string;
           schema_version: number;
+          source_reusable_block_id?: string | null;
           updated_at?: string;
         };
         Update: {
@@ -778,6 +955,7 @@ export type Database = {
           organization_id?: string;
           position?: string;
           schema_version?: number;
+          source_reusable_block_id?: string | null;
           updated_at?: string;
         };
         Relationships: [
@@ -786,6 +964,13 @@ export type Database = {
             columns: ["lesson_id"];
             isOneToOne: false;
             referencedRelation: "lessons";
+            referencedColumns: ["id"];
+          },
+          {
+            foreignKeyName: "content_blocks_source_reusable_fk";
+            columns: ["source_reusable_block_id"];
+            isOneToOne: false;
+            referencedRelation: "reusable_blocks";
             referencedColumns: ["id"];
           },
         ];
@@ -1882,6 +2067,38 @@ export type Database = {
         };
         Relationships: [];
       };
+      path_layouts: {
+        Row: {
+          layout: Json;
+          organization_id: string;
+          path_id: string;
+          updated_at: string;
+          updated_by: string | null;
+        };
+        Insert: {
+          layout: Json;
+          organization_id: string;
+          path_id: string;
+          updated_at?: string;
+          updated_by?: string | null;
+        };
+        Update: {
+          layout?: Json;
+          organization_id?: string;
+          path_id?: string;
+          updated_at?: string;
+          updated_by?: string | null;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "path_layouts_path_id_organization_id_fkey";
+            columns: ["path_id", "organization_id"];
+            isOneToOne: false;
+            referencedRelation: "learning_paths";
+            referencedColumns: ["id", "organization_id"];
+          },
+        ];
+      };
       path_nodes: {
         Row: {
           course_id: string;
@@ -2106,6 +2323,344 @@ export type Database = {
           },
         ];
       };
+      reusable_blocks: {
+        Row: {
+          academy_id: string | null;
+          archived_at: string | null;
+          block_type: string;
+          created_at: string;
+          created_by: string | null;
+          data: Json;
+          description: string | null;
+          id: string;
+          organization_id: string;
+          schema_version: number;
+          status: string;
+          tags: string[];
+          title: string;
+          updated_at: string;
+          updated_by: string | null;
+          version: number;
+        };
+        Insert: {
+          academy_id?: string | null;
+          archived_at?: string | null;
+          block_type: string;
+          created_at?: string;
+          created_by?: string | null;
+          data: Json;
+          description?: string | null;
+          id?: string;
+          organization_id: string;
+          schema_version: number;
+          status?: string;
+          tags?: string[];
+          title: string;
+          updated_at?: string;
+          updated_by?: string | null;
+          version?: number;
+        };
+        Update: {
+          academy_id?: string | null;
+          archived_at?: string | null;
+          block_type?: string;
+          created_at?: string;
+          created_by?: string | null;
+          data?: Json;
+          description?: string | null;
+          id?: string;
+          organization_id?: string;
+          schema_version?: number;
+          status?: string;
+          tags?: string[];
+          title?: string;
+          updated_at?: string;
+          updated_by?: string | null;
+          version?: number;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "reusable_blocks_academy_id_organization_id_fkey";
+            columns: ["academy_id", "organization_id"];
+            isOneToOne: false;
+            referencedRelation: "academies";
+            referencedColumns: ["id", "organization_id"];
+          },
+          {
+            foreignKeyName: "reusable_blocks_organization_id_fkey";
+            columns: ["organization_id"];
+            isOneToOne: false;
+            referencedRelation: "organizations";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
+      review_comments: {
+        Row: {
+          author_id: string;
+          body: string;
+          created_at: string;
+          id: string;
+          organization_id: string;
+          request_id: string;
+          status: string;
+          updated_at: string;
+        };
+        Insert: {
+          author_id: string;
+          body: string;
+          created_at?: string;
+          id?: string;
+          organization_id: string;
+          request_id: string;
+          status?: string;
+          updated_at?: string;
+        };
+        Update: {
+          author_id?: string;
+          body?: string;
+          created_at?: string;
+          id?: string;
+          organization_id?: string;
+          request_id?: string;
+          status?: string;
+          updated_at?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "review_comments_request_id_organization_id_fkey";
+            columns: ["request_id", "organization_id"];
+            isOneToOne: false;
+            referencedRelation: "review_requests";
+            referencedColumns: ["id", "organization_id"];
+          },
+        ];
+      };
+      review_requests: {
+        Row: {
+          created_at: string;
+          decided_at: string | null;
+          decided_by: string | null;
+          id: string;
+          note: string | null;
+          organization_id: string;
+          requested_by: string;
+          status: string;
+          subject_id: string;
+          subject_type: string;
+          updated_at: string;
+        };
+        Insert: {
+          created_at?: string;
+          decided_at?: string | null;
+          decided_by?: string | null;
+          id?: string;
+          note?: string | null;
+          organization_id: string;
+          requested_by: string;
+          status?: string;
+          subject_id: string;
+          subject_type: string;
+          updated_at?: string;
+        };
+        Update: {
+          created_at?: string;
+          decided_at?: string | null;
+          decided_by?: string | null;
+          id?: string;
+          note?: string | null;
+          organization_id?: string;
+          requested_by?: string;
+          status?: string;
+          subject_id?: string;
+          subject_type?: string;
+          updated_at?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "review_requests_organization_id_fkey";
+            columns: ["organization_id"];
+            isOneToOne: false;
+            referencedRelation: "organizations";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
+      source_documents: {
+        Row: {
+          archived_at: string | null;
+          content: string | null;
+          content_hash: string | null;
+          created_at: string;
+          created_by: string | null;
+          extraction_status: string;
+          id: string;
+          kind: string;
+          organization_id: string;
+          provenance: string | null;
+          review_state: string;
+          status: string;
+          storage_path: string | null;
+          title: string;
+          updated_at: string;
+        };
+        Insert: {
+          archived_at?: string | null;
+          content?: string | null;
+          content_hash?: string | null;
+          created_at?: string;
+          created_by?: string | null;
+          extraction_status?: string;
+          id?: string;
+          kind: string;
+          organization_id: string;
+          provenance?: string | null;
+          review_state?: string;
+          status?: string;
+          storage_path?: string | null;
+          title: string;
+          updated_at?: string;
+        };
+        Update: {
+          archived_at?: string | null;
+          content?: string | null;
+          content_hash?: string | null;
+          created_at?: string;
+          created_by?: string | null;
+          extraction_status?: string;
+          id?: string;
+          kind?: string;
+          organization_id?: string;
+          provenance?: string | null;
+          review_state?: string;
+          status?: string;
+          storage_path?: string | null;
+          title?: string;
+          updated_at?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "source_documents_organization_id_fkey";
+            columns: ["organization_id"];
+            isOneToOne: false;
+            referencedRelation: "organizations";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
+      webhook_deliveries: {
+        Row: {
+          attempt_count: number;
+          causation_id: string | null;
+          correlation_id: string | null;
+          created_at: string;
+          delivered_at: string | null;
+          endpoint_id: string;
+          id: string;
+          last_error: string | null;
+          next_attempt_at: string;
+          organization_id: string;
+          outbox_event_id: string;
+          response_excerpt: string | null;
+          response_status: number | null;
+          status: string;
+          updated_at: string;
+        };
+        Insert: {
+          attempt_count?: number;
+          causation_id?: string | null;
+          correlation_id?: string | null;
+          created_at?: string;
+          delivered_at?: string | null;
+          endpoint_id: string;
+          id?: string;
+          last_error?: string | null;
+          next_attempt_at?: string;
+          organization_id: string;
+          outbox_event_id: string;
+          response_excerpt?: string | null;
+          response_status?: number | null;
+          status?: string;
+          updated_at?: string;
+        };
+        Update: {
+          attempt_count?: number;
+          causation_id?: string | null;
+          correlation_id?: string | null;
+          created_at?: string;
+          delivered_at?: string | null;
+          endpoint_id?: string;
+          id?: string;
+          last_error?: string | null;
+          next_attempt_at?: string;
+          organization_id?: string;
+          outbox_event_id?: string;
+          response_excerpt?: string | null;
+          response_status?: number | null;
+          status?: string;
+          updated_at?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "webhook_deliveries_endpoint_id_organization_id_fkey";
+            columns: ["endpoint_id", "organization_id"];
+            isOneToOne: false;
+            referencedRelation: "webhook_endpoints";
+            referencedColumns: ["id", "organization_id"];
+          },
+          {
+            foreignKeyName: "webhook_deliveries_outbox_event_id_fkey";
+            columns: ["outbox_event_id"];
+            isOneToOne: false;
+            referencedRelation: "outbox_events";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
+      webhook_endpoints: {
+        Row: {
+          created_at: string;
+          created_by: string | null;
+          event_types: string[];
+          id: string;
+          organization_id: string;
+          secret: string;
+          status: string;
+          updated_at: string;
+          url: string;
+        };
+        Insert: {
+          created_at?: string;
+          created_by?: string | null;
+          event_types?: string[];
+          id?: string;
+          organization_id: string;
+          secret: string;
+          status?: string;
+          updated_at?: string;
+          url: string;
+        };
+        Update: {
+          created_at?: string;
+          created_by?: string | null;
+          event_types?: string[];
+          id?: string;
+          organization_id?: string;
+          secret?: string;
+          status?: string;
+          updated_at?: string;
+          url?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "webhook_endpoints_organization_id_fkey";
+            columns: ["organization_id"];
+            isOneToOne: false;
+            referencedRelation: "organizations";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
     };
     Views: {
       [_ in never]: never;
@@ -2149,6 +2704,21 @@ export type Database = {
           p_target_type: string;
         };
         Returns: string;
+      };
+      decide_review: {
+        Args: { p_decision: string; p_note?: string; p_request_id: string };
+        Returns: undefined;
+      };
+      emit_studio_event: {
+        Args: {
+          p_context?: Json;
+          p_data?: Json;
+          p_organization_id: string;
+          p_subject_id: string;
+          p_subject_kind: string;
+          p_type: string;
+        };
+        Returns: undefined;
       };
       get_assessment_attempt_payload: {
         Args: { p_attempt_id: string };
@@ -2200,6 +2770,36 @@ export type Database = {
         };
         Returns: undefined;
       };
+      request_review: {
+        Args: {
+          p_note?: string;
+          p_organization_id: string;
+          p_subject_id: string;
+          p_subject_type: string;
+        };
+        Returns: string;
+      };
+      reserve_ai_generation: {
+        Args: {
+          p_audience?: string;
+          p_model_profile: string;
+          p_objective: string;
+          p_operation: string;
+          p_organization_id: string;
+          p_provider: string;
+          p_reading_level?: string;
+          p_source_document_ids?: string[];
+        };
+        Returns: string;
+      };
+      resolve_ai_generation: {
+        Args: { p_accepted: boolean; p_generation_id: string };
+        Returns: undefined;
+      };
+      retry_webhook_delivery: {
+        Args: { p_delivery_id: string };
+        Returns: undefined;
+      };
       revoke_credential: {
         Args: { p_credential_id: string; p_reason: string };
         Returns: undefined;
@@ -2218,6 +2818,18 @@ export type Database = {
       };
       set_membership_status: {
         Args: { p_membership_id: string; p_status: string };
+        Returns: undefined;
+      };
+      settle_ai_generation: {
+        Args: {
+          p_error?: string;
+          p_generation_id: string;
+          p_input_tokens?: number;
+          p_output?: Json;
+          p_output_tokens?: number;
+          p_provider_model?: string;
+          p_success: boolean;
+        };
         Returns: undefined;
       };
       start_assessment_attempt: {

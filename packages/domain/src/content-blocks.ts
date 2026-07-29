@@ -30,8 +30,69 @@ export const BLOCK_TYPES = [
   "file_link",
   "checklist",
   "assessment_reference",
+  // Phase 2 — implemented interactive set
+  "quote",
+  "accordion",
+  "tabs",
+  "timeline",
+  "comparison",
+  "flashcards",
+  "knowledge_check",
+  "reflection",
+  "action_step",
+  "scenario",
+  "audio",
+  "pdf",
+  // Phase 2 — schema-only (validated, storable, renderer falls back to a
+  // neutral notice; editors do not offer them yet — see content-blocks doc)
+  "survey",
+  "branching_scenario",
+  "decision_tree",
+  "ai_conversation",
+  "ai_roleplay",
+  "manager_approval",
+  "instructor_feedback",
+  "live_session",
+  "diagram",
 ] as const;
 export type BlockType = (typeof BLOCK_TYPES)[number];
+
+/** Phase 2 classification (single source for docs, editors, and tests). */
+export const BLOCK_STATUS: Record<
+  BlockType,
+  "implemented" | "implemented_with_limitations" | "schema_only"
+> = {
+  rich_text: "implemented",
+  heading: "implemented",
+  callout: "implemented",
+  divider: "implemented",
+  image: "implemented_with_limitations", // renders via governed media; upload UI is Studio-side
+  video: "implemented_with_limitations", // external card, no embeds (documented policy)
+  file_link: "implemented",
+  checklist: "implemented",
+  assessment_reference: "implemented",
+  quote: "implemented",
+  accordion: "implemented",
+  tabs: "implemented",
+  timeline: "implemented",
+  comparison: "implemented",
+  flashcards: "implemented",
+  knowledge_check: "implemented_with_limitations", // ungraded self-check: answer ships in the snapshot BY DESIGN
+  reflection: "implemented_with_limitations", // prompt renders; learner responses arrive with learner-input storage
+  action_step: "implemented",
+  scenario: "implemented",
+  audio: "implemented_with_limitations", // governed asset playback; upload UI is Studio-side
+  pdf: "implemented_with_limitations", // download card, no inline viewer
+  survey: "schema_only",
+  branching_scenario: "schema_only",
+  decision_tree: "schema_only",
+  ai_conversation: "schema_only", // learner AI is Phase 3
+  ai_roleplay: "schema_only",
+  manager_approval: "schema_only", // needs runtime approval workflow
+  instructor_feedback: "schema_only",
+  live_session: "schema_only",
+  diagram: "schema_only", // safe diagram rendering not ready
+};
 
 const blockBase = z.object({
   /** Stable identity across edits and versions. */
@@ -134,6 +195,199 @@ export const assessmentReferenceDataV1 = z.strictObject({
 });
 
 // ---------------------------------------------------------------------------
+// Phase 2 — implemented interactive block data schemas (v1)
+// ---------------------------------------------------------------------------
+
+const shortText = z.string().min(1).max(500);
+
+export const quoteDataV1 = z.strictObject({
+  text: z.string().min(1).max(2_000),
+  attribution: z.string().min(1).max(200).optional(),
+});
+
+export const accordionDataV1 = z.strictObject({
+  items: z
+    .array(z.strictObject({ id: z.uuid(), title: shortText, body: safeText }))
+    .min(1)
+    .max(20),
+});
+
+export const tabsDataV1 = z.strictObject({
+  tabs: z
+    .array(
+      z.strictObject({
+        id: z.uuid(),
+        title: z.string().min(1).max(80),
+        body: safeText,
+      }),
+    )
+    .min(2)
+    .max(8),
+});
+
+export const timelineDataV1 = z.strictObject({
+  events: z
+    .array(
+      z.strictObject({
+        id: z.uuid(),
+        label: z.string().min(1).max(120),
+        description: safeText,
+      }),
+    )
+    .min(2)
+    .max(20),
+});
+
+export const comparisonDataV1 = z.strictObject({
+  leftTitle: z.string().min(1).max(120),
+  rightTitle: z.string().min(1).max(120),
+  rows: z
+    .array(z.strictObject({ id: z.uuid(), left: shortText, right: shortText }))
+    .min(1)
+    .max(20),
+});
+
+export const flashcardsDataV1 = z.strictObject({
+  cards: z
+    .array(
+      z.strictObject({
+        id: z.uuid(),
+        front: z.string().min(1).max(500),
+        back: z.string().min(1).max(2_000),
+      }),
+    )
+    .min(1)
+    .max(50),
+});
+
+/**
+ * Ungraded formative self-check. The correct option ships inside the frozen
+ * lesson snapshot BY DESIGN (reveal-on-answer, no score, no progress
+ * effect) — graded checks must use assessment_reference instead.
+ */
+export const knowledgeCheckDataV1 = z
+  .strictObject({
+    prompt: safeText,
+    options: z
+      .array(z.strictObject({ id: z.uuid(), text: shortText }))
+      .min(2)
+      .max(6),
+    correctOptionId: z.uuid(),
+    explanation: safeText.optional(),
+  })
+  .refine((d) => d.options.some((o) => o.id === d.correctOptionId), {
+    message: "correctOptionId must reference one of the options",
+  });
+
+/** Learner responses are a future learner-input capability (documented). */
+export const reflectionDataV1 = z.strictObject({
+  prompt: safeText,
+  guidance: safeText.optional(),
+});
+
+export const actionStepDataV1 = z.strictObject({
+  text: shortText,
+  note: safeText.optional(),
+});
+
+export const scenarioDataV1 = z.strictObject({
+  intro: safeText,
+  steps: z
+    .array(
+      z.strictObject({
+        id: z.uuid(),
+        situation: safeText,
+        consideration: safeText.optional(),
+      }),
+    )
+    .min(1)
+    .max(12),
+  debrief: safeText.optional(),
+});
+
+/** Governed media reference — playback via signed URL (ADR-015). */
+export const audioDataV1 = z.strictObject({
+  assetId: z.uuid(),
+  title: z.string().min(1).max(200),
+  transcriptNote: z.string().max(500).optional(),
+});
+
+/** Download card only — no inline PDF viewer in Phase 2. */
+export const pdfDataV1 = z.strictObject({
+  assetId: z.uuid(),
+  title: z.string().min(1).max(200),
+  pageCount: z.number().int().min(1).max(2_000).optional(),
+});
+
+// ---------------------------------------------------------------------------
+// Phase 2 — schema-only block data (validated shape reserved; no editor or
+// renderer yet — the renderer's neutral fallback handles stored instances)
+// ---------------------------------------------------------------------------
+
+export const surveyDataV1 = z.strictObject({
+  prompt: safeText,
+  questions: z
+    .array(z.strictObject({ id: z.uuid(), text: shortText }))
+    .min(1)
+    .max(20),
+});
+
+export const branchingScenarioDataV1 = z.strictObject({
+  intro: safeText,
+  nodes: z
+    .array(
+      z.strictObject({
+        id: z.uuid(),
+        situation: safeText,
+        choices: z
+          .array(
+            z.strictObject({
+              id: z.uuid(),
+              text: shortText,
+              nextNodeId: z.uuid().nullable(),
+            }),
+          )
+          .min(1)
+          .max(5),
+      }),
+    )
+    .min(1)
+    .max(30),
+});
+
+export const decisionTreeDataV1 = branchingScenarioDataV1;
+
+export const aiConversationDataV1 = z.strictObject({
+  objective: safeText,
+  personaNote: safeText.optional(),
+});
+
+export const aiRoleplayDataV1 = aiConversationDataV1;
+
+export const managerApprovalDataV1 = z.strictObject({
+  instructions: safeText,
+});
+
+export const instructorFeedbackDataV1 = z.strictObject({
+  instructions: safeText,
+});
+
+export const liveSessionDataV1 = z.strictObject({
+  title: z.string().min(1).max(200),
+  instructions: safeText.optional(),
+});
+
+export const diagramDataV1 = z.strictObject({
+  title: z.string().min(1).max(200).optional(),
+  /** Constrained node/edge description — never executable markup. */
+  nodes: z
+    .array(z.strictObject({ id: z.uuid(), label: z.string().min(1).max(120) }))
+    .min(1)
+    .max(40),
+  edges: z.array(z.strictObject({ from: z.uuid(), to: z.uuid() })).max(80),
+});
+
+// ---------------------------------------------------------------------------
 // Discriminated union of current-version blocks (author-facing shape)
 // ---------------------------------------------------------------------------
 
@@ -183,6 +437,111 @@ export const contentBlockSchema = z.discriminatedUnion("type", [
     schemaVersion: z.literal(1),
     data: assessmentReferenceDataV1,
   }),
+  blockBase.extend({
+    type: z.literal("quote"),
+    schemaVersion: z.literal(1),
+    data: quoteDataV1,
+  }),
+  blockBase.extend({
+    type: z.literal("accordion"),
+    schemaVersion: z.literal(1),
+    data: accordionDataV1,
+  }),
+  blockBase.extend({
+    type: z.literal("tabs"),
+    schemaVersion: z.literal(1),
+    data: tabsDataV1,
+  }),
+  blockBase.extend({
+    type: z.literal("timeline"),
+    schemaVersion: z.literal(1),
+    data: timelineDataV1,
+  }),
+  blockBase.extend({
+    type: z.literal("comparison"),
+    schemaVersion: z.literal(1),
+    data: comparisonDataV1,
+  }),
+  blockBase.extend({
+    type: z.literal("flashcards"),
+    schemaVersion: z.literal(1),
+    data: flashcardsDataV1,
+  }),
+  blockBase.extend({
+    type: z.literal("knowledge_check"),
+    schemaVersion: z.literal(1),
+    data: knowledgeCheckDataV1,
+  }),
+  blockBase.extend({
+    type: z.literal("reflection"),
+    schemaVersion: z.literal(1),
+    data: reflectionDataV1,
+  }),
+  blockBase.extend({
+    type: z.literal("action_step"),
+    schemaVersion: z.literal(1),
+    data: actionStepDataV1,
+  }),
+  blockBase.extend({
+    type: z.literal("scenario"),
+    schemaVersion: z.literal(1),
+    data: scenarioDataV1,
+  }),
+  blockBase.extend({
+    type: z.literal("audio"),
+    schemaVersion: z.literal(1),
+    data: audioDataV1,
+  }),
+  blockBase.extend({
+    type: z.literal("pdf"),
+    schemaVersion: z.literal(1),
+    data: pdfDataV1,
+  }),
+  blockBase.extend({
+    type: z.literal("survey"),
+    schemaVersion: z.literal(1),
+    data: surveyDataV1,
+  }),
+  blockBase.extend({
+    type: z.literal("branching_scenario"),
+    schemaVersion: z.literal(1),
+    data: branchingScenarioDataV1,
+  }),
+  blockBase.extend({
+    type: z.literal("decision_tree"),
+    schemaVersion: z.literal(1),
+    data: decisionTreeDataV1,
+  }),
+  blockBase.extend({
+    type: z.literal("ai_conversation"),
+    schemaVersion: z.literal(1),
+    data: aiConversationDataV1,
+  }),
+  blockBase.extend({
+    type: z.literal("ai_roleplay"),
+    schemaVersion: z.literal(1),
+    data: aiRoleplayDataV1,
+  }),
+  blockBase.extend({
+    type: z.literal("manager_approval"),
+    schemaVersion: z.literal(1),
+    data: managerApprovalDataV1,
+  }),
+  blockBase.extend({
+    type: z.literal("instructor_feedback"),
+    schemaVersion: z.literal(1),
+    data: instructorFeedbackDataV1,
+  }),
+  blockBase.extend({
+    type: z.literal("live_session"),
+    schemaVersion: z.literal(1),
+    data: liveSessionDataV1,
+  }),
+  blockBase.extend({
+    type: z.literal("diagram"),
+    schemaVersion: z.literal(1),
+    data: diagramDataV1,
+  }),
 ]);
 
 export type ContentBlock = z.infer<typeof contentBlockSchema>;
@@ -204,6 +563,27 @@ const dataSchemas: Record<RegistryKey, z.ZodType> = {
   "file_link:1": fileLinkDataV1,
   "checklist:1": checklistDataV1,
   "assessment_reference:1": assessmentReferenceDataV1,
+  "quote:1": quoteDataV1,
+  "accordion:1": accordionDataV1,
+  "tabs:1": tabsDataV1,
+  "timeline:1": timelineDataV1,
+  "comparison:1": comparisonDataV1,
+  "flashcards:1": flashcardsDataV1,
+  "knowledge_check:1": knowledgeCheckDataV1,
+  "reflection:1": reflectionDataV1,
+  "action_step:1": actionStepDataV1,
+  "scenario:1": scenarioDataV1,
+  "audio:1": audioDataV1,
+  "pdf:1": pdfDataV1,
+  "survey:1": surveyDataV1,
+  "branching_scenario:1": branchingScenarioDataV1,
+  "decision_tree:1": decisionTreeDataV1,
+  "ai_conversation:1": aiConversationDataV1,
+  "ai_roleplay:1": aiRoleplayDataV1,
+  "manager_approval:1": managerApprovalDataV1,
+  "instructor_feedback:1": instructorFeedbackDataV1,
+  "live_session:1": liveSessionDataV1,
+  "diagram:1": diagramDataV1,
 };
 
 /** Pure migration functions, registered per upgrade step. */
@@ -227,6 +607,27 @@ export const CURRENT_SCHEMA_VERSION: Record<BlockType, number> = {
   file_link: 1,
   checklist: 1,
   assessment_reference: 1,
+  quote: 1,
+  accordion: 1,
+  tabs: 1,
+  timeline: 1,
+  comparison: 1,
+  flashcards: 1,
+  knowledge_check: 1,
+  reflection: 1,
+  action_step: 1,
+  scenario: 1,
+  audio: 1,
+  pdf: 1,
+  survey: 1,
+  branching_scenario: 1,
+  decision_tree: 1,
+  ai_conversation: 1,
+  ai_roleplay: 1,
+  manager_approval: 1,
+  instructor_feedback: 1,
+  live_session: 1,
+  diagram: 1,
 };
 
 export function validateBlockData(
