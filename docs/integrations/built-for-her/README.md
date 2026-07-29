@@ -64,16 +64,26 @@ organization_admin`. BFH asserts the level; NovaKore enforces its own
 
 ## 4. Environments
 
-|              | Development (now)                         | Production (deferred)                  |
-| ------------ | ----------------------------------------- | -------------------------------------- |
-| Organization | `bfh-dev` on novakore-dev                 | new org on a future production project |
-| Users        | `bfh.*@novakore.test` fixtures only       | real members via identity handoff      |
-| Data         | seeded sample journey/program/assessments | live                                   |
-| Webhooks/API | schemas + tests only                      | signed, retried, monitored             |
+|              | Development (now)                                                                | Production (deferred)                  |
+| ------------ | -------------------------------------------------------------------------------- | -------------------------------------- |
+| Organization | `bfh-dev` on novakore-dev                                                        | new org on a future production project |
+| Users        | `bfh.*@novakore.test` fixtures only                                              | real members via identity handoff      |
+| Data         | seeded journey/program/assessments + Phase 2 interactive lesson + reusable block | live                                   |
+| Webhooks/API | schemas + tests only                                                             | signed, retried, monitored             |
 
 Real BFH production users, subscriptions, and databases are never
 touched from this repository. The `built-for-her*` and G3 repositories
 remain strictly off-limits.
+
+**Phase 2 development demonstration (as built).** The `bfh-dev` tenant now
+proves Studio modularity end to end under the Journey/Program/Phase/Coach/
+Member/Evaluation/Credential terminology overlay: the Coach Certification
+learning system → Certification Journey (visual path) → Foundations
+Program with an interactive "Coaching Fundamentals" Phase (flashcards,
+knowledge check, scenario, reflection), the two Evaluations from Phase 1D,
+a completion credential, a reusable "Intake trust callout" library block,
+and AI-drafted content via the mock provider. This is development data
+only — no production connection, users, subscriptions, or health data.
 
 ## 5. Rollout sequence (integration phase, owner-gated)
 

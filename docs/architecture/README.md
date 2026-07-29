@@ -20,7 +20,7 @@ ADR.
 | 9   | [built-for-her-integration.md](built-for-her-integration.md)             | First-tenant integration contract and boundaries        |
 | 10  | [ui-architecture.md](ui-architecture.md)                                 | Surfaces, design system direction, component categories |
 | 11  | [phased-implementation-plan.md](phased-implementation-plan.md)           | Phase 1A → 4 roadmap with gates                         |
-| 12  | [architecture-decisions.md](architecture-decisions.md)                   | ADR-001 … ADR-019                                       |
+| 12  | [architecture-decisions.md](architecture-decisions.md)                   | ADR-001 … ADR-027                                       |
 | 13  | [risks-and-open-decisions.md](risks-and-open-decisions.md)               | Risk register and owner-approval items                  |
 
 ## Implemented-subsystem docs (Phase 1B–1C)
@@ -46,6 +46,17 @@ Written as-built, updated with the code they describe:
 | [manual-review.md](manual-review.md)                                               | Subjective review workflow                                  |
 | [certificates-and-credentials.md](certificates-and-credentials.md)                 | Templates, rules, issued credentials, verification          |
 | [../integrations/built-for-her/README.md](../integrations/built-for-her/README.md) | BFH integration contract (specification only)               |
+| [learning-studio.md](learning-studio.md)                                           | Learning Studio shell + surfaces (Phase 2)                  |
+| [visual-path-builder.md](visual-path-builder.md)                                   | Visual path canvas + graph validation                       |
+| [reusable-content-library.md](reusable-content-library.md)                         | Reusable block library, link vs copy, versioning            |
+| [ai-authoring-as-built.md](ai-authoring-as-built.md)                               | Governed AI authoring lifecycle                             |
+| [source-document-model.md](source-document-model.md)                               | AI source documents + PDF-extraction limits                 |
+| [studio-review-workflow.md](studio-review-workflow.md)                             | Review requests, comments, no-self-approval                 |
+| [media-and-storage-as-built.md](media-and-storage-as-built.md)                     | Buckets, path policies, signed-URL rendering                |
+| [outbox-worker.md](outbox-worker.md)                                               | Scheduled webhook delivery worker                           |
+| [phase-2-permission-matrix.md](phase-2-permission-matrix.md)                       | Permission delta (Phase 2)                                  |
+| [phase-2-event-catalog.md](phase-2-event-catalog.md)                               | New event types (Phase 2)                                   |
+| [phase-2-security-review.md](phase-2-security-review.md)                           | Phase 2 threat/defense review                               |
 
 ## Companion package
 

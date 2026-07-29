@@ -55,8 +55,32 @@ neutral "not supported yet" notice instead of crashing
 (`parseFrozenBlocks` additionally drops invalid snapshot entries —
 documented fallback).
 
-## 4. Adding a block type (deliberate friction)
+## 4. Phase 2 block set + classification
 
-Schema (+ registry entry + `CURRENT_SCHEMA_VERSION`) → database CHECK
-list (`content_blocks.block_type`) → editor fields → renderer case →
-tests (validation + renderer safety). All five or it does not ship.
+The registry grew to 30 types. Each carries a `BLOCK_STATUS`
+classification (single source for docs, editors, and tests):
+
+- **Implemented** (typed editor + safe renderer): rich_text, heading,
+  callout, divider, file_link, checklist, assessment_reference, quote,
+  accordion, tabs, timeline, comparison, flashcards, reflection,
+  action_step, scenario.
+- **Implemented with documented limitations**: image / audio / pdf
+  (governed media via signed URLs; upload UI is Studio-side; video is an
+  external card, no embeds; knowledge_check ships its answer in the
+  snapshot BY DESIGN — an ungraded self-check; graded checks use
+  assessment_reference).
+- **Schema-only (deferred)**: survey, branching_scenario, decision_tree,
+  ai_conversation, ai_roleplay, manager_approval, instructor_feedback,
+  live_session, diagram. These validate and store but have no editor;
+  the renderer degrades them to a neutral notice. They ship with an
+  editor + renderer in a later phase.
+- **Rejected from Phase 2**: none outright — `embed`/`external_tool` were
+  folded into the schema-only/deferred set rather than rendering untrusted
+  third-party frames (security).
+
+## 5. Adding a block type (deliberate friction)
+
+Schema (+ registry entry + `CURRENT_SCHEMA_VERSION` + `BLOCK_STATUS`) →
+database CHECK list (`content_blocks.block_type`) → editor fields →
+renderer case → tests (validation + renderer safety). All of these or it
+does not ship.

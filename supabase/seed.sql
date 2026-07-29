@@ -453,3 +453,38 @@ insert into public.certificates (id, organization_id, template_id, title, source
    '00000000-0000-4000-8000-000000000851', 'Foundations Program Credential',
    'course', '00000000-0000-4000-8000-000000000513', 'active')
 on conflict (id) do nothing;
+
+-- ---------------------------------------------------------------------------
+-- Phase 2 — BFH development demonstration: an interactive draft lesson in
+-- the Foundations Program plus one reusable library block (dev data only).
+-- ---------------------------------------------------------------------------
+insert into public.modules (id, organization_id, course_id, title, position) values
+  ('00000000-0000-4000-8000-000000000525', '00000000-0000-4000-8000-000000000102',
+   '00000000-0000-4000-8000-000000000513', 'Interactive Practice', 'a1')
+on conflict (id) do nothing;
+
+insert into public.lessons (id, organization_id, course_id, module_id, title, position, required) values
+  ('00000000-0000-4000-8000-000000000538', '00000000-0000-4000-8000-000000000102',
+   '00000000-0000-4000-8000-000000000513', '00000000-0000-4000-8000-000000000525',
+   'Coaching Fundamentals (Interactive)', 'a0', true)
+on conflict (id) do nothing;
+
+insert into public.content_blocks (id, organization_id, lesson_id, block_type, schema_version, data, position) values
+  ('00000000-0000-4000-8000-000000000651', '00000000-0000-4000-8000-000000000102', '00000000-0000-4000-8000-000000000538',
+   'heading', 1, '{"text":"Coaching Fundamentals","level":2}', 'a0'),
+  ('00000000-0000-4000-8000-000000000652', '00000000-0000-4000-8000-000000000102', '00000000-0000-4000-8000-000000000538',
+   'flashcards', 1, '{"cards":[{"id":"00000000-0000-4000-8000-0000000006f1","front":"Rapport","back":"The trust that lets a member be honest about constraints."},{"id":"00000000-0000-4000-8000-0000000006f2","front":"Screening","back":"Observing movement before prescribing anything."}]}', 'a1'),
+  ('00000000-0000-4000-8000-000000000653', '00000000-0000-4000-8000-000000000102', '00000000-0000-4000-8000-000000000538',
+   'knowledge_check', 1, '{"prompt":"When should a coach begin correcting form?","options":[{"id":"00000000-0000-4000-8000-0000000006f3","text":"Immediately, on the first rep"},{"id":"00000000-0000-4000-8000-0000000006f4","text":"After observing the movement pattern"}],"correctOptionId":"00000000-0000-4000-8000-0000000006f4","explanation":"Observe first — correcting too early hides the real pattern."}', 'a2'),
+  ('00000000-0000-4000-8000-000000000654', '00000000-0000-4000-8000-000000000102', '00000000-0000-4000-8000-000000000538',
+   'scenario', 1, '{"intro":"A new member is visibly nervous at their first session.","steps":[{"id":"00000000-0000-4000-8000-0000000006f5","situation":"They downplay a past injury.","consideration":"How do you make it safe to be honest?"}],"debrief":"Trust first; the honest history changes the whole program."}', 'a3'),
+  ('00000000-0000-4000-8000-000000000655', '00000000-0000-4000-8000-000000000102', '00000000-0000-4000-8000-000000000538',
+   'reflection', 1, '{"prompt":"Recall a time a coach earned your trust. What did they do?"}', 'a4')
+on conflict (id) do nothing;
+
+insert into public.reusable_blocks (id, organization_id, academy_id, title, description, block_type, schema_version, data, tags, status) values
+  ('00000000-0000-4000-8000-000000000661', '00000000-0000-4000-8000-000000000102', '00000000-0000-4000-8000-000000000202',
+   'Intake trust callout', 'Reusable reminder about building trust at intake.', 'callout', 2,
+   '{"tone":"note","title":"Trust first","body":"Listen before you program. The honest history is worth more than the first workout."}',
+   array['coaching','intake'], 'active')
+on conflict (id) do nothing;

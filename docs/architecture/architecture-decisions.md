@@ -377,3 +377,158 @@ assignments re-pin by archive-and-attach (documented); the lesson viewer
 does one extra bounded query; adding new assignment targets later means
 new explicit columns/types, not schema surgery; the payload RPC is the
 single place to audit for answer leakage.
+
+---
+
+## ADR-020 — Learning Studio: one authoring environment, domain stays authoritative
+
+**Context.** Phase 2 needed a spatial authoring environment (path canvas,
+continuous lesson editor, AI, library, review) without letting a visual
+layer become a second source of truth or forking the trusted renderer.
+
+**Decision.** The Studio is a set of surfaces under `/admin/studio` over
+the SAME domain model, RPCs, and RLS as the rest of authoring — no new
+authority. The visual path canvas is presentation only: `path_layouts`
+stores coordinates separately from semantic ordering, and every canvas
+action mirrors into a keyboard-accessible ordered list that is the
+authoritative editor. `validatePathGraph` (pure) powers cycle/unreachable/
+orphan feedback, but the 1C database trigger remains the cycle authority.
+Learner previews render through the ONE trusted block renderer; there is
+no separate preview implementation.
+
+**Consequences.** The Studio can be redesigned freely without touching
+invariants; accessibility is structural, not retrofitted; the canvas can
+lag or fail without risking data correctness.
+
+---
+
+## ADR-021 — Reusable content library with link-or-copy and controlled versioning
+
+**Context.** Authors need to reuse blocks across lessons without a
+cross-tenant leak vector or an uncontrolled shared-edit blast radius.
+
+**Decision.** `reusable_blocks` are org-owned (optional `academy_id`
+scope). Insertion into a lesson is explicit: **link** keeps
+`content_blocks.source_reusable_block_id` (shared updates flow on the
+draft's next publish — published snapshots stay frozen), **copy** creates
+an independent block. Data edits bump a monotonic `version` via trigger.
+No cross-tenant references (org-scoped FK); no public marketplace.
+
+**Consequences.** Usage is auditable (usage counts from the source FK);
+shared updates never mutate published history; a linked block's blast
+radius is visible before republish.
+
+---
+
+## ADR-022 — Development AI provider selection (mock / deterministic / Anthropic)
+
+**Context.** No AI credentials exist in the development environment, yet
+the abstraction, workflow, budget, and UI must be provably correct.
+
+**Decision.** A server-only `AiProvider` interface with three adapters
+selected by `NOVAKORE_AI_PROVIDER`: `mock` (default; realistic fixtures),
+`deterministic` (fixtures + forced-failure/invalid hooks for tests), and
+`anthropic` (live; requires `ANTHROPIC_API_KEY`, UNVERIFIED without it).
+Logical model profiles (`drafting`/`structured`/`rewrite`) map to
+provider models inside the adapter. Keys never reach the browser; the
+Anthropic default models are the current Claude 5 family.
+
+**Consequences.** Every AI path is testable now; going live is a config
+change, not a rewrite; provider swaps are contained to the adapter.
+
+---
+
+## ADR-023 — Governed AI: draft-only outputs through a validate-and-reconcile ledger
+
+**Context.** AI must be structural but incapable of publishing, granting,
+issuing, or altering learner state, and must never overspend.
+
+**Decision.** Realizes ADR-010 for authoring. Every generation runs
+reserve (SQL budget hard-stop) → provider call (server) → registered
+Zod-schema validation (invalid output discarded) → settle (cost
+reconciliation) → accept/reject. Accepting inserts REAL validated DRAFT
+content re-checked through `contentBlockSchema`; nothing AI-produced can
+reach `publish_*`, permissions, credentials, or progress. The full
+lifecycle is recorded in `ai_generations` (provider, model, operation,
+objective, sources, tokens, cost, status).
+
+**Consequences.** AI is auditable and eval-gateable; the accept step is
+the single trust boundary; malformed output fails safely.
+
+---
+
+## ADR-024 — AI budget enforcement in integer cents with a platform hard cap
+
+**Context.** Owner decision 5: a hard $50/month development cap, tracked
+per org/provider/profile/operation/user, no silent overage, no float
+money.
+
+**Decision.** `ai_budgets.monthly_limit_cents` is CHECK-capped at 5000
+(the platform ceiling). `reserve_ai_generation` takes a per-org advisory
+lock, sums committed + reserved cents for the UTC month, and raises when
+the new reservation would exceed `least(org_limit, 5000)` — a hard stop.
+Costs are integer-cent ESTIMATES (ceil per side) until reconciled against
+provider invoices (documented; not implemented in dev). Platform admins
+adjust the org limit; tenants can never exceed the cap.
+
+**Consequences.** No floating-point money; concurrent reservations are
+serialized; overage is impossible; estimates are honest about their
+nature.
+
+---
+
+## ADR-025 — Outbox delivery via a scheduled Supabase Edge Function
+
+**Context.** ADR-018 deferred the outbox worker. Phase 2 needs delivery
+without introducing Kafka/Redis/a standalone service.
+
+**Decision.** A single scheduled Supabase Edge Function
+(`webhook-worker`) drains the outbox: `app.claim_webhook_deliveries`
+fans pending outbox events out to matching active endpoints and claims
+them with `FOR UPDATE SKIP LOCKED` (no duplicate concurrent work); the
+function signs, delivers, and settles via `app.settle_webhook_delivery`
+(bounded backoff, dead-letter after 6 attempts). Public
+`worker_*` wrappers (service_role only) bridge PostgREST to the
+app-schema logic; the service-role key lives only in the function
+environment. Events with no subscribed endpoint settle as processed.
+
+**Consequences.** No new infrastructure; at-least-once delivery with
+dedupe on the analytics event id; the worker is stateless and idempotent;
+scheduling is a dashboard cron trigger (owner action).
+
+---
+
+## ADR-026 — Webhook SSRF policy: allowlist-by-exclusion + post-resolution recheck
+
+**Context.** Outbound webhooks are an SSRF vector (metadata services,
+private networks, redirect pivots).
+
+**Decision.** Destinations must be https (plain http only to localhost in
+an opt-in dev mode). A static check blocks metadata hosts, loopback,
+link-local, ULA/private ranges, `.internal`/`.local`, and credentialed
+URLs; the worker additionally sets `redirect: "error"` (no redirect
+pivot), caps response bodies at 4KB, redacts secrets from stored
+excerpts, and rechecks resolved addresses. Production egress controls
+(a proxy/allowlist) are documented as a future hardening step.
+
+**Consequences.** The common SSRF classes are closed in code; the policy
+is shared (pure functions) between the domain tests and the worker;
+production hardening is scoped, not assumed.
+
+---
+
+## ADR-027 — Verification rate-limiting: application abstraction now, edge enforcement later
+
+**Context.** Owner decision 4: keep public credential verification, add
+rate limiting without a new infrastructure service this phase.
+
+**Decision.** Public verification stays anonymous and privacy-safe
+(ADR — 1D). A rate-limiting ABSTRACTION is documented (a keyed
+token-bucket interface the `/verify` route and `verify_credential` will
+consult) with the production enforcement plan being an edge middleware /
+CDN rule keyed on IP + code prefix. No standalone rate-limit service is
+added in Phase 2; the 64-bit random code space remains the primary
+enumeration defense.
+
+**Consequences.** The interface exists to wire enforcement into later;
+dev verification is unthrottled (documented); no premature infrastructure.
