@@ -7,6 +7,7 @@ export * from "./media";
 export * from "./learning";
 export * from "./assessment";
 export * from "./bfh-contract";
+export * from "./bfh-integration";
 export * from "./studio";
 export * from "./ai";
 export * from "./webhooks";
