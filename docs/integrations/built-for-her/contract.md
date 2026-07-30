@@ -11,11 +11,37 @@ Per ADR-012: short-lived single-use handoff tokens, never sessions.
 - BFH requests a handoff for a signed-in member →
   `identityHandoffClaimsSchema`: org slug, `externalUserId`, email,
   optional display name, `accessLevel` (`member|coach|admin`),
-  `issuedAt`/`expiresAt` (≤120 s), ≥16-char `nonce`.
-- NovaKore validates, consumes the nonce (single use), links or creates
-  the user via `external_identities`, applies the role mapping
-  (README §3), and establishes a NovaKore session.
+  **`audiences` (`member|coach|professional_learner`, ≥1, explicit)**,
+  `issuedAt`/`expiresAt` (≤120 s), ≥16-char `nonce`, and an HMAC-SHA256
+  `signature` over the canonical claim string with the per-org shared
+  secret.
+- NovaKore verifies the signature + timing + single-use nonce **inside the
+  database** (`bfh_exchange_handoff`; the secret never leaves Postgres),
+  links or creates the user via `external_identities`, stores the
+  audiences, applies the role + audience mapping (below), refuses a
+  disabled/suspended membership, and establishes a NovaKore session.
 - Claims carry NO health/performance/subscription data.
+
+### 1a. Persona / audience model (normative)
+
+`accessLevel` is the **BFH app role** (how BFH treats the person);
+`audiences` is the **learning audience** (what the person is eligible to
+learn). They are independent — NovaKore never infers audience from the app
+role. A person holds multiple audiences only through an explicit claim.
+
+| BFH app role              | NovaKore role(s)         | Learning audience(s)               | Assignment eligibility      | Admin perms      | Content visibility        | Credential eligibility         |
+| ------------------------- | ------------------------ | ---------------------------------- | --------------------------- | ---------------- | ------------------------- | ------------------------------ |
+| `member`                  | `learner`                | `member`                           | member Journeys             | none             | member Journeys only      | member credentials             |
+| `coach`                   | `learner` + `instructor` | `coach` (± `professional_learner`) | coach/professional Journeys | instructor scope | coach content (+ serving) | coach/professional credentials |
+| `coach`/intern as learner | `learner`                | `professional_learner`             | professional Journeys       | none             | professional content      | professional credentials       |
+| `admin`                   | `organization_admin`     | (as claimed)                       | per claimed audiences       | org admin        | oversight                 | n/a                            |
+
+- **Any** audience grants the `learner` role (audiences share the consuming
+  role); the app role adds the serving/admin role.
+- A Journey carries one `audience_key`; enrollment/assignment is refused
+  (`audience_mismatch`) unless the identity holds that audience. Untagged
+  Journeys are open to any learner.
+- BFH can never mint permissions or audiences outside these bundles.
 
 ## 2. Deep-link contract
 
