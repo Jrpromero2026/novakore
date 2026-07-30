@@ -43,6 +43,24 @@ role. A person holds multiple audiences only through an explicit claim.
   Journeys are open to any learner.
 - BFH can never mint permissions or audiences outside these bundles.
 
+### 1b. Mapping revocation (normative)
+
+Each external identity carries a `status` (`active` | `revoked`). Revoking a
+mapping (RPC `bfh_set_external_identity_status`, gated on `integrations.manage`,
+audited in `audit_logs`) is a NovaKore-side kill switch:
+
+- A **revoked** mapping cannot complete SSO handoff — the exchange returns
+  `identity_revoked` (after signature/nonce checks, before minting a session).
+- A **revoked** mapping cannot be enrolled or assigned via `/v1` — the API
+  returns `forbidden` / `identity_revoked`.
+- The underlying NovaKore user and membership are **untouched** — revocation
+  governs the BFH↔NovaKore mapping only, not the person's other access.
+- Restoring (`status = active`) re-enables the mapping. Tenant isolation and
+  auditability are enforced throughout.
+
+BFH-side revocation (ceasing to issue handoffs) and NovaKore-side revocation
+(this status) are independent controls; either suffices to stop SSO.
+
 ## 2. Deep-link contract
 
 `https://<novakore-host>/{orgSlug}/learn[/...]?handoff=<token>` —

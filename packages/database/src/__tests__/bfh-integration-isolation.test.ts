@@ -1,5 +1,5 @@
 import { createClient, type SupabaseClient } from "@supabase/supabase-js";
-import { describe, expect, test } from "vitest";
+import { afterAll, describe, expect, test } from "vitest";
 
 /**
  * BFH integration isolation + failure-mode suite (Validation phase). Real
@@ -24,11 +24,25 @@ const BFH_KEY =
 
 const runTag = Date.now().toString(36);
 
+const DEV_PASSWORD = "NovaKore-dev-password-1";
+
 /** Untyped anon client — the new integration RPCs are not in the generated types. */
 function anon(): SupabaseClient {
   return createClient(url!, anonKey!, {
     auth: { persistSession: false, autoRefreshToken: false },
   });
+}
+
+const signedClients: SupabaseClient[] = [];
+async function signedIn(email: string): Promise<SupabaseClient> {
+  const client = anon();
+  const { error } = await client.auth.signInWithPassword({
+    email,
+    password: DEV_PASSWORD,
+  });
+  if (error) throw new Error(`sign-in failed for ${email}: ${error.message}`);
+  signedClients.push(client);
+  return client;
 }
 
 describe.skipIf(!configured)("BFH integration isolation (real RLS)", () => {
@@ -102,5 +116,51 @@ describe.skipIf(!configured)("BFH integration isolation (real RLS)", () => {
     const result = data as { status?: string; code?: string };
     expect(result?.status).toBe("not_found");
     expect(result?.code).toBe("unknown_external_user");
+  });
+
+  test("a revoked external identity cannot be enrolled; restore re-enables", async () => {
+    const admin = await signedIn("bfh.owner@novakore.test"); // integrations.manage
+    // revoke the coach mapping
+    const { data: rev } = await admin.rpc("bfh_set_external_identity_status", {
+      p_organization_slug: "bfh-dev",
+      p_external_user_id: "bfh-coach-alpha",
+      p_status: "revoked",
+    });
+    expect((rev as { status?: string })?.status).toBe("revoked");
+    try {
+      const { data } = await anon().rpc("bfh_enroll_or_assign_external", {
+        p_api_key: BFH_KEY,
+        p_kind: "assign",
+        p_external_user_id: "bfh-coach-alpha",
+        p_target_type: "learning_path",
+        p_target_slug: "coach-certification-journey",
+        p_due_at: null,
+        p_idempotency_key: `revoked-${runTag}`,
+      });
+      const result = data as { status?: string; code?: string };
+      expect(result?.status).toBe("forbidden");
+      expect(result?.code).toBe("identity_revoked");
+    } finally {
+      // always restore so shared QA data is not left revoked
+      await admin.rpc("bfh_set_external_identity_status", {
+        p_organization_slug: "bfh-dev",
+        p_external_user_id: "bfh-coach-alpha",
+        p_status: "active",
+      });
+    }
+  });
+
+  test("a member (no integrations.manage) cannot revoke a mapping", async () => {
+    const member = await signedIn("bfh.member@novakore.test");
+    const { data } = await member.rpc("bfh_set_external_identity_status", {
+      p_organization_slug: "bfh-dev",
+      p_external_user_id: "bfh-coach-alpha",
+      p_status: "revoked",
+    });
+    expect((data as { status?: string })?.status).toBe("forbidden");
+  });
+
+  afterAll(async () => {
+    await Promise.all(signedClients.map((c) => c.auth.signOut()));
   });
 });

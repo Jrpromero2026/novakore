@@ -24,6 +24,10 @@ and the QA checklist ([alpha-regression-checklist.md](../qa/alpha-regression-che
   status, and lesson drop-off). No fabricated metrics.
 - **Tester cohorts** — members labelled Internal Alpha / Founder / Coach /
   Staff; dashboards filter by cohort.
+- **Mapping revocation** — an external identity can be `active` or `revoked`
+  (`bfh_set_external_identity_status`, `integrations.manage`, audited); a
+  revoked mapping cannot SSO or be enrolled/assigned, without touching the
+  person's NovaKore account.
 
 ## Tester onboarding
 
@@ -120,3 +124,116 @@ and the QA checklist ([alpha-regression-checklist.md](../qa/alpha-regression-che
   time-to-resolve; blocker count trending to zero.
 - **Qualitative:** "premium feel" 1–5 and one-sentence takeaways from the
   RC-1 feedback template.
+
+---
+
+# Final handoff
+
+## SSO setup (dev)
+
+1. Deploy is done: `bfh-handoff` Edge Function is ACTIVE (`verify_jwt=false`);
+   it verifies the BFH HMAC + timing + nonce in-DB and mints a one-time
+   NovaKore magic link into `/auth/callback`.
+2. Set `NOVAKORE_SITE_URL` on the `bfh-handoff` function to the alpha host
+   (default `http://localhost:3000`) so the deep link lands correctly.
+3. Provision the per-org secrets via the secure process (NOT committed):
+   `app.bfh_integration_config.handoff_secret` (per-org HMAC secret) and
+   `app.organization_api_keys` (hashed `/v1` key). Dev values live in
+   `.env.test.local` for the simulator.
+4. Smoke-test:
+   `node scripts/bfh-alpha-simulator.mjs handoff bfh-member-alpha bfh.member@novakore.test member member`
+   → expect `linked` + an action link.
+
+## Required environment variables
+
+| Where            | Var                                                          | Purpose                               |
+| ---------------- | ------------------------------------------------------------ | ------------------------------------- |
+| App              | `NEXT_PUBLIC_SUPABASE_URL` / `NEXT_PUBLIC_SUPABASE_ANON_KEY` | app + `/v1` client                    |
+| App              | `NEXT_PUBLIC_SITE_URL`                                       | auth redirects                        |
+| `bfh-handoff` EF | `SUPABASE_URL` / `SUPABASE_SERVICE_ROLE_KEY`                 | injected by Supabase                  |
+| `bfh-handoff` EF | `NOVAKORE_SITE_URL`                                          | deep-link host                        |
+| Simulator (dev)  | `BFH_HANDOFF_SECRET`, `BFH_API_KEY`                          | in `.env.test.local`, never committed |
+
+No secrets are committed to the repo or the seed.
+
+## Cohort assignment
+
+Admin → **Operations → Tester cohorts** shows labelled members. Label a member
+by inserting a `tester_labels` row (Internal Alpha / Founder / Coach / Staff)
+— dev fixtures are seeded. Dashboards filter by cohort via the chips at the top
+of Operations.
+
+## Member test script
+
+1. Sign in as `bfh.member@novakore.test`; land on the Academy home.
+2. Use **Continue learning** to open _Strong Foundations_.
+3. Work through the Programs: read a lesson, flip a flashcard, answer a
+   knowledge check, read a comparison + callouts, complete each lesson.
+4. Take a Program Check evaluation; then the final _Strong Foundations — Final
+   Check_.
+5. Confirm the credential appears on the home; open **Verify**.
+6. Try `/bfh-dev/admin` and any coach content — confirm you cannot reach them.
+7. Use **Feedback** at least twice (different categories).
+
+## Coach test script
+
+1. Sign in as `bfh.coach@novakore.test`; confirm the **Coach Certification**
+   Journey shows (not member content).
+2. Complete a coach lesson + an Evaluation.
+3. Submit feedback.
+4. (If given admin) as `bfh.owner@novakore.test`: assign a Journey, review
+   learner progress, review an Evaluation, view credentials.
+
+## Admin test script
+
+1. Sign in as `bfh.owner@novakore.test`; open **Operations**.
+2. Confirm metrics populate and match real activity; check drop-off.
+3. Filter feedback by status/category/severity; search a message.
+4. Triage an item: set status, severity, assignee, notes, resolution; save.
+5. Filter metrics by a cohort chip.
+6. Confirm a member/coach cannot reach Operations.
+
+## Daily operating checklist
+
+- [ ] Review new feedback; triage blockers first (severity + assignee).
+- [ ] Scan Operations metrics: activation, completion, drop-off spikes.
+- [ ] Fix or ticket blockers/majors; batch minors.
+- [ ] Reply to testers where useful; keep momentum.
+- [ ] End of day: no untriaged blocker older than 24h.
+
+## Bug-severity definitions
+
+- **Blocker** — prevents core use (cannot sign in, open the Academy, complete
+  a lesson/evaluation, or a security/authorization/data-integrity failure).
+- **Major** — materially degrades the alpha (a broken flow with no workaround,
+  wrong content shown, a real accessibility barrier).
+- **Minor** — noticeable but has a workaround; does not block progress.
+- **Cosmetic** — visual/wording nit with no functional impact.
+
+Fix Blockers + Majors (and any confirmed security/authz/data/a11y defect)
+before/inside the alpha; backlog Minor + Cosmetic.
+
+## Support owner
+
+Repository owner (JR) is the alpha support + triage owner. Route blockers to
+the owner; testers use the in-app **Feedback** widget as the primary channel.
+
+## Alpha start checklist
+
+- [ ] `main` is green (`npm run verify`; production build exit 0).
+- [ ] Migrations applied; `bfh-handoff` + `webhook-worker` ACTIVE; worker
+      scheduled; leaked-password protection ON.
+- [ ] `NOVAKORE_SITE_URL` + per-org secrets provisioned (secure process).
+- [ ] Standard-browser regression checklist passed; evidence stored.
+- [ ] Testers labelled into cohorts; test scripts + tester guide sent.
+- [ ] Feedback widget visible on member + admin shells.
+
+## Alpha completion criteria
+
+- [ ] Every invited tester completed the member script (and coaches the coach
+      script) at least once.
+- [ ] Zero open Blockers; all Majors resolved or explicitly accepted.
+- [ ] Drop-off + confusion feedback reviewed per lesson; content issues
+      ticketed.
+- [ ] "Premium feel" median ≥ 4/5.
+- [ ] Go/No-Go decision recorded for the next stage (beta).
