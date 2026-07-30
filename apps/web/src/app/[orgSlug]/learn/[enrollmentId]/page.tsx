@@ -6,7 +6,7 @@ import { requireUser } from "@/lib/auth";
 import { getEnrolledPath } from "@/lib/data/learning";
 import { getTerminology } from "@/lib/terminology";
 import { supabaseServer } from "@/lib/supabase/server";
-import { Badge, Card, CardHeader } from "@/components/ui/primitives";
+import { Badge, Card, CardHeader, cx } from "@/components/ui/primitives";
 
 export const metadata: Metadata = { title: "Learning" };
 
@@ -47,20 +47,52 @@ export default async function EnrollmentOverviewPage({
     locked_by_prerequisite: { tone: "neutral" as const, label: "Locked" },
     not_enrolled: { tone: "warning" as const, label: "Unavailable" },
   };
+  const total = path.nodes.length;
+  const done = path.nodes.filter((n) => n.state === "completed").length;
+  const pct = total > 0 ? Math.round((done / total) * 100) : 0;
+  const courseWord = term("course");
 
   return (
     <div className="space-y-6">
-      <header className="space-y-1">
-        <p
-          className="text-caption uppercase text-text-muted"
-          style={{ letterSpacing: "var(--tracking-caps)" }}
-        >
-          <Link href={`/${orgSlug}/learn`} className="hover:text-text-primary">
-            My learning
-          </Link>{" "}
-          / {term("learning_path").singular.toLowerCase()}
-        </p>
-        <h1 className="text-h1 text-text-primary">{path.pathTitle}</h1>
+      <header className="space-y-3">
+        <div className="space-y-1">
+          <p
+            className="text-caption uppercase text-text-muted"
+            style={{ letterSpacing: "var(--tracking-caps)" }}
+          >
+            <Link
+              href={`/${orgSlug}/learn`}
+              className="rounded hover:text-text-primary focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent"
+            >
+              Academy
+            </Link>{" "}
+            / {term("learning_path").singular.toLowerCase()}
+          </p>
+          <h1 className="text-h1 text-text-primary">{path.pathTitle}</h1>
+        </div>
+        {total > 0 ? (
+          <div className="space-y-1.5">
+            <div className="flex items-center justify-between text-caption text-text-muted">
+              <span>
+                {done} of {total} {courseWord.plural.toLowerCase()} complete
+              </span>
+              <span className="tabular-nums">{pct}%</span>
+            </div>
+            <div
+              className="h-1.5 overflow-hidden rounded-full bg-surface-sunken"
+              role="progressbar"
+              aria-valuenow={pct}
+              aria-valuemin={0}
+              aria-valuemax={100}
+              aria-label={`${courseWord.plural} completed`}
+            >
+              <div
+                className="h-full rounded-full bg-accent transition-[width] duration-500 ease-out motion-reduce:transition-none"
+                style={{ width: `${pct}%` }}
+              />
+            </div>
+          </div>
+        ) : null}
       </header>
 
       <Card>
@@ -75,8 +107,18 @@ export default async function EnrollmentOverviewPage({
               node.state === "available" || node.state === "completed";
             const inner = (
               <>
-                <span className="text-caption tabular-nums text-text-muted">
-                  {index + 1}.
+                <span
+                  aria-hidden
+                  className={cx(
+                    "flex size-7 shrink-0 items-center justify-center rounded-full text-caption",
+                    node.state === "completed"
+                      ? "bg-accent-soft text-accent"
+                      : node.state === "available"
+                        ? "bg-surface-sunken text-text-secondary"
+                        : "bg-surface-sunken text-text-muted",
+                  )}
+                >
+                  {node.state === "completed" ? "✓" : index + 1}
                 </span>
                 <span className="min-w-0 flex-1">
                   <span className="block truncate text-body font-medium text-text-primary">
