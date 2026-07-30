@@ -11,11 +11,55 @@ Per ADR-012: short-lived single-use handoff tokens, never sessions.
 - BFH requests a handoff for a signed-in member →
   `identityHandoffClaimsSchema`: org slug, `externalUserId`, email,
   optional display name, `accessLevel` (`member|coach|admin`),
-  `issuedAt`/`expiresAt` (≤120 s), ≥16-char `nonce`.
-- NovaKore validates, consumes the nonce (single use), links or creates
-  the user via `external_identities`, applies the role mapping
-  (README §3), and establishes a NovaKore session.
+  **`audiences` (`member|coach|professional_learner`, ≥1, explicit)**,
+  `issuedAt`/`expiresAt` (≤120 s), ≥16-char `nonce`, and an HMAC-SHA256
+  `signature` over the canonical claim string with the per-org shared
+  secret.
+- NovaKore verifies the signature + timing + single-use nonce **inside the
+  database** (`bfh_exchange_handoff`; the secret never leaves Postgres),
+  links or creates the user via `external_identities`, stores the
+  audiences, applies the role + audience mapping (below), refuses a
+  disabled/suspended membership, and establishes a NovaKore session.
 - Claims carry NO health/performance/subscription data.
+
+### 1a. Persona / audience model (normative)
+
+`accessLevel` is the **BFH app role** (how BFH treats the person);
+`audiences` is the **learning audience** (what the person is eligible to
+learn). They are independent — NovaKore never infers audience from the app
+role. A person holds multiple audiences only through an explicit claim.
+
+| BFH app role              | NovaKore role(s)         | Learning audience(s)               | Assignment eligibility      | Admin perms      | Content visibility        | Credential eligibility         |
+| ------------------------- | ------------------------ | ---------------------------------- | --------------------------- | ---------------- | ------------------------- | ------------------------------ |
+| `member`                  | `learner`                | `member`                           | member Journeys             | none             | member Journeys only      | member credentials             |
+| `coach`                   | `learner` + `instructor` | `coach` (± `professional_learner`) | coach/professional Journeys | instructor scope | coach content (+ serving) | coach/professional credentials |
+| `coach`/intern as learner | `learner`                | `professional_learner`             | professional Journeys       | none             | professional content      | professional credentials       |
+| `admin`                   | `organization_admin`     | (as claimed)                       | per claimed audiences       | org admin        | oversight                 | n/a                            |
+
+- **Any** audience grants the `learner` role (audiences share the consuming
+  role); the app role adds the serving/admin role.
+- A Journey carries one `audience_key`; enrollment/assignment is refused
+  (`audience_mismatch`) unless the identity holds that audience. Untagged
+  Journeys are open to any learner.
+- BFH can never mint permissions or audiences outside these bundles.
+
+### 1b. Mapping revocation (normative)
+
+Each external identity carries a `status` (`active` | `revoked`). Revoking a
+mapping (RPC `bfh_set_external_identity_status`, gated on `integrations.manage`,
+audited in `audit_logs`) is a NovaKore-side kill switch:
+
+- A **revoked** mapping cannot complete SSO handoff — the exchange returns
+  `identity_revoked` (after signature/nonce checks, before minting a session).
+- A **revoked** mapping cannot be enrolled or assigned via `/v1` — the API
+  returns `forbidden` / `identity_revoked`.
+- The underlying NovaKore user and membership are **untouched** — revocation
+  governs the BFH↔NovaKore mapping only, not the person's other access.
+- Restoring (`status = active`) re-enables the mapping. Tenant isolation and
+  auditability are enforced throughout.
+
+BFH-side revocation (ceasing to issue handoffs) and NovaKore-side revocation
+(this status) are independent controls; either suffices to stop SSO.
 
 ## 2. Deep-link contract
 

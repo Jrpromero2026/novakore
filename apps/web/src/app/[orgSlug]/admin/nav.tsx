@@ -25,6 +25,11 @@ export function AdminNav({
   const items: NavItem[] = [
     { href: base, label: "Overview" },
     {
+      href: `${base}/ops`,
+      label: "Operations",
+      needsAny: ["analytics.view"],
+    },
+    {
       href: `${base}/studio`,
       label: "Studio",
       needsAny: ["content.view_draft"],

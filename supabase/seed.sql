@@ -488,3 +488,10 @@ insert into public.reusable_blocks (id, organization_id, academy_id, title, desc
    '{"tone":"note","title":"Trust first","body":"Listen before you program. The honest history is worth more than the first workout."}',
    array['coaching','intake'], 'active')
 on conflict (id) do nothing;
+
+-- Built For Her Academy internal-alpha supplement (Journeys, Programs,
+-- lessons, evaluations, credential, audience mappings, tester cohorts).
+-- Secrets (handoff HMAC secret, API keys) are provisioned via the secure
+-- secret-loading process, never committed here.
+\ir seeds/bfh-academy-alpha.sql
+

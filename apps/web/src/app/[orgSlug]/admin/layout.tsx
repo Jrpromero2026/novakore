@@ -4,6 +4,7 @@ import { getOrgBrandContext } from "@/lib/data/branding";
 import { signOutAction } from "@/lib/actions/auth";
 import { OrgThemeStyle } from "@/components/org-theme";
 import { ThemeToggle } from "@/components/theme-toggle";
+import { FeedbackWidget } from "@/components/feedback/feedback-widget";
 import { AdminNav } from "./nav";
 
 export default async function OrgAdminLayout({
@@ -71,6 +72,7 @@ export default async function OrgAdminLayout({
         <AdminNav orgSlug={orgSlug} permissions={[...ctx.orgPermissions]} />
         <main className="min-w-0 flex-1">{children}</main>
       </div>
+      <FeedbackWidget orgSlug={orgSlug} roleHint="admin" />
     </div>
   );
 }

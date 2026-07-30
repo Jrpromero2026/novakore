@@ -493,6 +493,7 @@ describe("BFH contract schemas", () => {
       externalUserId: "bfh_1234",
       email: "member@example.com",
       accessLevel: "member",
+      audiences: ["member"],
       issuedAt: 1_800_000_000,
       expiresAt: 1_800_000_120,
       nonce: "a".repeat(24),

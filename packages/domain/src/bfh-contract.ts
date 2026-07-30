@@ -20,6 +20,19 @@ import { z } from "zod";
 
 export const BFH_CONTRACT_VERSION = 1 as const;
 
+/**
+ * Learning audiences (personas). DISTINCT from the BFH app role
+ * (`accessLevel`): the app role says how the person is treated inside BFH;
+ * the audience says which learning they are eligible for inside NovaKore.
+ * NovaKore never infers audience from the app role — BFH asserts it.
+ */
+export const BFH_AUDIENCES = [
+  "member",
+  "coach",
+  "professional_learner",
+] as const;
+export type BfhAudience = (typeof BFH_AUDIENCES)[number];
+
 // ---------------------------------------------------------------------------
 // Identity handoff (SSO deep link, ADR-012)
 // ---------------------------------------------------------------------------
@@ -37,8 +50,14 @@ export const identityHandoffClaimsSchema = z.strictObject({
   externalUserId: z.string().min(1).max(128),
   email: z.email().max(254),
   displayName: z.string().min(1).max(120).optional(),
-  /** Coarse access role BFH asserts; NovaKore maps to system roles. */
+  /** Coarse app role BFH asserts; NovaKore maps to system roles. */
   accessLevel: z.enum(["member", "coach", "admin"]),
+  /**
+   * Learning audience(s) the person is eligible for — explicit and
+   * REQUIRED. Never inferred from accessLevel: a BFH "coach" may be a
+   * professional_learner, a member, or both, and only BFH knows.
+   */
+  audiences: z.array(z.enum(BFH_AUDIENCES)).min(1),
   /** Unix seconds; tokens are valid ≤ 120s and single-use. */
   issuedAt: z.number().int(),
   expiresAt: z.number().int(),

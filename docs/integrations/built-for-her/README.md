@@ -10,9 +10,21 @@ is explicitly deferred to a later, owner-approved phase.
 Documents:
 
 - [contract.md](contract.md) — identity handoff, APIs, webhooks, deep
-  links, embedding, error/retry/idempotency/signature rules, versioning.
+  links, embedding, error/retry/idempotency/signature rules, the
+  persona/audience model + mapping table, versioning.
+- [phase-alpha-validation.md](phase-alpha-validation.md) — the dev-only
+  alpha validation: happy-path + failure-mode matrix, security, performance,
+  risks, and per-audience readiness (Member / Coach-Professional / Admin).
 - This README — ownership boundary, tenant/user mapping, environments,
   rollout sequence, explicit deferrals.
+
+**Learning audiences (Validation phase).** BFH runs as ONE NovaKore tenant
+serving multiple, isolated learning audiences — `member` (coaching client),
+`coach`, and `professional_learner` — distinct from the NovaKore role.
+Audience is an explicit handoff claim, tags each Journey, and gates
+assignment; it is never inferred from the BFH app role. Dev fixtures:
+`bfh.member@novakore.test` (member Journey _Strong Foundations_) and
+`bfh.coach@novakore.test` (coach _Coach Certification_ Journey).
 
 ## 1. Data ownership boundary (normative)
 
