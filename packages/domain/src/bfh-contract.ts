@@ -26,7 +26,11 @@ export const BFH_CONTRACT_VERSION = 1 as const;
  * the audience says which learning they are eligible for inside NovaKore.
  * NovaKore never infers audience from the app role — BFH asserts it.
  */
-export const BFH_AUDIENCES = ["member", "coach", "professional_learner"] as const;
+export const BFH_AUDIENCES = [
+  "member",
+  "coach",
+  "professional_learner",
+] as const;
 export type BfhAudience = (typeof BFH_AUDIENCES)[number];
 
 // ---------------------------------------------------------------------------

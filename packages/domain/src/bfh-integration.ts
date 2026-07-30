@@ -90,9 +90,37 @@ export function isEligibleForAudience(
 /** Handoff tokens are single-use and valid for at most this long (ADR-012). */
 export const HANDOFF_MAX_LIFETIME_SECONDS = 120;
 
+/**
+ * Canonical HMAC signing input for a handoff token. BFH signs this exact
+ * string with the per-org shared secret; `bfh_exchange_handoff` rebuilds and
+ * verifies it. Audiences are sorted ascending so array order never matters.
+ * Format: v1|orgSlug|externalUserId|email|accessLevel|audiencesCsv|issuedAt|expiresAt|nonce
+ */
+export function handoffSigningInput(claims: {
+  organizationSlug: string;
+  externalUserId: string;
+  email: string;
+  accessLevel: BfhAccessLevel;
+  audiences: readonly BfhAudience[];
+  issuedAt: number;
+  expiresAt: number;
+  nonce: string;
+}): string {
+  return [
+    "v1",
+    claims.organizationSlug,
+    claims.externalUserId,
+    claims.email,
+    claims.accessLevel,
+    [...claims.audiences].sort().join(","),
+    String(claims.issuedAt),
+    String(claims.expiresAt),
+    claims.nonce,
+  ].join("|");
+}
+
 export type HandoffVerification =
-  | { ok: true; claims: IdentityHandoffClaims }
-  | { ok: false; reason: string };
+  { ok: true; claims: IdentityHandoffClaims } | { ok: false; reason: string };
 
 /**
  * Validate handoff claims' shape and timing. Returns a discriminated result

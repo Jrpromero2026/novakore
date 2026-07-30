@@ -6,6 +6,7 @@ import {
   buildAssessmentResultWebhook,
   buildCompletionWebhook,
   buildCredentialIssuedWebhook,
+  handoffSigningInput,
   isEligibleForAudience,
   isProjectableEventType,
   mapAccessLevelToRoleKey,
@@ -49,9 +50,9 @@ describe("access-level mapping", () => {
 describe("audience model", () => {
   it("any audience grants learner; app role adds the serving role", () => {
     expect(rolesForHandoff("member", ["member"])).toEqual(["learner"]);
-    expect(rolesForHandoff("coach", ["coach", "professional_learner"]).sort()).toEqual(
-      ["instructor", "learner"],
-    );
+    expect(
+      rolesForHandoff("coach", ["coach", "professional_learner"]).sort(),
+    ).toEqual(["instructor", "learner"]);
     expect(rolesForHandoff("admin", []).sort()).toEqual(["organization_admin"]);
   });
 
@@ -64,18 +65,40 @@ describe("audience model", () => {
   it("gates a Journey to its audience; open Journeys allow any learner", () => {
     expect(isEligibleForAudience(["member"], "member")).toBe(true);
     expect(isEligibleForAudience(["member"], "coach")).toBe(false);
-    expect(isEligibleForAudience(["coach", "professional_learner"], "coach")).toBe(
-      true,
-    );
+    expect(
+      isEligibleForAudience(["coach", "professional_learner"], "coach"),
+    ).toBe(true);
     expect(isEligibleForAudience(["member"], null)).toBe(true);
   });
 
   it("requires an explicit audiences claim (never inferred)", () => {
-    const bad = verifyHandoffClaims(
-      { ...claims(), audiences: [] },
-      NOW,
-    );
+    const bad = verifyHandoffClaims({ ...claims(), audiences: [] }, NOW);
     expect(bad.ok).toBe(false);
+  });
+
+  it("builds a stable, audience-order-independent signing input", () => {
+    const base = {
+      organizationSlug: "bfh-dev",
+      externalUserId: "u1",
+      email: "m@example.com",
+      accessLevel: "coach" as const,
+      issuedAt: NOW,
+      expiresAt: NOW + 100,
+      nonce: "0123456789abcdef",
+    };
+    const a = handoffSigningInput({
+      ...base,
+      audiences: ["professional_learner", "coach"],
+    });
+    const b = handoffSigningInput({
+      ...base,
+      audiences: ["coach", "professional_learner"],
+    });
+    expect(a).toBe(b);
+    expect(a).toBe(
+      "v1|bfh-dev|u1|m@example.com|coach|coach,professional_learner|" +
+        `${NOW}|${NOW + 100}|0123456789abcdef`,
+    );
   });
 });
 
