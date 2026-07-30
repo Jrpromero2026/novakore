@@ -15,6 +15,7 @@
 
 import {
   BFH_CONTRACT_VERSION,
+  type BfhAudience,
   identityHandoffClaimsSchema,
   type IdentityHandoffClaims,
   completionWebhookSchema,
@@ -48,6 +49,38 @@ export type MappedRoleKey =
 
 export function mapAccessLevelToRoleKey(level: BfhAccessLevel): MappedRoleKey {
   return BFH_ACCESS_LEVEL_TO_ROLE_KEY[level];
+}
+
+/**
+ * Resolve the NovaKore system roles for a handoff. Any learning audience
+ * grants `learner` (audiences share the consuming role); the app role adds
+ * the serving/admin role (coach → instructor, admin → organization_admin).
+ * A member with the member audience is simply a learner. Mirrors
+ * `bfh_exchange_handoff` in SQL.
+ */
+export function rolesForHandoff(
+  accessLevel: BfhAccessLevel,
+  audiences: readonly BfhAudience[],
+): string[] {
+  const roles = new Set<string>();
+  if (audiences.length > 0) roles.add("learner");
+  if (accessLevel === "coach") roles.add("instructor");
+  else if (accessLevel === "admin") roles.add("organization_admin");
+  else if (accessLevel === "member") roles.add("learner");
+  return [...roles];
+}
+
+/**
+ * A Journey tagged with an audience reaches only people who hold that
+ * audience. Untagged Journeys (null) are open to any learner. This is the
+ * single eligibility rule enforced in the enrollment/assignment RPC.
+ */
+export function isEligibleForAudience(
+  userAudiences: readonly BfhAudience[],
+  journeyAudience: BfhAudience | null,
+): boolean {
+  if (journeyAudience === null) return true;
+  return userAudiences.includes(journeyAudience);
 }
 
 // ---------------------------------------------------------------------------

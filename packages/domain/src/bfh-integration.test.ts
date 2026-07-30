@@ -6,9 +6,11 @@ import {
   buildAssessmentResultWebhook,
   buildCompletionWebhook,
   buildCredentialIssuedWebhook,
+  isEligibleForAudience,
   isProjectableEventType,
   mapAccessLevelToRoleKey,
   resolveHandoffPath,
+  rolesForHandoff,
   verifyHandoffClaims,
 } from "./bfh-integration";
 import { BFH_CONTRACT_VERSION } from "./bfh-contract";
@@ -22,6 +24,7 @@ function claims(overrides: Record<string, unknown> = {}) {
     externalUserId: "bfh-user-123",
     email: "member@example.com",
     accessLevel: "member",
+    audiences: ["member"],
     issuedAt: NOW,
     expiresAt: NOW + 90,
     nonce: "0123456789abcdef0123",
@@ -40,6 +43,39 @@ describe("access-level mapping", () => {
     expect(Object.values(BFH_ACCESS_LEVEL_TO_ROLE_KEY)).not.toContain(
       "organization_owner",
     );
+  });
+});
+
+describe("audience model", () => {
+  it("any audience grants learner; app role adds the serving role", () => {
+    expect(rolesForHandoff("member", ["member"])).toEqual(["learner"]);
+    expect(rolesForHandoff("coach", ["coach", "professional_learner"]).sort()).toEqual(
+      ["instructor", "learner"],
+    );
+    expect(rolesForHandoff("admin", []).sort()).toEqual(["organization_admin"]);
+  });
+
+  it("a coach doing certification consumes as a learner", () => {
+    expect(rolesForHandoff("coach", ["professional_learner"])).toContain(
+      "learner",
+    );
+  });
+
+  it("gates a Journey to its audience; open Journeys allow any learner", () => {
+    expect(isEligibleForAudience(["member"], "member")).toBe(true);
+    expect(isEligibleForAudience(["member"], "coach")).toBe(false);
+    expect(isEligibleForAudience(["coach", "professional_learner"], "coach")).toBe(
+      true,
+    );
+    expect(isEligibleForAudience(["member"], null)).toBe(true);
+  });
+
+  it("requires an explicit audiences claim (never inferred)", () => {
+    const bad = verifyHandoffClaims(
+      { ...claims(), audiences: [] },
+      NOW,
+    );
+    expect(bad.ok).toBe(false);
   });
 });
 
