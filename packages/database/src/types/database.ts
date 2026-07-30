@@ -1187,6 +1187,76 @@ export type Database = {
           },
         ];
       };
+      feedback: {
+        Row: {
+          assignee_membership_id: string | null;
+          category: string;
+          context: Json;
+          created_at: string;
+          id: string;
+          membership_id: string;
+          message: string;
+          notes: string | null;
+          organization_id: string;
+          resolution: string | null;
+          severity: string | null;
+          status: string;
+          updated_at: string;
+        };
+        Insert: {
+          assignee_membership_id?: string | null;
+          category: string;
+          context?: Json;
+          created_at?: string;
+          id?: string;
+          membership_id: string;
+          message: string;
+          notes?: string | null;
+          organization_id: string;
+          resolution?: string | null;
+          severity?: string | null;
+          status?: string;
+          updated_at?: string;
+        };
+        Update: {
+          assignee_membership_id?: string | null;
+          category?: string;
+          context?: Json;
+          created_at?: string;
+          id?: string;
+          membership_id?: string;
+          message?: string;
+          notes?: string | null;
+          organization_id?: string;
+          resolution?: string | null;
+          severity?: string | null;
+          status?: string;
+          updated_at?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "feedback_assignee_membership_id_fkey";
+            columns: ["assignee_membership_id"];
+            isOneToOne: false;
+            referencedRelation: "organization_memberships";
+            referencedColumns: ["id"];
+          },
+          {
+            foreignKeyName: "feedback_membership_id_fkey";
+            columns: ["membership_id"];
+            isOneToOne: false;
+            referencedRelation: "organization_memberships";
+            referencedColumns: ["id"];
+          },
+          {
+            foreignKeyName: "feedback_organization_id_fkey";
+            columns: ["organization_id"];
+            isOneToOne: false;
+            referencedRelation: "organizations";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
       issued_credentials: {
         Row: {
           attempt_id: string | null;
@@ -1297,6 +1367,7 @@ export type Database = {
           academy_id: string;
           allow_self_enrollment: boolean;
           archived_at: string | null;
+          audience_key: string | null;
           created_at: string;
           created_by: string | null;
           description: string | null;
@@ -1313,6 +1384,7 @@ export type Database = {
           academy_id: string;
           allow_self_enrollment?: boolean;
           archived_at?: string | null;
+          audience_key?: string | null;
           created_at?: string;
           created_by?: string | null;
           description?: string | null;
@@ -1329,6 +1401,7 @@ export type Database = {
           academy_id?: string;
           allow_self_enrollment?: boolean;
           archived_at?: string | null;
+          audience_key?: string | null;
           created_at?: string;
           created_by?: string | null;
           description?: string | null;
@@ -2548,6 +2621,45 @@ export type Database = {
           },
         ];
       };
+      tester_labels: {
+        Row: {
+          created_at: string;
+          id: string;
+          label: string;
+          membership_id: string;
+          organization_id: string;
+        };
+        Insert: {
+          created_at?: string;
+          id?: string;
+          label: string;
+          membership_id: string;
+          organization_id: string;
+        };
+        Update: {
+          created_at?: string;
+          id?: string;
+          label?: string;
+          membership_id?: string;
+          organization_id?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "tester_labels_membership_id_fkey";
+            columns: ["membership_id"];
+            isOneToOne: false;
+            referencedRelation: "organization_memberships";
+            referencedColumns: ["id"];
+          },
+          {
+            foreignKeyName: "tester_labels_organization_id_fkey";
+            columns: ["organization_id"];
+            isOneToOne: false;
+            referencedRelation: "organizations";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
       webhook_deliveries: {
         Row: {
           attempt_count: number;
@@ -2679,6 +2791,33 @@ export type Database = {
         };
         Returns: string;
       };
+      bfh_enroll_or_assign_external: {
+        Args: {
+          p_api_key: string;
+          p_due_at: string;
+          p_external_user_id: string;
+          p_idempotency_key: string;
+          p_kind: string;
+          p_target_slug: string;
+          p_target_type: string;
+        };
+        Returns: Json;
+      };
+      bfh_exchange_handoff: {
+        Args: {
+          p_access_level: string;
+          p_audiences: string[];
+          p_display_name: string;
+          p_email: string;
+          p_expires_at: number;
+          p_external_user_id: string;
+          p_issued_at: number;
+          p_nonce: string;
+          p_organization_slug: string;
+          p_signature: string;
+        };
+        Returns: Json;
+      };
       change_organization_slug: {
         Args: { p_new_slug: string; p_organization_id: string };
         Returns: undefined;
@@ -2770,6 +2909,17 @@ export type Database = {
         };
         Returns: undefined;
       };
+      register_submission_file: {
+        Args: {
+          p_attempt_id: string;
+          p_byte_size: number;
+          p_file_name: string;
+          p_item_id: string;
+          p_mime_type: string;
+          p_storage_path: string;
+        };
+        Returns: string;
+      };
       request_review: {
         Args: {
           p_note?: string;
@@ -2841,6 +2991,43 @@ export type Database = {
         Returns: undefined;
       };
       verify_credential: { Args: { p_code: string }; Returns: Json };
+      worker_claim_webhook_deliveries: {
+        Args: { p_limit?: number };
+        Returns: {
+          attempt_count: number;
+          causation_id: string | null;
+          correlation_id: string | null;
+          created_at: string;
+          delivered_at: string | null;
+          endpoint_id: string;
+          id: string;
+          last_error: string | null;
+          next_attempt_at: string;
+          organization_id: string;
+          outbox_event_id: string;
+          response_excerpt: string | null;
+          response_status: number | null;
+          status: string;
+          updated_at: string;
+        }[];
+        SetofOptions: {
+          from: "*";
+          to: "webhook_deliveries";
+          isOneToOne: false;
+          isSetofReturn: true;
+        };
+      };
+      worker_settle_webhook_delivery: {
+        Args: {
+          p_backoff_seconds?: number;
+          p_delivery_id: string;
+          p_error?: string;
+          p_outcome: string;
+          p_response_excerpt?: string;
+          p_response_status?: number;
+        };
+        Returns: undefined;
+      };
     };
     Enums: {
       [_ in never]: never;

@@ -4,6 +4,7 @@ import { getOrgBrandContext } from "@/lib/data/branding";
 import { signOutAction } from "@/lib/actions/auth";
 import { OrgThemeStyle } from "@/components/org-theme";
 import { ThemeToggle } from "@/components/theme-toggle";
+import { FeedbackWidget } from "@/components/feedback/feedback-widget";
 
 /** Learner delivery shell: organization branding + terminology, no admin chrome. */
 export default async function LearnLayout({
@@ -56,6 +57,7 @@ export default async function LearnLayout({
       >
         {children}
       </main>
+      <FeedbackWidget orgSlug={orgSlug} roleHint="member" />
     </div>
   );
 }
