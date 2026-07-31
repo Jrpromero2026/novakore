@@ -1,8 +1,9 @@
 -- NovaKore development seed — DEVELOPMENT DATA ONLY.
 -- Deterministic fixed UUIDs; idempotent (safe under repeated `db reset` and
--- tolerant of re-application). Contains no real personal data and no
--- production credentials. All seeded accounts share the documented dev-only
--- password (see docs/development/supabase.md#seeded-accounts).
+-- tolerant of re-application). No production credentials; the only real
+-- identifier is the repo owner's personal owner login (intentional, dev
+-- password only). All seeded accounts share the documented dev-only password
+-- (see docs/development/supabase.md#seeded-accounts).
 
 create extension if not exists pgcrypto with schema extensions;
 
@@ -27,7 +28,10 @@ begin
       ('00000000-0000-4000-8000-000000000018'::uuid, 'alpha.removed@novakore.test'),
       ('00000000-0000-4000-8000-000000000021'::uuid, 'bfh.owner@novakore.test'),
       ('00000000-0000-4000-8000-000000000022'::uuid, 'bfh.instructor@novakore.test'),
-      ('00000000-0000-4000-8000-000000000023'::uuid, 'bfh.observer@novakore.test')
+      ('00000000-0000-4000-8000-000000000023'::uuid, 'bfh.observer@novakore.test'),
+      -- Repo owner's personal owner login (real email; shares the dev-only
+      -- password). organization_owner on both seeded tenants for hands-on review.
+      ('00000000-0000-4000-8000-000000000031'::uuid, 'jrpromero16@gmail.com')
     ) as seed_users(id, email)
   loop
     insert into auth.users (
@@ -129,7 +133,10 @@ insert into public.organization_memberships (id, organization_id, user_id, statu
   ('00000000-0000-4000-8000-000000000312', '00000000-0000-4000-8000-000000000102', '00000000-0000-4000-8000-000000000022', 'active', now()),
   ('00000000-0000-4000-8000-000000000313', '00000000-0000-4000-8000-000000000102', '00000000-0000-4000-8000-000000000023', 'active', now()),
   -- Multi-org user: alpha.author is a learner in the BFH dev tenant
-  ('00000000-0000-4000-8000-000000000314', '00000000-0000-4000-8000-000000000102', '00000000-0000-4000-8000-000000000015', 'active', now())
+  ('00000000-0000-4000-8000-000000000314', '00000000-0000-4000-8000-000000000102', '00000000-0000-4000-8000-000000000015', 'active', now()),
+  -- Repo owner: organization_owner on both tenants
+  ('00000000-0000-4000-8000-000000000321', '00000000-0000-4000-8000-000000000101', '00000000-0000-4000-8000-000000000031', 'active', now()),
+  ('00000000-0000-4000-8000-000000000322', '00000000-0000-4000-8000-000000000102', '00000000-0000-4000-8000-000000000031', 'active', now())
 on conflict (id) do nothing;
 
 -- An open invitation (no auth user yet) for invite-flow QA
@@ -156,7 +163,11 @@ from (values
   ('00000000-0000-4000-8000-000000000411'::uuid, '00000000-0000-4000-8000-000000000102'::uuid, '00000000-0000-4000-8000-000000000311'::uuid, 'organization_owner', null::uuid),
   ('00000000-0000-4000-8000-000000000412'::uuid, '00000000-0000-4000-8000-000000000102'::uuid, '00000000-0000-4000-8000-000000000312'::uuid, 'instructor', null::uuid),
   ('00000000-0000-4000-8000-000000000413'::uuid, '00000000-0000-4000-8000-000000000102'::uuid, '00000000-0000-4000-8000-000000000313'::uuid, 'observer', null::uuid),
-  ('00000000-0000-4000-8000-000000000414'::uuid, '00000000-0000-4000-8000-000000000102'::uuid, '00000000-0000-4000-8000-000000000314'::uuid, 'learner', null::uuid)
+  ('00000000-0000-4000-8000-000000000414'::uuid, '00000000-0000-4000-8000-000000000102'::uuid, '00000000-0000-4000-8000-000000000314'::uuid, 'learner', null::uuid),
+  -- Repo owner — organization_owner in both tenants.
+  -- (...421 is gamma-research's owner role below; use ...423/...422 here.)
+  ('00000000-0000-4000-8000-000000000423'::uuid, '00000000-0000-4000-8000-000000000101'::uuid, '00000000-0000-4000-8000-000000000321'::uuid, 'organization_owner', null::uuid),
+  ('00000000-0000-4000-8000-000000000422'::uuid, '00000000-0000-4000-8000-000000000102'::uuid, '00000000-0000-4000-8000-000000000322'::uuid, 'organization_owner', null::uuid)
 ) as v(id, org_id, membership_id, role_key, academy_id)
 join public.organization_roles r
   on r.organization_id = v.org_id and r.key = v.role_key and r.is_system
