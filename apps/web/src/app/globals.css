@@ -10,6 +10,21 @@
  * ------------------------------------------------------------------------- */
 
 :root {
+  /* -- brand primitives (Brand Integration v1.0 — mode-invariant) --
+   * The logo gradient triad. Decorative use is restricted: the gradient
+   * belongs to the platform mark, hero surfaces, and hairline rules only
+   * (docs/brand/colors.md). Components never consume these directly for
+   * interaction states — that is what --accent* is for. */
+  --brand-purple: #8a3ffc; /* Nova Purple */
+  --brand-indigo: #5a5cff; /* Electric Indigo */
+  --brand-blue: #2fb3ff; /* Core Blue */
+  --brand-gradient: linear-gradient(
+    135deg,
+    var(--brand-purple) 0%,
+    var(--brand-indigo) 50%,
+    var(--brand-blue) 100%
+  );
+
   /* -- semantic color tokens: LIGHT (default; dark overrides below) -- */
   --background: #f7f8fa; /* Cloud */
   --background-elevated: #ffffff;
@@ -218,8 +233,9 @@
   --radius-xl: var(--radius-xl);
   --shadow-raised: var(--shadow-raised);
   --shadow-overlay: var(--shadow-overlay);
-  --font-sans: var(--org-font, var(--font-geist-sans)), system-ui, sans-serif;
-  --font-mono: var(--font-geist-mono), ui-monospace, monospace;
+  /* Brand primary: Inter; tenant --org-font (approved catalog) overrides. */
+  --font-sans: var(--org-font, var(--font-inter)), system-ui, sans-serif;
+  --font-mono: var(--font-jetbrains-mono), ui-monospace, monospace;
 
   /* typography roles (size / line-height pairs) */
   --text-display: 1.875rem;
@@ -256,6 +272,61 @@ body {
   color: var(--text-primary);
   font-family: var(--font-sans);
   -webkit-font-smoothing: antialiased;
+}
+
+/* ---------------------------------------------------------------------------
+ * Motion utilities (Brand v1.0 §motion): state-change and spatial-continuity
+ * cues only, within token durations. The global prefers-reduced-motion rule
+ * below collapses every one of these.
+ * ------------------------------------------------------------------------- */
+@keyframes nk-fade-up {
+  from {
+    opacity: 0;
+    transform: translateY(4px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+.nk-fade-up {
+  animation: nk-fade-up var(--motion-standard) var(--ease-out) both;
+}
+
+@keyframes nk-slide-in {
+  from {
+    transform: translateX(-0.75rem);
+    opacity: 0.6;
+  }
+  to {
+    transform: none;
+    opacity: 1;
+  }
+}
+
+.nk-slide-in {
+  animation: nk-slide-in var(--motion-standard) var(--ease-out) both;
+}
+
+@keyframes nk-shimmer {
+  from {
+    background-position: 150% 0;
+  }
+  to {
+    background-position: -150% 0;
+  }
+}
+
+.nk-shimmer {
+  background: linear-gradient(
+    100deg,
+    var(--surface-interactive) 35%,
+    var(--surface-elevated) 50%,
+    var(--surface-interactive) 65%
+  );
+  background-size: 300% 100%;
+  animation: nk-shimmer 1.6s var(--ease-in-out) infinite;
 }
 
 ::selection {

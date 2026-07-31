@@ -55,15 +55,7 @@ export function Alert({
 }
 
 export function Skeleton({ className }: { className?: string }) {
-  return (
-    <div
-      aria-hidden
-      className={cx(
-        "animate-pulse rounded-md bg-surface-interactive",
-        className,
-      )}
-    />
-  );
+  return <div aria-hidden className={cx("nk-shimmer rounded-md", className)} />;
 }
 
 /**

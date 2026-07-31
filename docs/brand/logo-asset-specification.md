@@ -66,11 +66,12 @@ active on replacement; metadata retained for audit) → `archived`.
 Stale `pending` rows older than 24h are abandonable; cleanup strategy
 documented in [../architecture/media-assets.md](../architecture/media-assets.md).
 
-## 6. Provisional platform mark
+## 6. Platform mark (final — Brand Integration v1.0)
 
-Until final vector delivery, NovaKore renders `NovaKoreWordmark` (typeset
-"NovaKore") and `NovaKoreMonogram` (labeled provisional, geometric "N").
-Both are code components with the same props final assets will use — final
-SVGs drop into the platform slots without consumer rewrites. The
-provisional mark must not appear in external material as a trademarked
-logo.
+Final vector delivery landed 2026-07-30: the official mark (six expanding
+modular arms + central knowledge core, purple → indigo → blue gradient)
+replaced the provisional monogram's internals in
+`apps/web/src/components/brand.tsx` exactly as this contract specified —
+same components, same props, zero consumer rewrites. Canonical vectors
+live in `apps/web/public/brand/`; rasters are derived via
+`scripts/brand-rasters.mjs`. Usage rules: [logo.md](logo.md).

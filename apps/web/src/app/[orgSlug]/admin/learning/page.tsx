@@ -3,6 +3,7 @@ import { requireOrgContext, requirePermission } from "@/lib/org-context";
 import { getTerminology } from "@/lib/terminology";
 import { supabaseServer } from "@/lib/supabase/server";
 import { Card, CardHeader, EmptyState } from "@/components/ui/primitives";
+import { PageHeader } from "@/components/ui/layout";
 import { CreatePathPanel, CreateSystemPanel, PathCard } from "./learning-ui";
 
 export const metadata: Metadata = { title: "Learning" };
@@ -55,17 +56,12 @@ export default async function LearningPage({
   ]);
 
   return (
-    <div className="space-y-6">
-      <header className="space-y-1">
-        <h1 className="text-h1 text-text-primary">
-          {term("learning_system").plural} &amp; {term("learning_path").plural}
-        </h1>
-        <p className="text-body-sm text-text-secondary">
-          {term("learning_path").plural} sequence{" "}
-          {term("course").plural.toLowerCase()} with governed prerequisites.
-          Cycles are rejected by the platform.
-        </p>
-      </header>
+    <div className="space-y-8">
+      <PageHeader
+        eyebrow="Learning"
+        title={`${term("learning_system").plural} & ${term("learning_path").plural}`}
+        description={`${term("learning_path").plural} sequence ${term("course").plural.toLowerCase()} with governed prerequisites. Cycles are rejected by the platform.`}
+      />
 
       <CreateSystemPanel
         orgSlug={orgSlug}

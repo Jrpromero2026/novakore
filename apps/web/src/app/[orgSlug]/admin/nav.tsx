@@ -2,125 +2,330 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import {
+  createContext,
+  useContext,
+  useState,
+  useSyncExternalStore,
+  type ComponentType,
+  type ReactNode,
+} from "react";
 import { cx } from "@/components/ui/primitives";
+import {
+  IconAcademy,
+  IconAi,
+  IconAnalytics,
+  IconAssessment,
+  IconBranding,
+  IconChevronLeft,
+  IconChevronRight,
+  IconClose,
+  IconCourse,
+  IconCredential,
+  IconEnrollment,
+  IconLearn,
+  IconLibrary,
+  IconMembers,
+  IconMenu,
+  IconOverview,
+  IconPath,
+  IconReview,
+  IconRoles,
+  IconSettings,
+  IconStudio,
+  IconTerminology,
+  type IconProps,
+} from "@/components/ui/icons";
+import type { NavSection } from "./nav-config";
 
-interface NavItem {
-  href: string;
-  label: string;
-  /** Affordance filter only — the server enforces authorization. */
-  needsAny?: string[];
-}
+const NAV_ICONS: Record<string, ComponentType<IconProps>> = {
+  overview: IconOverview,
+  analytics: IconAnalytics,
+  learn: IconLearn,
+  studio: IconStudio,
+  library: IconLibrary,
+  course: IconCourse,
+  ai: IconAi,
+  path: IconPath,
+  assessment: IconAssessment,
+  review: IconReview,
+  enrollment: IconEnrollment,
+  credential: IconCredential,
+  members: IconMembers,
+  roles: IconRoles,
+  academy: IconAcademy,
+  terminology: IconTerminology,
+  branding: IconBranding,
+  settings: IconSettings,
+};
 
-export function AdminNav({
-  orgSlug,
-  permissions,
-}: {
-  orgSlug: string;
-  permissions: string[];
-}) {
+const COLLAPSE_KEY = "nk-nav-collapsed";
+
+/* Shared shell state so the topbar menu button and the sidebar drawer stay
+ * in sync without lifting the whole shell into client land. */
+const ShellContext = createContext<{
+  mobileOpen: boolean;
+  setMobileOpen: (open: boolean) => void;
+} | null>(null);
+
+export function ShellProvider({ children }: { children: ReactNode }) {
   const pathname = usePathname();
-  const base = `/${orgSlug}/admin`;
-  const held = new Set(permissions);
-
-  const items: NavItem[] = [
-    { href: base, label: "Overview" },
-    {
-      href: `${base}/ops`,
-      label: "Operations",
-      needsAny: ["analytics.view"],
-    },
-    {
-      href: `${base}/studio`,
-      label: "Studio",
-      needsAny: ["content.view_draft"],
-    },
-    {
-      href: `${base}/learning`,
-      label: "Learning",
-      needsAny: ["paths.manage"],
-    },
-    {
-      href: `${base}/courses`,
-      label: "Courses",
-      needsAny: ["content.view_draft"],
-    },
-    {
-      href: `${base}/assessments`,
-      label: "Assessments",
-      needsAny: ["assessment.author", "assessment.publish"],
-    },
-    {
-      href: `${base}/reviews`,
-      label: "Reviews",
-      needsAny: ["assessment.grade"],
-    },
-    {
-      href: `${base}/credentials`,
-      label: "Credentials",
-      needsAny: ["certificates.manage"],
-    },
-    {
-      href: `${base}/enrollments`,
-      label: "Enrollments",
-      needsAny: ["enrollment.manage"],
-    },
-    {
-      href: `${base}/members`,
-      label: "Members",
-      needsAny: ["org.members.manage"],
-    },
-    {
-      href: `${base}/roles`,
-      label: "Roles & permissions",
-      needsAny: ["org.roles.manage"],
-    },
-    { href: `${base}/academies`, label: "Academies" },
-    {
-      href: `${base}/terminology`,
-      label: "Terminology",
-      needsAny: ["org.terminology.manage"],
-    },
-    {
-      href: `${base}/branding`,
-      label: "Branding",
-      needsAny: ["org.branding.manage"],
-    },
-    { href: `/${orgSlug}/learn`, label: "My learning" },
-  ];
+  // The drawer records the route it opened on; navigating anywhere else
+  // closes it by derivation — no effect needed.
+  const [openedAt, setOpenedAt] = useState<string | null>(null);
+  const mobileOpen = openedAt === pathname;
+  const setMobileOpen = (open: boolean) => setOpenedAt(open ? pathname : null);
 
   return (
-    <nav
-      aria-label="Organization administration"
-      className="md:w-52 md:shrink-0"
+    <ShellContext.Provider value={{ mobileOpen, setMobileOpen }}>
+      {children}
+    </ShellContext.Provider>
+  );
+}
+
+export function MobileNavButton() {
+  const shell = useContext(ShellContext);
+  if (!shell) return null;
+  return (
+    <button
+      type="button"
+      aria-label="Open navigation"
+      aria-expanded={shell.mobileOpen}
+      onClick={() => shell.setMobileOpen(true)}
+      className="rounded-md p-2 text-text-secondary transition-colors duration-[var(--motion-fast)] hover:bg-surface-interactive hover:text-text-primary md:hidden"
     >
-      <ul className="flex flex-wrap gap-1 md:flex-col">
-        {items
-          .filter(
-            (item) => !item.needsAny || item.needsAny.some((p) => held.has(p)),
-          )
-          .map((item) => {
-            const active =
-              item.href === base
-                ? pathname === base
-                : pathname.startsWith(item.href);
-            return (
+      <IconMenu size={18} />
+    </button>
+  );
+}
+
+function NavLink({
+  href,
+  label,
+  icon,
+  active,
+  collapsed,
+}: {
+  href: string;
+  label: string;
+  icon: string;
+  active: boolean;
+  collapsed: boolean;
+}) {
+  const IconComponent = NAV_ICONS[icon] ?? IconOverview;
+  return (
+    <Link
+      href={href}
+      aria-current={active ? "page" : undefined}
+      className={cx(
+        "group relative flex items-center gap-2.5 rounded-md py-1.5 text-body-sm transition-colors duration-[var(--motion-fast)]",
+        collapsed ? "justify-center px-2" : "px-2.5",
+        active
+          ? "bg-accent-soft font-medium text-accent"
+          : "text-text-secondary hover:bg-surface-interactive hover:text-text-primary",
+      )}
+    >
+      {active ? (
+        <span
+          aria-hidden
+          className="absolute left-0 top-1/2 h-4 w-0.5 -translate-y-1/2 rounded-r-full bg-accent"
+        />
+      ) : null}
+      <IconComponent
+        size={16}
+        className={cx(
+          "shrink-0 transition-colors duration-[var(--motion-fast)]",
+          active
+            ? "text-accent"
+            : "text-text-muted group-hover:text-text-secondary",
+        )}
+      />
+      {collapsed ? (
+        <>
+          <span className="sr-only">{label}</span>
+          {/* Collapsed-rail tooltip; pointer-events-none so it never
+           * intercepts the link it describes. */}
+          <span
+            aria-hidden
+            className="pointer-events-none absolute left-[calc(100%+0.5rem)] z-10 whitespace-nowrap rounded-md border border-border-default bg-background-elevated px-2 py-1 text-caption text-text-primary opacity-0 shadow-overlay transition-opacity duration-[var(--motion-fast)] group-hover:opacity-100"
+          >
+            {label}
+          </span>
+        </>
+      ) : (
+        label
+      )}
+    </Link>
+  );
+}
+
+function NavSections({
+  sections,
+  collapsed,
+}: {
+  sections: NavSection[];
+  collapsed: boolean;
+}) {
+  const pathname = usePathname();
+
+  // Longest matching href wins so nested routes highlight the right item.
+  const activeHref = sections
+    .flatMap((s) => s.items)
+    .filter(
+      (item) => pathname === item.href || pathname.startsWith(`${item.href}/`),
+    )
+    .sort((a, b) => b.href.length - a.href.length)[0]?.href;
+
+  return (
+    <div className="flex flex-col gap-5">
+      {sections.map((section, i) => (
+        <div key={section.label ?? i}>
+          {section.label && !collapsed ? (
+            <p
+              className="mb-1.5 px-2.5 text-caption font-medium uppercase text-text-muted"
+              style={{ letterSpacing: "var(--tracking-caps)" }}
+            >
+              {section.label}
+            </p>
+          ) : null}
+          {section.label && collapsed ? (
+            <div
+              aria-hidden
+              className="mx-2 mb-2 border-t border-border-subtle"
+            />
+          ) : null}
+          <ul className="flex flex-col gap-0.5">
+            {section.items.map((item) => (
               <li key={item.href}>
-                <Link
+                <NavLink
                   href={item.href}
-                  aria-current={active ? "page" : undefined}
-                  className={cx(
-                    "block rounded-md px-3 py-2 text-sm transition-colors",
-                    active
-                      ? "bg-accent-soft font-medium text-accent"
-                      : "text-text-muted hover:bg-surface-sunken hover:text-text",
-                  )}
-                >
-                  {item.label}
-                </Link>
+                  label={item.label}
+                  icon={item.icon}
+                  active={item.href === activeHref}
+                  collapsed={collapsed}
+                />
               </li>
-            );
-          })}
-      </ul>
-    </nav>
+            ))}
+          </ul>
+        </div>
+      ))}
+    </div>
+  );
+}
+
+/* Collapse preference lives in localStorage and is read through
+ * useSyncExternalStore: the server snapshot (expanded) hydrates cleanly,
+ * then the stored preference applies without effect-driven re-renders. */
+function subscribeToCollapse(callback: () => void) {
+  window.addEventListener("storage", callback);
+  window.addEventListener("nk-nav-collapse", callback);
+  return () => {
+    window.removeEventListener("storage", callback);
+    window.removeEventListener("nk-nav-collapse", callback);
+  };
+}
+
+function readCollapsed(): boolean {
+  try {
+    return window.localStorage.getItem(COLLAPSE_KEY) === "1";
+  } catch {
+    return false;
+  }
+}
+
+export function AdminSidebar({
+  sections,
+  orgName,
+}: {
+  sections: NavSection[];
+  orgName: string;
+}) {
+  const shell = useContext(ShellContext);
+  const isCollapsed = useSyncExternalStore(
+    subscribeToCollapse,
+    readCollapsed,
+    () => false,
+  );
+
+  function toggleCollapsed() {
+    try {
+      window.localStorage.setItem(COLLAPSE_KEY, isCollapsed ? "0" : "1");
+    } catch {
+      /* non-fatal */
+    }
+    window.dispatchEvent(new Event("nk-nav-collapse"));
+  }
+
+  return (
+    <>
+      {/* Desktop sidebar */}
+      <aside
+        className={cx(
+          "sticky top-[var(--layout-header)] hidden max-h-[calc(100dvh-var(--layout-header))] shrink-0 flex-col overflow-y-auto border-r border-border-subtle px-3 pb-4 pt-5 md:flex",
+          "transition-[width] duration-[var(--motion-standard)]",
+        )}
+        style={{ width: isCollapsed ? "3.75rem" : "var(--layout-sidebar)" }}
+      >
+        <nav aria-label="Workspace navigation" className="flex-1">
+          <NavSections sections={sections} collapsed={isCollapsed} />
+        </nav>
+        <button
+          type="button"
+          onClick={toggleCollapsed}
+          aria-label={isCollapsed ? "Expand navigation" : "Collapse navigation"}
+          className={cx(
+            "mt-5 flex items-center gap-2 rounded-md px-2.5 py-1.5 text-caption text-text-muted transition-colors duration-[var(--motion-fast)] hover:bg-surface-interactive hover:text-text-secondary",
+            isCollapsed && "justify-center px-2",
+          )}
+        >
+          {isCollapsed ? (
+            <IconChevronRight size={14} />
+          ) : (
+            <>
+              <IconChevronLeft size={14} />
+              Collapse
+            </>
+          )}
+        </button>
+      </aside>
+
+      {/* Mobile drawer */}
+      {shell?.mobileOpen ? (
+        <div
+          className="fixed inset-0 md:hidden"
+          style={{ zIndex: "var(--z-overlay)" }}
+        >
+          <button
+            type="button"
+            aria-label="Close navigation"
+            onClick={() => shell.setMobileOpen(false)}
+            className="absolute inset-0 bg-[rgb(0_0_0/0.45)] backdrop-blur-[2px]"
+          />
+          <div
+            role="dialog"
+            aria-modal="true"
+            aria-label="Workspace navigation"
+            className="nk-slide-in absolute inset-y-0 left-0 flex w-72 max-w-[85vw] flex-col overflow-y-auto bg-background-elevated px-4 pb-6 pt-4 shadow-overlay"
+          >
+            <div className="mb-4 flex items-center justify-between">
+              <p className="text-title font-semibold text-text-primary">
+                {orgName}
+              </p>
+              <button
+                type="button"
+                aria-label="Close navigation"
+                onClick={() => shell.setMobileOpen(false)}
+                className="rounded-md p-2 text-text-secondary transition-colors duration-[var(--motion-fast)] hover:bg-surface-interactive"
+              >
+                <IconClose size={16} />
+              </button>
+            </div>
+            <nav aria-label="Workspace navigation">
+              <NavSections sections={sections} collapsed={false} />
+            </nav>
+          </div>
+        </div>
+      ) : null}
+    </>
   );
 }

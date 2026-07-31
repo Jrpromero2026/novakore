@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { requireOrgContext, requirePermission } from "@/lib/org-context";
 import { getTerminology } from "@/lib/terminology";
 import { supabaseServer } from "@/lib/supabase/server";
-import { Card, CardHeader } from "@/components/ui/primitives";
+import { PageHeader, Panel, SectionHeader } from "@/components/ui/layout";
 import { InvitePanel, MemberRow } from "./members-ui";
 
 export const metadata: Metadata = { title: "Members" };
@@ -58,55 +58,54 @@ export default async function MembersPage({
   const memberTerm = term("learner"); // display flavor only; canonical entities unchanged
 
   return (
-    <div className="space-y-6">
-      <header className="space-y-1">
-        <h1 className="text-xl font-semibold tracking-tight text-text">
-          Members
-        </h1>
-        <p className="text-sm text-text-muted">
-          Memberships, invitations, and role assignments. {memberTerm.plural}{" "}
-          and staff both live here.
-        </p>
-      </header>
+    <div className="space-y-8">
+      <PageHeader
+        eyebrow="Organization"
+        title="Members"
+        description={`Memberships, invitations, and role assignments. ${memberTerm.plural} and staff both live here.`}
+      />
 
       <InvitePanel orgSlug={orgSlug} />
 
-      <Card>
-        <CardHeader
-          title={`All members (${memberships?.length ?? 0})`}
+      <section>
+        <SectionHeader
+          title="All members"
+          count={memberships?.length ?? 0}
           description="Suspending removes access immediately; removal is permanent history."
         />
-        <ul className="divide-y divide-border">
-          {(memberships ?? []).map((m) => (
-            <MemberRow
-              key={m.id}
-              orgSlug={orgSlug}
-              membership={{
-                id: m.id,
-                status: m.status,
-                invitedEmail: emailByMembership.get(m.id) ?? m.invited_email,
-                userId: m.user_id,
-                assignments: m.organization_member_roles.map((a) => ({
+        <Panel tone="outlined" className="mt-2.5">
+          <ul className="divide-y divide-border-subtle">
+            {(memberships ?? []).map((m) => (
+              <MemberRow
+                key={m.id}
+                orgSlug={orgSlug}
+                membership={{
+                  id: m.id,
+                  status: m.status,
+                  invitedEmail: emailByMembership.get(m.id) ?? m.invited_email,
+                  userId: m.user_id,
+                  assignments: m.organization_member_roles.map((a) => ({
+                    id: a.id,
+                    academyId: a.academy_id,
+                    roleName: a.organization_roles?.name ?? "—",
+                    roleKey: a.organization_roles?.key ?? "",
+                  })),
+                }}
+                roles={(roles ?? []).map((r) => ({
+                  id: r.id,
+                  name: r.name,
+                  key: r.key,
+                }))}
+                academies={(academies ?? []).map((a) => ({
                   id: a.id,
-                  academyId: a.academy_id,
-                  roleName: a.organization_roles?.name ?? "—",
-                  roleKey: a.organization_roles?.key ?? "",
-                })),
-              }}
-              roles={(roles ?? []).map((r) => ({
-                id: r.id,
-                name: r.name,
-                key: r.key,
-              }))}
-              academies={(academies ?? []).map((a) => ({
-                id: a.id,
-                name: a.name,
-              }))}
-              isSelf={m.id === ctx.membershipId}
-            />
-          ))}
-        </ul>
-      </Card>
+                  name: a.name,
+                }))}
+                isSelf={m.id === ctx.membershipId}
+              />
+            ))}
+          </ul>
+        </Panel>
+      </section>
     </div>
   );
 }

@@ -1,11 +1,19 @@
 import Link from "next/link";
 import { requireOrgContext } from "@/lib/org-context";
+import { getUser } from "@/lib/auth";
 import { getOrgBrandContext } from "@/lib/data/branding";
 import { signOutAction } from "@/lib/actions/auth";
 import { OrgThemeStyle } from "@/components/org-theme";
 import { ThemeToggle } from "@/components/theme-toggle";
+import { UserMenu } from "@/components/ui/user-menu";
 import { FeedbackWidget } from "@/components/feedback/feedback-widget";
-import { AdminNav } from "./nav";
+import {
+  CommandPalette,
+  type PaletteEntry,
+} from "@/components/command-palette";
+import { CommandPaletteTrigger } from "@/components/command-palette";
+import { buildNavSections } from "./nav-config";
+import { AdminSidebar, MobileNavButton, ShellProvider } from "./nav";
 
 export default async function OrgAdminLayout({
   children,
@@ -16,63 +24,135 @@ export default async function OrgAdminLayout({
 }) {
   const { orgSlug } = await params;
   const ctx = await requireOrgContext(orgSlug);
-  const brand = await getOrgBrandContext(ctx.organization.id);
+  const [brand, user] = await Promise.all([
+    getOrgBrandContext(ctx.organization.id),
+    getUser(),
+  ]);
+  const displayName = brand.displayName ?? ctx.organization.name;
+
+  const permissions = [...ctx.orgPermissions] as string[];
+  const sections = buildNavSections(orgSlug, permissions);
+
+  // Palette entries: every visible destination + creation surfaces the
+  // member can actually reach. All real routes — the server authorizes.
+  const held = new Set(permissions);
+  const base = `/${orgSlug}/admin`;
+  const paletteEntries: PaletteEntry[] = [
+    ...sections.flatMap((section) =>
+      section.items.map((item) => ({
+        id: item.href,
+        label: item.label,
+        group: "Navigate",
+        href: item.href,
+        keywords: [...(item.keywords ?? []), section.label ?? ""],
+      })),
+    ),
+    ...(held.has("content.view_draft")
+      ? [
+          {
+            id: "create-course",
+            label: "New course",
+            group: "Create",
+            href: `${base}/courses`,
+            keywords: ["create course"],
+          },
+          {
+            id: "create-studio",
+            label: "Compose in Studio",
+            group: "Create",
+            href: `${base}/studio`,
+            keywords: ["author", "lesson"],
+          },
+        ]
+      : []),
+    ...(held.has("paths.manage")
+      ? [
+          {
+            id: "create-path",
+            label: "New learning path",
+            group: "Create",
+            href: `${base}/learning`,
+            keywords: ["journey"],
+          },
+        ]
+      : []),
+    ...(held.has("assessment.author")
+      ? [
+          {
+            id: "create-assessment",
+            label: "New assessment",
+            group: "Create",
+            href: `${base}/assessments`,
+            keywords: ["evaluation"],
+          },
+        ]
+      : []),
+    ...(held.has("org.members.manage")
+      ? [
+          {
+            id: "invite-member",
+            label: "Invite member",
+            group: "Create",
+            href: `${base}/members`,
+            keywords: ["add people"],
+          },
+        ]
+      : []),
+  ];
 
   return (
-    <div className="flex min-h-dvh flex-col">
-      <OrgThemeStyle theme={brand.theme} />
-      <header
-        className="sticky top-0 border-b border-border-default bg-surface"
-        style={{ zIndex: "var(--z-nav)" }}
-      >
-        <div
-          className="mx-auto flex w-full items-center justify-between gap-4 px-5"
-          style={{
-            maxWidth: "var(--layout-page-max)",
-            height: "var(--layout-header)",
-          }}
+    <ShellProvider>
+      <div className="flex min-h-dvh flex-col">
+        <OrgThemeStyle theme={brand.theme} />
+        <header
+          className="sticky top-0 border-b border-border-subtle bg-background/85 backdrop-blur-md"
+          style={{ zIndex: "var(--z-nav)" }}
         >
-          <div className="flex items-baseline gap-3">
-            <Link
-              href={`/${orgSlug}/admin`}
-              className="text-title font-semibold text-text-primary"
-            >
-              {brand.displayName ?? ctx.organization.name}
-            </Link>
-            <span
-              className="hidden text-caption uppercase text-text-muted sm:inline"
-              style={{ letterSpacing: "var(--tracking-caps)" }}
-            >
-              Organization admin
-            </span>
-          </div>
-          <div className="flex items-center gap-2">
-            <Link
-              href="/select-org"
-              className="rounded-md px-2.5 py-1.5 text-label text-text-secondary transition-colors duration-[var(--motion-fast)] hover:bg-surface-interactive hover:text-text-primary"
-            >
-              Switch org
-            </Link>
-            <ThemeToggle />
-            <form action={signOutAction}>
-              <button
-                type="submit"
-                className="rounded-md px-2.5 py-1.5 text-label text-text-secondary transition-colors duration-[var(--motion-fast)] hover:bg-surface-interactive hover:text-text-primary"
+          <div
+            className="flex w-full items-center justify-between gap-3 px-4 sm:px-5"
+            style={{ height: "var(--layout-header)" }}
+          >
+            <div className="flex min-w-0 items-center gap-1.5">
+              <MobileNavButton />
+              <Link
+                href={`/${orgSlug}/admin`}
+                className="truncate text-title font-semibold text-text-primary"
               >
-                Sign out
-              </button>
-            </form>
+                {displayName}
+              </Link>
+              <span
+                className="mt-px hidden text-caption uppercase text-text-muted lg:inline"
+                style={{ letterSpacing: "var(--tracking-caps)" }}
+              >
+                · Workspace
+              </span>
+            </div>
+            <div className="flex shrink-0 items-center gap-2">
+              <CommandPaletteTrigger />
+              <ThemeToggle />
+              <UserMenu
+                email={user?.email ?? null}
+                signOutAction={signOutAction}
+              />
+            </div>
           </div>
+        </header>
+
+        <div className="flex w-full flex-1">
+          <AdminSidebar sections={sections} orgName={displayName} />
+          <main className="min-w-0 flex-1">
+            <div
+              className="nk-fade-up mx-auto w-full px-4 py-8 sm:px-8"
+              style={{ maxWidth: "var(--layout-page-max)" }}
+            >
+              {children}
+            </div>
+          </main>
         </div>
-      </header>
-      <div
-        className="mx-auto flex w-full flex-1 flex-col gap-8 px-5 py-8 md:flex-row"
-        style={{ maxWidth: "var(--layout-page-max)" }}
-      >
-        <AdminNav orgSlug={orgSlug} permissions={[...ctx.orgPermissions]} />
-        <main className="min-w-0 flex-1">{children}</main>
+
+        <CommandPalette entries={paletteEntries} />
+        <FeedbackWidget orgSlug={orgSlug} roleHint="admin" />
       </div>
-      <FeedbackWidget orgSlug={orgSlug} roleHint="admin" />
-    </div>
+    </ShellProvider>
   );
 }

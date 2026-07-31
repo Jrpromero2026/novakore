@@ -6,6 +6,13 @@ Developer mapping: [design-tokens.md](design-tokens.md) ·
 [tenant-theming.md](tenant-theming.md) ·
 [logo-asset-specification.md](logo-asset-specification.md).
 
+> **Brand Integration v1.0 (2026-07-30):** the official visual identity is
+> live — see [overview.md](overview.md) for the v1.0 doc set (logo, colors,
+> typography, voice, iconography, illustration, UI principles). Where this
+> framework and the v1.0 docs differ (official mark replacing the
+> provisional monogram; Inter as primary interface face; the brand
+> gradient triad), **v1.0 governs**.
+
 ## 1. Product distinction: NovaKore is not Knovacora
 
 **NovaKore** is B2B software infrastructure: the platform that powers

@@ -7,6 +7,7 @@ import {
 } from "@novakore/domain";
 import { can, requireOrgContext, requirePermission } from "@/lib/org-context";
 import { getActiveBrandAssets, getBrandStudioRow } from "@/lib/data/branding";
+import { PageHeader } from "@/components/ui/layout";
 import { BrandStudio } from "./brand-studio";
 import type { AssetSlotView } from "./asset-slots";
 
@@ -100,14 +101,12 @@ export default async function BrandingPage({
   });
 
   return (
-    <div className="space-y-6">
-      <header className="space-y-1">
-        <h1 className="text-h1 text-text-primary">Branding</h1>
-        <p className="text-body-sm text-text-secondary">
-          Configure this organization&apos;s identity. Drafts are private until
-          published; platform status and security colors always stay readable.
-        </p>
-      </header>
+    <div className="space-y-8">
+      <PageHeader
+        eyebrow="Organization"
+        title="Branding"
+        description="Configure this organization's identity. Drafts are private until published; platform status and security colors always stay readable."
+      />
 
       <BrandStudio
         orgSlug={orgSlug}

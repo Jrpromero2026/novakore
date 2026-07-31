@@ -1,0 +1,17 @@
+{
+  "name": "@novakore/design-system",
+  "version": "1.0.0",
+  "private": true,
+  "description": "NovaKore platform brand system: canonical color, typography, spacing, radius, shadow, motion, icon, and logo tokens. Pure data and helpers — no I/O, no framework coupling. CSS projection lives in apps/web/src/app/globals.css and is parity-tested against this package.",
+  "main": "src/index.ts",
+  "types": "src/index.ts",
+  "scripts": {
+    "typecheck": "tsc --noEmit",
+    "test": "vitest",
+    "test:run": "vitest run"
+  },
+  "devDependencies": {
+    "typescript": "^5",
+    "vitest": "^4.1.10"
+  }
+}

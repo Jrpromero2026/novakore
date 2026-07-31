@@ -4,7 +4,14 @@ import { NextResponse, type NextRequest } from "next/server";
 // /verify is the deliberate anonymous surface: public credential
 // verification (privacy-safe RPC output only — see
 // docs/architecture/certificates-and-credentials.md §4).
-const PUBLIC_PATHS = ["/sign-in", "/auth/callback", "/auth/error", "/verify"];
+const PUBLIC_PATHS = [
+  "/sign-in",
+  "/auth/callback",
+  "/auth/error",
+  "/verify",
+  // PWA manifest must be fetchable by the browser without a session.
+  "/manifest.webmanifest",
+];
 
 /**
  * Session refresh + coarse route protection (Next 16 proxy convention).
@@ -40,9 +47,11 @@ export async function proxy(request: NextRequest) {
   } = await supabase.auth.getUser();
 
   const { pathname } = request.nextUrl;
-  const isPublic = PUBLIC_PATHS.some(
-    (p) => pathname === p || pathname.startsWith(`${p}/`),
-  );
+  // "/" is the platform brand landing (Brand Integration v1.0): public for
+  // visitors; the page itself forwards authenticated users to /select-org.
+  const isPublic =
+    pathname === "/" ||
+    PUBLIC_PATHS.some((p) => pathname === p || pathname.startsWith(`${p}/`));
 
   if (!user && !isPublic) {
     const url = request.nextUrl.clone();

@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { requireOrgContext, requirePermission } from "@/lib/org-context";
 import { supabaseServer } from "@/lib/supabase/server";
 import { Card, CardHeader } from "@/components/ui/primitives";
+import { PageHeader } from "@/components/ui/layout";
 import { CreateRolePanel, RoleEditor } from "./roles-ui";
 
 export const metadata: Metadata = { title: "Roles & permissions" };
@@ -34,16 +35,12 @@ export default async function RolesPage({
   ]);
 
   return (
-    <div className="space-y-6">
-      <header className="space-y-1">
-        <h1 className="text-xl font-semibold tracking-tight text-text">
-          Roles &amp; permissions
-        </h1>
-        <p className="text-sm text-text-muted">
-          Roles bundle platform permissions. System roles are managed by
-          NovaKore; create custom roles for anything else.
-        </p>
-      </header>
+    <div className="space-y-8">
+      <PageHeader
+        eyebrow="Organization"
+        title="Roles & permissions"
+        description="Roles bundle platform permissions. System roles are managed by NovaKore; create custom roles for anything else."
+      />
 
       <CreateRolePanel orgSlug={orgSlug} />
 

@@ -2,7 +2,8 @@ import type { Metadata } from "next";
 import { can, requireOrgContext } from "@/lib/org-context";
 import { getTerminology } from "@/lib/terminology";
 import { supabaseServer } from "@/lib/supabase/server";
-import { Card, CardHeader, EmptyState } from "@/components/ui/primitives";
+import { EmptyState } from "@/components/ui/primitives";
+import { PageHeader, Panel, SectionHeader } from "@/components/ui/layout";
 import { AcademyRow, CreateAcademyPanel } from "./academies-ui";
 
 export const metadata: Metadata = { title: "Academies" };
@@ -29,16 +30,12 @@ export default async function AcademiesPage({
   const canManageOrgWide = can(ctx, "academy.manage");
 
   return (
-    <div className="space-y-6">
-      <header className="space-y-1">
-        <h1 className="text-xl font-semibold tracking-tight text-text">
-          {academyTerm.plural}
-        </h1>
-        <p className="text-sm text-text-muted">
-          {academyTerm.plural} group audiences and programs. Learning systems
-          and paths attach here in later phases.
-        </p>
-      </header>
+    <div className="space-y-8">
+      <PageHeader
+        eyebrow="Organization"
+        title={academyTerm.plural}
+        description={`${academyTerm.plural} group audiences and programs. Learning systems and paths attach here.`}
+      />
 
       {canManageOrgWide ? (
         <CreateAcademyPanel
@@ -47,32 +44,35 @@ export default async function AcademiesPage({
         />
       ) : null}
 
-      <Card>
-        <CardHeader
-          title={`All ${academyTerm.plural.toLowerCase()} (${academies?.length ?? 0})`}
+      <section>
+        <SectionHeader
+          title={`All ${academyTerm.plural.toLowerCase()}`}
+          count={academies?.length ?? 0}
         />
-        {academies?.length ? (
-          <ul className="divide-y divide-border">
-            {academies.map((a) => (
-              <AcademyRow
-                key={a.id}
-                orgSlug={orgSlug}
-                academy={a}
-                canManage={can(ctx, "academy.manage", { academyId: a.id })}
-              />
-            ))}
-          </ul>
-        ) : (
-          <EmptyState
-            title={`No ${academyTerm.plural.toLowerCase()} yet`}
-            description={
-              canManageOrgWide
-                ? `Create the first ${academyTerm.singular.toLowerCase()} to get started.`
-                : "An administrator will set these up."
-            }
-          />
-        )}
-      </Card>
+        <Panel tone="outlined" className="mt-2.5">
+          {academies?.length ? (
+            <ul className="divide-y divide-border-subtle">
+              {academies.map((a) => (
+                <AcademyRow
+                  key={a.id}
+                  orgSlug={orgSlug}
+                  academy={a}
+                  canManage={can(ctx, "academy.manage", { academyId: a.id })}
+                />
+              ))}
+            </ul>
+          ) : (
+            <EmptyState
+              title={`No ${academyTerm.plural.toLowerCase()} yet`}
+              description={
+                canManageOrgWide
+                  ? `Create the first ${academyTerm.singular.toLowerCase()} to group your audiences and programs.`
+                  : "An administrator will set these up."
+              }
+            />
+          )}
+        </Panel>
+      </section>
     </div>
   );
 }

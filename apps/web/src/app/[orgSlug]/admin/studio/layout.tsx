@@ -2,6 +2,7 @@ import Link from "next/link";
 import type { ReactNode } from "react";
 import { requireOrgContext, requirePermission } from "@/lib/org-context";
 import { getTerminology } from "@/lib/terminology";
+import { PageHeader } from "@/components/ui/layout";
 import { StudioNav } from "./studio-nav";
 
 /**
@@ -22,23 +23,20 @@ export default async function StudioLayout({
   const { term } = await getTerminology(ctx.organization.id);
 
   return (
-    <div className="space-y-5">
-      <header className="flex flex-wrap items-baseline gap-x-4 gap-y-1 border-b border-border-subtle pb-4">
-        <h1 className="text-h2 text-text-primary">Learning Studio</h1>
-        <p className="text-caption text-text-muted">
-          {ctx.organization.name} · {term("learning_path").plural},{" "}
-          {term("course").plural.toLowerCase()},{" "}
-          {term("assessment").plural.toLowerCase()}, and reusable content
-        </p>
-        <span className="ml-auto">
+    <div className="space-y-6">
+      <PageHeader
+        eyebrow="Knowledge"
+        title="Learning Studio"
+        description={`${term("learning_path").plural}, ${term("course").plural.toLowerCase()}, ${term("assessment").plural.toLowerCase()}, and reusable content for ${ctx.organization.name}.`}
+        actions={
           <Link
             href={`/${orgSlug}/admin`}
-            className="text-body-sm text-text-muted hover:text-text-primary"
+            className="rounded-md border border-border-strong px-3.5 py-1.5 text-body-sm font-medium text-text-primary transition-colors duration-[var(--motion-fast)] hover:bg-surface-interactive"
           >
-            ← Admin
+            Back to workspace
           </Link>
-        </span>
-      </header>
+        }
+      />
       <StudioNav orgSlug={orgSlug} />
       {children}
     </div>

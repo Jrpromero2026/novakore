@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-label="NovaKore mark">
+  <defs><linearGradient id="nk-g" gradientUnits="userSpaceOnUse" x1="-130" y1="-185" x2="140" y2="200">
+      <stop offset="0" stop-color="#8A3FFC"/>
+      <stop offset="0.5" stop-color="#5A5CFF"/>
+      <stop offset="1" stop-color="#2FB3FF"/>
+    </linearGradient></defs>
+  <rect width="512" height="512" rx="96" fill="#F7F8FA"/><g transform="translate(256 256)"><g fill="url(#nk-g)" stroke="url(#nk-g)" stroke-width="14" stroke-linejoin="round">
+      <path d="M -20 -70 L 20 -70 L 30 -80 L 30 -222 L 20 -232 L -20 -232 L -30 -222 L -30 -80 Z"/>
+      <path d="M 50.62 -52.32 L 70.62 -17.68 L 84.28 -14.02 L 207.26 -85.02 L 210.92 -98.68 L 190.92 -133.32 L 177.26 -136.98 L 54.28 -65.98 Z"/>
+      <path d="M 70.62 17.68 L 50.62 52.32 L 54.28 65.98 L 177.26 136.98 L 190.92 133.32 L 210.92 98.68 L 207.26 85.02 L 84.28 14.02 Z"/>
+      <path d="M 20 70 L -20 70 L -30 80 L -30 222 L -20 232 L 20 232 L 30 222 L 30 80 Z"/>
+      <path d="M -50.62 52.32 L -70.62 17.68 L -84.28 14.02 L -207.26 85.02 L -210.92 98.68 L -190.92 133.32 L -177.26 136.98 L -54.28 65.98 Z"/>
+      <path d="M -70.62 -17.68 L -50.62 -52.32 L -54.28 -65.98 L -177.26 -136.98 L -190.92 -133.32 L -210.92 -98.68 L -207.26 -85.02 L -84.28 -14.02 Z"/>
+    </g>
+    <path d="M 0 -44 L 38 -22 L 0 0 L -38 -22 Z" fill="#E7E1FF"/>
+      <path d="M -38 -22 L 0 0 L 0 44 L -38 22 Z" fill="#8F7FFF"/>
+      <path d="M 38 -22 L 0 0 L 0 44 L 38 22 Z" fill="#5A50E8"/></g>
+</svg>
