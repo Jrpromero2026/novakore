@@ -449,6 +449,241 @@ export async function getAiWorkspace(
 }
 
 // ---------------------------------------------------------------------------
+// Lesson workspace (Knowledge IDE)
+// ---------------------------------------------------------------------------
+
+export interface LessonWorkspaceData {
+  /** The knowledge tree: journeys, courses, and the open course's structure. */
+  tree: {
+    journeys: { id: string; title: string; status: string }[];
+    courses: { id: string; title: string; status: string }[];
+    /** Modules + lessons of the course the open lesson belongs to. */
+    currentCourse: {
+      id: string;
+      title: string;
+      modules: {
+        id: string;
+        title: string;
+        lessons: { id: string; title: string; status: string }[];
+      }[];
+    } | null;
+  };
+  /** Real published-version history for the open lesson, newest first. */
+  versions: {
+    id: string;
+    versionNumber: number;
+    title: string;
+    publishedAt: string;
+    blockCount: number;
+  }[];
+  /** Real review requests (+ comments) targeting the open lesson. */
+  reviews: {
+    id: string;
+    status: string;
+    note: string | null;
+    createdAt: string;
+    comments: { id: string; body: string; status: string; createdAt: string }[];
+  }[];
+}
+
+export async function getLessonWorkspace(
+  organizationId: string,
+  courseId: string,
+  lessonId: string,
+): Promise<LessonWorkspaceData> {
+  const supabase = await supabaseServer();
+  const [
+    { data: journeys },
+    { data: courses },
+    { data: course },
+    { data: modules },
+    { data: lessons },
+    { data: versions },
+    { data: reviews },
+  ] = await Promise.all([
+    supabase
+      .from("learning_paths")
+      .select("id, title, status")
+      .eq("organization_id", organizationId)
+      .neq("status", "archived")
+      .order("title")
+      .limit(50),
+    supabase
+      .from("courses")
+      .select("id, title, status")
+      .eq("organization_id", organizationId)
+      .neq("status", "archived")
+      .order("title")
+      .limit(100),
+    supabase
+      .from("courses")
+      .select("id, title")
+      .eq("id", courseId)
+      .eq("organization_id", organizationId)
+      .maybeSingle(),
+    supabase
+      .from("modules")
+      .select("id, title, position")
+      .eq("course_id", courseId)
+      .is("archived_at", null)
+      .order("position"),
+    supabase
+      .from("lessons")
+      .select("id, module_id, title, status, position")
+      .eq("course_id", courseId)
+      .is("archived_at", null)
+      .order("position"),
+    supabase
+      .from("lesson_versions")
+      .select("id, version_number, title, blocks, published_at")
+      .eq("lesson_id", lessonId)
+      .order("version_number", { ascending: false })
+      .limit(20),
+    supabase
+      .from("review_requests")
+      .select("id, status, note, created_at")
+      .eq("organization_id", organizationId)
+      .eq("subject_type", "lesson")
+      .eq("subject_id", lessonId)
+      .order("created_at", { ascending: false })
+      .limit(10),
+  ]);
+
+  const reviewIds = (reviews ?? []).map((r) => r.id);
+  const { data: comments } = reviewIds.length
+    ? await supabase
+        .from("review_comments")
+        .select("id, request_id, body, status, created_at")
+        .in("request_id", reviewIds)
+        .order("created_at")
+    : { data: [] as never[] };
+
+  return {
+    tree: {
+      journeys: journeys ?? [],
+      courses: courses ?? [],
+      currentCourse: course
+        ? {
+            id: course.id,
+            title: course.title,
+            modules: (modules ?? []).map((m) => ({
+              id: m.id,
+              title: m.title,
+              lessons: (lessons ?? [])
+                .filter((l) => l.module_id === m.id)
+                .map((l) => ({ id: l.id, title: l.title, status: l.status })),
+            })),
+          }
+        : null,
+    },
+    versions: (versions ?? []).map((v) => ({
+      id: v.id,
+      versionNumber: v.version_number,
+      title: v.title,
+      publishedAt: v.published_at,
+      blockCount: Array.isArray(v.blocks) ? v.blocks.length : 0,
+    })),
+    reviews: (reviews ?? []).map((r) => ({
+      id: r.id,
+      status: r.status,
+      note: r.note,
+      createdAt: r.created_at,
+      comments: (comments ?? [])
+        .filter((c) => c.request_id === r.id)
+        .map((c) => ({
+          id: c.id,
+          body: c.body,
+          status: c.status,
+          createdAt: c.created_at,
+        })),
+    })),
+  };
+}
+
+// ---------------------------------------------------------------------------
+// Knowledge graph
+// ---------------------------------------------------------------------------
+
+export interface KnowledgeGraphData {
+  journeys: { id: string; title: string; status: string }[];
+  courses: { id: string; title: string; published: boolean }[];
+  assessments: { id: string; title: string; status: string }[];
+  /** journey → course containment (real path_nodes rows). */
+  pathEdges: { journeyId: string; courseId: string }[];
+  /** assessment → course attachment (real assignment rows). */
+  assessmentEdges: { assessmentId: string; courseId: string }[];
+}
+
+/**
+ * Real relationship graph across the organization's knowledge: journeys own
+ * courses (path_nodes); assessments attach to courses (assessment
+ * assignments). Nothing inferred — every edge is a database row. Certificate
+ * templates carry no relational source link, so credentials are deliberately
+ * NOT drawn (no fabricated edges).
+ */
+export async function getKnowledgeGraph(
+  organizationId: string,
+): Promise<KnowledgeGraphData> {
+  const supabase = await supabaseServer();
+  const [
+    { data: journeys },
+    { data: courses },
+    { data: assessments },
+    { data: nodes },
+    { data: assignments },
+  ] = await Promise.all([
+    supabase
+      .from("learning_paths")
+      .select("id, title, status")
+      .eq("organization_id", organizationId)
+      .neq("status", "archived")
+      .order("title")
+      .limit(30),
+    supabase
+      .from("courses")
+      .select("id, title, current_published_version_id")
+      .eq("organization_id", organizationId)
+      .neq("status", "archived")
+      .order("title")
+      .limit(60),
+    supabase
+      .from("assessments")
+      .select("id, title, status")
+      .eq("organization_id", organizationId)
+      .neq("status", "archived")
+      .order("title")
+      .limit(60),
+    supabase
+      .from("path_nodes")
+      .select("path_id, course_id")
+      .eq("organization_id", organizationId),
+    supabase
+      .from("assessment_assignments")
+      .select("assessment_id, course_id")
+      .eq("organization_id", organizationId)
+      .eq("status", "active"),
+  ]);
+
+  return {
+    journeys: journeys ?? [],
+    courses: (courses ?? []).map((c) => ({
+      id: c.id,
+      title: c.title,
+      published: c.current_published_version_id !== null,
+    })),
+    assessments: assessments ?? [],
+    pathEdges: (nodes ?? []).map((n) => ({
+      journeyId: n.path_id,
+      courseId: n.course_id,
+    })),
+    assessmentEdges: (assignments ?? []).map((a) => ({
+      assessmentId: a.assessment_id,
+      courseId: a.course_id,
+    })),
+  };
+}
+
+// ---------------------------------------------------------------------------
 // Review queue
 // ---------------------------------------------------------------------------
 

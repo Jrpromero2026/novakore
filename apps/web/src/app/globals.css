@@ -457,6 +457,31 @@ body {
   transform: scale(0.985);
 }
 
+/* ---------------------------------------------------------------------------
+ * Knowledge IDE canvas (experience-design-system.md §knowledge-ide).
+ * Inside .nk-canvas the interface disappears: fields read as content —
+ * borderless and transparent at rest, surfaced on hover, ringed on focus.
+ * ------------------------------------------------------------------------- */
+.nk-canvas :is(input[type="text"], input:not([type]), textarea, select) {
+  background: transparent;
+  border-color: transparent;
+  transition:
+    border-color var(--motion-fast) var(--ease-out),
+    background-color var(--motion-fast) var(--ease-out),
+    box-shadow var(--motion-fast) var(--ease-out);
+}
+
+.nk-canvas :is(input[type="text"], input:not([type]), textarea, select):hover {
+  border-color: var(--border-subtle);
+  background: var(--background-subtle);
+}
+
+.nk-canvas :is(input[type="text"], input:not([type]), textarea, select):focus {
+  border-color: var(--accent);
+  background: var(--surface);
+  box-shadow: 0 0 0 3px var(--accent-soft);
+}
+
 ::selection {
   background: var(--selection);
 }

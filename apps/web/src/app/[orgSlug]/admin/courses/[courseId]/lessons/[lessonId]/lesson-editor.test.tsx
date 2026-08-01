@@ -96,4 +96,34 @@ describe("lesson editor", () => {
       screen.getByRole("button", { name: /publish lesson/i }),
     ).toBeDisabled();
   });
+
+  test("slash menu inserts a block keyboard-first", async () => {
+    renderEditor({ canPublish: true });
+    await userEvent.click(screen.getByRole("button", { name: /add a block/i }));
+    const search = screen.getByRole("combobox", {
+      name: /search block types/i,
+    });
+    await userEvent.type(search, "knowledge");
+    await userEvent.keyboard("{Enter}");
+    // The new knowledge check renders its editing fields on the canvas.
+    expect(
+      screen.getByLabelText(/knowledge check prompt/i),
+    ).toBeInTheDocument();
+  });
+
+  test("publishing is a ceremony: dialog states the version and real checks", async () => {
+    renderEditor({
+      canPublish: true,
+      published: { versionNumber: 2, publishedAt: "2026-07-01T12:00:00Z" },
+      comparison: { added: 1, removed: 0, changed: 2, titleChanged: false },
+    });
+    await userEvent.click(
+      screen.getByRole("button", { name: /publish lesson/i }),
+    );
+    const dialog = screen.getByRole("dialog", { name: /publish lesson/i });
+    expect(dialog).toHaveTextContent(/publish version 3/i);
+    expect(dialog).toHaveTextContent(/all 1 blocks are valid/i);
+    expect(dialog).toHaveTextContent(/immutable/i);
+    expect(screen.getByRole("button", { name: /^publish v3$/i })).toBeEnabled();
+  });
 });

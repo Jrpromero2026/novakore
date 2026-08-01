@@ -4,6 +4,7 @@ import { notFound } from "next/navigation";
 import { contentBlockSchema, type ContentBlock } from "@novakore/domain";
 import { can, requireOrgContext, requirePermission } from "@/lib/org-context";
 import { supabaseServer } from "@/lib/supabase/server";
+import { getLessonWorkspace } from "@/lib/data/studio";
 import { LessonEditor } from "./lesson-editor";
 
 export const metadata: Metadata = { title: "Lesson editor" };
@@ -18,7 +19,7 @@ export default async function LessonEditorPage({
   requirePermission(ctx, "content.view_draft");
 
   const supabase = await supabaseServer();
-  const [{ data: lesson }, { data: blocks }] = await Promise.all([
+  const [{ data: lesson }, { data: blocks }, workspace] = await Promise.all([
     supabase
       .from("lessons")
       .select(
@@ -33,6 +34,7 @@ export default async function LessonEditorPage({
       .select("id, block_type, schema_version, data, position")
       .eq("lesson_id", lessonId)
       .order("position"),
+    getLessonWorkspace(ctx.organization.id, courseId, lessonId),
   ]);
   if (!lesson) notFound();
 
@@ -104,26 +106,31 @@ export default async function LessonEditorPage({
   }
 
   return (
-    <div className="space-y-6">
-      <header className="space-y-1">
-        <p
-          className="text-caption uppercase text-text-muted"
-          style={{ letterSpacing: "var(--tracking-caps)" }}
+    <div className="space-y-4">
+      <p
+        className="text-caption uppercase text-text-muted"
+        style={{ letterSpacing: "var(--tracking-caps)" }}
+      >
+        <Link
+          href={`/${orgSlug}/admin/studio`}
+          className="hover:text-text-primary"
         >
-          <Link
-            href={`/${orgSlug}/admin/courses/${courseId}`}
-            className="hover:text-text-primary"
-          >
-            Course builder
-          </Link>{" "}
-          / lesson editor
-        </p>
-        <h1 className="text-h1 text-text-primary">{lesson.title}</h1>
-      </header>
+          Studio
+        </Link>{" "}
+        /{" "}
+        <Link
+          href={`/${orgSlug}/admin/courses/${courseId}`}
+          className="hover:text-text-primary"
+        >
+          {workspace.tree.currentCourse?.title ?? "Course"}
+        </Link>{" "}
+        / {lesson.title}
+      </p>
 
       <LessonEditor
         orgSlug={orgSlug}
         lessonId={lessonId}
+        lessonTitle={lesson.title}
         initialBlocks={draftBlocks}
         canPublish={can(ctx, "content.publish")}
         canManageLibrary={can(ctx, "library.manage")}
@@ -136,6 +143,7 @@ export default async function LessonEditorPage({
             : null
         }
         comparison={comparison}
+        workspace={workspace}
       />
     </div>
   );

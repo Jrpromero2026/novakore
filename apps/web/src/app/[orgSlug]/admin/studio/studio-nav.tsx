@@ -16,6 +16,7 @@ export function StudioNav({ orgSlug }: { orgSlug: string }) {
   const base = `/${orgSlug}/admin/studio`;
   const [open, setOpen] = useState(false);
   const [query, setQuery] = useState("");
+  const [active, setActive] = useState(0);
   const inputRef = useRef<HTMLInputElement>(null);
 
   const items = useMemo(
@@ -91,20 +92,31 @@ export function StudioNav({ orgSlug }: { orgSlug: string }) {
         <div
           role="dialog"
           aria-label="Studio command palette"
-          className="fixed inset-0 z-50 flex items-start justify-center bg-black/40 pt-[15vh]"
+          className="fixed inset-0 flex items-start justify-center pt-[15vh]"
+          style={{ zIndex: "var(--z-overlay)" }}
           onClick={() => setOpen(false)}
         >
+          <div className="nk-backdrop absolute inset-0 bg-[rgb(0_0_0/0.45)] backdrop-blur-[2px]" />
           <div
-            className="w-full max-w-md rounded-lg border border-border-default bg-surface shadow-lg"
+            className="nk-pop relative w-full max-w-md overflow-hidden rounded-lg border border-border-default bg-background-elevated shadow-overlay"
             onClick={(e) => e.stopPropagation()}
           >
             <input
               ref={inputRef}
               value={query}
-              onChange={(e) => setQuery(e.target.value)}
+              onChange={(e) => {
+                setQuery(e.target.value);
+                setActive(0);
+              }}
               onKeyDown={(e) => {
-                if (e.key === "Enter" && matches[0]) {
-                  router.push(matches[0].href);
+                if (e.key === "ArrowDown") {
+                  e.preventDefault();
+                  setActive((i) => Math.min(i + 1, matches.length - 1));
+                } else if (e.key === "ArrowUp") {
+                  e.preventDefault();
+                  setActive((i) => Math.max(i - 1, 0));
+                } else if (e.key === "Enter" && matches[active]) {
+                  router.push(matches[active].href);
                   setOpen(false);
                 }
               }}
@@ -112,11 +124,18 @@ export function StudioNav({ orgSlug }: { orgSlug: string }) {
               aria-label="Search Studio"
               className="w-full border-b border-border-subtle bg-transparent px-4 py-3 text-body text-text-primary outline-none"
             />
-            <ul className="max-h-64 overflow-y-auto py-1">
-              {matches.map((item) => (
+            <ul className="max-h-64 overflow-y-auto p-1.5">
+              {matches.map((item, index) => (
                 <li key={item.href}>
                   <button
-                    className="w-full px-4 py-2 text-left text-body-sm text-text-primary hover:bg-surface-interactive"
+                    aria-current={index === active ? "true" : undefined}
+                    onMouseEnter={() => setActive(index)}
+                    className={cx(
+                      "w-full rounded-md px-3 py-2 text-left text-body-sm transition-colors duration-[var(--motion-fast)]",
+                      index === active
+                        ? "bg-accent-soft text-accent"
+                        : "text-text-primary hover:bg-surface-interactive",
+                    )}
                     onClick={() => {
                       router.push(item.href);
                       setOpen(false);

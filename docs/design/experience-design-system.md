@@ -229,6 +229,32 @@ created by mixing weights within a page.
 - Charts and animated numbers degrade to correct, readable values with no JS.
 - Animate only compositor-friendly properties; no new runtime dependencies.
 
+## Knowledge IDE (Studio)
+
+Studio is a **Knowledge IDE**, not a course builder: knowledge creation gets
+the tooling software gets. Three panels — the **knowledge tree** (the org's
+real structure: journeys, courses, the open course's modules and lessons),
+the **canvas** (content is the interface: inside `.nk-canvas`, fields are
+borderless and transparent at rest, surfaced on hover, ringed on focus; block
+controls appear on intent only), and the **inspector** (Knowledge Health,
+real version history, real review activity, Nova's doorway) which collapses
+naturally via native `<details>`.
+
+- **Slash commands**: `/` (or the add affordance) opens keyboard-first block
+  insertion — search, arrows, Enter. Same grammar as the command palette.
+- **Knowledge Health** is coaching, not errors: an honest "n of m signals
+  present" derived entirely from the draft in front of the author
+  (`lib/lesson-health.ts`) — never a synthetic quality percentage.
+- **Publishing is a ceremony**: a confirm dialog states the immutable-version
+  contract, lists real checks (validity, health, drift vs the live version),
+  names the version being created, and celebrates success (`.nk-scale-in`).
+- **The knowledge graph** draws only real relationships (path_nodes rows,
+  assessment assignments). Hover traces a node's actual connections; click
+  navigates. No fabricated edges — if a link isn't a database row, it isn't
+  drawn.
+- **Focus mode** hides both rails for distraction-free writing. `⌘/Ctrl+S`
+  saves; every version ever published stays visible in the inspector.
+
 ## Governance
 
 Extend the system, don't fork it: new surfaces consume these tokens, utilities,
