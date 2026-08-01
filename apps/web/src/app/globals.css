@@ -422,6 +422,41 @@ body {
   );
 }
 
+/* Overlay scrim fade — dialogs, drawers, command palette. */
+@keyframes nk-backdrop {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.nk-backdrop {
+  animation: nk-backdrop var(--motion-fast) var(--ease-out) both;
+}
+
+/* Popover / menu presentation: scales from its origin edge. */
+.nk-pop {
+  transform-origin: top;
+  animation: nk-scale-in var(--motion-fast) var(--ease-out) both;
+}
+
+/* Tactile press — every click gets sub-frame feedback. Owns the element's
+ * full transition set so color and transform stay on one timeline. */
+.nk-press {
+  transition:
+    color var(--motion-fast) var(--ease-out),
+    background-color var(--motion-fast) var(--ease-out),
+    border-color var(--motion-fast) var(--ease-out),
+    box-shadow var(--motion-fast) var(--ease-out),
+    transform var(--motion-fast) var(--ease-out);
+}
+
+.nk-press:active {
+  transform: scale(0.985);
+}
+
 ::selection {
   background: var(--selection);
 }

@@ -126,9 +126,10 @@ function NavLink({
       )}
     >
       {active ? (
+        // Re-mounts on route change: the marker arriving is the orientation cue.
         <span
           aria-hidden
-          className="absolute left-0 top-1/2 h-4 w-0.5 -translate-y-1/2 rounded-r-full bg-accent"
+          className="nk-scale-in absolute left-0 top-1/2 h-4 w-0.5 -translate-y-1/2 rounded-r-full bg-accent"
         />
       ) : null}
       <IconComponent
@@ -147,7 +148,7 @@ function NavLink({
            * intercepts the link it describes. */}
           <span
             aria-hidden
-            className="pointer-events-none absolute left-[calc(100%+0.5rem)] z-10 whitespace-nowrap rounded-md border border-border-default bg-background-elevated px-2 py-1 text-caption text-text-primary opacity-0 shadow-overlay transition-opacity duration-[var(--motion-fast)] group-hover:opacity-100"
+            className="pointer-events-none absolute left-[calc(100%+0.5rem)] z-10 -translate-x-1 whitespace-nowrap rounded-md border border-border-default bg-background-elevated px-2 py-1 text-caption text-text-primary opacity-0 shadow-overlay transition-[opacity,transform] duration-[var(--motion-fast)] ease-[var(--ease-out)] group-hover:translate-x-0 group-hover:opacity-100"
           >
             {label}
           </span>
@@ -299,7 +300,7 @@ export function AdminSidebar({
             type="button"
             aria-label="Close navigation"
             onClick={() => shell.setMobileOpen(false)}
-            className="absolute inset-0 bg-[rgb(0_0_0/0.45)] backdrop-blur-[2px]"
+            className="nk-backdrop absolute inset-0 bg-[rgb(0_0_0/0.45)] backdrop-blur-[2px]"
           />
           <div
             role="dialog"

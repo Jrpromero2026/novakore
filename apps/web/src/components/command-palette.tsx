@@ -166,13 +166,13 @@ export function CommandPalette({ entries }: { entries: PaletteEntry[] }) {
         type="button"
         aria-label="Close command palette"
         onClick={close}
-        className="absolute inset-0 bg-[rgb(0_0_0/0.45)] backdrop-blur-[2px]"
+        className="nk-backdrop absolute inset-0 bg-[rgb(0_0_0/0.45)] backdrop-blur-[2px]"
       />
       <div
         role="dialog"
         aria-modal="true"
         aria-label="Command palette"
-        className="nk-fade-up relative w-full max-w-xl overflow-hidden rounded-lg border border-border-default bg-background-elevated shadow-overlay"
+        className="nk-pop relative w-full max-w-xl overflow-hidden rounded-lg border border-border-default bg-background-elevated shadow-overlay"
       >
         <div className="flex items-center gap-2.5 border-b border-border-subtle px-4">
           <IconSearch size={16} className="shrink-0 text-text-muted" />

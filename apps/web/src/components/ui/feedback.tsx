@@ -34,7 +34,10 @@ export function Alert({
   return (
     <div
       role={tone === "danger" ? "alert" : "status"}
-      className={cx("rounded-md border px-3.5 py-2.5", alertStyles[tone].box)}
+      className={cx(
+        "nk-fade-up rounded-md border px-3.5 py-2.5",
+        alertStyles[tone].box,
+      )}
     >
       <p className="text-body-sm">
         <span
@@ -94,7 +97,7 @@ export function ConfirmButton({
 
   return (
     <span
-      className="inline-flex flex-wrap items-center gap-1.5"
+      className="nk-fade-up inline-flex flex-wrap items-center gap-1.5"
       role="alertdialog"
       aria-label={description}
     >

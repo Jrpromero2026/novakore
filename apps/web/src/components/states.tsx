@@ -19,7 +19,7 @@ export function AccessDenied({ backHref }: { backHref: string }) {
       </p>
       <Link
         href={backHref}
-        className="mt-2 rounded-md border border-border-strong px-4 py-2 text-sm font-medium text-text hover:bg-surface-sunken"
+        className="nk-press mt-2 rounded-md border border-border-strong px-4 py-2 text-sm font-medium text-text hover:bg-surface-sunken"
       >
         Back to overview
       </Link>

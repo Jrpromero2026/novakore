@@ -59,7 +59,7 @@ export function ThemeToggle() {
     <button
       type="button"
       onClick={cycle}
-      className="rounded-md border border-border px-2.5 py-1.5 text-xs font-medium text-text-muted transition-colors hover:text-text"
+      className="nk-press rounded-md border border-border-default px-2.5 py-1.5 text-xs font-medium text-text-muted hover:border-border-strong hover:text-text-primary"
       aria-label={`Theme: ${LABEL[mode]}. Activate to change.`}
     >
       {LABEL[mode]}

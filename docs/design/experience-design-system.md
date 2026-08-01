@@ -86,8 +86,21 @@ Utility classes (all collapsed by the global reduced-motion rule):
 - `.nk-fade-up` — content reveal (opacity + 4px rise).
 - `.nk-rise` — same, with `--nk-stagger` index for staggered lists/grids.
 - `.nk-scale-in` — a completion/confirmation moment (subtle scale from 0.98).
+- `.nk-pop` — popover/menu/dialog presentation: `nk-scale-in` from its origin
+  edge (`transform-origin: top`; override with an `origin-*` utility).
+- `.nk-backdrop` — overlay scrim fade (dialogs, drawers, command palette).
+  Scrims never snap in.
+- `.nk-press` — tactile press: owns the element's full transition set (color +
+  transform on one timeline) and scales to 0.985 on `:active`. Every button
+  and button-like control carries it.
 - `.nk-draw` — a line chart drawing itself (animated `stroke-dashoffset`).
 - `.nk-shimmer` — skeleton loading only.
+
+Field focus grammar: inputs/textareas/selects share one focus behavior — the
+border takes the accent and a soft 3px `--accent-soft` ring blooms in over
+`--motion-fast` (see `fieldFocus` in `components/ui/primitives.tsx`).
+Validation errors enter with `.nk-fade-up`; action outcomes settle in with
+`.nk-scale-in` (`ActionBanner`).
 
 Rules: nothing loops except skeletons. Nothing animates on scroll ambiently.
 Staggers cap at ~6 items and ~40ms apart. Target 60fps: animate only

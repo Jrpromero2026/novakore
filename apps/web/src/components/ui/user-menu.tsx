@@ -65,7 +65,7 @@ export function UserMenu({
         <div
           role="menu"
           aria-label="Account"
-          className="nk-fade-up absolute right-0 top-[calc(100%+0.5rem)] w-56 overflow-hidden rounded-lg border border-border-default bg-background-elevated shadow-overlay"
+          className="nk-pop absolute right-0 top-[calc(100%+0.5rem)] w-56 origin-top-right overflow-hidden rounded-lg border border-border-default bg-background-elevated shadow-overlay"
           style={{ zIndex: "var(--z-panel)" }}
         >
           <div className="border-b border-border-subtle px-3 py-2.5">

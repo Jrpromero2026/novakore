@@ -33,13 +33,22 @@ export function Button({
     <button
       {...props}
       className={cx(
-        "inline-flex items-center gap-2 rounded-md px-3.5 py-2 text-sm font-medium transition-colors duration-[var(--motion-fast)]",
+        // nk-press owns the transition set: color + transform on one timeline,
+        // so every click lands with sub-frame tactile feedback.
+        "nk-press inline-flex items-center gap-2 rounded-md px-3.5 py-2 text-sm font-medium",
         buttonStyles[variant],
         className,
       )}
     />
   );
 }
+
+/* Fields share one focus grammar: the border takes the accent and a soft
+ * ring blooms in over --motion-fast — feedback you feel, not just see. */
+const fieldFocus =
+  "transition-[border-color,box-shadow] duration-[var(--motion-fast)] ease-[var(--ease-out)] " +
+  "hover:border-border-strong focus:border-accent focus:outline-none " +
+  "focus:shadow-[0_0_0_3px_var(--accent-soft)]";
 
 export function Input({
   className,
@@ -50,8 +59,7 @@ export function Input({
       {...props}
       className={cx(
         "w-full rounded-md border border-border bg-surface px-3 py-2 text-sm text-text placeholder:text-text-faint",
-        "transition-colors duration-[var(--motion-fast)] hover:border-border-strong",
-        "focus:border-accent focus:outline-none",
+        fieldFocus,
         className,
       )}
     />
@@ -67,8 +75,7 @@ export function Textarea({
       {...props}
       className={cx(
         "w-full rounded-md border border-border bg-surface px-3 py-2 text-sm text-text placeholder:text-text-faint",
-        "transition-colors duration-[var(--motion-fast)] hover:border-border-strong",
-        "focus:border-accent focus:outline-none",
+        fieldFocus,
         className,
       )}
     />
@@ -84,7 +91,7 @@ export function Select({
       {...props}
       className={cx(
         "w-full rounded-md border border-border bg-surface px-3 py-2 text-sm text-text",
-        "focus:border-accent focus:outline-none",
+        fieldFocus,
         className,
       )}
     />
@@ -115,7 +122,7 @@ export function Field({
         <p className="text-xs text-text-faint">{hint}</p>
       ) : null}
       {error ? (
-        <p role="alert" className="text-xs text-danger">
+        <p role="alert" className="nk-fade-up text-xs text-danger">
           {error}
         </p>
       ) : null}
@@ -236,7 +243,7 @@ export function EmptyState({
   secondaryAction?: ReactNode;
 }) {
   return (
-    <div className="flex flex-col items-center justify-center gap-2 px-6 py-14 text-center">
+    <div className="nk-scale-in flex flex-col items-center justify-center gap-2 px-6 py-14 text-center">
       <EmptyGlyph />
       <p className="mt-2 text-sm font-medium text-text">{title}</p>
       {description ? (
@@ -264,7 +271,8 @@ export function ActionBanner({
       {state.message ? (
         <p
           className={cx(
-            "rounded-md px-3 py-2 text-sm",
+            // Outcomes arrive, they don't just appear — a settle-in moment.
+            "nk-scale-in rounded-md px-3 py-2 text-sm",
             state.ok
               ? "bg-positive/10 text-positive"
               : "bg-danger-soft text-danger",
@@ -276,7 +284,7 @@ export function ActionBanner({
       {state.warnings?.map((w) => (
         <p
           key={w}
-          className="rounded-md bg-warning/10 px-3 py-2 text-sm text-warning"
+          className="nk-fade-up rounded-md bg-warning/10 px-3 py-2 text-sm text-warning"
         >
           {w}
         </p>
