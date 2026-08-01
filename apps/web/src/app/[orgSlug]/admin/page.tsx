@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import type { CSSProperties, ReactNode } from "react";
 import Link from "next/link";
 import { can, requireOrgContext } from "@/lib/org-context";
 import { getUser } from "@/lib/auth";
@@ -16,8 +17,8 @@ import { handleFromEmail, relativeTime } from "@/lib/format";
 import { Badge } from "@/components/ui/primitives";
 import { Panel, SectionHeader, StatusDot } from "@/components/ui/layout";
 import {
-  IconAi,
   IconAssessment,
+  IconAi,
   IconBranding,
   IconCourse,
   IconEnrollment,
@@ -28,13 +29,27 @@ import {
 import { Greeting } from "@/components/dashboard/greeting";
 import {
   CreateActions,
-  ListRows,
-  Metric,
+  MetricCard,
   ViewAll,
 } from "@/components/dashboard/widgets";
 import { ActivitySparkline, CompositionBar } from "@/components/dashboard/viz";
+import {
+  HeroStat,
+  NovaIntelligence,
+  PriorityCenter,
+  type NovaInsight,
+  type PriorityItem,
+} from "@/components/dashboard/command-center";
 
 export const metadata: Metadata = { title: "Overview" };
+
+const toneWeight: Record<NovaInsight["tone"], number> = {
+  danger: 0,
+  warning: 1,
+  accent: 2,
+  neutral: 3,
+  positive: 4,
+};
 
 export default async function OrgOverviewPage({
   params,
@@ -77,11 +92,8 @@ export default async function OrgOverviewPage({
     canAnalytics
       ? getOpsMetrics(ctx.organization.id)
       : Promise.resolve(null as OpsMetrics | null),
-    // Actor identities require the member directory permission as well.
     canAnalytics
-      ? getWorkspacePulse(ctx.organization.id, {
-          resolveActors: canMembers,
-        })
+      ? getWorkspacePulse(ctx.organization.id, { resolveActors: canMembers })
       : Promise.resolve(null as WorkspacePulse | null),
     canStudio
       ? getContentComposition(ctx.organization.id)
@@ -101,48 +113,121 @@ export default async function OrgOverviewPage({
         .reduce((sum, [, n]) => sum + n, 0)
     : null;
 
-  // Attention queue — only genuinely actionable, real conditions.
-  const attention: {
-    key: string;
-    title: string;
-    meta: string;
-    href: string;
-    tone: "accent" | "warning" | "neutral";
-  }[] = [];
-  if (studio && studio.openReviews.length > 0) {
-    attention.push({
-      key: "reviews",
-      title: `${studio.openReviews.length} content ${studio.openReviews.length === 1 ? "review" : "reviews"} awaiting a decision`,
-      meta: "Studio · review queue",
-      href: `${base}/studio/review`,
-      tone: "accent",
+  const knowledgeAssets = studio
+    ? studio.counts.courses +
+      studio.counts.paths +
+      studio.counts.assessments +
+      studio.counts.libraryBlocks
+    : null;
+
+  // Knowledge health = real publishing readiness (published / total courses).
+  const publishingReadiness =
+    composition && composition.total > 0
+      ? Math.round((composition.published / composition.total) * 100)
+      : null;
+
+  // ---- Nova Intelligence — every insight from a real, current condition ----
+  const insights: NovaInsight[] = [];
+  const topDropOff = ops?.dropOff[0];
+  if (topDropOff && topDropOff.started > 0) {
+    insights.push({
+      id: "dropoff",
+      tone: "warning",
+      observation: `“${topDropOff.title}” has a start-to-complete gap.`,
+      detail: `${topDropOff.completed} of ${topDropOff.started} learners who started it have finished.`,
+      action: { label: "Review", href: `${base}/ops` },
     });
   }
-  if (studio && studio.draftCourses.length > 0) {
-    attention.push({
-      key: "drafts",
-      title: `${studio.draftCourses.length} ${studio.draftCourses.length === 1 ? "course" : "courses"} still in draft`,
-      meta: "Not yet delivered to learners",
-      href: `${base}/courses`,
+  if (ops && ops.evaluationsPassed + ops.evaluationsFailed > 0) {
+    const total = ops.evaluationsPassed + ops.evaluationsFailed;
+    const rate = Math.round((ops.evaluationsPassed / total) * 100);
+    if (rate < 60) {
+      insights.push({
+        id: "eval-rate",
+        tone: "warning",
+        observation: `Evaluation pass rate is ${rate}%.`,
+        detail: `${ops.evaluationsPassed} passed of ${total} graded attempts.`,
+        action: { label: "Open", href: `${base}/ops` },
+      });
+    }
+  }
+  if (studio && studio.openReviews.length > 0) {
+    insights.push({
+      id: "reviews",
+      tone: "accent",
+      observation: `${studio.openReviews.length} content ${studio.openReviews.length === 1 ? "review is" : "reviews are"} awaiting a decision.`,
+      action: { label: "Review", href: `${base}/studio/review` },
+    });
+  }
+  if (composition && composition.draft > 0) {
+    insights.push({
+      id: "drafts",
       tone: "neutral",
+      observation: `${composition.draft} ${composition.draft === 1 ? "course is" : "courses are"} in draft, not yet delivered to learners.`,
+      action: { label: "Open", href: `${base}/courses` },
     });
   }
   if (openFeedback !== null && openFeedback > 0) {
-    attention.push({
-      key: "feedback",
+    insights.push({
+      id: "feedback",
+      tone: "warning",
+      observation: `${openFeedback} open feedback ${openFeedback === 1 ? "item" : "items"} from testers.`,
+      action: { label: "Open", href: `${base}/ops` },
+    });
+  }
+  if (
+    insights.length === 0 &&
+    composition &&
+    composition.total > 0 &&
+    composition.draft === 0
+  ) {
+    insights.push({
+      id: "healthy",
+      tone: "positive",
+      observation: `Publishing is healthy — all ${composition.total} ${composition.total === 1 ? "course is" : "courses are"} live.`,
+    });
+  }
+  insights.sort((a, b) => toneWeight[a.tone] - toneWeight[b.tone]);
+  const heroSummary =
+    insights[0]?.observation ??
+    `Everything looks healthy across ${ctx.organization.name}.`;
+
+  // ---- Priority Center — real actionable conditions, mapped to bands -------
+  const priority: PriorityItem[] = [];
+  if (studio && studio.openReviews.length > 0) {
+    priority.push({
+      id: "reviews",
+      band: "review",
+      title: `${studio.openReviews.length} content ${studio.openReviews.length === 1 ? "review" : "reviews"} awaiting a decision`,
+      meta: "Studio · review queue",
+      href: `${base}/studio/review`,
+    });
+  }
+  if (studio && studio.draftCourses.length > 0) {
+    priority.push({
+      id: "drafts",
+      band: "publishing",
+      title: `${studio.draftCourses.length} ${studio.draftCourses.length === 1 ? "course" : "courses"} still in draft`,
+      meta: "Not yet delivered to learners",
+      href: `${base}/courses`,
+    });
+  }
+  if (openFeedback !== null && openFeedback > 0) {
+    priority.push({
+      id: "feedback",
+      band: "feedback",
       title: `${openFeedback} open feedback ${openFeedback === 1 ? "item" : "items"}`,
       meta: "Analytics · feedback review",
       href: `${base}/ops`,
-      tone: "warning",
     });
   }
   if (invitedMembers > 0) {
-    attention.push({
-      key: "invites",
+    priority.push({
+      id: "invites",
+      band: "system",
       title: `${invitedMembers} pending ${invitedMembers === 1 ? "invitation" : "invitations"}`,
       meta: "Members have not accepted yet",
       href: `${base}/members`,
-      tone: "neutral",
     });
   }
 
@@ -221,248 +306,286 @@ export default async function OrgOverviewPage({
       : []),
   ];
 
-  const knowledgeAssets = studio
-    ? studio.counts.courses +
-      studio.counts.paths +
-      studio.counts.assessments +
-      studio.counts.libraryBlocks
-    : null;
+  // Executive metric cards — real values, honest context, lead emphasized.
+  const metrics: {
+    key: string;
+    label: string;
+    value: number;
+    context?: ReactNode;
+    href?: string;
+    icon?: typeof IconStudio;
+    emphasis?: boolean;
+    accent?: boolean;
+  }[] = [];
+  if (knowledgeAssets !== null && studio) {
+    metrics.push({
+      key: "assets",
+      label: "Knowledge assets",
+      value: knowledgeAssets,
+      icon: IconStudio,
+      href: `${base}/studio`,
+      emphasis: true,
+      accent: true,
+      context: (
+        <span>
+          {studio.counts.courses} courses · {studio.counts.paths} paths ·{" "}
+          {studio.counts.libraryBlocks} blocks
+        </span>
+      ),
+    });
+  }
+  if (ops) {
+    metrics.push(
+      {
+        key: "learners",
+        label: "Active learners",
+        value: ops.activeLearners,
+        icon: IconEnrollment,
+        context: <span>{ops.enrollments} enrollments</span>,
+      },
+      {
+        key: "lessons",
+        label: "Lessons completed",
+        value: ops.lessonsCompleted,
+        icon: IconCourse,
+        context: <span>of {ops.lessonsStarted} started</span>,
+      },
+      {
+        key: "journeys",
+        label: "Journeys completed",
+        value: ops.journeysCompleted,
+        icon: IconPath,
+        context: <span>{ops.coursesCompleted} courses</span>,
+      },
+      {
+        key: "credentials",
+        label: "Credentials issued",
+        value: ops.credentialsIssued,
+        icon: IconAssessment,
+        href: `${base}/credentials`,
+      },
+    );
+  }
+  if (activeMembers !== null) {
+    metrics.push({
+      key: "members",
+      label: "Members",
+      value: activeMembers,
+      icon: IconEnrollment,
+      href: `${base}/members`,
+      context:
+        invitedMembers > 0 ? (
+          <span>{invitedMembers} invited</span>
+        ) : (
+          <span>all active</span>
+        ),
+    });
+  }
+  metrics.push({
+    key: "academies",
+    label: term("academy").plural,
+    value: academyCount ?? 0,
+    href: `${base}/academies`,
+  });
 
   return (
-    <div className="space-y-10">
-      {/* ---- Opening composition ---------------------------------------- */}
-      <header className="flex flex-wrap items-end justify-between gap-x-8 gap-y-4">
-        <div className="min-w-0">
-          <p className="flex items-center gap-2 text-caption font-medium uppercase tracking-[var(--tracking-caps)] text-text-muted">
-            {ctx.organization.name}
-            <StatusDot
-              tone={
-                ctx.organization.status === "active" ? "positive" : "warning"
-              }
-              label={ctx.organization.status}
-            />
-          </p>
-          <h1 className="mt-2 text-[1.75rem] font-semibold leading-tight tracking-tight text-text-primary">
-            <Greeting name={handleFromEmail(user?.email)} />
-          </h1>
-          <p className="mt-1.5 max-w-xl text-body-sm leading-relaxed text-text-secondary">
-            Build, govern, and deliver your organization&apos;s knowledge.
-          </p>
-        </div>
-        {canStudio ? (
-          <div className="flex flex-wrap items-center gap-2">
-            <Link
-              href={`${base}/studio`}
-              className="rounded-md bg-accent px-4 py-2 text-body-sm font-medium text-accent-contrast transition-colors duration-[var(--motion-fast)] hover:bg-accent-hover"
-            >
-              Open Studio
-            </Link>
-            <Link
-              href={`${base}/courses`}
-              className="rounded-md border border-border-strong px-4 py-2 text-body-sm font-medium text-text-primary transition-colors duration-[var(--motion-fast)] hover:bg-surface-interactive"
-            >
-              Courses
-            </Link>
+    <div className="space-y-8">
+      {/* ---- Hero — command center opening ------------------------------- */}
+      <Panel tone="hero" className="nk-fade-up rounded-xl p-6 sm:p-7">
+        <div className="grid gap-x-8 gap-y-6 lg:grid-cols-[1.35fr_1fr]">
+          <div className="min-w-0">
+            <p className="flex items-center gap-2 text-caption font-medium uppercase tracking-[var(--tracking-caps)] text-text-muted">
+              {ctx.organization.name}
+              <StatusDot
+                tone={
+                  ctx.organization.status === "active" ? "positive" : "warning"
+                }
+                label={ctx.organization.status}
+              />
+            </p>
+            <h1 className="mt-2 text-[1.875rem] font-semibold leading-tight tracking-tight text-text-primary">
+              <Greeting name={handleFromEmail(user?.email)} />
+            </h1>
+            <p className="mt-2 flex items-start gap-2 text-body-sm leading-relaxed text-text-secondary">
+              <IconAi
+                size={15}
+                className="mt-0.5 shrink-0 text-accent"
+                aria-hidden
+              />
+              <span>{heroSummary}</span>
+            </p>
+            {canStudio ? (
+              <div className="mt-5 flex flex-wrap items-center gap-2">
+                <Link
+                  href={`${base}/studio`}
+                  className="rounded-md bg-accent px-4 py-2 text-body-sm font-medium text-accent-contrast transition-colors duration-[var(--motion-fast)] hover:bg-accent-hover"
+                >
+                  Open Studio
+                </Link>
+                <Link
+                  href={`${base}/courses`}
+                  className="rounded-md border border-border-strong px-4 py-2 text-body-sm font-medium text-text-primary transition-colors duration-[var(--motion-fast)] hover:bg-surface-interactive"
+                >
+                  Courses
+                </Link>
+              </div>
+            ) : null}
           </div>
-        ) : null}
-      </header>
 
-      {/* ---- Operational spotlight + signals ----------------------------- */}
-      <section
-        aria-label="Workspace state"
-        className="grid gap-2.5 lg:grid-cols-3"
-      >
-        <Panel tone="elevated" className="p-5 lg:col-span-2">
-          <div className="flex flex-wrap items-start justify-between gap-4">
+          <div className="flex flex-col justify-between gap-5 border-t border-border-subtle pt-5 lg:border-l lg:border-t-0 lg:pl-8 lg:pt-0">
             <div>
-              <h2 className="text-title text-text-primary">
-                Publishing readiness
-              </h2>
-              <p className="mt-0.5 text-caption text-text-muted">
-                Course status across the workspace
+              <p className="text-caption font-medium uppercase tracking-[var(--tracking-caps)] text-text-muted">
+                Knowledge health
               </p>
-            </div>
-            {canStudio ? <ViewAll href={`${base}/courses`} /> : null}
-          </div>
-          <div className="mt-5">
-            {composition ? (
-              <CompositionBar composition={composition} />
-            ) : (
-              <p className="text-body-sm text-text-muted">
-                Publishing detail requires content access.
-              </p>
-            )}
-          </div>
-          {pulse ? (
-            <div className="mt-6 border-t border-border-subtle pt-4">
-              <div className="flex items-baseline justify-between gap-3">
-                <h3 className="text-label font-medium text-text-secondary">
-                  Workspace activity
-                </h3>
-                <p className="text-caption tabular-nums text-text-muted">
-                  {pulse.windowTotal} events · last {pulse.windowDays} days
+              {publishingReadiness !== null && composition ? (
+                <>
+                  <p className="mt-1 flex items-baseline gap-1.5">
+                    <span className="text-[1.75rem] font-semibold leading-none tracking-tight tabular-nums text-text-primary">
+                      {publishingReadiness}%
+                    </span>
+                    <span className="text-caption text-text-muted">
+                      of courses published
+                    </span>
+                  </p>
+                  <div className="mt-3">
+                    <CompositionBar composition={composition} />
+                  </div>
+                </>
+              ) : (
+                <p className="mt-1.5 text-body-sm text-text-muted">
+                  {canStudio
+                    ? "Publish your first course to start tracking readiness."
+                    : "Publishing detail requires content access."}
                 </p>
-              </div>
-              <div className="mt-2.5">
-                <ActivitySparkline
-                  data={pulse.dailyVolume}
-                  label={`Workspace events per day, last ${pulse.windowDays} days`}
-                />
-              </div>
+              )}
             </div>
-          ) : null}
-        </Panel>
+            <div className="flex flex-wrap gap-x-8 gap-y-3">
+              {ops ? (
+                <HeroStat
+                  label="Active learners"
+                  value={ops.activeLearners.toLocaleString()}
+                />
+              ) : null}
+              {knowledgeAssets !== null ? (
+                <HeroStat
+                  label="Knowledge assets"
+                  value={knowledgeAssets.toLocaleString()}
+                />
+              ) : null}
+              {activeMembers !== null ? (
+                <HeroStat
+                  label="Members"
+                  value={activeMembers.toLocaleString()}
+                />
+              ) : null}
+            </div>
+          </div>
+        </div>
+      </Panel>
 
-        <Panel tone="outlined" className="divide-y divide-border-subtle p-1.5">
-          {knowledgeAssets !== null ? (
-            <Metric
-              label="Knowledge assets"
-              value={knowledgeAssets}
-              emphasis
-              href={`${base}/studio`}
-              context={
-                studio ? (
-                  <span>
-                    {studio.counts.courses} courses · {studio.counts.paths}{" "}
-                    paths · {studio.counts.libraryBlocks} blocks
-                  </span>
-                ) : null
-              }
-            />
-          ) : null}
-          <Metric
-            label={term("academy").plural}
-            value={academyCount ?? 0}
-            href={`${base}/academies`}
-          />
-          {activeMembers !== null ? (
-            <Metric
-              label="Members"
-              value={activeMembers}
-              href={`${base}/members`}
-              context={
-                invitedMembers > 0 ? (
-                  <span>{invitedMembers} invited</span>
-                ) : (
-                  <span>all active</span>
-                )
-              }
-            />
-          ) : null}
-        </Panel>
-      </section>
-
-      {/* ---- Learning signals (analytics holders only) -------------------- */}
-      {ops ? (
-        <section aria-label="Learning activity">
-          <SectionHeader
-            title="Learning activity"
-            action={<ViewAll href={`${base}/ops`}>Analytics</ViewAll>}
-          />
-          <Panel
-            tone="outlined"
-            className="mt-2.5 grid grid-cols-2 divide-border-subtle p-1.5 sm:grid-cols-4 sm:divide-x"
-          >
-            <Metric
-              label="Active learners"
-              value={ops.activeLearners}
-              context={<span>{ops.enrollments} enrollments</span>}
-            />
-            <Metric
-              label="Lessons completed"
-              value={ops.lessonsCompleted}
-              context={<span>of {ops.lessonsStarted} started</span>}
-            />
-            <Metric
-              label="Journeys completed"
-              value={ops.journeysCompleted}
-              context={<span>{ops.coursesCompleted} courses</span>}
-            />
-            <Metric
-              label="Credentials issued"
-              value={ops.credentialsIssued}
-              href={`${base}/credentials`}
-            />
-          </Panel>
+      {/* ---- Executive metrics ------------------------------------------- */}
+      {metrics.length > 0 ? (
+        <section aria-label="Executive metrics">
+          <div className="grid grid-cols-2 gap-2.5 lg:grid-cols-4">
+            {metrics.map((m, i) => (
+              <MetricCard
+                key={m.key}
+                label={m.label}
+                value={m.value}
+                context={m.context}
+                href={m.href}
+                icon={m.icon}
+                emphasis={m.emphasis}
+                accent={m.accent}
+                stagger={Math.min(i, 5)}
+              />
+            ))}
+          </div>
         </section>
       ) : null}
 
-      {/* ---- Attention + activity ---------------------------------------- */}
+      {/* ---- Nova Intelligence ------------------------------------------- */}
+      {canStudio || canAnalytics ? (
+        <section aria-label="Nova Intelligence">
+          <NovaIntelligence insights={insights} />
+        </section>
+      ) : null}
+
+      {/* ---- Priority Center + Activity ---------------------------------- */}
       <div className="grid gap-x-6 gap-y-8 lg:grid-cols-2">
-        <section aria-label="Needs attention">
-          <SectionHeader title="Needs attention" count={attention.length} />
-          <div className="mt-2.5">
-            {attention.length === 0 ? (
-              <Panel tone="outlined" className="px-4 py-5">
-                <p className="flex items-center gap-2 text-body-sm text-text-secondary">
-                  <StatusDot tone="positive" label="" />
-                  Nothing is waiting on you — the queue is clear.
-                </p>
-              </Panel>
-            ) : (
-              <ul className="space-y-1.5">
-                {attention.map((item) => (
-                  <li key={item.key}>
-                    <Link
-                      href={item.href}
-                      className="flex items-center gap-3 rounded-lg border border-border-subtle px-3.5 py-3 transition-colors duration-[var(--motion-fast)] hover:border-border-strong hover:bg-surface-interactive"
-                    >
-                      <span
-                        aria-hidden
-                        className={
-                          item.tone === "accent"
-                            ? "h-8 w-0.5 shrink-0 rounded-full bg-accent"
-                            : item.tone === "warning"
-                              ? "h-8 w-0.5 shrink-0 rounded-full bg-warning"
-                              : "h-8 w-0.5 shrink-0 rounded-full bg-border-strong"
-                        }
-                      />
-                      <span className="min-w-0 flex-1">
-                        <span className="block truncate text-body-sm font-medium text-text-primary">
-                          {item.title}
-                        </span>
-                        <span className="block truncate text-caption text-text-muted">
-                          {item.meta}
-                        </span>
-                      </span>
-                    </Link>
-                  </li>
-                ))}
-              </ul>
-            )}
+        <section aria-label="Priority center">
+          <SectionHeader title="Priority center" count={priority.length} />
+          <div className="mt-3">
+            <PriorityCenter items={priority} />
           </div>
         </section>
 
         <section aria-label="Recent activity">
           <SectionHeader
-            title="Recent activity"
+            title="Activity"
             action={
               canAnalytics ? (
                 <ViewAll href={`${base}/ops`}>Analytics</ViewAll>
               ) : undefined
             }
           />
-          <div className="mt-2.5">
+          <div className="mt-3">
             {pulse ? (
-              <Panel tone="outlined">
-                <ListRows
-                  emptyLabel="No recorded activity in the last two weeks."
-                  rows={pulse.activity.slice(0, 7).map((entry) => ({
-                    key: entry.id,
-                    title: (
-                      <>
-                        <span className="text-text-secondary">
-                          {entry.actorEmail ?? "A member"}
-                        </span>{" "}
-                        {entry.verb}{" "}
-                        <span className="font-medium">
-                          {entry.kind.toLowerCase()}
+              <Panel tone="outlined" className="p-4">
+                {pulse.windowTotal > 0 ? (
+                  <div className="mb-4 border-b border-border-subtle pb-4">
+                    <div className="flex items-baseline justify-between gap-3">
+                      <h3 className="text-label font-medium text-text-secondary">
+                        Workspace activity
+                      </h3>
+                      <p className="text-caption tabular-nums text-text-muted">
+                        {pulse.windowTotal} events · {pulse.windowDays} days
+                      </p>
+                    </div>
+                    <div className="mt-2.5">
+                      <ActivitySparkline
+                        data={pulse.dailyVolume}
+                        label={`Workspace events per day, last ${pulse.windowDays} days`}
+                      />
+                    </div>
+                  </div>
+                ) : null}
+                {pulse.activity.length > 0 ? (
+                  <ol className="space-y-0.5">
+                    {pulse.activity.slice(0, 7).map((entry, i) => (
+                      <li
+                        key={entry.id}
+                        className="nk-rise flex items-start gap-3 py-1.5"
+                        style={{ "--nk-stagger": String(i) } as CSSProperties}
+                      >
+                        <span className="mt-1.5 flex shrink-0 flex-col items-center">
+                          <span
+                            aria-hidden
+                            className="h-1.5 w-1.5 rounded-full bg-accent"
+                          />
                         </span>
-                      </>
-                    ),
-                    meta: relativeTime(entry.occurredAt),
-                  }))}
-                />
+                        <p className="min-w-0 flex-1 text-body-sm leading-snug text-text-secondary">
+                          <span className="text-text-primary">
+                            {entry.actorEmail
+                              ? handleFromEmail(entry.actorEmail)
+                              : "A member"}
+                          </span>{" "}
+                          {entry.verb}{" "}
+                          <span className="font-medium text-text-primary">
+                            {entry.kind.toLowerCase()}
+                          </span>
+                          <span className="ml-1.5 whitespace-nowrap text-caption text-text-muted">
+                            {relativeTime(entry.occurredAt)}
+                          </span>
+                        </p>
+                      </li>
+                    ))}
+                  </ol>
+                ) : (
+                  <p className="text-body-sm text-text-muted">
+                    No recorded activity in the last two weeks.
+                  </p>
+                )}
               </Panel>
             ) : (
               <Panel tone="outlined" className="px-4 py-5">
@@ -483,26 +606,45 @@ export default async function OrgOverviewPage({
             description="Recently edited content across the workspace"
             action={<ViewAll href={`${base}/studio`}>Studio</ViewAll>}
           />
-          <Panel tone="outlined" className="mt-2.5">
-            <ListRows
-              emptyLabel="Nothing edited yet — Studio is where knowledge takes shape."
-              rows={studio.recentLessons.slice(0, 6).map((lesson) => ({
-                key: lesson.id,
-                title: lesson.title,
-                meta: `Lesson · edited ${relativeTime(lesson.updatedAt)}`,
-                badge: (
-                  <Badge
-                    tone={
-                      lesson.status === "published" ? "positive" : "neutral"
-                    }
-                  >
-                    {lesson.status}
-                  </Badge>
-                ),
-                href: `${base}/courses/${lesson.courseId}/lessons/${lesson.id}`,
-              }))}
-            />
-          </Panel>
+          {studio.recentLessons.length > 0 ? (
+            <div className="mt-3 grid gap-2.5 sm:grid-cols-2 lg:grid-cols-3">
+              {studio.recentLessons.slice(0, 6).map((lesson, i) => (
+                <Link
+                  key={lesson.id}
+                  href={`${base}/courses/${lesson.courseId}/lessons/${lesson.id}`}
+                  style={{ "--nk-stagger": String(i) } as CSSProperties}
+                  className="nk-card nk-rise group flex flex-col justify-between gap-4 rounded-xl border border-border-subtle bg-surface-elevated p-4 shadow-raised"
+                >
+                  <div className="flex items-start justify-between gap-2">
+                    <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-surface-interactive text-text-muted transition-colors duration-[var(--motion-fast)] group-hover:text-accent">
+                      <IconCourse size={16} />
+                    </span>
+                    <Badge
+                      tone={
+                        lesson.status === "published" ? "positive" : "neutral"
+                      }
+                    >
+                      {lesson.status}
+                    </Badge>
+                  </div>
+                  <div className="min-w-0">
+                    <p className="truncate text-body-sm font-medium text-text-primary">
+                      {lesson.title}
+                    </p>
+                    <p className="mt-0.5 text-caption text-text-muted">
+                      Lesson · edited {relativeTime(lesson.updatedAt)}
+                    </p>
+                  </div>
+                </Link>
+              ))}
+            </div>
+          ) : (
+            <Panel tone="outlined" className="mt-3 px-4 py-5">
+              <p className="text-body-sm text-text-muted">
+                Nothing edited yet — Studio is where knowledge takes shape.
+              </p>
+            </Panel>
+          )}
         </section>
       ) : null}
 
@@ -513,7 +655,7 @@ export default async function OrgOverviewPage({
             title="Create"
             description="Everything you have permission to start"
           />
-          <div className="mt-2.5">
+          <div className="mt-3">
             <CreateActions actions={createActions} />
           </div>
         </section>

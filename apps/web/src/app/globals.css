@@ -65,6 +65,8 @@
   /* -- elevation (light: quiet layered shadows) -- */
   --shadow-raised:
     0 1px 2px rgb(16 17 20 / 0.05), 0 4px 12px rgb(16 17 20 / 0.06);
+  --shadow-lifted:
+    0 2px 6px rgb(16 17 20 / 0.07), 0 14px 30px rgb(16 17 20 / 0.13);
   --shadow-overlay:
     0 4px 12px rgb(16 17 20 / 0.1), 0 12px 32px rgb(16 17 20 / 0.16);
 
@@ -118,6 +120,7 @@
     --danger: #e25858;
     --info: #5b9bf8;
     --shadow-raised: 0 1px 2px rgb(0 0 0 / 0.45), 0 4px 12px rgb(0 0 0 / 0.35);
+    --shadow-lifted: 0 2px 6px rgb(0 0 0 / 0.5), 0 16px 34px rgb(0 0 0 / 0.5);
     --shadow-overlay:
       0 4px 12px rgb(0 0 0 / 0.5), 0 12px 32px rgb(0 0 0 / 0.55);
     color-scheme: dark;
@@ -152,6 +155,8 @@
   --info: #3b82f6;
   --shadow-raised:
     0 1px 2px rgb(16 17 20 / 0.05), 0 4px 12px rgb(16 17 20 / 0.06);
+  --shadow-lifted:
+    0 2px 6px rgb(16 17 20 / 0.07), 0 14px 30px rgb(16 17 20 / 0.13);
   --shadow-overlay:
     0 4px 12px rgb(16 17 20 / 0.1), 0 12px 32px rgb(16 17 20 / 0.16);
   color-scheme: light;
@@ -183,6 +188,7 @@
   --danger: #e25858;
   --info: #5b9bf8;
   --shadow-raised: 0 1px 2px rgb(0 0 0 / 0.45), 0 4px 12px rgb(0 0 0 / 0.35);
+  --shadow-lifted: 0 2px 6px rgb(0 0 0 / 0.5), 0 16px 34px rgb(0 0 0 / 0.5);
   --shadow-overlay: 0 4px 12px rgb(0 0 0 / 0.5), 0 12px 32px rgb(0 0 0 / 0.55);
   color-scheme: dark;
 }
@@ -232,6 +238,7 @@
   --radius-lg: var(--radius-lg);
   --radius-xl: var(--radius-xl);
   --shadow-raised: var(--shadow-raised);
+  --shadow-lifted: var(--shadow-lifted);
   --shadow-overlay: var(--shadow-overlay);
   /* Brand primary: Inter; tenant --org-font (approved catalog) overrides. */
   --font-sans: var(--org-font, var(--font-inter)), system-ui, sans-serif;
@@ -327,6 +334,92 @@ body {
   );
   background-size: 300% 100%;
   animation: nk-shimmer 1.6s var(--ease-in-out) infinite;
+}
+
+/* Staggered reveal — set --nk-stagger (0,1,2…) per child for a capped cascade. */
+.nk-rise {
+  animation: nk-fade-up var(--motion-standard) var(--ease-out) both;
+  animation-delay: calc(var(--nk-stagger, 0) * 40ms);
+}
+
+/* Confirmation / arrival moment. */
+@keyframes nk-scale-in {
+  from {
+    opacity: 0;
+    transform: scale(0.985);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+.nk-scale-in {
+  animation: nk-scale-in var(--motion-standard) var(--ease-out) both;
+}
+
+/* A line drawing itself. The path MUST declare pathLength="1". */
+@keyframes nk-draw {
+  from {
+    stroke-dashoffset: 1;
+  }
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+.nk-draw {
+  stroke-dasharray: 1;
+  animation: nk-draw var(--motion-slow) var(--ease-out) both;
+}
+
+/* Interactive lift — quiet at rest, rises on hover/focus. The primary
+ * "this is alive and responds" cue. Composited transform + shadow only. */
+.nk-card {
+  transition:
+    transform var(--motion-fast) var(--ease-out),
+    box-shadow var(--motion-fast) var(--ease-out),
+    border-color var(--motion-fast) var(--ease-out);
+}
+
+@media (hover: hover) {
+  .nk-card:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-lifted);
+  }
+}
+
+.nk-card:focus-within {
+  box-shadow: var(--shadow-lifted);
+}
+
+/* Premium top-edge lighting for hero / elevated-hero surfaces only. */
+.nk-hairline {
+  position: relative;
+}
+
+.nk-hairline::before {
+  content: "";
+  position: absolute;
+  inset: 0 0 auto 0;
+  height: 1px;
+  border-radius: inherit;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    color-mix(in oklab, var(--text-primary) 14%, transparent),
+    transparent
+  );
+  pointer-events: none;
+}
+
+/* Restrained tenant-accent wash — hero surfaces only, never flooded. */
+.nk-wash {
+  background-image: linear-gradient(
+    180deg,
+    color-mix(in oklab, var(--accent) 7%, transparent),
+    transparent 62%
+  );
 }
 
 ::selection {

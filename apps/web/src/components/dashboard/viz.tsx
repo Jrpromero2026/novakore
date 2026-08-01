@@ -71,6 +71,8 @@ export function ActivitySparkline({
         <path d={area} fill="var(--accent)" fillOpacity="0.12" />
         <path
           d={line}
+          pathLength={1}
+          className="nk-draw"
           fill="none"
           stroke="var(--accent)"
           strokeWidth="2"

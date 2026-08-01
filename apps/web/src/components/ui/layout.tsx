@@ -99,27 +99,40 @@ export function SectionHeader({
 
 /**
  * Surface tiers. `plain` leans on tone and spacing rather than a border —
- * the workspace should not outline every object (ui-principles.md).
+ * the workspace should not outline every object (ui-principles.md). `hero` is
+ * the one dominant surface per page: elevated + top lighting hairline +
+ * restrained tenant-accent wash (experience-design-system.md). `interactive`
+ * opts any panel into the hover-lift affordance.
  */
-type PanelTone = "plain" | "outlined" | "elevated";
+type PanelTone = "plain" | "outlined" | "elevated" | "hero";
 
 const panelTones: Record<PanelTone, string> = {
   plain: "bg-surface",
   outlined: "border border-border-subtle bg-surface",
   elevated: "border border-border-subtle bg-surface-elevated shadow-raised",
+  hero: "nk-hairline nk-wash border border-border-subtle bg-surface-elevated shadow-raised",
 };
 
 export function Panel({
   tone = "outlined",
+  interactive = false,
   className,
   children,
 }: {
   tone?: PanelTone;
+  interactive?: boolean;
   className?: string;
   children: ReactNode;
 }) {
   return (
-    <section className={cx("rounded-lg", panelTones[tone], className)}>
+    <section
+      className={cx(
+        "rounded-lg",
+        panelTones[tone],
+        interactive && "nk-card",
+        className,
+      )}
+    >
       {children}
     </section>
   );

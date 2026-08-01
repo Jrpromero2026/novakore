@@ -6,8 +6,9 @@
  * driven, so they sit correctly under any tenant theme.
  */
 import Link from "next/link";
-import type { ComponentType, ReactNode } from "react";
+import type { ComponentType, CSSProperties, ReactNode } from "react";
 import { cx } from "@/components/ui/primitives";
+import { AnimatedNumber } from "@/components/ui/motion";
 import { IconArrowRight, type IconProps } from "@/components/ui/icons";
 
 /**
@@ -40,7 +41,7 @@ export function Metric({
             : "text-[1.5rem] text-text-primary",
         )}
       >
-        {value}
+        {typeof value === "number" ? <AnimatedNumber value={value} /> : value}
       </p>
       {context ? (
         <div className="mt-1.5 text-caption text-text-muted">{context}</div>
@@ -57,6 +58,86 @@ export function Metric({
     </Link>
   ) : (
     <div className={base}>{body}</div>
+  );
+}
+
+/**
+ * Executive-metric card — the rhythm unit of the command center. Real value
+ * with an animated counter, honest context (composition/status, never a
+ * fabricated delta), hover-lift, and a staggered reveal. `emphasis` and
+ * `accent` give the lead metric more weight so the grid is not eight identical
+ * rectangles.
+ */
+export function MetricCard({
+  label,
+  value,
+  context,
+  href,
+  icon: Icon,
+  emphasis = false,
+  accent = false,
+  stagger,
+}: {
+  label: string;
+  value: string | number;
+  context?: ReactNode;
+  href?: string;
+  icon?: ComponentType<IconProps>;
+  emphasis?: boolean;
+  accent?: boolean;
+  stagger?: number;
+}) {
+  const body = (
+    <>
+      <div className="flex items-center justify-between gap-2">
+        <p className="text-caption font-medium uppercase tracking-[var(--tracking-caps)] text-text-muted">
+          {label}
+        </p>
+        {Icon ? (
+          <Icon
+            size={15}
+            className={cx(
+              "shrink-0 transition-colors duration-[var(--motion-fast)]",
+              accent
+                ? "text-accent"
+                : "text-text-muted group-hover:text-accent",
+            )}
+          />
+        ) : null}
+      </div>
+      <p
+        className={cx(
+          "mt-3 font-semibold leading-none tracking-tight tabular-nums text-text-primary",
+          emphasis ? "text-[2.5rem]" : "text-[1.75rem]",
+        )}
+      >
+        {typeof value === "number" ? <AnimatedNumber value={value} /> : value}
+      </p>
+      {context ? (
+        <div className="mt-2 text-caption text-text-secondary">{context}</div>
+      ) : null}
+    </>
+  );
+
+  const style =
+    stagger != null
+      ? ({ "--nk-stagger": String(stagger) } as CSSProperties)
+      : undefined;
+  const base = cx(
+    "nk-rise block rounded-xl p-4",
+    accent
+      ? "bg-accent-soft"
+      : "nk-card border border-border-subtle bg-surface-elevated shadow-raised",
+  );
+
+  return href ? (
+    <Link href={href} style={style} className={cx("group", base)}>
+      {body}
+    </Link>
+  ) : (
+    <div style={style} className={base}>
+      {body}
+    </div>
   );
 }
 
