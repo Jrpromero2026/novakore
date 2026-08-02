@@ -45,7 +45,13 @@ export interface NovaInsight {
  * because it never fabricates: an insight appears only when its real condition
  * holds.
  */
-export function NovaIntelligence({ insights }: { insights: NovaInsight[] }) {
+export function NovaIntelligence({
+  insights,
+  moreHref,
+}: {
+  insights: NovaInsight[];
+  moreHref?: string;
+}) {
   return (
     <Panel tone="elevated" className="nk-wash overflow-hidden rounded-xl p-0">
       <div className="flex items-center gap-2.5 border-b border-border-subtle px-5 py-3.5">
@@ -61,6 +67,15 @@ export function NovaIntelligence({ insights }: { insights: NovaInsight[] }) {
             Observations from your live workspace signals
           </p>
         </div>
+        {moreHref ? (
+          <Link
+            href={moreHref}
+            className="ml-auto flex shrink-0 items-center gap-1 text-label text-text-muted transition-colors duration-[var(--motion-fast)] hover:text-accent"
+          >
+            Open Intelligence
+            <IconArrowRight size={12} />
+          </Link>
+        ) : null}
       </div>
 
       {insights.length === 0 ? (

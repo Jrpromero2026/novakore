@@ -64,4 +64,29 @@ describe("knowledge health", () => {
     expect(health.checks.find((c) => c.id === "digestible")?.ok).toBe(false);
     expect(health.readingMinutes).toBeGreaterThan(12);
   });
+
+  test("a single very dense text block loses the density signal", () => {
+    const dense = Array.from({ length: 260 }, () => "word").join(" ");
+    const health = assessLessonHealth([
+      block("heading", { text: "Intro", level: 2 }),
+      block("rich_text", { text: dense }),
+    ]);
+    expect(health.checks.find((c) => c.id === "density")?.ok).toBe(false);
+  });
+
+  test("undescribed media loses the accessibility signal; described media keeps it", () => {
+    const bare = assessLessonHealth([
+      block("image", { assetId: "00000000-0000-4000-8000-000000000001" }),
+    ]);
+    expect(bare.checks.find((c) => c.id === "a11y")?.ok).toBe(false);
+
+    const described = assessLessonHealth([
+      block("image", {
+        assetId: "00000000-0000-4000-8000-000000000001",
+        alt: "A squat rack",
+      }),
+      block("video", { url: "https://example.com", title: "Warm-up" }),
+    ]);
+    expect(described.checks.find((c) => c.id === "a11y")?.ok).toBe(true);
+  });
 });

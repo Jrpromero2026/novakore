@@ -507,7 +507,10 @@ export default async function OrgOverviewPage({
       {/* ---- Nova Intelligence ------------------------------------------- */}
       {canStudio || canAnalytics ? (
         <section aria-label="Nova Intelligence">
-          <NovaIntelligence insights={insights} />
+          <NovaIntelligence
+            insights={insights}
+            moreHref={canStudio ? `${base}/intelligence` : undefined}
+          />
         </section>
       ) : null}
 

@@ -36,6 +36,13 @@ export function buildNavSections(
       items: [
         { href: base, label: "Overview", icon: "overview" },
         {
+          href: `${base}/intelligence`,
+          label: "Intelligence",
+          icon: "ai",
+          needsAny: ["content.view_draft"],
+          keywords: ["nova", "insights", "scorecard", "digest", "health"],
+        },
+        {
           href: `${base}/ops`,
           label: "Analytics",
           icon: "analytics",

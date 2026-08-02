@@ -41,6 +41,7 @@ export function KnowledgeGraph({
 }) {
   const router = useRouter();
   const [hover, setHover] = useState<string | null>(null);
+  const [filter, setFilter] = useState("");
 
   const base = `/${orgSlug}/admin`;
   const nodes: Node[] = [
@@ -97,6 +98,16 @@ export function KnowledgeGraph({
     );
   }
 
+  // Nodes with no edges at all: knowledge learners may never be routed to.
+  const linked = new Set<string>();
+  for (const e of edges) {
+    linked.add(e.from);
+    linked.add(e.to);
+  }
+
+  // Emphasis = the hovered node's real connections ∩ the text filter.
+  const q = filter.trim().toLowerCase();
+  const matchesFilter = (n: Node) => !q || n.title.toLowerCase().includes(q);
   const connected = new Set<string>();
   if (hover) {
     connected.add(hover);
@@ -105,6 +116,13 @@ export function KnowledgeGraph({
       if (e.to === hover) connected.add(e.from);
     }
   }
+  const emphasized = (id: string): boolean => {
+    const node = byId.get(id);
+    if (!node) return false;
+    if (hover) return connected.has(id);
+    return matchesFilter(node);
+  };
+  const anyEmphasis = hover !== null || q.length > 0;
 
   const height =
     PAD_Y * 2 +
@@ -118,6 +136,16 @@ export function KnowledgeGraph({
 
   return (
     <div>
+      <label className="relative mb-3 block max-w-xs">
+        <span className="sr-only">Filter the knowledge graph</span>
+        <input
+          type="search"
+          placeholder="Filter the graph…"
+          value={filter}
+          onChange={(e) => setFilter(e.target.value)}
+          className="w-full rounded-md border border-border-subtle bg-surface px-3 py-1.5 text-body-sm text-text-primary outline-none transition-[border-color,box-shadow] duration-[var(--motion-fast)] placeholder:text-text-muted focus:border-accent focus:shadow-[0_0_0_3px_var(--accent-soft)]"
+        />
+      </label>
       <svg
         viewBox={`0 0 100 ${height}`}
         preserveAspectRatio="none"
@@ -129,10 +157,11 @@ export function KnowledgeGraph({
           const from = byId.get(edge.from)!;
           const to = byId.get(edge.to)!;
           const lit =
-            hover !== null &&
-            connected.has(edge.from) &&
-            connected.has(edge.to) &&
-            (edge.from === hover || edge.to === hover);
+            hover !== null && (edge.from === hover || edge.to === hover);
+          const dimmed =
+            anyEmphasis &&
+            !lit &&
+            !(emphasized(edge.from) && emphasized(edge.to));
           const midX = (from.x + to.x) / 2;
           return (
             <path
@@ -141,7 +170,7 @@ export function KnowledgeGraph({
               fill="none"
               stroke={lit ? "var(--accent)" : "var(--border-default)"}
               strokeWidth={lit ? 0.7 : 0.35}
-              opacity={hover && !lit ? 0.35 : 1}
+              opacity={dimmed ? 0.3 : 1}
               vectorEffect="non-scaling-stroke"
               style={{
                 transition:
@@ -151,7 +180,7 @@ export function KnowledgeGraph({
           );
         })}
         {nodes.map((node) => {
-          const dim = hover !== null && !connected.has(node.id);
+          const dim = anyEmphasis && !emphasized(node.id);
           return (
             <circle
               key={node.id}
@@ -193,25 +222,32 @@ export function KnowledgeGraph({
             <ul className="space-y-0.5">
               {ids.map((nodeId) => {
                 const node = byId.get(nodeId)!;
-                const dim = hover !== null && !connected.has(nodeId);
+                const dim = anyEmphasis && !emphasized(nodeId);
+                const isolated = !linked.has(nodeId);
                 return (
                   <li key={nodeId}>
                     <button
                       type="button"
+                      title={node.sub}
                       onMouseEnter={() => setHover(nodeId)}
                       onMouseLeave={() => setHover(null)}
                       onFocus={() => setHover(nodeId)}
                       onBlur={() => setHover(null)}
                       onClick={() => router.push(node.href)}
                       className={cx(
-                        "block w-full truncate rounded px-2 py-1 text-left text-body-sm transition-[color,background-color,opacity] duration-[var(--motion-fast)]",
+                        "flex w-full items-center gap-1.5 rounded px-2 py-1 text-left text-body-sm transition-[color,background-color,opacity] duration-[var(--motion-fast)]",
                         nodeId === hover
                           ? "bg-accent-soft text-accent"
                           : "text-text-secondary hover:bg-surface-interactive hover:text-text-primary",
                         dim && "opacity-40",
                       )}
                     >
-                      {node.title}
+                      <span className="truncate">{node.title}</span>
+                      {isolated ? (
+                        <span className="ml-auto shrink-0 rounded-full bg-warning/10 px-1.5 text-[10px] font-medium text-warning">
+                          isolated
+                        </span>
+                      ) : null}
                     </button>
                   </li>
                 );

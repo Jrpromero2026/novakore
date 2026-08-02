@@ -51,8 +51,13 @@ const MEDIA: ReadonlySet<BlockType> = new Set([
 /**
  * Count words across the CONTENT string fields of a block's data,
  * recursively. Identifier and address fields (`id`, `*Id`, `url`) are
- * machine values, not prose — they never count.
+ * machine values, not prose — they never count. Exported for the Nova
+ * intelligence layer, which sizes lessons with the same honest ruler.
  */
+export function countContentWords(value: unknown): number {
+  return wordsIn(value);
+}
+
 function wordsIn(value: unknown): number {
   if (typeof value === "string") {
     return value.split(/\s+/).filter((w) => w.length > 0).length;
@@ -138,6 +143,32 @@ export function assessLessonHealth(blocks: HealthInputBlock[]): LessonHealth {
       ok: hasMedia,
       label: "Uses media or resources",
       coach: "A video or resource link gives the lesson another dimension.",
+    },
+    {
+      id: "density",
+      // An empty lesson earns nothing vacuously (same rule as digestible).
+      ok:
+        blocks.length > 0 &&
+        !blocks.some((b) => b.type === "rich_text" && wordsIn(b.data) > 220),
+      label: "No overly dense passages",
+      coach:
+        "One text block runs very long — a heading, callout, or split keeps readers with you.",
+    },
+    {
+      id: "a11y",
+      ok:
+        blocks.length > 0 &&
+        blocks.every((b) => {
+          if (b.type === "image") {
+            const d = b.data;
+            return d.decorative === true || typeof d.alt === "string";
+          }
+          if (b.type === "video") return typeof b.data.title === "string";
+          return true;
+        }),
+      label: "Media is described",
+      coach:
+        "Give images alt text (or mark them decorative) and videos a title so every learner gets the content.",
     },
   ];
 

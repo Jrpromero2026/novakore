@@ -255,6 +255,36 @@ naturally via native `<details>`.
 - **Focus mode** hides both rails for distraction-free writing. `⌘/Ctrl+S`
   saves; every version ever published stays visible in the inspector.
 
+## Nova Intelligence Layer
+
+Nova is an **operating layer, not a chatbot**: no chat window, no popups, no
+interruptions. Intelligence appears as cards, insights, scores, coaching, and
+actions woven into existing surfaces. Its one law extends the honesty
+principle: **Nova only ever says what the database can prove.**
+
+- **The engine is pure and tested** (`lib/nova-insights.ts`): rows in,
+  grounded observations out. The data layer (`lib/data/nova.ts`) feeds it
+  real records under the caller's RLS session; learner signals are fetched
+  only under `analytics.view`.
+- **Insights are observations with actions** — circular prerequisites,
+  broken pathways, unvalidated journeys, isolated knowledge, repeated
+  titles, wild length swings, unused library blocks, drop-off points,
+  hard evaluations, quiet enrollments, publishing slowdowns. Each names its
+  evidence ("2 of 6 starts finished") and offers one action. Signals that
+  cannot be derived simply do not appear.
+- **The scorecard is explained ratios, never invented scores**: each
+  dimension shows n of m, its percentage, and a plain-language explanation
+  of exactly what was counted. No basis → an em dash, not a fake number.
+- **The digest compares two real windows** (this week vs last week, counts
+  from the event log) — never a projected trend.
+- **Organizational memory** is the evolution curve: cumulative published
+  versions by week, every point a real immutable version.
+- **Author coaching lives in Knowledge Health** (density, accessibility of
+  media, structure…) — coaching lines, never criticism.
+- **Deliberately not built**: semantic/embedding search and free-form chat.
+  Both require a live AI provider and new infrastructure; until then,
+  keyword search over real titles is what exists, labeled as such.
+
 ## Governance
 
 Extend the system, don't fork it: new surfaces consume these tokens, utilities,
