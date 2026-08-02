@@ -11,6 +11,9 @@ const PUBLIC_PATHS = [
   "/verify",
   // PWA manifest must be fetchable by the browser without a session.
   "/manifest.webmanifest",
+  // Operational health probe: reachability + latency only, never data
+  // (anon client under full RLS — see the route's doc comment).
+  "/api/health",
 ];
 
 /**

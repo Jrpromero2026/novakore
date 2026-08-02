@@ -263,6 +263,7 @@ export async function getLibrary(organizationId: string): Promise<LibraryData> {
       supabase
         .from("content_blocks")
         .select("source_reusable_block_id")
+        .eq("organization_id", organizationId)
         .not("source_reusable_block_id", "is", null),
       supabase
         .from("lessons")

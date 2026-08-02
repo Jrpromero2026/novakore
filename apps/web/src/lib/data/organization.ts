@@ -76,6 +76,7 @@ export async function getOrganizationHub(
     supabase
       .from("lesson_versions")
       .select("id, title, published_at")
+      .eq("organization_id", organizationId)
       .order("published_at", { ascending: false })
       .limit(400),
   ]);

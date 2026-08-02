@@ -1,0 +1,79 @@
+# NovaKore CI — the verify gate, enforced on every push and pull request.
+# Mirrors `npm run verify` (format:check → lint → typecheck → unit tests →
+# build). The real-database RLS suite runs only when the repository secrets
+# are configured, so forks and secretless contexts stay green-by-skip while
+# the canonical repo gets full coverage.
+#
+# Owner setup (one-time, documented in docs/operations/runbook.md):
+#   1. Repo → Settings → Secrets and variables → Actions:
+#        NOVAKORE_TEST_SUPABASE_URL, NOVAKORE_TEST_SUPABASE_ANON_KEY
+#   2. Repo → Settings → Branches → protect `main`:
+#        require the "verify" check before merging.
+
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  verify:
+    name: verify
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Install
+        run: npm ci
+
+      - name: Format check
+        run: npm run format:check
+
+      - name: Lint
+        run: npm run lint
+
+      - name: Typecheck
+        run: npm run typecheck
+
+      - name: Unit tests (web · authz · domain · design-system)
+        run: |
+          npm run test:run --workspace=@novakore/web
+          npm run test:run --workspace=@novakore/authorization
+          npm run test:run --workspace=@novakore/domain
+          npm run test:run --workspace=@novakore/design-system
+
+      - name: Real-database RLS tests
+        # Runs only when the live-DB secrets exist; otherwise skipped loudly.
+        env:
+          NOVAKORE_TEST_SUPABASE_URL: ${{ secrets.NOVAKORE_TEST_SUPABASE_URL }}
+          NOVAKORE_TEST_SUPABASE_ANON_KEY: ${{ secrets.NOVAKORE_TEST_SUPABASE_ANON_KEY }}
+        run: |
+          if [ -z "$NOVAKORE_TEST_SUPABASE_URL" ]; then
+            echo "::warning::Real-DB secrets not configured — RLS suite SKIPPED (94 tests). Configure repo secrets for full coverage."
+          else
+            npm run test:rls
+          fi
+
+      - name: Production build
+        env:
+          # Build-time inline of public values; placeholders keep the build
+          # honest when repo secrets are absent (zod requires ≥20 chars).
+          NEXT_PUBLIC_SUPABASE_URL: ${{ secrets.NOVAKORE_TEST_SUPABASE_URL || 'https://ci-placeholder.supabase.co' }}
+          NEXT_PUBLIC_SUPABASE_ANON_KEY: ${{ secrets.NOVAKORE_TEST_SUPABASE_ANON_KEY || 'ci-placeholder-anon-key-0000000000' }}
+        run: npm run build
+
+      - name: Artifact validation
+        run: |
+          test -d apps/web/.next || (echo "::error::.next output missing" && exit 1)
+          node scripts/db-types.mjs --check || echo "::warning::Generated DB types drift from committed types — run npm run db:types"

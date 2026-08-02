@@ -107,7 +107,11 @@ export async function getNovaReport(
       .eq("organization_id", organizationId)
       .is("archived_at", null)
       .limit(500),
-    supabase.from("content_blocks").select("lesson_id, data").limit(5000),
+    supabase
+      .from("content_blocks")
+      .select("lesson_id, data")
+      .eq("organization_id", organizationId)
+      .limit(5000),
     supabase
       .from("review_requests")
       .select("subject_type, subject_id, status, created_at")
@@ -120,6 +124,7 @@ export async function getNovaReport(
     supabase
       .from("content_blocks")
       .select("source_reusable_block_id")
+      .eq("organization_id", organizationId)
       .not("source_reusable_block_id", "is", null),
     supabase
       .from("course_versions")
@@ -130,6 +135,7 @@ export async function getNovaReport(
     supabase
       .from("lesson_versions")
       .select("published_at")
+      .eq("organization_id", organizationId)
       .order("published_at", { ascending: true })
       .limit(2000),
     supabase

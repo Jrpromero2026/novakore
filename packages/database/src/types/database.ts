@@ -1754,6 +1754,54 @@ export type Database = {
           },
         ];
       };
+      onboarding_events: {
+        Row: {
+          data: Json;
+          event_type: string;
+          id: string;
+          membership_id: string;
+          occurred_at: string;
+          organization_id: string;
+          step_id: string | null;
+          walkthrough_id: string | null;
+        };
+        Insert: {
+          data?: Json;
+          event_type: string;
+          id?: string;
+          membership_id: string;
+          occurred_at?: string;
+          organization_id: string;
+          step_id?: string | null;
+          walkthrough_id?: string | null;
+        };
+        Update: {
+          data?: Json;
+          event_type?: string;
+          id?: string;
+          membership_id?: string;
+          occurred_at?: string;
+          organization_id?: string;
+          step_id?: string | null;
+          walkthrough_id?: string | null;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "onboarding_events_membership_id_fkey";
+            columns: ["membership_id"];
+            isOneToOne: false;
+            referencedRelation: "organization_memberships";
+            referencedColumns: ["id"];
+          },
+          {
+            foreignKeyName: "onboarding_events_organization_id_fkey";
+            columns: ["organization_id"];
+            isOneToOne: false;
+            referencedRelation: "organizations";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
       organization_branding: {
         Row: {
           accent_dark: string;
@@ -1916,6 +1964,41 @@ export type Database = {
             foreignKeyName: "organization_memberships_organization_id_fkey";
             columns: ["organization_id"];
             isOneToOne: false;
+            referencedRelation: "organizations";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
+      organization_onboarding: {
+        Row: {
+          completed_celebrated_at: string | null;
+          created_at: string;
+          dismissed_at: string | null;
+          organization_id: string;
+          updated_at: string;
+          updated_by: string | null;
+        };
+        Insert: {
+          completed_celebrated_at?: string | null;
+          created_at?: string;
+          dismissed_at?: string | null;
+          organization_id: string;
+          updated_at?: string;
+          updated_by?: string | null;
+        };
+        Update: {
+          completed_celebrated_at?: string | null;
+          created_at?: string;
+          dismissed_at?: string | null;
+          organization_id?: string;
+          updated_at?: string;
+          updated_by?: string | null;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "organization_onboarding_organization_id_fkey";
+            columns: ["organization_id"];
+            isOneToOne: true;
             referencedRelation: "organizations";
             referencedColumns: ["id"];
           },
@@ -2818,6 +2901,14 @@ export type Database = {
         };
         Returns: Json;
       };
+      bfh_set_external_identity_status: {
+        Args: {
+          p_external_user_id: string;
+          p_organization_slug: string;
+          p_status: string;
+        };
+        Returns: Json;
+      };
       change_organization_slug: {
         Args: { p_new_slug: string; p_organization_id: string };
         Returns: undefined;
@@ -2970,6 +3061,10 @@ export type Database = {
         Args: { p_membership_id: string; p_status: string };
         Returns: undefined;
       };
+      set_organization_status: {
+        Args: { p_organization_id: string; p_status: string };
+        Returns: Json;
+      };
       settle_ai_generation: {
         Args: {
           p_error?: string;
@@ -2989,6 +3084,10 @@ export type Database = {
       submit_assessment_attempt: {
         Args: { p_attempt_id: string };
         Returns: undefined;
+      };
+      tenant_diagnostics: {
+        Args: { p_organization_id: string };
+        Returns: Json;
       };
       verify_credential: { Args: { p_code: string }; Returns: Json };
       worker_claim_webhook_deliveries: {
