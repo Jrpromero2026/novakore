@@ -285,6 +285,46 @@ principle: **Nova only ever says what the database can prove.**
   Both require a live AI provider and new infrastructure; until then,
   keyword search over real titles is what exists, labeled as such.
 
+## Organizational Operating System
+
+Organizations are owners, not tenants: NovaKore supplies the operating
+system, organizations supply the culture — and the platform reflects it
+without losing its own coherence (tenant accent + terminology personalize
+every surface; the NovaKore brand never floods org spaces).
+
+- **Identity layer**: mission, vision, values, operating principles, and
+  voice live in `organization_settings.settings.identity` (jsonb — additive,
+  RLS: members read, `org.manage` writes; `lib/org-identity.ts`). Identity is
+  displayed, never invented: an org without a recorded mission sees an
+  invitation, not filler copy.
+- **Organization Hub** (`/admin/organization`): identity hero, knowledge
+  health (the Intelligence scorecard), real membership growth, recent
+  publishing, and the **living timeline** — every entry a real dated record
+  (founding, academies launched, brand published, journeys created, first
+  publish, depth milestones). History, not activity logs.
+- **Terminology is a first-class capability** (existing engine) and Nova now
+  watches for drift: draft prose using canonical words the organization has
+  renamed becomes a grounded observation with a one-click path to fix.
+- **Organizational awareness in Nova**: contributor rhythm (busiest weekday,
+  only with ≥30 events and a real concentration), aging reviews, terminology
+  drift — evidence named in every sentence.
+- **Personalization primitive — pins**: any admin page can be starred into
+  the member's own sidebar (local, per-org, capped at 8 — the same storage
+  pattern as the nav-collapse preference). Layouts stay consistent;
+  belonging comes from _your_ pins, _your_ terminology, _your_ accent.
+- **Global search**: the command palette now indexes real knowledge titles
+  (lessons, courses, journeys, evaluations) for draft-visibility holders —
+  grounded rows, keyboard-first, permission-scoped.
+
+**Expansion paths (architected, deliberately not built):** configurable
+governance workflows (needs a workflow-definition schema; today's
+draft→review→publish flow is enforced and non-configurable), presence and
+real-time collaboration (needs realtime infra; ownership signals surface
+from existing columns), announcements/pinned initiatives (jsonb-ready),
+multiple saved dashboard layouts, cross-org sharing / templates /
+marketplace / white-label (multi-academy schema and the permission catalog
+are the foundation; nothing in this phase forecloses them).
+
 ## Governance
 
 Extend the system, don't fork it: new surfaces consume these tokens, utilities,

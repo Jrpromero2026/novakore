@@ -64,6 +64,23 @@ export interface NovaInputs {
   openReviews: number;
   learner: NovaLearnerSignals | null;
   digest: { thisWeek: NovaDigestWindow; lastWeek: NovaDigestWindow } | null;
+  /** Organizational awareness — null when the signal has no basis. */
+  org?: {
+    /** Draft prose using a canonical word the organization has renamed. */
+    terminologyDrift: {
+      canonical: string;
+      replacement: string;
+      lessonCount: number;
+    } | null;
+    /** Contributor rhythm: the busiest weekday across recent events. */
+    weekdayPattern: {
+      weekday: string;
+      sharePct: number;
+      totalEvents: number;
+    } | null;
+    /** Age in days of the oldest review still waiting on a decision. */
+    oldestOpenReviewDays: number | null;
+  };
 }
 
 export interface NovaInsight {
@@ -346,6 +363,38 @@ export function deriveInsights(
         action: { label: "Open analytics", href: `${base}/ops` },
       });
     }
+  }
+
+  // --- Organizational awareness ----------------------------------------------
+  if (inputs.org?.terminologyDrift) {
+    const t = inputs.org.terminologyDrift;
+    insights.push({
+      id: "terminology",
+      tone: "neutral",
+      observation: `${t.lessonCount} ${t.lessonCount === 1 ? "lesson says" : "lessons say"} “${t.canonical}” where your organization says “${t.replacement}”.`,
+      detail: "Consistent language makes the workspace feel like yours.",
+      action: { label: "Terminology", href: `${base}/terminology` },
+    });
+  }
+  if (
+    inputs.org?.oldestOpenReviewDays != null &&
+    inputs.org.oldestOpenReviewDays >= 7
+  ) {
+    insights.push({
+      id: "review-age",
+      tone: "warning",
+      observation: `A content review has been waiting ${inputs.org.oldestOpenReviewDays} days for a decision.`,
+      action: { label: "Review", href: `${base}/studio/review` },
+    });
+  }
+  if (inputs.org?.weekdayPattern) {
+    const w = inputs.org.weekdayPattern;
+    insights.push({
+      id: "weekday",
+      tone: "positive",
+      observation: `Most activity lands on ${w.weekday}s — ${w.sharePct}% of the last ${w.totalEvents} events.`,
+      detail: "A real rhythm worth planning releases around.",
+    });
   }
 
   // --- Momentum (two real windows compared) ----------------------------------

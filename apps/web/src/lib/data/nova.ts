@@ -74,6 +74,7 @@ export async function getNovaReport(
     { data: courseVersions },
     { data: lessonVersions },
     { data: recentEvents },
+    { data: terminology },
   ] = await Promise.all([
     supabase
       .from("courses")
@@ -109,7 +110,7 @@ export async function getNovaReport(
     supabase.from("content_blocks").select("lesson_id, data").limit(5000),
     supabase
       .from("review_requests")
-      .select("subject_type, subject_id, status")
+      .select("subject_type, subject_id, status, created_at")
       .eq("organization_id", organizationId),
     supabase
       .from("reusable_blocks")
@@ -137,6 +138,10 @@ export async function getNovaReport(
       .eq("organization_id", organizationId)
       .gte("occurred_at", twoWeeksAgo.toISOString())
       .limit(5000),
+    supabase
+      .from("organization_terminology")
+      .select("term_key, singular")
+      .eq("organization_id", organizationId),
   ]);
 
   // ---- Assemble pure-engine inputs from rows -------------------------------
@@ -192,6 +197,89 @@ export async function getNovaReport(
     ]);
   }
 
+  // ---- Organizational awareness ---------------------------------------------
+  // Terminology drift: draft prose using a canonical word the org renamed.
+  const textOf = (value: unknown): string => {
+    if (typeof value === "string") return value + " ";
+    if (Array.isArray(value)) return value.map(textOf).join("");
+    if (value !== null && typeof value === "object") {
+      return Object.entries(value as Record<string, unknown>)
+        .filter(([k]) => !(k === "id" || k.endsWith("Id") || k === "url"))
+        .map(([, v]) => textOf(v))
+        .join("");
+    }
+    return "";
+  };
+  const textByLesson = new Map<string, string>();
+  for (const b of blocks ?? []) {
+    textByLesson.set(
+      b.lesson_id,
+      (textByLesson.get(b.lesson_id) ?? "") + textOf(b.data).toLowerCase(),
+    );
+  }
+  const CANONICAL_WORDS: Record<string, string> = {
+    course: "course",
+    module: "module",
+    assessment: "assessment",
+    certificate: "certificate",
+    instructor: "instructor",
+    learner: "learner",
+    learning_path: "learning path",
+  };
+  let terminologyDrift: {
+    canonical: string;
+    replacement: string;
+    lessonCount: number;
+  } | null = null;
+  for (const t of terminology ?? []) {
+    const canonical = CANONICAL_WORDS[t.term_key];
+    if (!canonical || t.singular.toLowerCase() === canonical) continue;
+    const re = new RegExp(`\\b${canonical.replace(" ", "\\s+")}s?\\b`);
+    let count = 0;
+    for (const text of textByLesson.values()) if (re.test(text)) count += 1;
+    if (count > (terminologyDrift?.lessonCount ?? 0)) {
+      terminologyDrift = {
+        canonical,
+        replacement: t.singular,
+        lessonCount: count,
+      };
+    }
+  }
+
+  // Contributor rhythm: the busiest weekday, only with a real basis.
+  const WEEKDAYS = [
+    "Sunday",
+    "Monday",
+    "Tuesday",
+    "Wednesday",
+    "Thursday",
+    "Friday",
+    "Saturday",
+  ];
+  const byWeekday = new Array<number>(7).fill(0);
+  for (const e of recentEvents ?? []) {
+    byWeekday[new Date(e.occurred_at).getUTCDay()] += 1;
+  }
+  const totalEvents = byWeekday.reduce((a, b) => a + b, 0);
+  const topDay = byWeekday.indexOf(Math.max(...byWeekday));
+  const weekdayPattern =
+    totalEvents >= 30 && byWeekday[topDay]! / totalEvents >= 0.35
+      ? {
+          weekday: WEEKDAYS[topDay]!,
+          sharePct: Math.round((byWeekday[topDay]! / totalEvents) * 100),
+          totalEvents,
+        }
+      : null;
+
+  // Oldest review still waiting.
+  const openReviewDates = (reviewRows ?? [])
+    .filter((r) => r.status === "open" || r.status === "changes_requested")
+    .map((r) => new Date(r.created_at).getTime());
+  const oldestOpenReviewDays =
+    openReviewDates.length > 0
+      ? Math.floor((now.getTime() - Math.min(...openReviewDates)) / 86400_000)
+      : null;
+
   const inputs: NovaInputs = {
     courses: (courses ?? []).map((c) => ({
       id: c.id,
@@ -242,6 +330,7 @@ export async function getNovaReport(
     openReviews,
     learner: null,
     digest: null,
+    org: { terminologyDrift, weekdayPattern, oldestOpenReviewDays },
   };
 
   // ---- Learner signals (analytics.view holders only) ------------------------

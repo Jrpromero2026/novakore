@@ -3,6 +3,7 @@
 import { revalidatePath } from "next/cache";
 import { can, requireOrgContext } from "../org-context";
 import { supabaseServer } from "../supabase/server";
+import { orgIdentitySchema } from "../org-identity";
 import {
   academySchema,
   organizationNameSchema,
@@ -36,6 +37,58 @@ export async function updateOrganizationNameAction(
   if (error) return { ok: false, message: dbErrorMessage(error) };
   revalidatePath(`/${orgSlug}/admin`, "layout");
   return { ok: true, message: "Organization name updated." };
+}
+
+/** One-per-line textarea → trimmed list (empty lines dropped). */
+function linesOf(value: FormDataEntryValue | null): string[] {
+  return String(value ?? "")
+    .split("\n")
+    .map((l) => l.trim())
+    .filter((l) => l.length > 0);
+}
+
+export async function updateOrgIdentityAction(
+  orgSlug: string,
+  _prev: ActionState,
+  formData: FormData,
+): Promise<ActionState> {
+  const ctx = await requireOrgContext(orgSlug);
+  if (!can(ctx, "org.manage")) {
+    return {
+      ok: false,
+      message: "You do not have permission to edit the organization.",
+    };
+  }
+  const parsed = orgIdentitySchema.safeParse({
+    mission: String(formData.get("mission") ?? "").trim() || undefined,
+    vision: String(formData.get("vision") ?? "").trim() || undefined,
+    values: linesOf(formData.get("values")),
+    principles: linesOf(formData.get("principles")),
+    voice: String(formData.get("voice") ?? "").trim() || undefined,
+  });
+  if (!parsed.success) return fieldErrors(parsed.error);
+
+  // Merge under the `identity` key so other settings survive untouched.
+  const supabase = await supabaseServer();
+  const { data: row, error: readError } = await supabase
+    .from("organization_settings")
+    .select("settings")
+    .eq("organization_id", ctx.organization.id)
+    .maybeSingle();
+  if (readError) return { ok: false, message: dbErrorMessage(readError) };
+
+  const current =
+    row?.settings && typeof row.settings === "object"
+      ? (row.settings as Record<string, unknown>)
+      : {};
+  const { error } = await supabase
+    .from("organization_settings")
+    .update({ settings: { ...current, identity: parsed.data } })
+    .eq("organization_id", ctx.organization.id);
+  if (error) return { ok: false, message: dbErrorMessage(error) };
+
+  revalidatePath(`/${orgSlug}/admin/organization`);
+  return { ok: true, message: "Organization identity updated." };
 }
 
 export async function saveTerminologyAction(

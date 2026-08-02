@@ -191,6 +191,13 @@ export const IconPlus = (p: IconProps) => (
   </Icon>
 );
 
+export const IconPin = (p: IconProps) => (
+  <Icon {...p}>
+    <path d="M9.25 3.75h5.5l-.65 6.1 3.15 3.4H6.75l3.15-3.4-.65-6.1Z" />
+    <path d="M12 13.25v7" />
+  </Icon>
+);
+
 export const IconArrowRight = (p: IconProps) => (
   <Icon {...p}>
     <path d="M4.5 12h15m0 0-6-6m6 6-6 6" />

@@ -2,6 +2,7 @@ import Link from "next/link";
 import { requireOrgContext } from "@/lib/org-context";
 import { getUser } from "@/lib/auth";
 import { getOrgBrandContext } from "@/lib/data/branding";
+import { supabaseServer } from "@/lib/supabase/server";
 import { signOutAction } from "@/lib/actions/auth";
 import { OrgThemeStyle } from "@/components/org-theme";
 import { ThemeToggle } from "@/components/theme-toggle";
@@ -13,7 +14,7 @@ import {
 } from "@/components/command-palette";
 import { CommandPaletteTrigger } from "@/components/command-palette";
 import { buildNavSections } from "./nav-config";
-import { AdminSidebar, MobileNavButton, ShellProvider } from "./nav";
+import { AdminSidebar, MobileNavButton, PinButton, ShellProvider } from "./nav";
 
 export default async function OrgAdminLayout({
   children,
@@ -37,6 +38,76 @@ export default async function OrgAdminLayout({
   // member can actually reach. All real routes — the server authorizes.
   const held = new Set(permissions);
   const base = `/${orgSlug}/admin`;
+
+  // Global search: real knowledge titles for draft-visibility holders —
+  // lessons, courses, journeys, evaluations. Grounded rows, small caps.
+  let knowledgeEntries: PaletteEntry[] = [];
+  if (held.has("content.view_draft")) {
+    const supabase = await supabaseServer();
+    const [
+      { data: lessons },
+      { data: courses },
+      { data: paths },
+      { data: assessments },
+    ] = await Promise.all([
+      supabase
+        .from("lessons")
+        .select("id, course_id, title")
+        .eq("organization_id", ctx.organization.id)
+        .is("archived_at", null)
+        .order("updated_at", { ascending: false })
+        .limit(30),
+      supabase
+        .from("courses")
+        .select("id, title")
+        .eq("organization_id", ctx.organization.id)
+        .neq("status", "archived")
+        .limit(20),
+      supabase
+        .from("learning_paths")
+        .select("id, title")
+        .eq("organization_id", ctx.organization.id)
+        .neq("status", "archived")
+        .limit(10),
+      supabase
+        .from("assessments")
+        .select("id, title")
+        .eq("organization_id", ctx.organization.id)
+        .neq("status", "archived")
+        .limit(10),
+    ]);
+    knowledgeEntries = [
+      ...(lessons ?? []).map((l) => ({
+        id: `lesson-${l.id}`,
+        label: l.title,
+        group: "Knowledge",
+        href: `${base}/courses/${l.course_id}/lessons/${l.id}`,
+        keywords: ["lesson"],
+      })),
+      ...(courses ?? []).map((c) => ({
+        id: `course-${c.id}`,
+        label: c.title,
+        group: "Knowledge",
+        href: `${base}/courses/${c.id}`,
+        keywords: ["course"],
+      })),
+      ...(paths ?? []).map((p) => ({
+        id: `path-${p.id}`,
+        label: p.title,
+        group: "Knowledge",
+        href: `${base}/studio/paths/${p.id}`,
+        keywords: ["journey", "path"],
+      })),
+      ...(assessments ?? []).map((a) => ({
+        id: `assessment-${a.id}`,
+        label: a.title,
+        group: "Knowledge",
+        href: `${base}/assessments`,
+        keywords: ["assessment", "evaluation"],
+      })),
+    ];
+  }
+
   const paletteEntries: PaletteEntry[] = [
     ...sections.flatMap((section) =>
       section.items.map((item) => ({
@@ -98,6 +169,7 @@ export default async function OrgAdminLayout({
           },
         ]
       : []),
+    ...knowledgeEntries,
   ];
 
   return (
@@ -129,6 +201,7 @@ export default async function OrgAdminLayout({
             </div>
             <div className="flex shrink-0 items-center gap-2">
               <CommandPaletteTrigger />
+              <PinButton orgSlug={orgSlug} />
               <ThemeToggle />
               <UserMenu
                 email={user?.email ?? null}
@@ -139,7 +212,11 @@ export default async function OrgAdminLayout({
         </header>
 
         <div className="flex w-full flex-1">
-          <AdminSidebar sections={sections} orgName={displayName} />
+          <AdminSidebar
+            sections={sections}
+            orgName={displayName}
+            orgSlug={orgSlug}
+          />
           <main className="min-w-0 flex-1">
             <div
               className="nk-fade-up mx-auto w-full px-4 py-8 sm:px-8"

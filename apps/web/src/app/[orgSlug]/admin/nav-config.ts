@@ -132,6 +132,12 @@ export function buildNavSections(
     {
       label: "Organization",
       items: [
+        {
+          href: `${base}/organization`,
+          label: "Organization hub",
+          icon: "academy",
+          keywords: ["identity", "mission", "values", "timeline", "hub"],
+        },
         { href: `${base}/academies`, label: "Academies", icon: "academy" },
         {
           href: `${base}/members`,

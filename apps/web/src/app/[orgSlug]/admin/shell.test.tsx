@@ -22,7 +22,7 @@ describe("AdminSidebar", () => {
   test("renders grouped, permission-filtered navigation with an active item", () => {
     render(
       <ShellProvider>
-        <AdminSidebar sections={sections} orgName="Acme" />
+        <AdminSidebar sections={sections} orgName="Acme" orgSlug="acme" />
       </ShellProvider>,
     );
     const nav = screen.getByRole("navigation", {
@@ -48,7 +48,7 @@ describe("AdminSidebar", () => {
   test("collapse toggle is keyboard-reachable and labeled", () => {
     render(
       <ShellProvider>
-        <AdminSidebar sections={sections} orgName="Acme" />
+        <AdminSidebar sections={sections} orgName="Acme" orgSlug="acme" />
       </ShellProvider>,
     );
     const toggle = screen.getByRole("button", { name: "Collapse navigation" });

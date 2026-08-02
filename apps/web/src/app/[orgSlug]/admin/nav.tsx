@@ -29,6 +29,7 @@ import {
   IconMenu,
   IconOverview,
   IconPath,
+  IconPin,
   IconReview,
   IconRoles,
   IconSettings,
@@ -60,6 +61,101 @@ const NAV_ICONS: Record<string, ComponentType<IconProps>> = {
 };
 
 const COLLAPSE_KEY = "nk-nav-collapsed";
+
+/* --------------------------------------------------------------------------
+ * Workspace pins — the personalization primitive. A member stars any admin
+ * page; it appears at the top of their sidebar. Stored locally per org
+ * (same storage pattern as the collapse preference), capped at 8.
+ * ------------------------------------------------------------------------ */
+const PIN_EVENT = "nk-pins";
+const pinKey = (orgSlug: string) => `nk-pins:${orgSlug}`;
+
+interface Pin {
+  href: string;
+  label: string;
+}
+
+function readPins(orgSlug: string): Pin[] {
+  try {
+    const raw = window.localStorage.getItem(pinKey(orgSlug));
+    const parsed: unknown = raw ? JSON.parse(raw) : [];
+    return Array.isArray(parsed)
+      ? parsed.filter(
+          (p): p is Pin =>
+            typeof p === "object" &&
+            p !== null &&
+            typeof (p as Pin).href === "string" &&
+            typeof (p as Pin).label === "string",
+        )
+      : [];
+  } catch {
+    return [];
+  }
+}
+
+function togglePin(orgSlug: string, pin: Pin) {
+  try {
+    const pins = readPins(orgSlug);
+    const next = pins.some((p) => p.href === pin.href)
+      ? pins.filter((p) => p.href !== pin.href)
+      : [...pins, pin].slice(-8);
+    window.localStorage.setItem(pinKey(orgSlug), JSON.stringify(next));
+  } catch {
+    /* storage unavailable — pins are a convenience, never required */
+  }
+  window.dispatchEvent(new Event(PIN_EVENT));
+}
+
+function subscribeToPins(callback: () => void) {
+  window.addEventListener("storage", callback);
+  window.addEventListener(PIN_EVENT, callback);
+  return () => {
+    window.removeEventListener("storage", callback);
+    window.removeEventListener(PIN_EVENT, callback);
+  };
+}
+
+/* Serialized snapshot so useSyncExternalStore sees a stable value. */
+function usePins(orgSlug: string): Pin[] {
+  const serialized = useSyncExternalStore(
+    subscribeToPins,
+    () => JSON.stringify(readPins(orgSlug)),
+    () => "[]",
+  );
+  return JSON.parse(serialized) as Pin[];
+}
+
+/** Topbar star: pins/unpins the current admin page. */
+export function PinButton({ orgSlug }: { orgSlug: string }) {
+  const pathname = usePathname();
+  const pins = usePins(orgSlug);
+  const pinned = pins.some((p) => p.href === pathname);
+
+  return (
+    <button
+      type="button"
+      aria-label={pinned ? "Unpin this page" : "Pin this page to your sidebar"}
+      aria-pressed={pinned}
+      onClick={() =>
+        togglePin(orgSlug, {
+          href: pathname,
+          label:
+            document.title.split(" · ")[0]?.trim() ||
+            pathname.split("/").filter(Boolean).at(-1) ||
+            "Page",
+        })
+      }
+      className={cx(
+        "nk-press rounded-md border p-1.5",
+        pinned
+          ? "border-accent bg-accent-soft text-accent"
+          : "border-border-default text-text-muted hover:border-border-strong hover:text-text-secondary",
+      )}
+    >
+      <IconPin size={14} />
+    </button>
+  );
+}
 
 /* Shared shell state so the topbar menu button and the sidebar drawer stay
  * in sync without lifting the whole shell into client land. */
@@ -237,16 +333,51 @@ function readCollapsed(): boolean {
 export function AdminSidebar({
   sections,
   orgName,
+  orgSlug,
 }: {
   sections: NavSection[];
   orgName: string;
+  orgSlug: string;
 }) {
   const shell = useContext(ShellContext);
+  const pathname = usePathname();
+  const pins = usePins(orgSlug);
   const isCollapsed = useSyncExternalStore(
     subscribeToCollapse,
     readCollapsed,
     () => false,
   );
+
+  const pinnedSection =
+    pins.length > 0 && !isCollapsed ? (
+      <div className="mb-5">
+        <p
+          className="mb-1.5 flex items-center gap-1.5 px-2.5 text-caption font-medium uppercase text-text-muted"
+          style={{ letterSpacing: "var(--tracking-caps)" }}
+        >
+          <IconPin size={11} aria-hidden />
+          Pinned
+        </p>
+        <ul className="flex flex-col gap-0.5">
+          {pins.map((pin) => (
+            <li key={pin.href}>
+              <Link
+                href={pin.href}
+                aria-current={pathname === pin.href ? "page" : undefined}
+                className={cx(
+                  "block truncate rounded-md px-2.5 py-1.5 text-body-sm transition-colors duration-[var(--motion-fast)]",
+                  pathname === pin.href
+                    ? "bg-accent-soft font-medium text-accent"
+                    : "text-text-secondary hover:bg-surface-interactive hover:text-text-primary",
+                )}
+              >
+                {pin.label}
+              </Link>
+            </li>
+          ))}
+        </ul>
+      </div>
+    ) : null;
 
   function toggleCollapsed() {
     try {
@@ -268,6 +399,7 @@ export function AdminSidebar({
         style={{ width: isCollapsed ? "3.75rem" : "var(--layout-sidebar)" }}
       >
         <nav aria-label="Workspace navigation" className="flex-1">
+          {pinnedSection}
           <NavSections sections={sections} collapsed={isCollapsed} />
         </nav>
         <button

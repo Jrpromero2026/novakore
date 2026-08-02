@@ -186,6 +186,49 @@ describe("insights", () => {
     expect(byId.get("stalled")?.observation).toMatch(/3 active enrollments/);
   });
 
+  test("organizational awareness is grounded and optional", () => {
+    const insights = deriveInsights(
+      {
+        ...emptyInputs,
+        courses: [course()],
+        org: {
+          terminologyDrift: {
+            canonical: "course",
+            replacement: "Program",
+            lessonCount: 4,
+          },
+          weekdayPattern: { weekday: "Tuesday", sharePct: 42, totalEvents: 60 },
+          oldestOpenReviewDays: 9,
+        },
+      },
+      BASE,
+    );
+    const byId = new Map(insights.map((i) => [i.id, i]));
+    expect(byId.get("terminology")?.observation).toMatch(
+      /4 lessons say “course” where your organization says “Program”/,
+    );
+    expect(byId.get("review-age")?.observation).toMatch(/waiting 9 days/);
+    expect(byId.get("weekday")?.observation).toMatch(
+      /Tuesdays — 42% of the last 60/,
+    );
+  });
+
+  test("a young open review does not nag", () => {
+    const insights = deriveInsights(
+      {
+        ...emptyInputs,
+        courses: [course()],
+        org: {
+          terminologyDrift: null,
+          weekdayPattern: null,
+          oldestOpenReviewDays: 2,
+        },
+      },
+      BASE,
+    );
+    expect(insights.find((i) => i.id === "review-age")).toBeUndefined();
+  });
+
   test("publishing slowdown compares two real windows", () => {
     const insights = deriveInsights(
       {
