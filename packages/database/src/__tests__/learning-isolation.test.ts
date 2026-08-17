@@ -25,7 +25,8 @@ const NODE_FOUNDATIONS = "00000000-0000-4000-8000-000000000541";
 const NODE_ADVANCED = "00000000-0000-4000-8000-000000000542";
 const ENROLL_LEARNER = "00000000-0000-4000-8000-000000000561"; // alpha.learner path enrollment
 const MEMBERSHIP_REVIEWER = "00000000-0000-4000-8000-000000000304";
-const DEV_PASSWORD = "NovaKore-dev-password-1";
+const DEV_PASSWORD =
+  process.env.NOVAKORE_TEST_PASSWORD ?? "NovaKore-dev-password-1";
 
 type Client = SupabaseClient<Database>;
 const clients = new Map<string, Client>();

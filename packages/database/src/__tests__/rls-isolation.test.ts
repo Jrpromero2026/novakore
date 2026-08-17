@@ -34,7 +34,8 @@ const ORG_A = "00000000-0000-4000-8000-000000000101"; // Alpha Learning Collecti
 const ORG_B = "00000000-0000-4000-8000-000000000102"; // Built For Her (Dev Tenant)
 const ORG_GAMMA = "00000000-0000-4000-8000-000000000103"; // fallback-branding fixture (alpha.owner also owns it)
 const ACADEMY_A = "00000000-0000-4000-8000-000000000201";
-const DEV_PASSWORD = "NovaKore-dev-password-1"; // dev-only seed password
+const DEV_PASSWORD =
+  process.env.NOVAKORE_TEST_PASSWORD ?? "NovaKore-dev-password-1"; // dev-only seed password
 
 type Client = SupabaseClient<Database>;
 const clients = new Map<string, Client>();

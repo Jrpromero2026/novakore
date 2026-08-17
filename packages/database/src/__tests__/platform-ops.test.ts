@@ -12,7 +12,8 @@ import { afterAll, describe, expect, test } from "vitest";
 
 const url = process.env.NOVAKORE_TEST_SUPABASE_URL!;
 const anonKey = process.env.NOVAKORE_TEST_SUPABASE_ANON_KEY!;
-const DEV_PASSWORD = "NovaKore-dev-password-1";
+const DEV_PASSWORD =
+  process.env.NOVAKORE_TEST_PASSWORD ?? "NovaKore-dev-password-1";
 const GAMMA_ORG = "00000000-0000-4000-8000-000000000103";
 
 const clients: SupabaseClient[] = [];

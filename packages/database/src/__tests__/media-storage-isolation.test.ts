@@ -15,7 +15,8 @@ const configured = Boolean(url && anonKey);
 
 const ORG_A = "00000000-0000-4000-8000-000000000101";
 const ORG_B = "00000000-0000-4000-8000-000000000102";
-const DEV_PASSWORD = "NovaKore-dev-password-1";
+const DEV_PASSWORD =
+  process.env.NOVAKORE_TEST_PASSWORD ?? "NovaKore-dev-password-1";
 
 // 1×1 transparent PNG (real bytes — the pipeline sniffs content).
 const TINY_PNG = Uint8Array.from(

@@ -13,7 +13,8 @@ const url = process.env.NOVAKORE_TEST_SUPABASE_URL;
 const anonKey = process.env.NOVAKORE_TEST_SUPABASE_ANON_KEY;
 const configured = Boolean(url && anonKey);
 const ORG_B = "00000000-0000-4000-8000-000000000102"; // bfh-dev
-const DEV_PASSWORD = "NovaKore-dev-password-1";
+const DEV_PASSWORD =
+  process.env.NOVAKORE_TEST_PASSWORD ?? "NovaKore-dev-password-1";
 const runTag = Date.now().toString(36);
 
 type Client = SupabaseClient<Database>;

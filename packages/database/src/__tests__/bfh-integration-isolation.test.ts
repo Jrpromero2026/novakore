@@ -24,7 +24,8 @@ const BFH_KEY =
 
 const runTag = Date.now().toString(36);
 
-const DEV_PASSWORD = "NovaKore-dev-password-1";
+const DEV_PASSWORD =
+  process.env.NOVAKORE_TEST_PASSWORD ?? "NovaKore-dev-password-1";
 
 /** Untyped anon client — the new integration RPCs are not in the generated types. */
 function anon(): SupabaseClient {

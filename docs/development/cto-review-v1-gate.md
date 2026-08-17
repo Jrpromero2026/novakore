@@ -8,6 +8,18 @@ deployment, and two prior audits — re-examined without deference.
 
 ---
 
+> **Remediation log (2026-08-01, after review):** **P0-1 partially closed** —
+> all 14 `@novakore.test` fixture accounts (including
+> `platform.admin@novakore.test`) were rotated off the git-committed password
+> on the live dev database; tests now read `NOVAKORE_TEST_PASSWORD` from the
+> gitignored `.env.test.local` (bootstrap literal retained only for fresh
+> local databases). Verified: 108/108 real-DB tests green with the new value,
+> and the committed password is now **rejected** by the platform-admin
+> account. **Still open:** the owner's personal account
+> (`jrpromero16@gmail.com`) retains the documented password — owner action;
+> and P0-2 (tests writing to the serving database) is unchanged until the
+> environment split.
+
 ## Findings by area
 
 ### Security — the sharpest findings in the platform

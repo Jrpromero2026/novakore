@@ -1,9 +1,15 @@
 -- NovaKore development seed — DEVELOPMENT DATA ONLY.
 -- Deterministic fixed UUIDs; idempotent (safe under repeated `db reset` and
 -- tolerant of re-application). No production credentials; the only real
--- identifier is the repo owner's personal owner login (intentional, dev
--- password only). All seeded accounts share the documented dev-only password
--- (see docs/development/supabase.md#seeded-accounts).
+-- identifier is the repo owner's personal owner login.
+--
+-- ⚠ SECURITY (2026-08-01): the password below is a BOOTSTRAP value for fresh
+-- local databases ONLY. It is public (committed here), so it must never be
+-- the live password on any internet-reachable database. The shared dev
+-- project has been ROTATED away from it; the live value lives in the
+-- gitignored `.env.test.local` as NOVAKORE_TEST_PASSWORD (tests read that
+-- first and fall back to this literal). If you `db reset` a shared database,
+-- rotate again immediately — see docs/operations/runbook.md §Secrets.
 
 create extension if not exists pgcrypto with schema extensions;
 

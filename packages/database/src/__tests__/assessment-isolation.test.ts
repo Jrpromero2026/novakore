@@ -22,7 +22,8 @@ const MEMBERSHIP_LEARNER = "00000000-0000-4000-8000-000000000306";
 const BFH_ASSESSMENT = "00000000-0000-4000-8000-000000000801";
 const BFH_VERSION = "00000000-0000-4000-8000-000000000831";
 const BFH_ASSIGNMENT = "00000000-0000-4000-8000-000000000841";
-const DEV_PASSWORD = "NovaKore-dev-password-1";
+const DEV_PASSWORD =
+  process.env.NOVAKORE_TEST_PASSWORD ?? "NovaKore-dev-password-1";
 
 type Client = SupabaseClient<Database>;
 const clients = new Map<string, Client>();

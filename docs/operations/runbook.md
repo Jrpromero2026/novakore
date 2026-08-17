@@ -41,13 +41,14 @@ docs/architecture/V1_EXIT_CRITERIA.md, docs/releases/internal-alpha.md
 
 ## Secrets
 
-| Secret                                          | Lives in                                      | Rotation                                                  |
-| ----------------------------------------------- | --------------------------------------------- | --------------------------------------------------------- |
-| Supabase anon key                               | Vercel env + `.env.local` + CI secret         | Supabase dashboard → rotate → update all three            |
-| Service-role key                                | **Owner only** — never in repo, Vercel, or CI | Supabase dashboard                                        |
-| BFH handoff HMAC (`app.bfh_integration_config`) | Database only (never leaves Postgres)         | Update row via secure SQL; coordinate with BFH            |
-| Per-org `/v1` API keys                          | Hashed in DB; plaintext held by the caller    | Issue new, revoke old (`organization_api_keys`)           |
-| Webhook endpoint secrets                        | DB (per endpoint)                             | Rotate per endpoint; receivers verify both during overlap |
+| Secret                                          | Lives in                                                              | Rotation                                                                                                            |
+| ----------------------------------------------- | --------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------- |
+| Supabase anon key                               | Vercel env + `.env.local` + CI secret                                 | Supabase dashboard → rotate → update all three                                                                      |
+| Service-role key                                | **Owner only** — never in repo, Vercel, or CI                         | Supabase dashboard                                                                                                  |
+| BFH handoff HMAC (`app.bfh_integration_config`) | Database only (never leaves Postgres)                                 | Update row via secure SQL; coordinate with BFH                                                                      |
+| Per-org `/v1` API keys                          | Hashed in DB; plaintext held by the caller                            | Issue new, revoke old (`organization_api_keys`)                                                                     |
+| Webhook endpoint secrets                        | DB (per endpoint)                                                     | Rotate per endpoint; receivers verify both during overlap                                                           |
+| Dev fixture account password                    | `.env.test.local` → `NOVAKORE_TEST_PASSWORD` (gitignored) + CI secret | SQL update over `auth.users where email like '%@novakore.test'`; update the env file + CI secret in the same change |
 
 Rules: no plaintext secrets in git, logs, or error messages; seed contains
 dev-only placeholder values (labeled DO-NOT-USE-IN-PROD); rotation of the
@@ -80,12 +81,15 @@ seeded dev values is config, never a history rewrite.
 ## CI (one-time owner setup)
 
 1. GitHub → Settings → Secrets → Actions: add
-   `NOVAKORE_TEST_SUPABASE_URL`, `NOVAKORE_TEST_SUPABASE_ANON_KEY`.
+   `NOVAKORE_TEST_SUPABASE_URL`, `NOVAKORE_TEST_SUPABASE_ANON_KEY`, and
+   `NOVAKORE_TEST_PASSWORD` (all three values are in `.env.test.local`).
+   Without the password secret the real-DB job authenticates with the public
+   bootstrap literal and will fail against a rotated database.
 2. Settings → Branches → add protection for `main`: require the `verify`
    status check, require PRs (optional but recommended once >1 committer).
 3. Known flake mode: the real-DB suite signs in ~30 accounts; two runs
    within ~a minute can trip Supabase auth rate limits (beforeAll failures,
-   mass skips). Space reruns out — a clean run is 97/97.
+   mass skips). Space reruns out — a clean run passes every test.
 
 ## Release checklist
 

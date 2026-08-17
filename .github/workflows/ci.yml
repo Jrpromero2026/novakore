@@ -58,6 +58,9 @@ jobs:
         env:
           NOVAKORE_TEST_SUPABASE_URL: ${{ secrets.NOVAKORE_TEST_SUPABASE_URL }}
           NOVAKORE_TEST_SUPABASE_ANON_KEY: ${{ secrets.NOVAKORE_TEST_SUPABASE_ANON_KEY }}
+          # The dev database is rotated away from the public seed literal, so
+          # this secret is required for the suite to authenticate.
+          NOVAKORE_TEST_PASSWORD: ${{ secrets.NOVAKORE_TEST_PASSWORD }}
         run: |
           if [ -z "$NOVAKORE_TEST_SUPABASE_URL" ]; then
             echo "::warning::Real-DB secrets not configured — RLS suite SKIPPED (94 tests). Configure repo secrets for full coverage."
