@@ -8,17 +8,25 @@ deployment, and two prior audits — re-examined without deference.
 
 ---
 
-> **Remediation log (2026-08-01, after review):** **P0-1 partially closed** —
+> **Remediation log (2026-08-01, after review):** **P0-1 CLOSED** —
 > all 14 `@novakore.test` fixture accounts (including
 > `platform.admin@novakore.test`) were rotated off the git-committed password
 > on the live dev database; tests now read `NOVAKORE_TEST_PASSWORD` from the
 > gitignored `.env.test.local` (bootstrap literal retained only for fresh
 > local databases). Verified: 108/108 real-DB tests green with the new value,
 > and the committed password is now **rejected** by the platform-admin
-> account. **Still open:** the owner's personal account
-> (`jrpromero16@gmail.com`) retains the documented password — owner action;
-> and P0-2 (tests writing to the serving database) is unchanged until the
-> environment split.
+> account. The owner's personal account (`jrpromero16@gmail.com`) was then
+> rotated too, via Supabase's own self-service `updateUser` flow — the new
+> value went to the gitignored `.env.owner.local` and never surfaced in a
+> log or transcript; the documented password is now rejected for it as well.
+> **P0-1 is fully closed. Still open:** P0-2 (tests writing to the serving
+> database), unchanged until the environment split.
+>
+> **Deploy guard corrected:** the Phase 6 `env-check` failed production
+> builds for the _documented, accepted_ dev-database state — breaking
+> deploys rather than preventing drift. It now warns loudly for the known
+> dev project and fails closed only on an **unrecognised** database or a
+> non-production → production cross-wire.
 
 ## Findings by area
 

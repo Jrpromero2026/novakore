@@ -6,10 +6,11 @@
   `github.com/Jrpromero2026/novakore` (push-to-deploy from `main`); the
   committed root `vercel.json` builds from the repo root (npm workspaces).
 - **Data**: Supabase project `novakore-dev` (mivqjcxpfanfzjkwwxcc) — serving
-  BOTH development and the deployed app under the explicit
-  `NOVAKORE_ALLOW_DEV_DB=1` acknowledgment. `scripts/env-check.mjs`
-  (apps/web `prebuild`) fails production builds closed without it, and will
-  refuse any cross-wiring once `NOVAKORE_PROD_REF` is registered.
+  BOTH development and the deployed app. This is the documented
+  pre-production state: `scripts/env-check.mjs` (apps/web `prebuild`) prints
+  a loud warning on every production build, fails closed on any
+  **unrecognised** database, and refuses cross-wiring (non-prod → prod) once
+  `NOVAKORE_PROD_REF` is registered.
 - **CI**: `.github/workflows/ci.yml` — format/lint/typecheck/unit/build on
   every push and PR; the real-DB suite runs when repo secrets exist. Branch
   protection on `main` is a one-time owner step (runbook).

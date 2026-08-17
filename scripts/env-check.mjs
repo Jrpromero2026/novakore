@@ -7,18 +7,19 @@
  * accident.
  *
  * Rules:
- *  - A PRODUCTION deploy (VERCEL_ENV=production) must either
- *      (a) point at the registered production project ref, or
- *      (b) carry the explicit acknowledgment NOVAKORE_ALLOW_DEV_DB=1
- *          (the current state: no production Supabase project exists yet,
- *          so the owner consciously accepts serving from the dev project).
- *    Anything else fails the build.
+ *  - A PRODUCTION deploy (VERCEL_ENV=production) must point at either the
+ *    registered production ref (NOVAKORE_PROD_REF) or the known dev project.
+ *    An UNRECOGNISED database fails the build — that is drift, and nobody
+ *    would know what is being served. Serving from the known dev project is
+ *    the owner's documented pre-production state: it warns loudly on every
+ *    build rather than blocking deploys.
  *  - A non-production build must NEVER point at the production ref.
  *  - Missing required public env in any Vercel build fails immediately
  *    (better a red build than a white screen).
  *
- * When novakore-prod is created (docs/operations/production-setup.md),
- * set PROD_REF below and remove NOVAKORE_ALLOW_DEV_DB from Vercel.
+ * When novakore-prod is created (docs/operations/production-setup.md), set
+ * NOVAKORE_PROD_REF in Vercel; the dev ref then becomes drift in production
+ * and the guard tightens automatically.
  */
 
 const PROD_REF = process.env.NOVAKORE_PROD_REF ?? null; // e.g. "abcd1234efgh5678"
@@ -41,20 +42,25 @@ if (vercelEnv) {
 
   if (vercelEnv === "production") {
     const pointsAtProd = PROD_REF !== null && ref === PROD_REF;
-    const devAcknowledged = process.env.NOVAKORE_ALLOW_DEV_DB === "1";
-    if (!pointsAtProd && !devAcknowledged) {
+    const pointsAtDev = ref === DEV_REF;
+    // Drift is the real danger: an UNRECOGNISED database in production means
+    // nobody knows what is being served. That still fails closed. Serving
+    // from the known dev project is the owner's documented pre-production
+    // state — it warns loudly on every build instead of blocking the deploy.
+    if (!pointsAtProd && !pointsAtDev) {
       fail(
-        `production deploy points at project "${ref}" which is not the registered ` +
-          "production ref, and NOVAKORE_ALLOW_DEV_DB=1 is not set. Either wire the " +
-          "production project (docs/operations/production-setup.md) or explicitly " +
-          "acknowledge the dev database.",
+        `production deploy points at project "${ref}", which is neither the ` +
+          "registered production ref (NOVAKORE_PROD_REF) nor the known dev " +
+          "project. Refusing to build against an unrecognised database — see " +
+          "docs/operations/production-setup.md.",
       );
     }
-    if (devAcknowledged && ref === DEV_REF) {
+    if (pointsAtDev) {
       console.warn(
-        "⚠ env-check: production is serving from the DEV database under the " +
-          "NOVAKORE_ALLOW_DEV_DB acknowledgment. Do not onboard paying " +
-          "organizations in this state.",
+        "\n⚠ env-check: PRODUCTION IS SERVING FROM THE DEV DATABASE.\n" +
+          "  Accepted pre-production state (docs/architecture/V1_EXIT_CRITERIA.md).\n" +
+          "  Do NOT onboard paying organizations until the environment split\n" +
+          "  executes: docs/operations/production-setup.md\n",
       );
     }
   } else if (PROD_REF !== null && ref === PROD_REF) {

@@ -32,8 +32,9 @@ pg_policies` ≈ 119+.
 
 1. Vercel → novakore project → Environment Variables, **Production scope
    only**: `NEXT_PUBLIC_SUPABASE_URL` / `NEXT_PUBLIC_SUPABASE_ANON_KEY` →
-   prod values; add `NOVAKORE_PROD_REF=<PROD_REF>`;
-   **delete `NOVAKORE_ALLOW_DEV_DB`**.
+   prod values; add `NOVAKORE_PROD_REF=<PROD_REF>`. Registering that ref
+   automatically tightens the guard: the dev database then counts as drift
+   in production and fails the build.
 2. Preview scope keeps the dev project values. From this moment
    `scripts/env-check.mjs` fails any production build pointing at dev AND
    any preview build pointing at prod.
