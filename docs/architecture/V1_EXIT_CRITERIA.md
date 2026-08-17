@@ -9,7 +9,12 @@ platform". Status is evidence-based as of 2026-08-01 (`main`, Phase 6):
 - [x] ✅ Full verify suite green (format/lint/typecheck; 358 tests incl.
       97 real-DB under live RLS; production build exit 0).
 - [x] ✅ Design-system parity + a11y contract tests green (16).
-- [ ] ❌ Owner visual acceptance of Phases 1–6 surfaces (never performed).
+- [x] ✅ Automated browser coverage of the happy path (`npm run test:e2e`,
+      3 specs, real browser + real database, read-only): anonymous refusal,
+      sign-in, Command Center, Studio knowledge graph, Knowledge IDE
+      inspector, Intelligence, learner Academy, public verification.
+- [ ] ❌ Owner visual acceptance of Phases 1–6 surfaces (never performed —
+      E2E proves the surfaces _render_, not that they look right).
 - [ ] ❌ Standard-browser alpha regression checklist + screenshots (owner).
 
 ## Delivery safety

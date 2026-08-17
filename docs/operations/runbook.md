@@ -97,8 +97,10 @@ seeded dev values is config, never a history rewrite.
 - [ ] `npm run verify` green locally; standalone build exit 0.
 - [ ] New migrations mirrored + applied; types regenerated if needed.
 - [ ] `/api/health` returns 200 post-deploy with the new sha.
-- [ ] Smoke: sign-in page renders; one admin surface loads for a seeded
-      account; `/verify/<known-code>` renders.
+- [ ] `npm run test:e2e` green (browser happy path: anonymous refusal →
+      sign-in → Command Center → Studio → Knowledge IDE → Intelligence →
+      learner Academy → public verification). Needs `NOVAKORE_TEST_PASSWORD`;
+      skips loudly without it.
 - [ ] docs/architecture/V1_EXIT_CRITERIA.md statuses still truthful.
 - [ ] No new advisor ERRORs (`get_advisors`), no new high-severity
       `npm audit --omit=dev` findings beyond the accepted list.

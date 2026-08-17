@@ -76,6 +76,33 @@ jobs:
           NEXT_PUBLIC_SUPABASE_ANON_KEY: ${{ secrets.NOVAKORE_TEST_SUPABASE_ANON_KEY || 'ci-placeholder-anon-key-0000000000' }}
         run: npm run build
 
+      - name: End-to-end happy path (real browser)
+        # Exercises the journey a customer takes: anonymous refusal → sign-in
+        # → Command Center → Studio → Knowledge IDE → Intelligence → learner
+        # Academy → public credential verification. Read-only by design.
+        env:
+          NOVAKORE_TEST_SUPABASE_URL: ${{ secrets.NOVAKORE_TEST_SUPABASE_URL }}
+          NOVAKORE_TEST_SUPABASE_ANON_KEY: ${{ secrets.NOVAKORE_TEST_SUPABASE_ANON_KEY }}
+          NOVAKORE_TEST_PASSWORD: ${{ secrets.NOVAKORE_TEST_PASSWORD }}
+        run: |
+          if [ -z "$NOVAKORE_TEST_PASSWORD" ]; then
+            echo "::warning::E2E SKIPPED — no credentials. Set the NOVAKORE_TEST_* repo secrets to enable browser coverage."
+          else
+            npx playwright install --with-deps chromium
+            npm run test:e2e
+          fi
+
+      - name: Upload E2E report on failure
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-report
+          path: |
+            playwright-report/
+            test-results/
+          retention-days: 7
+          if-no-files-found: ignore
+
       - name: Artifact validation
         run: |
           test -d apps/web/.next || (echo "::error::.next output missing" && exit 1)

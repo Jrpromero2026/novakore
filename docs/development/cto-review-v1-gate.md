@@ -165,6 +165,16 @@ deployment, and two prior audits — re-examined without deference.
 
 - 358 tests with a rare asset: 97 against live RLS. Pure-engine coverage is
   exemplary.
+- **[P1-8] ~~Zero end-to-end tests~~ — PARTIALLY CLOSED (2026-08-01).** A
+  Playwright happy path now runs in a real browser against the real database
+  (`npm run test:e2e`, wired into CI, secret-gated, read-only by design):
+  anonymous refusal → sign-in → Command Center → Studio knowledge graph →
+  Knowledge IDE → Intelligence → learner Academy → public credential
+  verification. 3/3 green locally; it caught nothing on first run, which is
+  itself the evidence those surfaces compose. **Still open:** visual
+  regression (rendering ≠ looking right) and mutating flows (author →
+  publish), which stay out until the environment split so tests never write
+  to the serving database. Original finding follows for the record:
 - **[P1-8] Zero end-to-end tests and zero visual regression.** Six phases
   of UI have shipped with **no human visual acceptance and no automated
   browser flow** — sign-in→admin→publish→learn has never been executed by
