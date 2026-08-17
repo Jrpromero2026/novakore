@@ -8,6 +8,8 @@
  * authorization on every route (ADR-006).
  */
 
+import type { TourTargetId } from "@/lib/onboarding/targets";
+
 export interface NavItem {
   href: string;
   label: string;
@@ -16,6 +18,8 @@ export interface NavItem {
   needsAny?: string[];
   /** Palette-only search keywords. */
   keywords?: string[];
+  /** Durable walkthrough target id — stamped as data-tour-id by the shell. */
+  tourId?: TourTargetId;
 }
 
 export interface NavSection {
@@ -34,7 +38,12 @@ export function buildNavSections(
     {
       label: null,
       items: [
-        { href: base, label: "Overview", icon: "overview" },
+        {
+          href: base,
+          label: "Overview",
+          icon: "overview",
+          tourId: "admin-sidebar-overview",
+        },
         {
           href: `${base}/intelligence`,
           label: "Intelligence",
@@ -46,6 +55,7 @@ export function buildNavSections(
           href: `${base}/ops`,
           label: "Analytics",
           icon: "analytics",
+          tourId: "admin-sidebar-analytics",
           needsAny: ["analytics.view"],
           keywords: ["operations", "metrics", "feedback"],
         },
@@ -53,6 +63,7 @@ export function buildNavSections(
           href: `/${orgSlug}/learn`,
           label: "My learning",
           icon: "learn",
+          tourId: "admin-sidebar-my-learning",
           keywords: ["member", "learner view"],
         },
       ],
@@ -64,6 +75,7 @@ export function buildNavSections(
           href: `${base}/studio`,
           label: "Studio",
           icon: "studio",
+          tourId: "admin-sidebar-studio",
           needsAny: ["content.view_draft"],
           keywords: ["author", "create", "editor"],
         },
@@ -78,6 +90,7 @@ export function buildNavSections(
           href: `${base}/courses`,
           label: "Courses",
           icon: "course",
+          tourId: "admin-sidebar-courses",
           needsAny: ["content.view_draft"],
           keywords: ["lessons", "programs"],
         },
@@ -97,6 +110,7 @@ export function buildNavSections(
           href: `${base}/learning`,
           label: "Learning paths",
           icon: "path",
+          tourId: "admin-sidebar-learning-paths",
           needsAny: ["paths.manage"],
           keywords: ["journeys"],
         },
@@ -118,6 +132,7 @@ export function buildNavSections(
           href: `${base}/enrollments`,
           label: "Enrollments",
           icon: "enrollment",
+          tourId: "admin-sidebar-enrollments",
           needsAny: ["enrollment.manage"],
         },
         {
@@ -136,6 +151,7 @@ export function buildNavSections(
           href: `${base}/organization`,
           label: "Organization hub",
           icon: "academy",
+          tourId: "admin-sidebar-organization",
           keywords: ["identity", "mission", "values", "timeline", "hub"],
         },
         { href: `${base}/academies`, label: "Academies", icon: "academy" },
@@ -143,6 +159,7 @@ export function buildNavSections(
           href: `${base}/members`,
           label: "Members",
           icon: "members",
+          tourId: "admin-sidebar-members",
           needsAny: ["org.members.manage"],
           keywords: ["people", "invite"],
         },
@@ -163,6 +180,7 @@ export function buildNavSections(
           href: `${base}/branding`,
           label: "Branding",
           icon: "branding",
+          tourId: "admin-sidebar-branding",
           needsAny: ["org.branding.manage"],
           keywords: ["theme", "logo", "colors"],
         },
@@ -170,6 +188,7 @@ export function buildNavSections(
           href: `${base}/settings`,
           label: "Settings",
           icon: "settings",
+          tourId: "admin-sidebar-settings",
           needsAny: ["org.manage"],
           keywords: ["profile", "organization name", "slug"],
         },

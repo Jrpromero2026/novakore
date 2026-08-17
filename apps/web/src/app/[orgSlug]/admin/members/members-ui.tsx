@@ -20,6 +20,7 @@ import {
   cx,
 } from "@/components/ui/primitives";
 import { ConfirmButton } from "@/components/ui/feedback";
+import { tourTarget, TOUR_TARGETS } from "@/lib/onboarding/targets";
 
 export function InvitePanel({ orgSlug }: { orgSlug: string }) {
   const [state, action, pending] = useActionState(
@@ -49,10 +50,15 @@ export function InvitePanel({ orgSlug }: { orgSlug: string }) {
               type="email"
               placeholder="name@example.com"
               required
+              {...tourTarget(TOUR_TARGETS.inviteEmailField)}
             />
           </Field>
         </div>
-        <Button type="submit" disabled={pending}>
+        <Button
+          type="submit"
+          disabled={pending}
+          {...tourTarget(TOUR_TARGETS.inviteSubmitButton)}
+        >
           {pending ? "Inviting…" : "Send invitation"}
         </Button>
       </form>

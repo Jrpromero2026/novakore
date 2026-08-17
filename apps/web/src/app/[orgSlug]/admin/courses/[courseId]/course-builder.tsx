@@ -9,6 +9,7 @@ import {
   swapPositionsAction,
 } from "@/lib/actions/learning";
 import { idle, type ActionState } from "@/lib/actions/types";
+import { tourTarget, TOUR_TARGETS } from "@/lib/onboarding/targets";
 import {
   ActionBanner,
   Badge,
@@ -209,7 +210,12 @@ export function CourseStructurePanel({
               <Input id="new-module-title" name="title" required />
             </Field>
           </div>
-          <Button type="submit" variant="secondary" disabled={modulePending}>
+          <Button
+            type="submit"
+            variant="secondary"
+            disabled={modulePending}
+            {...tourTarget(TOUR_TARGETS.moduleCreateButton)}
+          >
             {modulePending ? "Adding…" : `Add ${moduleTerm.toLowerCase()}`}
           </Button>
         </form>
@@ -250,7 +256,12 @@ function AddLessonRow({
           required
         />
       </div>
-      <Button type="submit" variant="ghost" disabled={pending}>
+      <Button
+        type="submit"
+        variant="ghost"
+        disabled={pending}
+        {...tourTarget(TOUR_TARGETS.lessonCreateButton)}
+      >
         {pending ? "Adding…" : `Add ${lessonTerm.toLowerCase()}`}
       </Button>
       {state.errors?.title ? (
@@ -335,6 +346,7 @@ export function PublishCoursePanel({
         <ActionBanner state={state} />
         <Button
           disabled={pending || blocked}
+          {...tourTarget(TOUR_TARGETS.publishControl)}
           onClick={() =>
             startTransition(async () =>
               setState(await publishCourseAction(orgSlug, courseId)),

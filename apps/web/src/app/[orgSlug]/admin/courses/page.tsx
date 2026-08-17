@@ -9,6 +9,9 @@ import {
   Panel,
   SectionHeader,
 } from "@/components/ui/layout";
+import { tourState, tourTarget, TOUR_TARGETS } from "@/lib/onboarding/targets";
+import { ContextHelp } from "@/components/onboarding/context-help";
+import { StartWalkthroughButton } from "@/components/onboarding/walkthrough";
 import { CreateCoursePanel } from "./courses-ui";
 
 export const metadata: Metadata = { title: "Courses" };
@@ -38,12 +41,27 @@ export default async function CoursesPage({
     courses?.filter((c) => c.current_published_version_id).length ?? 0;
 
   return (
-    <div className="space-y-8">
+    <div
+      className="space-y-8"
+      {...tourState({ courses: courses?.length ?? 0 })}
+    >
       <PageHeader
         eyebrow="Knowledge"
         title={courseTerm.plural}
         description="Drafts are editable; published versions are immutable snapshots learners experience."
       />
+
+      <ContextHelp
+        summary={`What is a ${courseTerm.singular}?`}
+        className="max-w-2xl"
+      >
+        A {courseTerm.singular} is a major section of learning inside a{" "}
+        {term("learning_path").singular.toLowerCase()}. It contains{" "}
+        {term("module").plural.toLowerCase()} and{" "}
+        {term("lesson").plural.toLowerCase()}, and is versioned: draft changes
+        stay private until you publish, and learners always see exactly the
+        version you published.
+      </ContextHelp>
 
       <CreateCoursePanel orgSlug={orgSlug} termSingular={courseTerm.singular} />
 
@@ -57,39 +75,49 @@ export default async function CoursesPage({
               : undefined
           }
         />
-        <Panel tone="outlined" className="mt-2.5">
-          {courses?.length ? (
-            <ul className="p-1.5">
-              {courses.map((course) => (
-                <li key={course.id}>
-                  <DataRow
-                    href={`/${orgSlug}/admin/courses/${course.id}`}
-                    title={course.title}
-                    meta={<span className="font-mono">/{course.slug}</span>}
-                    trailing={
-                      <Badge
-                        tone={
-                          course.current_published_version_id
-                            ? "positive"
-                            : "neutral"
-                        }
-                      >
-                        {course.current_published_version_id
-                          ? `Published v${(course.course_versions as { version_number: number } | null)?.version_number ?? "?"}`
-                          : "Draft only"}
-                      </Badge>
-                    }
-                  />
-                </li>
-              ))}
-            </ul>
-          ) : (
-            <EmptyState
-              title={`No ${courseTerm.plural.toLowerCase()} yet`}
-              description={`Create the first ${courseTerm.singular.toLowerCase()} draft to get started. Drafts stay private until you publish a version.`}
-            />
-          )}
-        </Panel>
+        <div className="mt-2.5" {...tourTarget(TOUR_TARGETS.courseList)}>
+          <Panel tone="outlined">
+            {courses?.length ? (
+              <ul className="p-1.5">
+                {courses.map((course) => (
+                  <li key={course.id}>
+                    <DataRow
+                      href={`/${orgSlug}/admin/courses/${course.id}`}
+                      title={course.title}
+                      meta={<span className="font-mono">/{course.slug}</span>}
+                      trailing={
+                        <Badge
+                          tone={
+                            course.current_published_version_id
+                              ? "positive"
+                              : "neutral"
+                          }
+                        >
+                          {course.current_published_version_id
+                            ? `Published v${(course.course_versions as { version_number: number } | null)?.version_number ?? "?"}`
+                            : "Draft only"}
+                        </Badge>
+                      }
+                    />
+                  </li>
+                ))}
+              </ul>
+            ) : (
+              <EmptyState
+                title={`No ${courseTerm.plural.toLowerCase()} yet`}
+                description={`A ${courseTerm.singular.toLowerCase()} is a major section of learning — for example "Foundations of Coaching". Create the first draft above; it stays private until you publish a version.`}
+                action={
+                  <StartWalkthroughButton
+                    walkthroughId="create-program"
+                    className="nk-press rounded-md bg-accent px-3.5 py-2 text-sm font-medium text-accent-contrast hover:bg-accent-hover"
+                  >
+                    Show me
+                  </StartWalkthroughButton>
+                }
+              />
+            )}
+          </Panel>
+        </div>
       </section>
     </div>
   );

@@ -4,6 +4,7 @@ import { useActionState } from "react";
 import { updateOrganizationNameAction } from "@/lib/actions/organization";
 import { idle } from "@/lib/actions/types";
 import { ActionBanner, Button, Field, Input } from "@/components/ui/primitives";
+import { tourTarget, TOUR_TARGETS } from "@/lib/onboarding/targets";
 
 export function OrgNameForm({
   orgSlug,
@@ -30,11 +31,16 @@ export function OrgNameForm({
           defaultValue={currentName}
           required
           minLength={2}
+          {...tourTarget(TOUR_TARGETS.settingsNameField)}
         />
       </Field>
       <ActionBanner state={state} />
       <div>
-        <Button type="submit" disabled={pending}>
+        <Button
+          type="submit"
+          disabled={pending}
+          {...tourTarget(TOUR_TARGETS.settingsSaveButton)}
+        >
           {pending ? "Saving…" : "Save"}
         </Button>
       </div>

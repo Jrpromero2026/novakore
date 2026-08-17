@@ -3,6 +3,7 @@ import { requireOrgContext, requirePermission } from "@/lib/org-context";
 import { getTerminology } from "@/lib/terminology";
 import { supabaseServer } from "@/lib/supabase/server";
 import { PageHeader, Panel, SectionHeader } from "@/components/ui/layout";
+import { tourState } from "@/lib/onboarding/targets";
 import { InvitePanel, MemberRow } from "./members-ui";
 
 export const metadata: Metadata = { title: "Members" };
@@ -57,8 +58,14 @@ export default async function MembersPage({
   const { term } = await getTerminology(ctx.organization.id);
   const memberTerm = term("learner"); // display flavor only; canonical entities unchanged
 
+  const othersCount = (memberships ?? []).filter(
+    (m) =>
+      m.id !== ctx.membershipId &&
+      (m.status === "invited" || m.status === "active"),
+  ).length;
+
   return (
-    <div className="space-y-8">
+    <div className="space-y-8" {...tourState({ others: othersCount })}>
       <PageHeader
         eyebrow="Organization"
         title="Members"

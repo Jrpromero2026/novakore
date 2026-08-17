@@ -4,6 +4,7 @@ import { requireOrgContext, requirePermission } from "@/lib/org-context";
 import { getFeedback, getOpsMetrics, getTesterCohorts } from "@/lib/data/ops";
 import { TESTER_LABELS, testerLabelText } from "@/lib/feedback";
 import { Card, CardHeader, cx } from "@/components/ui/primitives";
+import { OnboardingPageMarker } from "@/components/onboarding/page-marker";
 import { FeedbackReview } from "./ops-review";
 
 export const metadata: Metadata = { title: "Operations" };
@@ -55,6 +56,10 @@ export default async function OperationsPage({
 
   return (
     <div className="space-y-8">
+      <OnboardingPageMarker
+        orgSlug={orgSlug}
+        event="onboarding.progress.reviewed"
+      />
       <header className="space-y-1">
         <h1 className="text-h1 text-text-primary">Operations</h1>
         <p className="text-body-sm text-text-secondary">

@@ -150,7 +150,8 @@ export const CHECKLIST_STEPS: ChecklistStepDefinition[] = [
     whyItMatters: () =>
       "This is the moment your knowledge becomes something a learner can experience.",
     estimatedMinutes: 15,
-    complete: (s) => s.lessons >= 1,
+    // "Meaningful content" = the lesson exists AND real content blocks exist.
+    complete: (s) => s.lessons >= 1 && s.lessonsWithContent >= 1,
   },
   {
     id: "publish",

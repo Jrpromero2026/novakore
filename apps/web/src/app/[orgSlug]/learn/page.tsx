@@ -1,7 +1,9 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { requireOrgContext } from "@/lib/org-context";
+import { can, requireOrgContext } from "@/lib/org-context";
 import { requireUser } from "@/lib/auth";
+import { tourTarget, TOUR_TARGETS } from "@/lib/onboarding/targets";
+import { OnboardingPageMarker } from "@/components/onboarding/page-marker";
 import { getMyEnrollments } from "@/lib/data/learning";
 import { getMyCredentials } from "@/lib/data/assessments";
 import { getTerminology } from "@/lib/terminology";
@@ -37,7 +39,18 @@ export default async function LearnerHomePage({
       : term("course").singular;
 
   return (
-    <div className="space-y-8">
+    <div
+      className="space-y-8"
+      {...tourTarget(TOUR_TARGETS.learnerPreviewSurface)}
+    >
+      {/* Only content authors/admins previewing the learner surface complete
+          the checklist step — a real learner's visit never counts. */}
+      {can(ctx, "content.view_draft") ? (
+        <OnboardingPageMarker
+          orgSlug={orgSlug}
+          event="onboarding.preview.opened"
+        />
+      ) : null}
       <header className="space-y-1">
         <p
           className="text-caption uppercase text-text-muted"

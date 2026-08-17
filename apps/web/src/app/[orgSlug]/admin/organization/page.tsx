@@ -8,6 +8,8 @@ import { relativeTime } from "@/lib/format";
 import { Panel, SectionHeader, StatusDot } from "@/components/ui/layout";
 import { ActivitySparkline } from "@/components/dashboard/viz";
 import { IconArrowRight } from "@/components/ui/icons";
+import { identityIsEmpty } from "@/lib/org-identity";
+import { tourState, tourTarget, TOUR_TARGETS } from "@/lib/onboarding/targets";
 import { IdentityForm } from "./identity-form";
 
 export const metadata: Metadata = { title: "Organization" };
@@ -41,7 +43,10 @@ export default async function OrganizationHubPage({
   const { identity } = hub;
 
   return (
-    <div className="space-y-8">
+    <div
+      className="space-y-8"
+      {...tourState({ identity: !identityIsEmpty(identity) })}
+    >
       {/* ---- Identity hero -------------------------------------------------- */}
       <Panel tone="hero" className="nk-fade-up rounded-xl p-6 sm:p-7">
         <p className="flex items-center gap-2 text-caption font-medium uppercase tracking-[var(--tracking-caps)] text-text-muted">
@@ -92,7 +97,7 @@ export default async function OrganizationHubPage({
           </ul>
         ) : null}
         {canManage ? (
-          <div className="mt-5">
+          <div className="mt-5" {...tourTarget(TOUR_TARGETS.orgIdentityPanel)}>
             <IdentityForm orgSlug={orgSlug} identity={identity} />
           </div>
         ) : null}

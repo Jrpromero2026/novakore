@@ -2,8 +2,12 @@ import Link from "next/link";
 import { requireOrgContext } from "@/lib/org-context";
 import { getUser } from "@/lib/auth";
 import { getOrgBrandContext } from "@/lib/data/branding";
+import { getTerminology } from "@/lib/terminology";
 import { supabaseServer } from "@/lib/supabase/server";
 import { signOutAction } from "@/lib/actions/auth";
+import { recordOnboardingEventAction } from "@/lib/actions/onboarding";
+import { WalkthroughProvider } from "@/components/onboarding/walkthrough";
+import { HelpMenu } from "@/components/onboarding/help-menu";
 import { OrgThemeStyle } from "@/components/org-theme";
 import { ThemeToggle } from "@/components/theme-toggle";
 import { UserMenu } from "@/components/ui/user-menu";
@@ -25,9 +29,10 @@ export default async function OrgAdminLayout({
 }) {
   const { orgSlug } = await params;
   const ctx = await requireOrgContext(orgSlug);
-  const [brand, user] = await Promise.all([
+  const [brand, user, terminology] = await Promise.all([
     getOrgBrandContext(ctx.organization.id),
     getUser(),
+    getTerminology(ctx.organization.id),
   ]);
   const displayName = brand.displayName ?? ctx.organization.name;
 
@@ -174,62 +179,71 @@ export default async function OrgAdminLayout({
 
   return (
     <ShellProvider>
-      <div className="flex min-h-dvh flex-col">
-        <OrgThemeStyle theme={brand.theme} />
-        <header
-          className="sticky top-0 border-b border-border-subtle bg-background/85 backdrop-blur-md"
-          style={{ zIndex: "var(--z-nav)" }}
-        >
-          <div
-            className="flex w-full items-center justify-between gap-3 px-4 sm:px-5"
-            style={{ height: "var(--layout-header)" }}
+      <WalkthroughProvider
+        orgId={ctx.organization.id}
+        orgSlug={orgSlug}
+        permissions={permissions}
+        terminologyOverrides={terminology.overrides}
+        recordEvent={recordOnboardingEventAction}
+      >
+        <div className="flex min-h-dvh flex-col">
+          <OrgThemeStyle theme={brand.theme} />
+          <header
+            className="sticky top-0 border-b border-border-subtle bg-background/85 backdrop-blur-md"
+            style={{ zIndex: "var(--z-nav)" }}
           >
-            <div className="flex min-w-0 items-center gap-1.5">
-              <MobileNavButton />
-              <Link
-                href={`/${orgSlug}/admin`}
-                className="truncate text-title font-semibold text-text-primary"
-              >
-                {displayName}
-              </Link>
-              <span
-                className="mt-px hidden text-caption uppercase text-text-muted lg:inline"
-                style={{ letterSpacing: "var(--tracking-caps)" }}
-              >
-                · Workspace
-              </span>
-            </div>
-            <div className="flex shrink-0 items-center gap-2">
-              <CommandPaletteTrigger />
-              <PinButton orgSlug={orgSlug} />
-              <ThemeToggle />
-              <UserMenu
-                email={user?.email ?? null}
-                signOutAction={signOutAction}
-              />
-            </div>
-          </div>
-        </header>
-
-        <div className="flex w-full flex-1">
-          <AdminSidebar
-            sections={sections}
-            orgName={displayName}
-            orgSlug={orgSlug}
-          />
-          <main className="min-w-0 flex-1">
             <div
-              className="nk-fade-up mx-auto w-full px-4 py-8 sm:px-8"
-              style={{ maxWidth: "var(--layout-page-max)" }}
+              className="flex w-full items-center justify-between gap-3 px-4 sm:px-5"
+              style={{ height: "var(--layout-header)" }}
             >
-              {children}
+              <div className="flex min-w-0 items-center gap-1.5">
+                <MobileNavButton />
+                <Link
+                  href={`/${orgSlug}/admin`}
+                  className="truncate text-title font-semibold text-text-primary"
+                >
+                  {displayName}
+                </Link>
+                <span
+                  className="mt-px hidden text-caption uppercase text-text-muted lg:inline"
+                  style={{ letterSpacing: "var(--tracking-caps)" }}
+                >
+                  · Workspace
+                </span>
+              </div>
+              <div className="flex shrink-0 items-center gap-2">
+                <CommandPaletteTrigger />
+                <PinButton orgSlug={orgSlug} />
+                <HelpMenu orgSlug={orgSlug} />
+                <ThemeToggle />
+                <UserMenu
+                  email={user?.email ?? null}
+                  signOutAction={signOutAction}
+                />
+              </div>
             </div>
-          </main>
-        </div>
+          </header>
 
-        <CommandPalette entries={paletteEntries} />
-        <FeedbackWidget orgSlug={orgSlug} roleHint="admin" />
-      </div>
+          <div className="flex w-full flex-1">
+            <AdminSidebar
+              sections={sections}
+              orgName={displayName}
+              orgSlug={orgSlug}
+            />
+            <main className="min-w-0 flex-1">
+              <div
+                className="nk-fade-up mx-auto w-full px-4 py-8 sm:px-8"
+                style={{ maxWidth: "var(--layout-page-max)" }}
+              >
+                {children}
+              </div>
+            </main>
+          </div>
+
+          <CommandPalette entries={paletteEntries} />
+          <FeedbackWidget orgSlug={orgSlug} roleHint="admin" />
+        </div>
+      </WalkthroughProvider>
     </ShellProvider>
   );
 }

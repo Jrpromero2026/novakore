@@ -21,6 +21,7 @@ export const TOUR_TARGETS = {
   navEnrollments: "admin-sidebar-enrollments",
   navBranding: "admin-sidebar-branding",
   navSettings: "admin-sidebar-settings",
+  navOrganization: "admin-sidebar-organization",
   navAnalytics: "admin-sidebar-analytics",
   navMyLearning: "admin-sidebar-my-learning",
 

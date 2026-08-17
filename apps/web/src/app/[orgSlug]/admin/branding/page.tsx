@@ -8,6 +8,7 @@ import {
 import { can, requireOrgContext, requirePermission } from "@/lib/org-context";
 import { getActiveBrandAssets, getBrandStudioRow } from "@/lib/data/branding";
 import { PageHeader } from "@/components/ui/layout";
+import { tourState, tourTarget, TOUR_TARGETS } from "@/lib/onboarding/targets";
 import { BrandStudio } from "./brand-studio";
 import type { AssetSlotView } from "./asset-slots";
 
@@ -100,22 +101,28 @@ export default async function BrandingPage({
     };
   });
 
+  const brandingConfigured = Boolean(
+    row && (row.themeDraft || row.themePublished || row.displayName),
+  );
+
   return (
-    <div className="space-y-8">
+    <div className="space-y-8" {...tourState({ branding: brandingConfigured })}>
       <PageHeader
         eyebrow="Organization"
         title="Branding"
         description="Configure this organization's identity. Drafts are private until published; platform status and security colors always stay readable."
       />
 
-      <BrandStudio
-        orgSlug={orgSlug}
-        initialDraft={initialDraft}
-        publishedAt={row?.publishedAt ?? null}
-        draftUpdatedAt={row?.draftUpdatedAt ?? null}
-        canPublish={can(ctx, "org.branding.publish")}
-        assets={slots}
-      />
+      <div {...tourTarget(TOUR_TARGETS.brandingStudio)}>
+        <BrandStudio
+          orgSlug={orgSlug}
+          initialDraft={initialDraft}
+          publishedAt={row?.publishedAt ?? null}
+          draftUpdatedAt={row?.draftUpdatedAt ?? null}
+          canPublish={can(ctx, "org.branding.publish")}
+          assets={slots}
+        />
+      </div>
     </div>
   );
 }

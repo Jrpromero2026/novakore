@@ -20,6 +20,7 @@ import {
   Input,
   Select,
 } from "@/components/ui/primitives";
+import { tourTarget, TOUR_TARGETS } from "@/lib/onboarding/targets";
 
 export function CreateSystemPanel({
   orgSlug,
@@ -42,6 +43,7 @@ export function CreateSystemPanel({
             variant="secondary"
             onClick={() => setOpen((v) => !v)}
             aria-expanded={open}
+            {...tourTarget(TOUR_TARGETS.learningCreateSystem)}
           >
             {open ? "Close" : `Create ${termSingular.toLowerCase()}`}
           </Button>
@@ -356,7 +358,10 @@ export function CreatePathPanel({
     idle,
   );
   return (
-    <div className="rounded-md border border-dashed border-border-strong px-4 py-3">
+    <div
+      className="rounded-md border border-dashed border-border-strong px-4 py-3"
+      {...tourTarget(TOUR_TARGETS.learningCreatePath)}
+    >
       <Button
         variant="ghost"
         onClick={() => setOpen((v) => !v)}
@@ -375,6 +380,7 @@ export function CreatePathPanel({
               id={`path-title-${learningSystemId}`}
               name="title"
               required
+              {...tourTarget(TOUR_TARGETS.pathTitleField)}
             />
           </Field>
           <Field
@@ -393,7 +399,11 @@ export function CreatePathPanel({
             <ActionBanner state={state} />
           </div>
           <div>
-            <Button type="submit" disabled={pending}>
+            <Button
+              type="submit"
+              disabled={pending}
+              {...tourTarget(TOUR_TARGETS.pathCreateButton)}
+            >
               {pending ? "Creating…" : "Create"}
             </Button>
           </div>

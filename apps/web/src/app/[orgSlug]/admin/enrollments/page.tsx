@@ -3,6 +3,8 @@ import { requireOrgContext, requirePermission, can } from "@/lib/org-context";
 import { getTerminology } from "@/lib/terminology";
 import { supabaseServer } from "@/lib/supabase/server";
 import { Card, CardHeader, EmptyState } from "@/components/ui/primitives";
+import { tourTarget, TOUR_TARGETS } from "@/lib/onboarding/targets";
+import { OnboardingPageMarker } from "@/components/onboarding/page-marker";
 import { CreateEnrollmentPanel, EnrollmentRow } from "./enrollments-ui";
 
 export const metadata: Metadata = { title: "Enrollments" };
@@ -76,7 +78,15 @@ export default async function EnrollmentsPage({
   );
 
   return (
-    <div className="space-y-6">
+    <div
+      className="space-y-6"
+      {...tourTarget(TOUR_TARGETS.enrollmentsOverview)}
+    >
+      {/* Real visit = the "review learner progress" step is genuinely done. */}
+      <OnboardingPageMarker
+        orgSlug={orgSlug}
+        event="onboarding.progress.reviewed"
+      />
       <header className="space-y-1">
         <h1 className="text-h1 text-text-primary">Enrollments</h1>
         <p className="text-body-sm text-text-secondary">

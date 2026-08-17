@@ -6,6 +6,7 @@ import { getTerminology } from "@/lib/terminology";
 import { supabaseServer } from "@/lib/supabase/server";
 import { Badge, Card, CardHeader } from "@/components/ui/primitives";
 import { Alert } from "@/components/ui/feedback";
+import { tourState } from "@/lib/onboarding/targets";
 import { CourseStructurePanel, PublishCoursePanel } from "./course-builder";
 
 export const metadata: Metadata = { title: "Course builder" };
@@ -75,7 +76,14 @@ export default async function CourseBuilderPage({
   );
 
   return (
-    <div className="space-y-6">
+    <div
+      className="space-y-6"
+      {...tourState({
+        modules: (modules ?? []).length,
+        lessons: lessonViews.length,
+        published: (versions ?? []).length,
+      })}
+    >
       <header className="flex flex-wrap items-start justify-between gap-3">
         <div className="space-y-1">
           <p

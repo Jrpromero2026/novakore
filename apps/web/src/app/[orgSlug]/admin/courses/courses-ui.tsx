@@ -11,6 +11,7 @@ import {
   Field,
   Input,
 } from "@/components/ui/primitives";
+import { tourTarget, TOUR_TARGETS } from "@/lib/onboarding/targets";
 
 export function CreateCoursePanel({
   orgSlug,
@@ -33,6 +34,7 @@ export function CreateCoursePanel({
             variant="secondary"
             onClick={() => setOpen((v) => !v)}
             aria-expanded={open}
+            {...tourTarget(TOUR_TARGETS.coursesCreateButton)}
           >
             {open ? "Close" : `Create ${termSingular.toLowerCase()}`}
           </Button>
@@ -45,7 +47,12 @@ export function CreateCoursePanel({
             htmlFor="course-title"
             error={state.errors?.title}
           >
-            <Input id="course-title" name="title" required />
+            <Input
+              id="course-title"
+              name="title"
+              required
+              {...tourTarget(TOUR_TARGETS.courseTitleField)}
+            />
           </Field>
           <Field label="Slug" htmlFor="course-slug" error={state.errors?.slug}>
             <Input
@@ -59,7 +66,11 @@ export function CreateCoursePanel({
             <ActionBanner state={{ ...state, warnings: undefined }} />
           </div>
           <div>
-            <Button type="submit" disabled={pending}>
+            <Button
+              type="submit"
+              disabled={pending}
+              {...tourTarget(TOUR_TARGETS.courseCreateSubmit)}
+            >
               {pending ? "Creating…" : "Create draft"}
             </Button>
           </div>

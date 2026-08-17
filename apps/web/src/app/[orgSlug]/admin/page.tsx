@@ -27,6 +27,9 @@ import {
   IconStudio,
 } from "@/components/ui/icons";
 import { Greeting } from "@/components/dashboard/greeting";
+import { OnboardingChecklist } from "@/components/onboarding/checklist";
+import { getOnboardingSnapshot } from "@/lib/data/onboarding";
+import { resolveChecklist } from "@/lib/onboarding/steps";
 import {
   CreateActions,
   MetricCard,
@@ -74,6 +77,7 @@ export default async function OrgOverviewPage({
     ops,
     pulse,
     composition,
+    onboarding,
   ] = await Promise.all([
     supabase
       .from("academies")
@@ -98,7 +102,20 @@ export default async function OrgOverviewPage({
     canStudio
       ? getContentComposition(ctx.organization.id)
       : Promise.resolve(null as ContentComposition | null),
+    getOnboardingSnapshot(ctx.organization.id, ctx.membershipId),
   ]);
+
+  // ---- Academy Launch — completion derived from the real data above -------
+  const checklist = resolveChecklist(
+    onboarding.signals,
+    ctx.orgPermissions,
+    term,
+    base,
+  );
+  const launchMode =
+    checklist.totalCount > 0 &&
+    !checklist.allComplete &&
+    onboarding.lifecycle.dismissedAt === null;
 
   const members = membersResult.data;
   const activeMembers = members
@@ -483,8 +500,18 @@ export default async function OrgOverviewPage({
         </div>
       </Panel>
 
-      {/* ---- Executive metrics ------------------------------------------- */}
-      {metrics.length > 0 ? (
+      {/* ---- Academy Launch — leads until the org is fully set up -------- */}
+      <OnboardingChecklist
+        orgSlug={orgSlug}
+        view={checklist}
+        dismissed={onboarding.lifecycle.dismissedAt !== null}
+        celebrated={onboarding.lifecycle.completedCelebratedAt !== null}
+        canManage={can(ctx, "org.manage")}
+      />
+
+      {/* ---- Executive metrics — deferred while launch is in progress so a
+              brand-new organization is not greeted by a wall of zeros ------ */}
+      {metrics.length > 0 && !launchMode ? (
         <section aria-label="Executive metrics">
           <div className="grid grid-cols-2 gap-2.5 lg:grid-cols-4">
             {metrics.map((m, i) => (

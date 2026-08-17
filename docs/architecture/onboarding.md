@@ -103,6 +103,25 @@ Each step: `id`, `route(base)` , `target` (TourTargetId),
 the real action happened), `openMobileNav?`. The engine renders purely from
 this data; adding a walkthrough is a registry entry + (if new) target ids.
 
+### Checklist completion rules
+
+| Step        | Rule (all org-scoped, RLS-read)                                            | Kind    |
+| ----------- | -------------------------------------------------------------------------- | ------- |
+| org-details | `organization_settings.settings.identity` has any content                  | derived |
+| branding    | `organization_branding` has a draft/published theme or display name        | derived |
+| journey     | ≥1 non-archived `learning_paths` row                                       | derived |
+| program     | ≥1 non-archived `courses` row                                              | derived |
+| phase       | ≥1 non-archived `modules` row                                              | derived |
+| lesson      | ≥1 non-archived `lessons` row AND ≥1 `content_blocks` row                  | derived |
+| publish     | ≥1 course with a published version OR ≥1 published lesson                  | derived |
+| preview     | ≥1 `onboarding.preview.opened` event (recorded only for draft-viewers)     | event   |
+| invite      | ≥1 other membership with status invited/active                             | derived |
+| progress    | ≥1 `onboarding.progress.reviewed` event (enrollments or analytics visited) | event   |
+
+Steps are permission-filtered (`needsAny`, any-of); progress percentages are
+computed over the member's visible subset. Source of truth:
+`lib/onboarding/steps.ts` (rules) + `lib/data/onboarding.ts` (signals).
+
 ### State model — derived vs explicit, org-scoped
 
 - **Derived completion** (source of truth = real org data, computed

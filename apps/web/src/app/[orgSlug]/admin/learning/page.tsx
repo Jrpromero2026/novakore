@@ -4,6 +4,9 @@ import { getTerminology } from "@/lib/terminology";
 import { supabaseServer } from "@/lib/supabase/server";
 import { Card, CardHeader, EmptyState } from "@/components/ui/primitives";
 import { PageHeader } from "@/components/ui/layout";
+import { tourState } from "@/lib/onboarding/targets";
+import { ContextHelp } from "@/components/onboarding/context-help";
+import { StartWalkthroughButton } from "@/components/onboarding/walkthrough";
 import { CreatePathPanel, CreateSystemPanel, PathCard } from "./learning-ui";
 
 export const metadata: Metadata = { title: "Learning" };
@@ -56,12 +59,24 @@ export default async function LearningPage({
   ]);
 
   return (
-    <div className="space-y-8">
+    <div className="space-y-8" {...tourState({ paths: (paths ?? []).length })}>
       <PageHeader
         eyebrow="Learning"
         title={`${term("learning_system").plural} & ${term("learning_path").plural}`}
         description={`${term("learning_path").plural} sequence ${term("course").plural.toLowerCase()} with governed prerequisites. Cycles are rejected by the platform.`}
       />
+
+      <ContextHelp
+        summary={`What is a ${term("learning_path").singular}?`}
+        className="max-w-2xl"
+      >
+        A {term("learning_path").singular} is the complete learning experience —
+        for example Coach Certification, Employee Onboarding, or Leadership
+        Development. It sequences {term("course").plural.toLowerCase()} and can
+        require some before others. A {term("learning_system").singular} is the
+        container that groups related{" "}
+        {term("learning_path").plural.toLowerCase()}.
+      </ContextHelp>
 
       <CreateSystemPanel
         orgSlug={orgSlug}
@@ -107,8 +122,16 @@ export default async function LearningPage({
       {(systems ?? []).length === 0 ? (
         <Card>
           <EmptyState
-            title={`No ${term("learning_system").plural.toLowerCase()} yet`}
-            description={`Create the first ${term("learning_system").singular.toLowerCase()} to organize ${term("learning_path").plural.toLowerCase()}.`}
+            title={`No ${term("learning_path").plural.toLowerCase()} yet`}
+            description={`${term("learning_path").plural} are complete learning experiences, such as Coach Certification or Leadership Development. Create a ${term("learning_system").singular.toLowerCase()} above to hold them, then add your first ${term("learning_path").singular.toLowerCase()}.`}
+            action={
+              <StartWalkthroughButton
+                walkthroughId="create-journey"
+                className="nk-press rounded-md bg-accent px-3.5 py-2 text-sm font-medium text-accent-contrast hover:bg-accent-hover"
+              >
+                Show me
+              </StartWalkthroughButton>
+            }
           />
         </Card>
       ) : null}

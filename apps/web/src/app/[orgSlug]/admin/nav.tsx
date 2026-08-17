@@ -5,12 +5,15 @@ import { usePathname } from "next/navigation";
 import {
   createContext,
   useContext,
+  useEffect,
   useState,
   useSyncExternalStore,
   type ComponentType,
   type ReactNode,
 } from "react";
 import { cx } from "@/components/ui/primitives";
+import { tourTarget, type TourTargetId } from "@/lib/onboarding/targets";
+import { TOUR_OPEN_NAV_EVENT } from "@/components/onboarding/walkthrough";
 import {
   IconAcademy,
   IconAi,
@@ -172,6 +175,14 @@ export function ShellProvider({ children }: { children: ReactNode }) {
   const mobileOpen = openedAt === pathname;
   const setMobileOpen = (open: boolean) => setOpenedAt(open ? pathname : null);
 
+  // The walkthrough engine opens the drawer when a highlighted target lives
+  // inside it (mobile sidebar steps).
+  useEffect(() => {
+    const onOpen = () => setOpenedAt(window.location.pathname);
+    window.addEventListener(TOUR_OPEN_NAV_EVENT, onOpen);
+    return () => window.removeEventListener(TOUR_OPEN_NAV_EVENT, onOpen);
+  }, []);
+
   return (
     <ShellContext.Provider value={{ mobileOpen, setMobileOpen }}>
       {children}
@@ -201,18 +212,21 @@ function NavLink({
   icon,
   active,
   collapsed,
+  tourId,
 }: {
   href: string;
   label: string;
   icon: string;
   active: boolean;
   collapsed: boolean;
+  tourId?: TourTargetId;
 }) {
   const IconComponent = NAV_ICONS[icon] ?? IconOverview;
   return (
     <Link
       href={href}
       aria-current={active ? "page" : undefined}
+      {...(tourId ? tourTarget(tourId) : {})}
       className={cx(
         "group relative flex items-center gap-2.5 rounded-md py-1.5 text-body-sm transition-colors duration-[var(--motion-fast)]",
         collapsed ? "justify-center px-2" : "px-2.5",
@@ -300,6 +314,7 @@ function NavSections({
                   icon={item.icon}
                   active={item.href === activeHref}
                   collapsed={collapsed}
+                  tourId={item.tourId}
                 />
               </li>
             ))}
