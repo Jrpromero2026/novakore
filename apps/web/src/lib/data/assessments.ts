@@ -452,34 +452,45 @@ export interface CredentialAdminData {
     status: string;
   }[];
   issued: (CredentialView & { certificateTitle: string })[];
+  /** Total issued credentials in the organization, for honest pagination. */
+  issuedTotal: number;
 }
 
 export async function getCredentialAdminData(
   organizationId: string,
+  /** 0-based inclusive slice of the issued-credential history. */
+  issuedRange?: { from: number; to: number },
 ): Promise<CredentialAdminData> {
   const supabase = await supabaseServer();
-  const [{ data: templates }, { data: certificates }, { data: issued }] =
-    await Promise.all([
-      supabase
-        .from("certificate_templates")
-        .select("id, name, status")
-        .eq("organization_id", organizationId)
-        .neq("status", "archived")
-        .order("created_at"),
-      supabase
-        .from("certificates")
-        .select("id, title, source_type, status")
-        .eq("organization_id", organizationId)
-        .order("created_at"),
-      supabase
-        .from("issued_credentials")
-        .select(
-          "id, title, status, issued_at, expires_at, verification_code, recipient_name, revocation_reason, certificates!issued_credentials_certificate_id_organization_id_fkey(title)",
-        )
-        .eq("organization_id", organizationId)
-        .order("issued_at", { ascending: false })
-        .limit(100),
-    ]);
+  // Issued credentials accumulate forever (one per learner per completion),
+  // so this list is paginated with an exact count instead of a silent cap.
+  const range = issuedRange ?? { from: 0, to: 99 };
+  const [
+    { data: templates },
+    { data: certificates },
+    { data: issued, count: issuedCount },
+  ] = await Promise.all([
+    supabase
+      .from("certificate_templates")
+      .select("id, name, status")
+      .eq("organization_id", organizationId)
+      .neq("status", "archived")
+      .order("created_at"),
+    supabase
+      .from("certificates")
+      .select("id, title, source_type, status")
+      .eq("organization_id", organizationId)
+      .order("created_at"),
+    supabase
+      .from("issued_credentials")
+      .select(
+        "id, title, status, issued_at, expires_at, verification_code, recipient_name, revocation_reason, certificates!issued_credentials_certificate_id_organization_id_fkey(title)",
+        { count: "exact" },
+      )
+      .eq("organization_id", organizationId)
+      .order("issued_at", { ascending: false })
+      .range(range.from, range.to),
+  ]);
   return {
     templates: templates ?? [],
     certificates: (certificates ?? []).map((c) => ({
@@ -500,5 +511,6 @@ export async function getCredentialAdminData(
       certificateTitle:
         (r.certificates as unknown as { title: string } | null)?.title ?? "",
     })),
+    issuedTotal: issuedCount ?? 0,
   };
 }

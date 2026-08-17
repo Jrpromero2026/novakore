@@ -246,35 +246,45 @@ export interface LibraryData {
     usageCount: number;
   }[];
   lessons: { id: string; title: string; courseTitle: string }[];
+  /** Total reusable blocks in the organization, for honest pagination. */
+  blocksTotal: number;
 }
 
-export async function getLibrary(organizationId: string): Promise<LibraryData> {
+export async function getLibrary(
+  organizationId: string,
+  /** 0-based inclusive slice of the block library. */
+  blockRange?: { from: number; to: number },
+): Promise<LibraryData> {
   const supabase = await supabaseServer();
-  const [{ data: blocks }, { data: refs }, { data: lessons }] =
-    await Promise.all([
-      supabase
-        .from("reusable_blocks")
-        .select(
-          "id, title, description, block_type, schema_version, data, tags, version, status",
-        )
-        .eq("organization_id", organizationId)
-        .order("created_at", { ascending: false })
-        .limit(200),
-      supabase
-        .from("content_blocks")
-        .select("source_reusable_block_id")
-        .eq("organization_id", organizationId)
-        .not("source_reusable_block_id", "is", null),
-      supabase
-        .from("lessons")
-        .select(
-          "id, title, courses!lessons_course_id_organization_id_fkey(title)",
-        )
-        .eq("organization_id", organizationId)
-        .is("archived_at", null)
-        .order("title")
-        .limit(200),
-    ]);
+  const [
+    { data: blocks, count: blocksCount },
+    { data: refs },
+    { data: lessons },
+  ] = await Promise.all([
+    supabase
+      .from("reusable_blocks")
+      .select(
+        "id, title, description, block_type, schema_version, data, tags, version, status",
+        { count: "exact" },
+      )
+      .eq("organization_id", organizationId)
+      .order("created_at", { ascending: false })
+      .range(blockRange?.from ?? 0, blockRange?.to ?? 199),
+    supabase
+      .from("content_blocks")
+      .select("source_reusable_block_id")
+      .eq("organization_id", organizationId)
+      .not("source_reusable_block_id", "is", null),
+    supabase
+      .from("lessons")
+      .select(
+        "id, title, courses!lessons_course_id_organization_id_fkey(title)",
+      )
+      .eq("organization_id", organizationId)
+      .is("archived_at", null)
+      .order("title")
+      .limit(200),
+  ]);
   const usage = new Map<string, number>();
   for (const ref of refs ?? []) {
     const key = ref.source_reusable_block_id!;
@@ -299,6 +309,7 @@ export async function getLibrary(organizationId: string): Promise<LibraryData> {
       courseTitle:
         (l.courses as unknown as { title: string } | null)?.title ?? "",
     })),
+    blocksTotal: blocksCount ?? 0,
   };
 }
 
@@ -699,19 +710,25 @@ export interface StudioReviewData {
     requestedBy: string;
     comments: { id: string; body: string; status: string; createdAt: string }[];
   }[];
+  /** Total review requests in the organization, for honest pagination. */
+  total: number;
 }
 
 export async function getStudioReviews(
   organizationId: string,
+  /** 0-based inclusive slice of the review history. */
+  range?: { from: number; to: number },
 ): Promise<StudioReviewData> {
   const supabase = await supabaseServer();
-  const { data: requests } = await supabase
+  const { data: requests, count } = await supabase
     .from("review_requests")
-    .select("id, subject_type, subject_id, status, note, requested_by")
+    .select("id, subject_type, subject_id, status, note, requested_by", {
+      count: "exact",
+    })
     .eq("organization_id", organizationId)
-    .order("created_at", { ascending: false })
-    .limit(30);
-  if (!requests || requests.length === 0) return { requests: [] };
+    .range(range?.from ?? 0, range?.to ?? 29);
+  const total = count ?? 0;
+  if (!requests || requests.length === 0) return { requests: [], total };
 
   const lessonIds = requests
     .filter((r) => r.subject_type === "lesson")
@@ -773,5 +790,6 @@ export async function getStudioReviews(
           createdAt: c.created_at,
         })),
     })),
+    total,
   };
 }

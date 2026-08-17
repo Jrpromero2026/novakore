@@ -143,6 +143,16 @@ deployment, and two prior audits — re-examined without deference.
   2k–5k-row scans aggregated in JavaScript feed Ops, Nova, digest, and now
   the Hub. Remediation is well-planned (pure engines define contracts) but
   unstarted. Hard ceiling before any tenant with real traffic.
+- **[P1] Zero pagination anywhere → PARTIALLY CLOSED (2026-08-01).** Tested
+  offset-pagination primitives (`lib/pagination.ts`, 11 unit tests, plus a
+  server-safe `Pagination` control) now back issued credentials, the Studio
+  library, and the review queue: every row is addressable and each surface
+  states its honest total. **Deliberately not applied** to courses, members,
+  enrollments, learning paths and ops feedback — those files had uncommitted
+  work from a concurrent session, and editing them would have forced that
+  work into this commit (the mistake made once in Phase 6). The recipe is
+  written down in SCALABILITY_PLAN.md so the remaining surfaces are
+  mechanical. Original finding follows for the record:
 - **[P1] Zero pagination anywhere.** Every list truncates silently at its
   `limit()` — a correctness bug wearing a performance costume (an operator
   cannot see item 201).

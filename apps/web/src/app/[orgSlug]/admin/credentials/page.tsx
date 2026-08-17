@@ -2,21 +2,33 @@ import type { Metadata } from "next";
 import { can, requireOrgContext, requirePermission } from "@/lib/org-context";
 import { getTerminology } from "@/lib/terminology";
 import { getCredentialAdminData } from "@/lib/data/assessments";
+import { pageMeta, parsePage, rangeFor } from "@/lib/pagination";
 import { supabaseServer } from "@/lib/supabase/server";
+import { Pagination } from "@/components/ui/pagination";
 import { CredentialsAdmin } from "./credentials-ui";
 
 export const metadata: Metadata = { title: "Credentials" };
 
 export default async function CredentialsPage({
   params,
+  searchParams,
 }: {
   params: Promise<{ orgSlug: string }>;
+  searchParams: Promise<Record<string, string | string[] | undefined>>;
 }) {
   const { orgSlug } = await params;
+  const sp = await searchParams;
   const ctx = await requireOrgContext(orgSlug);
   requirePermission(ctx, "certificates.manage");
   const { term } = await getTerminology(ctx.organization.id);
-  const data = await getCredentialAdminData(ctx.organization.id);
+
+  // Issued credentials are unbounded history — page them.
+  const issuedPage = parsePage(sp.issued);
+  const data = await getCredentialAdminData(
+    ctx.organization.id,
+    rangeFor(issuedPage),
+  );
+  const issuedMeta = pageMeta(issuedPage, data.issuedTotal);
 
   // source picker: published courses, active paths, active assignments
   const supabase = await supabaseServer();
@@ -76,6 +88,14 @@ export default async function CredentialsPage({
             }`,
           })),
         ]}
+      />
+
+      <Pagination
+        meta={issuedMeta}
+        basePath={`/${orgSlug}/admin/credentials`}
+        searchParams={sp}
+        param="issued"
+        itemLabel={`issued ${term("certificate").plural.toLowerCase()}`}
       />
     </div>
   );
