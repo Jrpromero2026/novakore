@@ -169,25 +169,31 @@ export async function getFeedback(
     severity?: string;
     q?: string;
   },
+  /** 0-based inclusive slice of the FILTERED set. */
+  range?: { from: number; to: number },
+  /** Receives the total matching the filters (not the whole table). */
+  out?: { total: number },
 ): Promise<FeedbackRow[]> {
   const supabase = await supabaseServer();
   let query = supabase
     .from("feedback")
     .select(
       "id, category, severity, message, context, status, notes, resolution, assignee_membership_id, membership_id, created_at",
+      { count: "exact" },
     )
     .eq("organization_id", organizationId)
     .order("created_at", { ascending: false })
-    .limit(200);
+    .range(range?.from ?? 0, range?.to ?? 199);
   if (filters.status) query = query.eq("status", filters.status);
   if (filters.category) query = query.eq("category", filters.category);
   if (filters.severity) query = query.eq("severity", filters.severity);
   if (filters.q) query = query.ilike("message", `%${filters.q}%`);
 
-  const [{ data }, emails] = await Promise.all([
+  const [{ data, count }, emails] = await Promise.all([
     query,
     memberEmailMap(organizationId),
   ]);
+  if (out) out.total = count ?? 0;
   return (data ?? []).map((row) => ({
     id: row.id,
     category: row.category,

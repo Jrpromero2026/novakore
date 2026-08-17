@@ -9,20 +9,32 @@ import {
   Panel,
   SectionHeader,
 } from "@/components/ui/layout";
+import { pageMeta, parsePage, rangeFor } from "@/lib/pagination";
+import { Pagination } from "@/components/ui/pagination";
 import { CreateAssessmentPanel } from "./assessments-ui";
 
 export const metadata: Metadata = { title: "Assessments" };
 
 export default async function AssessmentsPage({
   params,
+  searchParams,
 }: {
   params: Promise<{ orgSlug: string }>;
+  searchParams: Promise<Record<string, string | string[] | undefined>>;
 }) {
   const { orgSlug } = await params;
+  const sp = await searchParams;
   const ctx = await requireOrgContext(orgSlug);
   requirePermission(ctx, "content.view_draft");
   const { term } = await getTerminology(ctx.organization.id);
-  const assessments = await listAssessments(ctx.organization.id);
+  const page = parsePage(sp.page);
+  const totals = { total: 0 };
+  const assessments = await listAssessments(
+    ctx.organization.id,
+    rangeFor(page),
+    totals,
+  );
+  const meta = pageMeta(page, totals.total);
 
   return (
     <div className="space-y-8">
@@ -40,7 +52,7 @@ export default async function AssessmentsPage({
       <section>
         <SectionHeader
           title={`All ${term("assessment").plural.toLowerCase()}`}
-          count={assessments.length}
+          count={totals.total}
         />
         <Panel tone="outlined" className="mt-2.5">
           {assessments.length === 0 ? (
@@ -70,6 +82,12 @@ export default async function AssessmentsPage({
               ))}
             </ul>
           )}
+          <Pagination
+            meta={meta}
+            basePath={`/${orgSlug}/admin/assessments`}
+            searchParams={sp}
+            itemLabel={term("assessment").plural.toLowerCase()}
+          />
         </Panel>
       </section>
     </div>

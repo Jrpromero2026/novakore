@@ -143,16 +143,29 @@ deployment, and two prior audits — re-examined without deference.
   2k–5k-row scans aggregated in JavaScript feed Ops, Nova, digest, and now
   the Hub. Remediation is well-planned (pure engines define contracts) but
   unstarted. Hard ceiling before any tenant with real traffic.
-- **[P1] Zero pagination anywhere → PARTIALLY CLOSED (2026-08-01).** Tested
+- **[P1] Zero pagination anywhere → CLOSED (2026-08-17).** Tested
   offset-pagination primitives (`lib/pagination.ts`, 11 unit tests, plus a
-  server-safe `Pagination` control) now back issued credentials, the Studio
-  library, and the review queue: every row is addressable and each surface
-  states its honest total. **Deliberately not applied** to courses, members,
-  enrollments, learning paths and ops feedback — those files had uncommitted
-  work from a concurrent session, and editing them would have forced that
-  work into this commit (the mistake made once in Phase 6). The recipe is
-  written down in SCALABILITY_PLAN.md so the remaining surfaces are
-  mechanical. Original finding follows for the record:
+  server-safe `Pagination` control) now back all eight unbounded collections:
+  issued credentials, Studio library, review queue, courses, members,
+  enrollments, assessments, and ops feedback. Every row is addressable and
+  each surface states its honest total. Learning paths are the one documented
+  exception (no `limit()`, bounded cardinality, hierarchical rendering —
+  reasoning in SCALABILITY_PLAN.md).
+
+  Applying it surfaced a second-order bug worth recording: adding `.range()`
+  silently converts every stat derived from the fetched array into a
+  page-scoped number that still renders and is wrong. Two were caught and
+  fixed here (`courses` published-count and onboarding signal, `members`
+  other-member count); the failure mode is now written into the recipe.
+
+  Verified end to end rather than assumed: an E2E spec signs in, follows the
+  real link to page 2, and asserts the row set differs. That spec initially
+  _skipped_ — the pager appeared absent — which turned out to be a bad
+  `waitForURL` regex in the test racing the session, not a product defect.
+  A silent skip is a failing test wearing a passing costume; the guard now
+  asserts it reached `/admin/courses` before deciding anything.
+  Original finding follows for the record:
+
 - **[P1] Zero pagination anywhere.** Every list truncates silently at its
   `limit()` — a correctness bug wearing a performance costume (an operator
   cannot see item 201).

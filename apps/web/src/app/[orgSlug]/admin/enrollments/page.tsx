@@ -5,23 +5,30 @@ import { supabaseServer } from "@/lib/supabase/server";
 import { Card, CardHeader, EmptyState } from "@/components/ui/primitives";
 import { tourTarget, TOUR_TARGETS } from "@/lib/onboarding/targets";
 import { OnboardingPageMarker } from "@/components/onboarding/page-marker";
+import { pageMeta, parsePage, rangeFor } from "@/lib/pagination";
+import { Pagination } from "@/components/ui/pagination";
 import { CreateEnrollmentPanel, EnrollmentRow } from "./enrollments-ui";
 
 export const metadata: Metadata = { title: "Enrollments" };
 
 export default async function EnrollmentsPage({
   params,
+  searchParams,
 }: {
   params: Promise<{ orgSlug: string }>;
+  searchParams: Promise<Record<string, string | string[] | undefined>>;
 }) {
   const { orgSlug } = await params;
+  const sp = await searchParams;
   const ctx = await requireOrgContext(orgSlug);
   requirePermission(ctx, "enrollment.manage");
   const { term } = await getTerminology(ctx.organization.id);
 
   const supabase = await supabaseServer();
+  const page = parsePage(sp.page);
+  const range = rangeFor(page);
   const [
-    { data: enrollments },
+    { data: enrollments, count: enrollmentTotal },
     { data: emails },
     { data: memberships },
     { data: courses },
@@ -31,10 +38,11 @@ export default async function EnrollmentsPage({
       .from("enrollments")
       .select(
         "id, membership_id, target_type, course_id, learning_path_id, pinned_course_version_id, status, source, started_at, completed_at, created_at",
+        { count: "exact" },
       )
       .eq("organization_id", ctx.organization.id)
       .order("created_at", { ascending: false })
-      .limit(100),
+      .range(range.from, range.to),
     supabase.rpc("get_member_emails", {
       p_organization_id: ctx.organization.id,
     }),
@@ -148,6 +156,12 @@ export default async function EnrollmentsPage({
             description="Assign a member to a published course or an active path."
           />
         )}
+        <Pagination
+          meta={pageMeta(page, enrollmentTotal ?? 0)}
+          basePath={`/${orgSlug}/admin/enrollments`}
+          searchParams={sp}
+          itemLabel="enrollments"
+        />
       </Card>
     </div>
   );

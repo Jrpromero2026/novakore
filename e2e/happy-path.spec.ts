@@ -67,6 +67,53 @@ test.describe("NovaKore happy path", () => {
     expect(page.url()).toContain("/verify/");
   });
 
+  test("a multi-page collection actually pages, and page 2 differs", async ({
+    page,
+  }) => {
+    // alpha-learning carries enough courses to span pages; bfh-dev does not,
+    // so this is the tenant that can prove paging rather than assume it.
+    await page.goto("/sign-in");
+    await page
+      .getByRole("textbox", { name: /email/i })
+      .fill("alpha.owner@novakore.test");
+    await page.getByRole("textbox", { name: /password/i }).fill(PASSWORD!);
+    await page.getByRole("button", { name: /^sign in$/i }).click();
+    // Must reach a signed-in destination. A looser pattern silently matches
+    // the "//localhost:3000/" inside the URL's authority, returns instantly,
+    // and lets the next navigation race the session — which then bounces to
+    // /sign-in and makes this test skip while looking like it passed.
+    await page.waitForURL(/\/select-org|\/admin/, { timeout: 30_000 });
+
+    await page.goto("/alpha-learning/admin/courses");
+    await assertNoErrorPage(page);
+    expect(page.url(), "expected a signed-in session, not /sign-in").toContain(
+      "/admin/courses",
+    );
+
+    const pager = page.getByRole("navigation", { name: /pagination/i });
+    if ((await pager.count()) === 0) {
+      test.skip(true, "this tenant has a single page of courses");
+      return;
+    }
+
+    // Capture page 1, then follow the real link to page 2.
+    const firstPageRows = await page
+      .locator('a[href*="/admin/courses/"]')
+      .allInnerTexts();
+    await expect(pager).toContainText(/of \d+/);
+
+    await pager.getByRole("link", { name: /next/i }).click();
+    await page.waitForURL(/[?&]page=2/, { timeout: 20_000 });
+    await assertNoErrorPage(page);
+
+    const secondPageRows = await page
+      .locator('a[href*="/admin/courses/"]')
+      .allInnerTexts();
+    expect(secondPageRows.length).toBeGreaterThan(0);
+    // The whole point: a different slice, not the same rows again.
+    expect(secondPageRows).not.toEqual(firstPageRows);
+  });
+
   test("sign in → command center → studio → lesson → learner academy", async ({
     page,
   }) => {

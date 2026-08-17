@@ -19,16 +19,22 @@ export interface AssessmentSummary {
 
 export async function listAssessments(
   organizationId: string,
+  /** 0-based inclusive slice; the total is written to `out.total`. */
+  range?: { from: number; to: number },
+  out?: { total: number },
 ): Promise<AssessmentSummary[]> {
   const supabase = await supabaseServer();
-  const { data: rows } = await supabase
+  const { data: rows, count } = await supabase
     .from("assessments")
     .select(
       "id, title, assessment_type, status, current_published_version_id, assessment_versions!assessments_current_published_version_fk(version_number), assessment_items(count)",
+      { count: "exact" },
     )
     .eq("organization_id", organizationId)
     .neq("status", "archived")
-    .order("created_at");
+    .order("created_at")
+    .range(range?.from ?? 0, range?.to ?? 999);
+  if (out) out.total = count ?? 0;
   return (rows ?? []).map((row) => ({
     id: row.id,
     title: row.title,

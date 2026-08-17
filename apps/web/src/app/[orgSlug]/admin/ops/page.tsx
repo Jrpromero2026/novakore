@@ -5,6 +5,8 @@ import { getFeedback, getOpsMetrics, getTesterCohorts } from "@/lib/data/ops";
 import { TESTER_LABELS, testerLabelText } from "@/lib/feedback";
 import { Card, CardHeader, cx } from "@/components/ui/primitives";
 import { OnboardingPageMarker } from "@/components/onboarding/page-marker";
+import { pageMeta, parsePage, rangeFor } from "@/lib/pagination";
+import { Pagination } from "@/components/ui/pagination";
 import { FeedbackReview } from "./ops-review";
 
 export const metadata: Metadata = { title: "Operations" };
@@ -42,9 +44,18 @@ export default async function OperationsPage({
     q: one(sp.q),
   };
 
+  // Feedback is filtered AND paged; the total below reflects the filters,
+  // so the pager never promises rows the current filter cannot show.
+  const feedbackPage = parsePage(sp.page);
+  const feedbackPageTotals = { total: 0 };
   const [metrics, feedback, cohorts] = await Promise.all([
     getOpsMetrics(ctx.organization.id, cohort),
-    getFeedback(ctx.organization.id, filters),
+    getFeedback(
+      ctx.organization.id,
+      filters,
+      rangeFor(feedbackPage),
+      feedbackPageTotals,
+    ),
     getTesterCohorts(ctx.organization.id),
   ]);
 
@@ -186,12 +197,20 @@ export default async function OperationsPage({
         )}
       </Card>
 
-      <FeedbackReview
-        orgSlug={orgSlug}
-        rows={feedback}
-        filters={filters}
-        basePath={base}
-      />
+      <div>
+        <FeedbackReview
+          orgSlug={orgSlug}
+          rows={feedback}
+          filters={filters}
+          basePath={base}
+        />
+        <Pagination
+          meta={pageMeta(feedbackPage, feedbackPageTotals.total)}
+          basePath={base}
+          searchParams={sp}
+          itemLabel="feedback items"
+        />
+      </div>
     </div>
   );
 }

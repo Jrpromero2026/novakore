@@ -12,39 +12,58 @@ import {
 import { tourState, tourTarget, TOUR_TARGETS } from "@/lib/onboarding/targets";
 import { ContextHelp } from "@/components/onboarding/context-help";
 import { StartWalkthroughButton } from "@/components/onboarding/walkthrough";
+import { pageMeta, parsePage, rangeFor } from "@/lib/pagination";
+import { Pagination } from "@/components/ui/pagination";
 import { CreateCoursePanel } from "./courses-ui";
 
 export const metadata: Metadata = { title: "Courses" };
 
 export default async function CoursesPage({
   params,
+  searchParams,
 }: {
   params: Promise<{ orgSlug: string }>;
+  searchParams: Promise<Record<string, string | string[] | undefined>>;
 }) {
   const { orgSlug } = await params;
+  const sp = await searchParams;
   const ctx = await requireOrgContext(orgSlug);
   requirePermission(ctx, "content.view_draft");
   const { term } = await getTerminology(ctx.organization.id);
   const courseTerm = term("course");
 
   const supabase = await supabaseServer();
-  const { data: courses } = await supabase
-    .from("courses")
-    .select(
-      "id, title, slug, status, updated_at, current_published_version_id, course_versions!courses_current_published_version_fk(version_number)",
-    )
-    .eq("organization_id", ctx.organization.id)
-    .neq("status", "archived")
-    .order("created_at");
+  const page = parsePage(sp.page);
+  const range = rangeFor(page);
+  // The page shows one slice, but the header stats and the onboarding signal
+  // describe the WHOLE collection — so totals come from counts, never from
+  // the length of the current page.
+  const [{ data: courses, count: total }, { count: publishedCount }] =
+    await Promise.all([
+      supabase
+        .from("courses")
+        .select(
+          "id, title, slug, status, updated_at, current_published_version_id, course_versions!courses_current_published_version_fk(version_number)",
+          { count: "exact" },
+        )
+        .eq("organization_id", ctx.organization.id)
+        .neq("status", "archived")
+        .order("created_at")
+        .range(range.from, range.to),
+      supabase
+        .from("courses")
+        .select("id", { count: "exact", head: true })
+        .eq("organization_id", ctx.organization.id)
+        .neq("status", "archived")
+        .not("current_published_version_id", "is", null),
+    ]);
 
-  const published =
-    courses?.filter((c) => c.current_published_version_id).length ?? 0;
+  const courseTotal = total ?? 0;
+  const published = publishedCount ?? 0;
+  const meta = pageMeta(page, courseTotal);
 
   return (
-    <div
-      className="space-y-8"
-      {...tourState({ courses: courses?.length ?? 0 })}
-    >
+    <div className="space-y-8" {...tourState({ courses: courseTotal })}>
       <PageHeader
         eyebrow="Knowledge"
         title={courseTerm.plural}
@@ -68,10 +87,10 @@ export default async function CoursesPage({
       <section>
         <SectionHeader
           title={`All ${courseTerm.plural.toLowerCase()}`}
-          count={courses?.length ?? 0}
+          count={courseTotal}
           description={
-            courses?.length
-              ? `${published} published · ${(courses.length ?? 0) - published} draft only`
+            courseTotal
+              ? `${published} published · ${courseTotal - published} draft only`
               : undefined
           }
         />
@@ -116,6 +135,12 @@ export default async function CoursesPage({
                 }
               />
             )}
+            <Pagination
+              meta={meta}
+              basePath={`/${orgSlug}/admin/courses`}
+              searchParams={sp}
+              itemLabel={courseTerm.plural.toLowerCase()}
+            />
           </Panel>
         </div>
       </section>
