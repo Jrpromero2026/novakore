@@ -2982,6 +2982,14 @@ export type Database = {
         };
         Returns: undefined;
       };
+      org_event_daily_by_type: {
+        Args: { p_organization_id: string; p_window_days?: number };
+        Returns: Json;
+      };
+      org_event_metrics: {
+        Args: { p_cohort?: string; p_organization_id: string };
+        Returns: Json;
+      };
       provision_organization: {
         Args: { p_name: string; p_owner_email: string; p_slug: string };
         Returns: string;

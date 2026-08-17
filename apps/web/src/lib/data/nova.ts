@@ -30,17 +30,38 @@ export interface NovaReport {
   evolution: { week: string; cumulative: number }[];
 }
 
+/** One pre-aggregated day/type bucket from `org_event_daily_by_type`. */
+interface DayTypeRow {
+  day: string;
+  type: string;
+  count: number;
+}
+
+/** One ranked drop-off row from `org_event_metrics`. */
+interface DropOffRow {
+  lesson_id: string;
+  started: number;
+  completed: number;
+  gap: number;
+}
+
+/**
+ * Digest window over pre-aggregated buckets. `from` is inclusive and `to`
+ * exclusive on whole UTC days, matching the day granularity the aggregate
+ * returns.
+ */
 function windowCounts(
-  events: { type: string; occurred_at: string }[],
+  rows: DayTypeRow[],
   from: Date,
   to: Date,
 ): NovaDigestWindow {
-  const inWindow = events.filter((e) => {
-    const t = new Date(e.occurred_at).getTime();
-    return t >= from.getTime() && t < to.getTime();
-  });
+  const fromDay = from.toISOString().slice(0, 10);
+  const toDay = to.toISOString().slice(0, 10);
+  const inWindow = rows.filter((r) => r.day >= fromDay && r.day < toDay);
   const count = (type: string) =>
-    inWindow.filter((e) => e.type === type).length;
+    inWindow
+      .filter((r) => r.type === type)
+      .reduce((sum, r) => sum + r.count, 0);
   return {
     lessonsPublished: count("content.lesson.published"),
     journeysCompleted: count("learning.path.completed"),
@@ -138,17 +159,30 @@ export async function getNovaReport(
       .eq("organization_id", organizationId)
       .order("published_at", { ascending: true })
       .limit(2000),
-    supabase
-      .from("analytics_events")
-      .select("type, actor_user_id, occurred_at")
-      .eq("organization_id", organizationId)
-      .gte("occurred_at", twoWeeksAgo.toISOString())
-      .limit(5000),
+    // Windowed activity, pre-aggregated in Postgres (migration
+    // 20260817040230): day/type counts + the distinct learning actors,
+    // replacing a 5,000-row scan on every render.
+    supabase.rpc("org_event_daily_by_type", {
+      p_organization_id: organizationId,
+      p_window_days: 14,
+    }),
     supabase
       .from("organization_terminology")
       .select("term_key, singular")
       .eq("organization_id", organizationId),
   ]);
+
+  // Pre-aggregated activity window (day/type buckets + distinct learning
+  // actors). Empty when the caller lacks `analytics.view` — the function
+  // returns `forbidden` and every downstream signal degrades to "no basis",
+  // which is exactly how Nova is supposed to behave without evidence.
+  const windowSeries = {
+    rows: ((recentEvents as { rows?: DayTypeRow[] } | null)?.rows ??
+      []) as DayTypeRow[],
+    total: (recentEvents as { total?: number } | null)?.total ?? 0,
+    learningActors: ((recentEvents as { learning_actors?: string[] } | null)
+      ?.learning_actors ?? []) as string[],
+  };
 
   // ---- Assemble pure-engine inputs from rows -------------------------------
   const courseTitle = new Map((courses ?? []).map((c) => [c.id, c.title]));
@@ -263,8 +297,10 @@ export async function getNovaReport(
     "Saturday",
   ];
   const byWeekday = new Array<number>(7).fill(0);
-  for (const e of recentEvents ?? []) {
-    byWeekday[new Date(e.occurred_at).getUTCDay()] += 1;
+  for (const row of windowSeries.rows) {
+    // `day` is a UTC calendar date from the aggregate; parse as UTC so the
+    // weekday never shifts with the server's local timezone.
+    byWeekday[new Date(`${row.day}T00:00:00Z`).getUTCDay()] += row.count;
   }
   const totalEvents = byWeekday.reduce((a, b) => a + b, 0);
   const topDay = byWeekday.indexOf(Math.max(...byWeekday));
@@ -341,11 +377,11 @@ export async function getNovaReport(
 
   // ---- Learner signals (analytics.view holders only) ------------------------
   if (includeLearner) {
-    const events = recentEvents ?? [];
     const [
       { data: attempts },
       { data: enrollmentRows },
       { data: memberships },
+      { data: eventMetrics },
     ] = await Promise.all([
       supabase
         .from("assessment_attempts")
@@ -361,6 +397,10 @@ export async function getNovaReport(
         .from("organization_memberships")
         .select("id, user_id")
         .eq("organization_id", organizationId),
+      // All-time drop-off, aggregated in Postgres (migration 20260817040230).
+      supabase.rpc("org_event_metrics", {
+        p_organization_id: organizationId,
+      }),
     ]);
 
     // Per-assessment difficulty from real graded attempts.
@@ -382,32 +422,18 @@ export async function getNovaReport(
       (assessmentTitles ?? []).map((a) => [a.id, a.title]),
     );
 
-    // Drop-off from the event log (same derivation the ops surface uses).
-    const started = new Map<string, number>();
-    const done = new Map<string, number>();
-    // The 14-day event slice lacks subject ids; drop-off needs them — one
-    // focused query over learning events only.
-    const { data: learnEvents } = await supabase
-      .from("analytics_events")
-      .select("type, subject_id")
-      .eq("organization_id", organizationId)
-      .in("type", ["learning.lesson.started", "learning.lesson.completed"])
-      .limit(5000);
-    for (const e of learnEvents ?? []) {
-      if (!e.subject_id) continue;
-      if (e.type === "learning.lesson.started")
-        started.set(e.subject_id, (started.get(e.subject_id) ?? 0) + 1);
-      else done.set(e.subject_id, (done.get(e.subject_id) ?? 0) + 1);
-    }
-    const gaps = [...started.entries()]
-      .map(([lessonId, s]) => ({
-        lessonId,
-        started: s,
-        completed: done.get(lessonId) ?? 0,
-      }))
-      .filter((g) => g.started > g.completed)
-      .sort((a, b) => b.started - b.completed - (a.started - a.completed))
-      .slice(0, 3);
+    // Drop-off, already ranked by gap in the database (same aggregate the
+    // ops surface uses, so both surfaces cannot disagree).
+    const gaps = (
+      ((eventMetrics as { drop_off?: DropOffRow[] } | null)?.drop_off ??
+        []) as DropOffRow[]
+    )
+      .slice(0, 3)
+      .map((g) => ({
+        lessonId: g.lesson_id,
+        started: g.started,
+        completed: g.completed,
+      }));
     const lessonTitle = new Map((lessons ?? []).map((l) => [l.id, l.title]));
 
     // Quiet enrollments: active enrollments whose member produced no
@@ -415,12 +441,7 @@ export async function getNovaReport(
     const userOfMembership = new Map(
       (memberships ?? []).map((m) => [m.id, m.user_id]),
     );
-    const recentActors = new Set(
-      events
-        .filter((e) => e.type.startsWith("learning."))
-        .map((e) => e.actor_user_id)
-        .filter(Boolean),
-    );
+    const recentActors = new Set(windowSeries.learningActors);
     const activeEnrollments = (enrollmentRows ?? []).filter(
       (e) => e.status === "active",
     );
@@ -451,8 +472,8 @@ export async function getNovaReport(
 
     const weekAgo = new Date(now.getTime() - 7 * 86400_000);
     inputs.digest = {
-      thisWeek: windowCounts(events, weekAgo, now),
-      lastWeek: windowCounts(events, twoWeeksAgo, weekAgo),
+      thisWeek: windowCounts(windowSeries.rows, weekAgo, now),
+      lastWeek: windowCounts(windowSeries.rows, twoWeeksAgo, weekAgo),
     };
   }
 

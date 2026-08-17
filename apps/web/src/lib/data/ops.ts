@@ -79,77 +79,36 @@ export async function getOpsMetrics(
 ): Promise<OpsMetrics> {
   const supabase = await supabaseServer();
 
-  // Optional cohort filter → the set of user ids in that tester label.
-  let cohortUsers: Set<string> | null = null;
-  if (cohort) {
-    const [{ data: labels }, { data: members }] = await Promise.all([
-      supabase
-        .from("tester_labels")
-        .select("membership_id")
-        .eq("organization_id", organizationId)
-        .eq("label", cohort),
-      supabase
-        .from("organization_memberships")
-        .select("id, user_id")
-        .eq("organization_id", organizationId),
-    ]);
-    const ids = new Set((labels ?? []).map((l) => l.membership_id));
-    cohortUsers = new Set(
-      (members ?? [])
-        .filter((m) => ids.has(m.id))
-        .map((m) => m.user_id)
-        .filter((u): u is string => Boolean(u)),
-    );
-  }
-
-  const [{ data: events }, { data: feedback }] = await Promise.all([
-    supabase
-      .from("analytics_events")
-      .select("type, subject_id, actor_user_id")
-      .eq("organization_id", organizationId)
-      .order("occurred_at", { ascending: false })
-      .limit(5000),
+  // Counts, distinct learners, and drop-off are aggregated in Postgres over
+  // the indexed (organization_id, type) path — see migration
+  // 20260817040230. The previous implementation pulled up to 5,000 raw rows
+  // and counted them in JS, which was both O(events) per render and silently
+  // WRONG past the limit (the newest 5,000 rows are not the organization).
+  const [{ data: metrics }, { data: feedback }] = await Promise.all([
+    supabase.rpc("org_event_metrics", {
+      p_organization_id: organizationId,
+      p_cohort: cohort ?? undefined,
+    }),
     supabase
       .from("feedback")
       .select("status")
       .eq("organization_id", organizationId),
   ]);
 
-  const evs = (events ?? []).filter(
-    (e) =>
-      !cohortUsers || (e.actor_user_id && cohortUsers.has(e.actor_user_id)),
-  );
-  const count = (type: string) => evs.filter((e) => e.type === type).length;
-
-  const learners = new Set(
-    evs
-      .filter(
-        (e) =>
-          e.type.startsWith("learning.") || e.type.startsWith("enrollment."),
-      )
-      .map((e) => e.actor_user_id)
-      .filter((u): u is string => Boolean(u)),
-  );
-
-  // Drop-off: lessons started but not completed (from the event log).
-  const started = new Map<string, number>();
-  const done = new Map<string, number>();
-  for (const e of evs) {
-    if (e.type === "learning.lesson.started" && e.subject_id)
-      started.set(e.subject_id, (started.get(e.subject_id) ?? 0) + 1);
-    if (e.type === "learning.lesson.completed" && e.subject_id)
-      done.set(e.subject_id, (done.get(e.subject_id) ?? 0) + 1);
-  }
-  const gaps = [...started.entries()]
-    .map(([lessonId, s]) => ({
-      lessonId,
-      started: s,
-      completed: done.get(lessonId) ?? 0,
-      gap: s - (done.get(lessonId) ?? 0),
-    }))
-    .filter((g) => g.gap > 0)
-    .sort((a, b) => b.gap - a.gap)
-    .slice(0, 5);
+  const agg = (metrics ?? {}) as {
+    status?: string;
+    counts?: Record<string, number>;
+    active_learners?: number;
+    drop_off?: {
+      lesson_id: string;
+      started: number;
+      completed: number;
+      gap: number;
+    }[];
+  };
+  const counts = agg.counts ?? {};
+  const count = (type: string) => counts[type] ?? 0;
+  const gaps = agg.drop_off ?? [];
 
   let titles = new Map<string, string>();
   if (gaps.length) {
@@ -158,7 +117,7 @@ export async function getOpsMetrics(
       .select("id, title")
       .in(
         "id",
-        gaps.map((g) => g.lessonId),
+        gaps.map((g) => g.lesson_id),
       );
     titles = new Map((lessons ?? []).map((l) => [l.id, l.title]));
   }
@@ -168,7 +127,7 @@ export async function getOpsMetrics(
     feedbackByStatus[f.status] = (feedbackByStatus[f.status] ?? 0) + 1;
 
   return {
-    activeLearners: learners.size,
+    activeLearners: agg.active_learners ?? 0,
     enrollments: count("enrollment.learner.enrolled"),
     lessonsStarted: count("learning.lesson.started"),
     lessonsCompleted: count("learning.lesson.completed"),
@@ -179,8 +138,11 @@ export async function getOpsMetrics(
     credentialsIssued: count("credential.certificate.issued"),
     feedbackByStatus,
     dropOff: gaps.map((g) => ({
-      ...g,
-      title: titles.get(g.lessonId) ?? "(unknown lesson)",
+      lessonId: g.lesson_id,
+      started: g.started,
+      completed: g.completed,
+      gap: g.gap,
+      title: titles.get(g.lesson_id) ?? "(unknown lesson)",
     })),
   };
 }

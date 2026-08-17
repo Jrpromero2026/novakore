@@ -108,24 +108,30 @@ export async function getWorkspacePulse(
   since.setUTCDate(since.getUTCDate() - (windowDays - 1));
   since.setUTCHours(0, 0, 0, 0);
 
-  const [{ data: events }, actorEmails] = await Promise.all([
+  // Volume is aggregated in Postgres (migration 20260817040230) instead of
+  // pulling every row in the window; the timeline fetches only the handful
+  // of rows it actually renders, filtered to describable event types.
+  const [{ data: series }, { data: recent }, actorEmails] = await Promise.all([
+    supabase.rpc("org_event_daily_by_type", {
+      p_organization_id: organizationId,
+      p_window_days: windowDays,
+    }),
     supabase
       .from("analytics_events")
       .select("id, type, actor_user_id, occurred_at")
       .eq("organization_id", organizationId)
       .gte("occurred_at", since.toISOString())
+      .in("type", Object.keys(ACTIVITY_LABELS))
       .order("occurred_at", { ascending: false })
-      .limit(2000),
+      .limit(12),
     resolveActors
       ? actorEmailMap(organizationId)
       : Promise.resolve(new Map<string, string>()),
   ]);
 
-  const rows = events ?? [];
   const emailByUser = actorEmails;
-
   const activity: ActivityEntry[] = [];
-  for (const row of rows) {
+  for (const row of recent ?? []) {
     const label = ACTIVITY_LABELS[row.type];
     if (!label) continue; // Only surface events we can describe truthfully.
     activity.push({
@@ -138,8 +144,13 @@ export async function getWorkspacePulse(
         : null,
       occurredAt: row.occurred_at,
     });
-    if (activity.length >= 12) break;
   }
+
+  const agg = (series ?? {}) as {
+    status?: string;
+    rows?: { day: string; type: string; count: number }[];
+    total?: number;
+  };
 
   // Zero-filled daily buckets so the sparkline never implies missing days.
   const buckets = new Map<string, number>();
@@ -148,9 +159,9 @@ export async function getWorkspacePulse(
     d.setUTCDate(since.getUTCDate() + i);
     buckets.set(d.toISOString().slice(0, 10), 0);
   }
-  for (const row of rows) {
-    const day = row.occurred_at.slice(0, 10);
-    if (buckets.has(day)) buckets.set(day, (buckets.get(day) ?? 0) + 1);
+  for (const row of agg.rows ?? []) {
+    if (buckets.has(row.day))
+      buckets.set(row.day, (buckets.get(row.day) ?? 0) + row.count);
   }
 
   return {
@@ -159,7 +170,7 @@ export async function getWorkspacePulse(
       day,
       count,
     })),
-    windowTotal: rows.length,
+    windowTotal: agg.total ?? 0,
     windowDays,
   };
 }

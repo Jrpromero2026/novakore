@@ -121,6 +121,20 @@ deployment, and two prior audits — re-examined without deference.
 
 ### Performance & scalability
 
+- **[P1-7] ~~The analytics read path is O(events)~~ — CLOSED (2026-08-01).**
+  Counts, distinct learners, drop-off, the activity series, the digest
+  windows and the weekday rhythm are now aggregated in Postgres
+  (`org_event_metrics`, `org_event_daily_by_type`), analytics-gated inside
+  the functions. The app receives pre-grouped rows instead of up to 5,000
+  raw ones. This closed a **correctness** defect as well: past the old
+  `limit()` the platform reported confidently wrong numbers. Equivalence to
+  independently-counted ground truth is proven by 5 live-DB tests; the
+  Command Center and Intelligence were re-verified end-to-end in a browser.
+  **New finding while doing it:** the real-DB suite now exceeds Supabase's
+  auth rate limit in a single full run (mass `beforeAll` failures that look
+  like regressions but are not) — the CI job that runs it will be flaky
+  until sessions are shared across files via a global setup. Raised as
+  **[P2-TESTFLAKE]**. Original finding follows for the record:
 - **[P1-7] The analytics read path is O(events) at request time** —
   2k–5k-row scans aggregated in JavaScript feed Ops, Nova, digest, and now
   the Hub. Remediation is well-planned (pure engines define contracts) but

@@ -87,9 +87,14 @@ seeded dev values is config, never a history rewrite.
    bootstrap literal and will fail against a rotated database.
 2. Settings → Branches → add protection for `main`: require the `verify`
    status check, require PRs (optional but recommended once >1 committer).
-3. Known flake mode: the real-DB suite signs in ~30 accounts; two runs
-   within ~a minute can trip Supabase auth rate limits (beforeAll failures,
-   mass skips). Space reruns out — a clean run passes every test.
+3. Known flake mode: the real-DB suite signs in dozens of times; back-to-back
+   runs trip Supabase auth rate limits, which surfaces as `beforeAll`
+   failures and mass skips — **not** as a code regression. Confirm by
+   re-running a single failing file in isolation before investigating.
+   Space reruns out; a clean run passes every test. New real-DB tests should
+   memoize one session per account (see `analytics-rollups.test.ts`) rather
+   than signing in per test — the older files still sign in per describe
+   block and are the main contributors to this ceiling.
 
 ## Release checklist
 
