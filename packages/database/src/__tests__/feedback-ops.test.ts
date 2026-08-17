@@ -1,5 +1,5 @@
-import { createClient, type SupabaseClient } from "@supabase/supabase-js";
 import { afterAll, beforeAll, describe, expect, test } from "vitest";
+import { signedIn, userIdFor, type Client as SharedClient } from "./_session";
 import type { Database } from "../types/database";
 
 /**
@@ -13,24 +13,10 @@ const url = process.env.NOVAKORE_TEST_SUPABASE_URL;
 const anonKey = process.env.NOVAKORE_TEST_SUPABASE_ANON_KEY;
 const configured = Boolean(url && anonKey);
 const ORG_B = "00000000-0000-4000-8000-000000000102"; // bfh-dev
-const DEV_PASSWORD =
-  process.env.NOVAKORE_TEST_PASSWORD ?? "NovaKore-dev-password-1";
 const runTag = Date.now().toString(36);
 
-type Client = SupabaseClient<Database>;
-const clients: Client[] = [];
-async function signedIn(email: string): Promise<Client> {
-  const client = createClient<Database>(url!, anonKey!, {
-    auth: { persistSession: false, autoRefreshToken: false },
-  });
-  const { error } = await client.auth.signInWithPassword({
-    email,
-    password: DEV_PASSWORD,
-  });
-  if (error) throw new Error(`sign-in failed for ${email}: ${error.message}`);
-  clients.push(client);
-  return client;
-}
+// Sessions come from the suite-wide pool (vitest.globalSetup.ts).
+type Client = SharedClient;
 
 describe.skipIf(!configured)("alpha operations RLS", () => {
   let member: Client;
@@ -43,25 +29,26 @@ describe.skipIf(!configured)("alpha operations RLS", () => {
       signedIn("bfh.member@novakore.test"),
       signedIn("bfh.owner@novakore.test"),
     ]);
-    const { data: mUser } = await member.auth.getUser();
+    // Pooled clients carry a bearer token and hold no local session, so the
+    // user id comes from the pool rather than `auth.getUser()`.
+    const [memberUserId, ownerUserId] = await Promise.all([
+      userIdFor("bfh.member@novakore.test"),
+      userIdFor("bfh.owner@novakore.test"),
+    ]);
     const { data: ms } = await member
       .from("organization_memberships")
       .select("id")
       .eq("organization_id", ORG_B)
-      .eq("user_id", mUser.user!.id)
+      .eq("user_id", memberUserId)
       .maybeSingle();
     memberMembershipId = ms!.id;
-    const { data: oUser } = await admin.auth.getUser();
     const { data: os } = await admin
       .from("organization_memberships")
       .select("id")
       .eq("organization_id", ORG_B)
-      .eq("user_id", oUser.user!.id)
+      .eq("user_id", ownerUserId)
       .maybeSingle();
     ownerMembershipId = os!.id;
-  });
-  afterAll(async () => {
-    await Promise.all(clients.map((c) => c.auth.signOut()));
   });
 
   test("a member can file feedback for their own membership", async () => {

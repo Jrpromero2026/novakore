@@ -134,7 +134,11 @@ deployment, and two prior audits — re-examined without deference.
   auth rate limit in a single full run (mass `beforeAll` failures that look
   like regressions but are not) — the CI job that runs it will be flaky
   until sessions are shared across files via a global setup. Raised as
-  **[P2-TESTFLAKE]**. Original finding follows for the record:
+  **[P2-TESTFLAKE]** — and **CLOSED the same day**: sessions are now pooled
+  once per run by a vitest `globalSetup` and shared across files as bearer
+  tokens, cutting sign-ins from ~35 to ~14. Three consecutive full runs pass
+  113/113, where a second run previously collapsed. The CI gate is now
+  trustworthy enough to enable. Original finding follows for the record:
 - **[P1-7] The analytics read path is O(events) at request time** —
   2k–5k-row scans aggregated in JavaScript feed Ops, Nova, digest, and now
   the Hub. Remediation is well-planned (pure engines define contracts) but

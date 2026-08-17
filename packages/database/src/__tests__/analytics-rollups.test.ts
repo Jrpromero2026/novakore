@@ -1,5 +1,5 @@
-import { createClient, type SupabaseClient } from "@supabase/supabase-js";
 import { afterAll, describe, expect, test } from "vitest";
+import { signedIn } from "./_session";
 
 /**
  * Analytics rollups (CTO review P1-7) proven against the live database.
@@ -17,40 +17,10 @@ import { afterAll, describe, expect, test } from "vitest";
 
 const url = process.env.NOVAKORE_TEST_SUPABASE_URL!;
 const anonKey = process.env.NOVAKORE_TEST_SUPABASE_ANON_KEY!;
-const DEV_PASSWORD =
-  process.env.NOVAKORE_TEST_PASSWORD ?? "NovaKore-dev-password-1";
 const ALPHA_ORG = "00000000-0000-4000-8000-000000000101";
 
-/**
- * One session per account, reused across tests. The suite as a whole signs
- * in dozens of times and Supabase rate-limits auth; every avoidable
- * sign-in is a future flake (see the operations runbook).
- */
-const sessions = new Map<string, Promise<SupabaseClient>>();
-
-function signedIn(email: string): Promise<SupabaseClient> {
-  const existing = sessions.get(email);
-  if (existing) return existing;
-
-  const pending = (async () => {
-    const client = createClient(url, anonKey, {
-      auth: { persistSession: false },
-    });
-    const { error } = await client.auth.signInWithPassword({
-      email,
-      password: DEV_PASSWORD,
-    });
-    if (error) throw new Error(`sign-in failed for ${email}: ${error.message}`);
-    return client;
-  })();
-  sessions.set(email, pending);
-  return pending;
-}
-
-afterAll(async () => {
-  const clients = await Promise.all(sessions.values());
-  await Promise.all(clients.map((c) => c.auth.signOut()));
-});
+// Sessions come from the suite-wide pool (vitest.globalSetup.ts); no
+// sign-out here, that would revoke tokens other files share.
 
 interface Metrics {
   status: string;

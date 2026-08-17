@@ -43,3 +43,6 @@ Thumbs.db
 /playwright-report/
 /blob-report/
 /.playwright/
+
+# Pooled test sessions (vitest globalSetup) — short-lived access tokens
+.vitest-sessions.json

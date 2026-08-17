@@ -1,5 +1,5 @@
-import { createClient, type SupabaseClient } from "@supabase/supabase-js";
 import { afterAll, describe, expect, test } from "vitest";
+import { signedIn } from "./_session";
 
 /**
  * Platform tenant-operations gating (Phase 6, Priority 8), proven against
@@ -12,28 +12,9 @@ import { afterAll, describe, expect, test } from "vitest";
 
 const url = process.env.NOVAKORE_TEST_SUPABASE_URL!;
 const anonKey = process.env.NOVAKORE_TEST_SUPABASE_ANON_KEY!;
-const DEV_PASSWORD =
-  process.env.NOVAKORE_TEST_PASSWORD ?? "NovaKore-dev-password-1";
 const GAMMA_ORG = "00000000-0000-4000-8000-000000000103";
 
-const clients: SupabaseClient[] = [];
-
-async function signedIn(email: string): Promise<SupabaseClient> {
-  const client = createClient(url, anonKey, {
-    auth: { persistSession: false },
-  });
-  const { error } = await client.auth.signInWithPassword({
-    email,
-    password: DEV_PASSWORD,
-  });
-  if (error) throw new Error(`sign-in failed for ${email}: ${error.message}`);
-  clients.push(client);
-  return client;
-}
-
-afterAll(async () => {
-  await Promise.all(clients.map((c) => c.auth.signOut()));
-});
+// No sign-out: sessions are shared suite-wide (see _session.ts).
 
 describe("platform tenant operations", () => {
   test("an organization owner is forbidden from every operator function", async () => {

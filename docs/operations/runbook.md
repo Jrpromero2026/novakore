@@ -87,14 +87,15 @@ seeded dev values is config, never a history rewrite.
    bootstrap literal and will fail against a rotated database.
 2. Settings → Branches → add protection for `main`: require the `verify`
    status check, require PRs (optional but recommended once >1 committer).
-3. Known flake mode: the real-DB suite signs in dozens of times; back-to-back
-   runs trip Supabase auth rate limits, which surfaces as `beforeAll`
-   failures and mass skips — **not** as a code regression. Confirm by
-   re-running a single failing file in isolation before investigating.
-   Space reruns out; a clean run passes every test. New real-DB tests should
-   memoize one session per account (see `analytics-rollups.test.ts`) rather
-   than signing in per test — the older files still sign in per describe
-   block and are the main contributors to this ceiling.
+3. Real-DB sessions are pooled. `packages/database/vitest.globalSetup.ts`
+   signs each seeded account in ONCE per run and writes short-lived access
+   tokens to a gitignored `.vitest-sessions.json`; test files build clients
+   from those tokens (`src/__tests__/_session.ts`) and make no auth calls.
+   This removed the old rate-limit flake — back-to-back full runs pass.
+   **Rules for new real-DB tests:** use `signedIn()` from `_session`, never
+   call `auth.signOut()` on a pooled client (it revokes the account's tokens
+   for every other file), and use `userIdFor(email)` instead of
+   `auth.getUser()` (a pooled client has no local session).
 
 ## Release checklist
 

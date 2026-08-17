@@ -1,5 +1,5 @@
-import { createClient, type SupabaseClient } from "@supabase/supabase-js";
 import { afterAll, beforeAll, describe, expect, test } from "vitest";
+import { bareClient, signedIn, type Client as SharedClient } from "./_session";
 import type { Database } from "../types/database";
 
 /**
@@ -25,30 +25,9 @@ const NODE_FOUNDATIONS = "00000000-0000-4000-8000-000000000541";
 const NODE_ADVANCED = "00000000-0000-4000-8000-000000000542";
 const ENROLL_LEARNER = "00000000-0000-4000-8000-000000000561"; // alpha.learner path enrollment
 const MEMBERSHIP_REVIEWER = "00000000-0000-4000-8000-000000000304";
-const DEV_PASSWORD =
-  process.env.NOVAKORE_TEST_PASSWORD ?? "NovaKore-dev-password-1";
 
-type Client = SupabaseClient<Database>;
-const clients = new Map<string, Client>();
-
-function bareClient(): Client {
-  return createClient<Database>(url!, anonKey!, {
-    auth: { persistSession: false, autoRefreshToken: false },
-  });
-}
-
-async function signedIn(email: string): Promise<Client> {
-  const cached = clients.get(email);
-  if (cached) return cached;
-  const client = bareClient();
-  const { error } = await client.auth.signInWithPassword({
-    email,
-    password: DEV_PASSWORD,
-  });
-  if (error) throw new Error(`sign-in failed for ${email}: ${error.message}`);
-  clients.set(email, client);
-  return client;
-}
+// Sessions come from the suite-wide pool (vitest.globalSetup.ts).
+type Client = SharedClient;
 
 const runTag = Date.now().toString(36);
 
@@ -73,7 +52,7 @@ describe.skipIf(!configured)(
     });
 
     afterAll(async () => {
-      await Promise.all([...clients.values()].map((c) => c.auth.signOut()));
+      // No sign-out: sessions are shared suite-wide (see _session.ts).
     });
 
     // -------------------------------------------------------------------------

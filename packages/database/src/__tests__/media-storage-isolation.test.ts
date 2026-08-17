@@ -1,5 +1,5 @@
-import { createClient, type SupabaseClient } from "@supabase/supabase-js";
 import { afterAll, beforeAll, describe, expect, test } from "vitest";
+import { bareClient, signedIn, type Client as SharedClient } from "./_session";
 import type { Database } from "../types/database";
 
 /**
@@ -15,8 +15,6 @@ const configured = Boolean(url && anonKey);
 
 const ORG_A = "00000000-0000-4000-8000-000000000101";
 const ORG_B = "00000000-0000-4000-8000-000000000102";
-const DEV_PASSWORD =
-  process.env.NOVAKORE_TEST_PASSWORD ?? "NovaKore-dev-password-1";
 
 // 1×1 transparent PNG (real bytes — the pipeline sniffs content).
 const TINY_PNG = Uint8Array.from(
@@ -26,27 +24,8 @@ const TINY_PNG = Uint8Array.from(
   (c) => c.charCodeAt(0),
 );
 
-type Client = SupabaseClient<Database>;
-const clients = new Map<string, Client>();
-
-function bareClient(): Client {
-  return createClient<Database>(url!, anonKey!, {
-    auth: { persistSession: false, autoRefreshToken: false },
-  });
-}
-
-async function signedIn(email: string): Promise<Client> {
-  const cached = clients.get(email);
-  if (cached) return cached;
-  const client = bareClient();
-  const { error } = await client.auth.signInWithPassword({
-    email,
-    password: DEV_PASSWORD,
-  });
-  if (error) throw new Error(`sign-in failed for ${email}: ${error.message}`);
-  clients.set(email, client);
-  return client;
-}
+// Sessions come from the suite-wide pool (vitest.globalSetup.ts).
+type Client = SharedClient;
 
 const runId = crypto.randomUUID();
 const pathIn = (orgId: string, tail: string) =>
@@ -68,7 +47,7 @@ describe.skipIf(!configured)("media + storage isolation (real RLS)", () => {
   });
 
   afterAll(async () => {
-    await Promise.all([...clients.values()].map((c) => c.auth.signOut()));
+    // No sign-out: sessions are shared suite-wide (see _session.ts).
   });
 
   test("positive control: a branding manager can upload into their org path and read it back", async () => {
