@@ -8,13 +8,51 @@ immutable versions, the outbox, permission resolution. What does not:
 | --------------------------------------- | ----------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | ~~Analytics reads~~ **DONE 2026-08-01** | ~~2k–5k raw events per render, JS aggregation~~ | **Aggregated in Postgres** (`org_event_metrics`, `org_event_daily_by_type`; migrations 20260817040230/040453). Ops, Command Center, and Nova now receive a handful of pre-grouped rows. This also fixed a **correctness** bug: past the old `limit()` the counts were silently wrong. Equivalence proven against ground truth by 5 live-DB tests. Materialized/scheduled rollups remain the next step only if these aggregates themselves become slow.                                                                                                      |
 | ~~Admin lists~~ **DONE 2026-08-17**     | ~~`limit()` truncation, no paging~~             | **Offset pagination shipped** (`lib/pagination.ts` + `components/ui/pagination.tsx`, 11 unit tests incl. a tiling proof) and applied to all eight unbounded collections: issued credentials, Studio library, review queue, courses, members, enrollments, assessments, ops feedback. Offsets, not keyset: totals are what make truncation visible, and page-N URLs stay shareable. Keyset only if a tenant grows deep enough for offsets to hurt. Proven end to end by an E2E spec that follows the real Next link to page 2 and asserts a different slice. |
-| Palette search                          | 4 title queries per layout render               | cached / materialized per-org search index                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  |
-| Nova report                             | ~14 queries, uncached                           | request-level cache → short-TTL per-org cache                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               |
-| Lesson word counts                      | per-render block scans                          | persisted per-lesson stats, updated on save                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 |
+| ~~Palette search~~ **DONE 2026-08-17**  | ~~4 title queries per layout render~~           | **Cached per organization** (`lib/cache.ts` + `lib/data/palette.ts`, 60s TTL). Measured 251ms p50 of round-trip that every navigation paid to populate a palette most users never open. Sharing one entry between members is sound only because all four policies reduce to org-wide `content.view_draft`; that equivalence is pinned by a real-DB test, not asserted in a comment.                                                                                                                                                                         |
+| ~~Nova report~~ **DONE 2026-08-17**     | ~~≈14 queries, uncached~~                       | **Cached per (organization, membership, learner-flag)**, 60s TTL. Deliberately NOT org-keyed: `enrollments`, `assessment_attempts`, and `organization_memberships` each read `<privileged permission> OR the row is mine`, so an org-wide entry would have leaked one member's rows to another. Narrower hit rate, correct by construction.                                                                                                                                                                                                                 |
+| Lesson word counts                      | per-render block scans                          | persisted per-lesson stats, updated on save — **still open**                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                |
 
 Sequencing rule: rollups first (they unblock everything), pagination
 second, caching third. Each step lands behind existing test contracts.
-**Rollups and pagination are both done. Caching is next.**
+**All three are done.** What remains on this page is the lesson word-count
+scan and the two decisions below.
+
+## Caching: the rule, and why it is not `use cache`
+
+Next 16 offers `use cache`, and this codebase does not use it. That is a
+decision, not an oversight. `use cache` cannot read `cookies()`, and every
+read here builds its Supabase client from the session cookie so Postgres can
+enforce RLS as the calling user. Adopting it would mean either enabling
+Cache Components app-wide — a prerendering-model change across every route
+and GET route handler, on a **forked** framework — or fetching with a
+non-session client, which bypasses RLS, the platform's primary isolation
+guarantee. Neither belongs in a caching change. `lib/cache.ts` therefore
+sits above the normal RLS-enforced read path and never changes how a row is
+fetched.
+
+Adopting Cache Components remains a legitimate future move, but it is a
+framework migration with its own verification burden, not a performance
+tweak. Note also that `unstable_cache` is deprecated in favour of
+`use cache`, so it is not an escape hatch.
+
+**The rule for caching anything new.** A cached value is served to another
+request, and possibly another user. That is sound only when the key contains
+everything the RLS result depends on. For every table a loader touches, read
+its SELECT policy and ask what makes the row set vary:
+
+- depends only on the organization → `organizationId` suffices;
+- depends on a permission → that permission belongs in the key, or the
+  loader must only ever run for holders;
+- has an "or the row is mine" clause → identity belongs in the key.
+
+That last case is the one that bites. It is why Nova is keyed per member
+while the palette is keyed per organization, and the difference between the
+two is a real leak rather than a stylistic choice.
+
+Caching is per-instance and best-effort: on serverless each instance keeps
+its own map, so real-world savings are lower than a shared cache would give.
+Correctness never depends on a hit. A distributed cache is deliberately out
+of scope until measurements justify the operational cost.
 
 One collection was deliberately left unpaginated: learning paths. It carries
 no `limit()` to truncate, its cardinality is bounded by how many journeys an

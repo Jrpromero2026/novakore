@@ -29,6 +29,7 @@ export default async function IntelligencePage({
 
   const report = await getNovaReport(ctx.organization.id, orgSlug, {
     includeLearner,
+    membershipId: ctx.membershipId,
   });
 
   return (

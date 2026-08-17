@@ -169,6 +169,33 @@ deployment, and two prior audits — re-examined without deference.
 - **[P1] Zero pagination anywhere.** Every list truncates silently at its
   `limit()` — a correctness bug wearing a performance costume (an operator
   cannot see item 201).
+- **[P2] Per-request fan-out → LARGELY CLOSED (2026-08-17).** A bounded
+  in-process TTL cache (`lib/cache.ts`) now fronts the two worst offenders.
+  The palette fan-out was measured at **251ms p50 of round-trip on every
+  navigation**, to populate a command palette most users never open; it is
+  now cached per organization, and an A/B against the production build
+  showed a light page fall from ~750ms to ~505ms median. The saving is
+  smaller on heavy pages (courses: ~1090ms → ~1000ms) because there the
+  palette was never the critical path — it overlapped the page's own
+  queries. Nova is cached too, but per member.
+
+  The interesting part is why those two are keyed differently. Sharing one
+  palette entry across members is safe only because all four of its policies
+  reduce to org-wide `content.view_draft` — verified against live RLS and
+  pinned by a real-DB test across four distinct roles, so a future policy
+  change fails the suite instead of leaking rows. Nova cannot be keyed that
+  way: `enrollments`, `assessment_attempts`, and `organization_memberships`
+  each read `<privileged permission> OR the row is mine`, so an org-wide
+  entry would have served one member's rows to another. That was caught by
+  reading the policies before writing the cache, not after.
+
+  **Deliberately not done:** `use cache` / Cache Components. It cannot read
+  `cookies()`, so adopting it would mean either an app-wide prerendering
+  change on a forked framework or fetching without the session client — i.e.
+  bypassing RLS. Reasoning recorded in SCALABILITY_PLAN.md. The Overview's 7
+  data modules and per-lesson word-count scans remain uncached.
+  Original finding follows for the record:
+
 - **[P2] Per-request fan-out**: admin layout runs 4 palette queries per
   navigation; the Overview runs 7 data modules; Nova ~14 queries; no
   caching layer of any kind. Fine at 3 tenants; compounding tax later.

@@ -37,6 +37,7 @@ export default async function OrganizationHubPage({
     canStudio
       ? getNovaReport(ctx.organization.id, orgSlug, {
           includeLearner: can(ctx, "analytics.view"),
+          membershipId: ctx.membershipId,
         })
       : Promise.resolve(null),
   ]);

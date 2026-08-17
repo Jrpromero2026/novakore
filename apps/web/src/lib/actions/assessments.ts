@@ -10,6 +10,7 @@ import {
   type AssessmentItemType,
 } from "@novakore/domain";
 import { can, requireOrgContext } from "../org-context";
+import { invalidateOrg } from "../cache";
 import { requireUser } from "../auth";
 import { supabaseServer } from "../supabase/server";
 import { dbErrorMessage, fieldErrors, type ActionState } from "./types";
@@ -81,6 +82,8 @@ export async function createAssessmentAction(
     .select("id")
     .single();
   if (error) return { ok: false, message: dbErrorMessage(error) };
+  // The author is about to look for this; do not make them wait out the TTL.
+  invalidateOrg(ctx.organization.id);
   revalidatePath(`/${orgSlug}/admin/assessments`);
   return { ok: true, message: "Assessment created.", data: { id: data.id } };
 }
@@ -159,6 +162,8 @@ export async function saveAssessmentAction(
     });
     if (error) return { ok: false, message: dbErrorMessage(error) };
   }
+  // The author is about to look for this; do not make them wait out the TTL.
+  invalidateOrg(ctx.organization.id);
   revalidatePath(`/${orgSlug}/admin/assessments/${assessmentId}`);
   return { ok: true, message: "Draft saved." };
 }
@@ -217,6 +222,8 @@ export async function publishAssessmentAction(
     p_assessment_id: assessmentId,
   });
   if (error) return { ok: false, message: error.message };
+  // The author is about to look for this; do not make them wait out the TTL.
+  invalidateOrg(ctx.organization.id);
   revalidatePath(`/${orgSlug}/admin/assessments/${assessmentId}`);
   return { ok: true, message: "Assessment published." };
 }

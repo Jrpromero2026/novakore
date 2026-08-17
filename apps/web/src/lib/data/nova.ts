@@ -1,4 +1,5 @@
 import "server-only";
+import { cached, memberCacheKey } from "../cache";
 import { supabaseServer } from "../supabase/server";
 import { countContentWords } from "../lesson-health";
 import {
@@ -71,10 +72,75 @@ function windowCounts(
   };
 }
 
+/**
+ * Cached entry point for the Nova report.
+ *
+ * The report costs 14 concurrent queries, and both surfaces that render it
+ * (`/admin/intelligence` and `/admin/organization`) pay that in full on
+ * every visit and every reload.
+ *
+ * WHY THIS ENTRY IS KEYED PER MEMBER AND NOT PER ORGANIZATION
+ * -----------------------------------------------------------
+ * Most of the tables Nova reads reduce to org-wide `content.view_draft`, so
+ * an org-keyed entry looks tempting. Three do not:
+ *
+ *   enrollments               enrollment.manage OR progress.view.others
+ *                             OR the row's membership is mine
+ *   assessment_attempts       assessment.grade OR progress.view.others
+ *                             OR the row's membership is mine
+ *   organization_memberships  org.members.manage OR the row is mine
+ *
+ * Two consequences, both of which rule out an org-wide key. First, a caller
+ * holding `org.members.manage` would populate the entry with organization-
+ * wide rows that a plain content author — who also holds `content.view_draft`
+ * and so would hit the same entry — must not see. Second, the "or the row is
+ * mine" clauses mean that even two callers with *identical* permissions see
+ * different rows, so a permission-set key would not be sufficient either.
+ *
+ * Keying on membership makes reuse impossible across users by construction.
+ * The hit rate is correspondingly narrower — a member moving between the two
+ * Nova surfaces, or reloading one — which is the honest trade for a report
+ * whose contents are genuinely per-caller.
+ *
+ * `includeLearner` is a separate variant because it changes which queries
+ * run at all.
+ */
 export async function getNovaReport(
   organizationId: string,
   orgSlug: string,
-  { includeLearner = false }: { includeLearner?: boolean } = {},
+  {
+    includeLearner = false,
+    membershipId,
+  }: { includeLearner?: boolean; membershipId?: string } = {},
+): Promise<NovaReport> {
+  // Without an identity there is no safe key, so skip the cache rather than
+  // guess at one. Callers inside an org context always have a membership.
+  if (!membershipId) {
+    return loadNovaReport(organizationId, orgSlug, includeLearner);
+  }
+  return cached(
+    memberCacheKey(
+      "nova",
+      organizationId,
+      membershipId,
+      includeLearner ? "learner" : "base",
+    ),
+    NOVA_TTL_MS,
+    () => loadNovaReport(organizationId, orgSlug, includeLearner),
+  );
+}
+
+/**
+ * Nova's digest and scorecard are read as a considered summary rather than a
+ * live ticker, so a minute of staleness is acceptable; authoring writes
+ * invalidate the organization's entries anyway.
+ */
+const NOVA_TTL_MS = 60_000;
+
+async function loadNovaReport(
+  organizationId: string,
+  orgSlug: string,
+  includeLearner: boolean,
 ): Promise<NovaReport> {
   const supabase = await supabaseServer();
   const base = `/${orgSlug}/admin`;

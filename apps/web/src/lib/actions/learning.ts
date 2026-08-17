@@ -9,6 +9,7 @@ import {
   type ProgressStatus,
 } from "@novakore/domain";
 import { can, requireOrgContext } from "../org-context";
+import { invalidateOrg } from "../cache";
 import { requireUser } from "../auth";
 import { supabaseServer } from "../supabase/server";
 import { slugSchema } from "../validation";
@@ -113,6 +114,8 @@ export async function createLearningPathAction(
     created_by: user.id,
   });
   if (error) return { ok: false, message: dbErrorMessage(error) };
+  // The author is about to look for this; do not make them wait out the TTL.
+  invalidateOrg(ctx.organization.id);
   revalidatePath(`/${orgSlug}/admin/learning`);
   return { ok: true, message: "Learning path created." };
 }
@@ -257,6 +260,8 @@ export async function createCourseAction(
     .select("id")
     .single();
   if (error) return { ok: false, message: dbErrorMessage(error) };
+  // The author is about to look for this; do not make them wait out the TTL.
+  invalidateOrg(ctx.organization.id);
   revalidatePath(`/${orgSlug}/admin/courses`);
   return { ok: true, message: `Course created.`, warnings: [data!.id] };
 }
@@ -333,6 +338,8 @@ export async function createLessonAction(
     created_by: user.id,
   });
   if (error) return { ok: false, message: dbErrorMessage(error) };
+  // The author is about to look for this; do not make them wait out the TTL.
+  invalidateOrg(ctx.organization.id);
   revalidatePath(`/${orgSlug}/admin/courses/${courseId}`);
   return { ok: true, message: "Lesson added." };
 }
@@ -480,6 +487,8 @@ export async function publishLessonAction(
     p_lesson_id: lessonId,
   });
   if (error) return { ok: false, message: error.message };
+  // The author is about to look for this; do not make them wait out the TTL.
+  invalidateOrg(ctx.organization.id);
   revalidatePath(`/${orgSlug}/admin`, "layout");
   return { ok: true, message: "Lesson published." };
 }
@@ -515,6 +524,8 @@ export async function publishCourseAction(
         "Published structure failed validation — investigate before use.",
     };
   }
+  // The author is about to look for this; do not make them wait out the TTL.
+  invalidateOrg(ctx.organization.id);
   revalidatePath(`/${orgSlug}/admin`, "layout");
   return { ok: true, message: `Published version ${version!.version_number}.` };
 }
