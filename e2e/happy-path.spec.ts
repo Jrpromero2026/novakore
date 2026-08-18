@@ -90,17 +90,26 @@ test.describe("NovaKore happy path", () => {
       "/admin/courses",
     );
 
+    // The page streams: goto() resolves on the static shell, and the
+    // collection arrives after. Waiting for a real row first is what makes
+    // the pager check meaningful — an immediate query would inspect the
+    // shell and conclude, wrongly, that there is nothing to page.
+    await expect(
+      page.locator('a[href*="/admin/courses/"]').first(),
+    ).toBeVisible({ timeout: 20_000 });
+
+    // No skip branch: this tenant is seeded with far more courses than one
+    // page holds, so an absent pager is a regression, not a tenant that
+    // happens to be small. A conditional skip here would hide exactly the
+    // failure this test exists to catch.
     const pager = page.getByRole("navigation", { name: /pagination/i });
-    if ((await pager.count()) === 0) {
-      test.skip(true, "this tenant has a single page of courses");
-      return;
-    }
+    await expect(pager).toBeVisible({ timeout: 20_000 });
+    await expect(pager).toContainText(/of \d+/);
 
     // Capture page 1, then follow the real link to page 2.
     const firstPageRows = await page
       .locator('a[href*="/admin/courses/"]')
       .allInnerTexts();
-    await expect(pager).toContainText(/of \d+/);
 
     await pager.getByRole("link", { name: /next/i }).click();
     await page.waitForURL(/[?&]page=2/, { timeout: 20_000 });

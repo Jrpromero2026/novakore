@@ -199,6 +199,23 @@ deployment, and two prior audits — re-examined without deference.
 - **[P2] Per-request fan-out**: admin layout runs 4 palette queries per
   navigation; the Overview runs 7 data modules; Nova ~14 queries; no
   caching layer of any kind. Fine at 3 tenants; compounding tax later.
+- **[P2] Per-render lesson block scans → CLOSED (2026-08-18).** Nova pulled
+  every content block's full JSONB for an organization (capped at 5000) to
+  count words in JavaScript. Word counts are now a STORED generated column
+  maintained by Postgres on every write, aggregated per lesson by
+  `org_lesson_word_counts`. The terminology-drift scan — the only other
+  reader of that fan-out, and carrying the same silent truncation — moved to
+  `org_lesson_term_usage`, so Nova no longer reads block content at all.
+
+  Two honest notes. At today's volume (141 blocks, 8.6KB) the performance
+  gain is negligible; the real defect was that past 5000 blocks the platform
+  reported lesson sizes computed from an arbitrary subset — the third
+  instance of the same silent-truncation pattern found in this review.
+  And the fix creates a maintenance hazard worth naming: a generated column
+  does NOT recompute when its function changes, and the word-count rule now
+  exists in both TypeScript and SQL. A real-DB test compares the two over
+  every block, and both hazards are written into SCALABILITY_PLAN.md.
+
 - No load test has ever been executed. All latency claims derive from a
   single-user environment. **NOT VERIFIED at concurrency.**
 

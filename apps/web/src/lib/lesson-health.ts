@@ -51,8 +51,14 @@ const MEDIA: ReadonlySet<BlockType> = new Set([
 /**
  * Count words across the CONTENT string fields of a block's data,
  * recursively. Identifier and address fields (`id`, `*Id`, `url`) are
- * machine values, not prose — they never count. Exported for the Nova
- * intelligence layer, which sizes lessons with the same honest ruler.
+ * machine values, not prose — they never count.
+ *
+ * This is the reference implementation of the rule. Postgres carries a
+ * mirror of it (`app.count_content_words`) that maintains the generated
+ * `content_blocks.word_count` column Nova reads, so a lesson is sized
+ * identically whether the number comes from this editor or from the
+ * intelligence layer. The two are pinned together by a real-DB test; if you
+ * change the rule here, change it there in the same commit.
  */
 export function countContentWords(value: unknown): number {
   return wordsIn(value);

@@ -933,6 +933,7 @@ export type Database = {
           schema_version: number;
           source_reusable_block_id: string | null;
           updated_at: string;
+          word_count: number | null;
         };
         Insert: {
           block_type: string;
@@ -2989,6 +2990,14 @@ export type Database = {
       org_event_metrics: {
         Args: { p_cohort?: string; p_organization_id: string };
         Returns: Json;
+      };
+      org_lesson_term_usage: {
+        Args: { p_organization_id: string; p_terms: string[] };
+        Returns: { term: string; lesson_count: number }[];
+      };
+      org_lesson_word_counts: {
+        Args: { p_organization_id: string };
+        Returns: { lesson_id: string; words: number }[];
       };
       provision_organization: {
         Args: { p_name: string; p_owner_email: string; p_slug: string };

@@ -4,18 +4,50 @@ Honest position (maturity audit, 2026-08-01): correct-by-construction, not
 yet scaled-by-construction. What scales now: the multi-tenant schema, RLS,
 immutable versions, the outbox, permission resolution. What does not:
 
-| Bottleneck                              | Present shape                                   | Planned shape                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               |
-| --------------------------------------- | ----------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| ~~Analytics reads~~ **DONE 2026-08-01** | ~~2k–5k raw events per render, JS aggregation~~ | **Aggregated in Postgres** (`org_event_metrics`, `org_event_daily_by_type`; migrations 20260817040230/040453). Ops, Command Center, and Nova now receive a handful of pre-grouped rows. This also fixed a **correctness** bug: past the old `limit()` the counts were silently wrong. Equivalence proven against ground truth by 5 live-DB tests. Materialized/scheduled rollups remain the next step only if these aggregates themselves become slow.                                                                                                      |
-| ~~Admin lists~~ **DONE 2026-08-17**     | ~~`limit()` truncation, no paging~~             | **Offset pagination shipped** (`lib/pagination.ts` + `components/ui/pagination.tsx`, 11 unit tests incl. a tiling proof) and applied to all eight unbounded collections: issued credentials, Studio library, review queue, courses, members, enrollments, assessments, ops feedback. Offsets, not keyset: totals are what make truncation visible, and page-N URLs stay shareable. Keyset only if a tenant grows deep enough for offsets to hurt. Proven end to end by an E2E spec that follows the real Next link to page 2 and asserts a different slice. |
-| ~~Palette search~~ **DONE 2026-08-17**  | ~~4 title queries per layout render~~           | **Cached per organization** (`lib/cache.ts` + `lib/data/palette.ts`, 60s TTL). Measured 251ms p50 of round-trip that every navigation paid to populate a palette most users never open. Sharing one entry between members is sound only because all four policies reduce to org-wide `content.view_draft`; that equivalence is pinned by a real-DB test, not asserted in a comment.                                                                                                                                                                         |
-| ~~Nova report~~ **DONE 2026-08-17**     | ~~≈14 queries, uncached~~                       | **Cached per (organization, membership, learner-flag)**, 60s TTL. Deliberately NOT org-keyed: `enrollments`, `assessment_attempts`, and `organization_memberships` each read `<privileged permission> OR the row is mine`, so an org-wide entry would have leaked one member's rows to another. Narrower hit rate, correct by construction.                                                                                                                                                                                                                 |
-| Lesson word counts                      | per-render block scans                          | persisted per-lesson stats, updated on save — **still open**                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                |
+| Bottleneck                                 | Present shape                                   | Planned shape                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               |
+| ------------------------------------------ | ----------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| ~~Analytics reads~~ **DONE 2026-08-01**    | ~~2k–5k raw events per render, JS aggregation~~ | **Aggregated in Postgres** (`org_event_metrics`, `org_event_daily_by_type`; migrations 20260817040230/040453). Ops, Command Center, and Nova now receive a handful of pre-grouped rows. This also fixed a **correctness** bug: past the old `limit()` the counts were silently wrong. Equivalence proven against ground truth by 5 live-DB tests. Materialized/scheduled rollups remain the next step only if these aggregates themselves become slow.                                                                                                      |
+| ~~Admin lists~~ **DONE 2026-08-17**        | ~~`limit()` truncation, no paging~~             | **Offset pagination shipped** (`lib/pagination.ts` + `components/ui/pagination.tsx`, 11 unit tests incl. a tiling proof) and applied to all eight unbounded collections: issued credentials, Studio library, review queue, courses, members, enrollments, assessments, ops feedback. Offsets, not keyset: totals are what make truncation visible, and page-N URLs stay shareable. Keyset only if a tenant grows deep enough for offsets to hurt. Proven end to end by an E2E spec that follows the real Next link to page 2 and asserts a different slice. |
+| ~~Palette search~~ **DONE 2026-08-17**     | ~~4 title queries per layout render~~           | **Cached per organization** (`lib/cache.ts` + `lib/data/palette.ts`, 60s TTL). Measured 251ms p50 of round-trip that every navigation paid to populate a palette most users never open. Sharing one entry between members is sound only because all four policies reduce to org-wide `content.view_draft`; that equivalence is pinned by a real-DB test, not asserted in a comment.                                                                                                                                                                         |
+| ~~Nova report~~ **DONE 2026-08-17**        | ~~≈14 queries, uncached~~                       | **Cached per (organization, membership, learner-flag)**, 60s TTL. Deliberately NOT org-keyed: `enrollments`, `assessment_attempts`, and `organization_memberships` each read `<privileged permission> OR the row is mine`, so an org-wide entry would have leaked one member's rows to another. Narrower hit rate, correct by construction.                                                                                                                                                                                                                 |
+| ~~Lesson word counts~~ **DONE 2026-08-18** | ~~per-render block scans~~                      | **Persisted** as a generated `content_blocks.word_count` column (migration 20260818025504), aggregated by `org_lesson_word_counts`. The terminology-drift scan, the other reader of that fan-out, moved to `org_lesson_term_usage` (20260818025724) — otherwise the JSONB payload and its silent `.limit(5000)` truncation would have stayed. Nova no longer reads block content at all.                                                                                                                                                                    |
 
 Sequencing rule: rollups first (they unblock everything), pagination
 second, caching third. Each step lands behind existing test contracts.
-**All three are done.** What remains on this page is the lesson word-count
-scan and the two decisions below.
+**Every row in this table is now closed.** What remains are the standing
+decisions below, not outstanding work.
+
+Three of the four turned out to be correctness fixes wearing performance
+costumes: analytics counts, admin lists, and lesson word counts were each
+silently truncated at a `limit()`, reporting confident numbers computed from
+an arbitrary subset. That pattern is the thing to watch for next, not slow
+queries.
+
+## Derived values in Postgres: the two hazards
+
+`content_blocks.word_count` is a STORED generated column, which is why the
+count is right for every write path — the editor, the Studio library, AI
+authoring, seeds, and manual SQL alike — rather than only the ones the app
+remembers to update. Two things to know before adding another one.
+
+**A generated column does not recompute when you change its function.**
+`create or replace` on `app.count_content_words` leaves every existing row
+holding the value computed by the old definition. Nothing warns you. If the
+rule ever changes, the migration must also touch the rows — an
+`update content_blocks set data = data` forces re-evaluation — in the same
+migration, not a follow-up.
+
+**Two implementations of one rule will drift unless a test says otherwise.**
+The rule lives in TypeScript (`countContentWords`, which sizes the lesson in
+front of an author) and in SQL (`app.count_content_words`, which feeds Nova).
+They must agree, or the editor and the intelligence layer report different
+sizes for the same lesson. They already disagreed once by construction:
+Postgres's `\s` splits on U+0085 where JavaScript's does not, and
+JavaScript's splits on U+FEFF where Postgres's does not — so the SQL side
+spells the whitespace class out literally instead of using `\s`, which also
+stops the count depending on server collation. `word-count-equivalence.test.ts`
+compares the two over every real block; it is what makes the mirroring safe
+rather than merely intended.
 
 ## Caching: the rule, and why it is not `use cache`
 

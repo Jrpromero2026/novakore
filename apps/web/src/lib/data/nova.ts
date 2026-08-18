@@ -1,7 +1,6 @@
 import "server-only";
 import { cached, memberCacheKey } from "../cache";
 import { supabaseServer } from "../supabase/server";
-import { countContentWords } from "../lesson-health";
 import {
   deriveInsights,
   deriveScorecard,
@@ -71,6 +70,21 @@ function windowCounts(
     enrollments: count("enrollment.learner.enrolled"),
   };
 }
+
+/**
+ * Canonical platform words a tenant may rename. Drift is measured against
+ * these; the list is passed to `org_lesson_term_usage` so the prose scan
+ * happens in Postgres rather than over the wire.
+ */
+const CANONICAL_WORDS: Record<string, string> = {
+  course: "course",
+  module: "module",
+  assessment: "assessment",
+  certificate: "certificate",
+  instructor: "instructor",
+  learner: "learner",
+  learning_path: "learning path",
+};
 
 /**
  * Cached entry point for the Nova report.
@@ -154,7 +168,8 @@ async function loadNovaReport(
     { data: prereqs },
     { data: assignments },
     { data: lessons },
-    { data: blocks },
+    { data: lessonWords },
+    { data: termUsage },
     { data: reviewRows },
     { data: libraryBlocks },
     { data: libraryRefs },
@@ -194,11 +209,20 @@ async function loadNovaReport(
       .eq("organization_id", organizationId)
       .is("archived_at", null)
       .limit(500),
-    supabase
-      .from("content_blocks")
-      .select("lesson_id, data")
-      .eq("organization_id", organizationId)
-      .limit(5000),
+    // Per-lesson word totals, aggregated in Postgres from the generated
+    // `content_blocks.word_count` column. Replaces shipping every block's
+    // JSONB to count words here — which was also silently truncated at 5000
+    // blocks, so a large tenant's sizes were confidently wrong.
+    supabase.rpc("org_lesson_word_counts", {
+      p_organization_id: organizationId,
+    }),
+    // Terminology drift, likewise. The canonical list is fixed and tiny, so
+    // asking about all of them costs nothing and keeps this in the same
+    // round of concurrent reads as everything else.
+    supabase.rpc("org_lesson_term_usage", {
+      p_organization_id: organizationId,
+      p_terms: Object.values(CANONICAL_WORDS),
+    }),
     supabase
       .from("review_requests")
       .select("subject_type, subject_id, status, created_at")
@@ -266,13 +290,9 @@ async function loadNovaReport(
       latestCoursePublish.set(v.course_id, v.published_at);
     }
   }
-  const wordsByLesson = new Map<string, number>();
-  for (const b of blocks ?? []) {
-    wordsByLesson.set(
-      b.lesson_id,
-      (wordsByLesson.get(b.lesson_id) ?? 0) + countContentWords(b.data),
-    );
-  }
+  const wordsByLesson = new Map<string, number>(
+    (lessonWords ?? []).map((r) => [r.lesson_id, r.words]),
+  );
   const reviewedLessons = new Set(
     (reviewRows ?? [])
       .filter((r) => r.subject_type === "lesson")
@@ -304,34 +324,13 @@ async function loadNovaReport(
   }
 
   // ---- Organizational awareness ---------------------------------------------
-  // Terminology drift: draft prose using a canonical word the org renamed.
-  const textOf = (value: unknown): string => {
-    if (typeof value === "string") return value + " ";
-    if (Array.isArray(value)) return value.map(textOf).join("");
-    if (value !== null && typeof value === "object") {
-      return Object.entries(value as Record<string, unknown>)
-        .filter(([k]) => !(k === "id" || k.endsWith("Id") || k === "url"))
-        .map(([, v]) => textOf(v))
-        .join("");
-    }
-    return "";
-  };
-  const textByLesson = new Map<string, string>();
-  for (const b of blocks ?? []) {
-    textByLesson.set(
-      b.lesson_id,
-      (textByLesson.get(b.lesson_id) ?? "") + textOf(b.data).toLowerCase(),
-    );
-  }
-  const CANONICAL_WORDS: Record<string, string> = {
-    course: "course",
-    module: "module",
-    assessment: "assessment",
-    certificate: "certificate",
-    instructor: "instructor",
-    learner: "learner",
-    learning_path: "learning path",
-  };
+  // Terminology drift: draft prose still using a canonical word the org
+  // renamed. Lesson counts come from `org_lesson_term_usage`, which does the
+  // prose scan in Postgres; this only picks the worst offender among the
+  // terms this organization has actually renamed.
+  const lessonsUsingTerm = new Map<string, number>(
+    (termUsage ?? []).map((r) => [r.term, r.lesson_count]),
+  );
   let terminologyDrift: {
     canonical: string;
     replacement: string;
@@ -340,9 +339,7 @@ async function loadNovaReport(
   for (const t of terminology ?? []) {
     const canonical = CANONICAL_WORDS[t.term_key];
     if (!canonical || t.singular.toLowerCase() === canonical) continue;
-    const re = new RegExp(`\\b${canonical.replace(" ", "\\s+")}s?\\b`);
-    let count = 0;
-    for (const text of textByLesson.values()) if (re.test(text)) count += 1;
+    const count = lessonsUsingTerm.get(canonical) ?? 0;
     if (count > (terminologyDrift?.lessonCount ?? 0)) {
       terminologyDrift = {
         canonical,
