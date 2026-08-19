@@ -11,3 +11,4 @@ export * from "./bfh-integration";
 export * from "./studio";
 export * from "./ai";
 export * from "./webhooks";
+export * from "./content-templates";

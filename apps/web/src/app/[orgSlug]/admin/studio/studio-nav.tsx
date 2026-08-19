@@ -26,6 +26,7 @@ export function StudioNav({ orgSlug }: { orgSlug: string }) {
       { href: `/${orgSlug}/admin/courses`, label: "Courses" },
       { href: `/${orgSlug}/admin/assessments`, label: "Assessments" },
       { href: `${base}/library`, label: "Library" },
+      { href: `${base}/templates`, label: "Templates" },
       { href: `${base}/ai`, label: "AI Workspace" },
       { href: `${base}/review`, label: "Review" },
     ],

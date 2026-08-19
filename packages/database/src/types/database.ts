@@ -921,6 +921,51 @@ export type Database = {
           },
         ];
       };
+      content_templates: {
+        Row: {
+          archived_at: string | null;
+          blocks: Json;
+          category: string;
+          created_at: string;
+          created_by: string | null;
+          description: string | null;
+          id: string;
+          organization_id: string;
+          status: string;
+          title: string;
+          updated_at: string;
+          variables: Json;
+        };
+        Insert: {
+          archived_at?: string | null;
+          blocks?: Json;
+          category?: string;
+          created_at?: string;
+          created_by?: string | null;
+          description?: string | null;
+          id?: string;
+          organization_id: string;
+          status?: string;
+          title: string;
+          updated_at?: string;
+          variables?: Json;
+        };
+        Update: {
+          archived_at?: string | null;
+          blocks?: Json;
+          category?: string;
+          created_at?: string;
+          created_by?: string | null;
+          description?: string | null;
+          id?: string;
+          organization_id?: string;
+          status?: string;
+          title?: string;
+          updated_at?: string;
+          variables?: Json;
+        };
+        Relationships: [];
+      };
       content_blocks: {
         Row: {
           block_type: string;
