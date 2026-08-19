@@ -35,7 +35,7 @@ export async function POST(request: NextRequest) {
   }
 
   const { externalUserId, target, idempotencyKey } = parsed.data;
-  const { httpStatus, body } = await enrollOrAssign({
+  const { httpStatus, body, headers } = await enrollOrAssign({
     apiKey,
     kind: "enroll",
     externalUserId,
@@ -44,5 +44,5 @@ export async function POST(request: NextRequest) {
     dueAt: null,
     idempotencyKey,
   });
-  return Response.json(body, { status: httpStatus });
+  return Response.json(body, { status: httpStatus, headers });
 }

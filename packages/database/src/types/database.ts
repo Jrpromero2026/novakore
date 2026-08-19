@@ -2878,7 +2878,9 @@ export type Database = {
       bfh_enroll_or_assign_external: {
         Args: {
           p_api_key: string;
-          p_due_at: string;
+          // Nullable in the function signature (no default, plain
+          // timestamptz); the generator emits it as non-null.
+          p_due_at: string | null;
           p_external_user_id: string;
           p_idempotency_key: string;
           p_kind: string;

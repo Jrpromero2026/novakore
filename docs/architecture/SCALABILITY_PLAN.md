@@ -23,6 +23,50 @@ silently truncated at a `limit()`, reporting confident numbers computed from
 an arbitrary subset. That pattern is the thing to watch for next, not slow
 queries.
 
+## Rate limiting: what is enforceable, and what is not
+
+The counter lives in Postgres (`app.rate_limits`, `app.consume_rate_limit`).
+That is not a preference. The app runs on serverless instances with no shared
+memory, so an in-process limiter would give each instance its own counter and
+the real ceiling would be `limit x instance count`, drifting with autoscaling
+— not a weak limit, no limit.
+
+**The rule that shapes every decision here: the anon key is public.** It ships
+in the browser bundle, so anything PostgREST exposes can be called by anyone,
+with any arguments. A generic `consume_rate_limit(bucket, ...)` would
+therefore be an attack rather than a defence — name someone else's bucket and
+burn their quota. So the limiter lives in `app` (not exposed), and is only
+ever called by SECURITY DEFINER functions that have already proven who the
+caller is and derive the bucket themselves.
+
+That gives a clean split:
+
+| Surface               | Enforceable?                 | How                                                                                                                                                                                                                                         |
+| --------------------- | ---------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `/v1` enroll + assign | **Yes**                      | Inside `bfh_enroll_or_assign_external`, bucketed on the verified API key hash. Un-bypassable: the HTTP layer cannot skip it and the bucket cannot be forged. Limit is per key (`organization_api_keys.rate_limit_per_minute`, default 120). |
+| `bfh-handoff` SSO     | **Yes**                      | Inside `bfh_exchange_handoff`, which is `service_role`-only. Charges **failed signatures only**.                                                                                                                                            |
+| `verify_credential`   | **No** (not in the database) | Anon-callable by design. Nothing the caller sends can be trusted as a bucket, so any in-database limit is forgeable.                                                                                                                        |
+| `/api/health`         | **No** (not in the database) | Same reason. Mitigated by collapsing the probe to one round trip per 5s, which is load shedding, not access control.                                                                                                                        |
+| Sign-in / magic link  | **Not ours**                 | These server actions call Supabase Auth, which enforces its own limits — observed directly: a full test run once tripped "Request rate limit reached", which is what prompted session pooling in the suite.                                 |
+
+**Why the handoff charges only failures.** A blanket per-organization limit
+on SSO would hand an attacker a denial-of-service primitive: flood the bucket
+with garbage and real single sign-on stops for that tenant. Charging only
+failed signature verifications, and never gating a valid one, means an
+attacker can exhaust their own guessing budget without touching anyone's
+ability to sign in. Verified: with the failure bucket saturated, a correctly
+signed handoff passed straight through to the next check.
+
+**The honest gap.** The two anon surfaces above cannot be volume-limited from
+inside Postgres. Doing it properly means the edge — Vercel's firewall or
+Supabase's API gateway limits — which is configuration, not code, and is
+owner action. Until that is set, treat `verify_credential` and `/api/health`
+as unthrottled.
+
+Windows are fixed, not sliding: a client can send up to 2x the limit across a
+boundary. Accepted deliberately — the alternative costs a row per request
+instead of a row per window, and this is abuse control, not billing.
+
 ## Derived values in Postgres: the two hazards
 
 `content_blocks.word_count` is a STORED generated column, which is why the

@@ -53,6 +53,36 @@ deployment, and two prior audits — re-examined without deference.
   documented dev password.** Instructed to change it; **change never
   verified.** Until verified, assume the owner login of every tenant is
   public knowledge.
+- **[P1] No rate limiting → PARTIALLY CLOSED (2026-08-19).** A
+  Postgres-backed limiter (`app.rate_limits`, migration 20260819141057) now
+  enforces a per-key ceiling inside `bfh_enroll_or_assign_external` and
+  throttles handoff signature brute-forcing inside `bfh_exchange_handoff`.
+  The counter is in Postgres because the app is serverless: a per-instance
+  limiter would have had a real ceiling of `limit x instance count`.
+
+  The design turns on one fact: **the anon key is public**, so any RPC
+  PostgREST exposes is callable by anyone with any argument. A generic
+  `consume_rate_limit(bucket, ...)` would therefore have been a weapon — name
+  a victim's bucket, burn their quota. The limiter is consequently
+  unexposed (`app` schema) and only called by SECURITY DEFINER functions that
+  derive the bucket from an already-verified identity.
+
+  The handoff charges **failed signatures only**. A blanket per-tenant limit
+  there would have been a denial-of-service primitive: flood the bucket and
+  real SSO stops. Verified against the live function — with the failure
+  bucket saturated by an attacker, a correctly signed handoff passed straight
+  through.
+
+  **Still open, and it is not code:** `verify_credential` and `/api/health`
+  are anon-callable, so nothing they receive can be trusted as a bucket and no
+  in-database limit is enforceable. Those need edge limits (Vercel firewall or
+  Supabase API gateway) — owner configuration. Auth itself is rate limited by
+  Supabase, observed directly when a full test run tripped "Request rate limit
+  reached". Coverage gap also stated in `rate-limit.test.ts`: the tests pin
+  isolation and non-reachability, but do not drive a key past its ceiling, so
+  a regression that deleted the check would not fail the suite.
+  Original finding follows for the record:
+
 - **[P1] No rate limiting** on `/v1`, `bfh-handoff`, `/api/health`, or
   auth-adjacent routes. Key/HMAC auth bounds authorization, not volume.
 - **[P1] No secret scanning or dependency CI gate**; the accepted `sharp`
