@@ -105,9 +105,6 @@ function writeProgress(orgId: string, progress: StoredProgress | null) {
   }
 }
 
-/** The event the admin shell listens for to open the mobile nav drawer. */
-export const TOUR_OPEN_NAV_EVENT = "nk-tour-open-nav";
-
 /** Pick the visible element for a target id (desktop rail vs mobile drawer). */
 function findTargetElement(id: TourTargetId): HTMLElement | null {
   const candidates = document.querySelectorAll<HTMLElement>(
@@ -124,13 +121,6 @@ function prefersReducedMotion(): boolean {
   return (
     typeof window !== "undefined" &&
     window.matchMedia("(prefers-reduced-motion: reduce)").matches
-  );
-}
-
-function isMobileViewport(): boolean {
-  return (
-    typeof window !== "undefined" &&
-    window.matchMedia("(max-width: 767px)").matches
   );
 }
 
@@ -419,10 +409,6 @@ function WalkthroughOverlay({
     // Elapsed time is counted in interval ticks (not wall clock) so the
     // timeout is deterministic under test fake timers and background tabs.
     let elapsedMs = 0;
-
-    if (step.openMobileNav && isMobileViewport()) {
-      window.dispatchEvent(new Event(TOUR_OPEN_NAV_EVENT));
-    }
 
     const attempt = () => {
       if (cancelled || settled) return;

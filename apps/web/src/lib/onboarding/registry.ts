@@ -47,8 +47,6 @@ export interface WalkthroughStepDefinition {
   completeWhen?: (ctx: WalkthroughStepContext) => boolean;
   /** Shown while a condition step waits (e.g. "Waiting for the journey…"). */
   waitHint?: (term: TermResolver) => string;
-  /** Open the mobile nav drawer before resolving the target (sidebar steps). */
-  openMobileNav?: boolean;
 }
 
 export interface WalkthroughDefinition {
@@ -93,7 +91,6 @@ function navigationStep(
     completeWhen: ({ pathname, base }) => pathname.startsWith(`${base}${path}`),
     waitHint: () =>
       `Open ${domainLabel} in the navigation, then choose it there.`,
-    openMobileNav: true,
   };
 }
 
@@ -371,7 +368,6 @@ export const WALKTHROUGHS: WalkthroughDefinition[] = [
           pathname.startsWith(base.replace(/\/admin$/, "/learn")),
         waitHint: () =>
           "Open Learning in the navigation, then choose it there.",
-        openMobileNav: true,
       },
       {
         id: "preview",
