@@ -195,7 +195,7 @@ describe("view model", () => {
     const view = resolveChecklist(emptySignals, ALL_PERMISSIONS, term, BASE);
     const journey = view.steps.find((s) => s.id === "journey")!;
     expect(journey.title).toContain("Learning Path");
-    expect(journey.href).toBe(`${BASE}/learning`);
+    expect(journey.href).toBe(`${BASE}/learning/paths`);
     const preview = view.steps.find((s) => s.id === "preview")!;
     expect(preview.href).toBe("/bfh/learn");
   });

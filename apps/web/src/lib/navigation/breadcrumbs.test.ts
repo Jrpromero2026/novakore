@@ -65,7 +65,7 @@ describe("buildBreadcrumbs", () => {
     expect(
       trail(`${BASE}/courses/abc-123`, [{ label: "Safety Procedures" }]),
     ).toEqual([
-      `Learning→${BASE}/learning-domain`,
+      `Learning→${BASE}/learning`,
       "Programs",
       `Courses→${BASE}/courses`,
       "Safety Procedures",
@@ -76,7 +76,7 @@ describe("buildBreadcrumbs", () => {
     // On /courses the Courses crumb is "you are here"; one level deeper it
     // becomes the way back.
     expect(trail(`${BASE}/courses`)).toEqual([
-      `Learning→${BASE}/learning-domain`,
+      `Learning→${BASE}/learning`,
       "Programs",
       "Courses",
     ]);
@@ -91,7 +91,7 @@ describe("buildBreadcrumbs", () => {
         { label: "SAF-01" },
       ]),
     ).toEqual([
-      `Learning→${BASE}/learning-domain`,
+      `Learning→${BASE}/learning`,
       "Programs",
       `Courses→${BASE}/courses`,
       `Safety Procedures→${BASE}/courses/abc`,

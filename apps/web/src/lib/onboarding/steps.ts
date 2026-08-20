@@ -104,7 +104,7 @@ export const CHECKLIST_STEPS: ChecklistStepDefinition[] = [
     id: "journey",
     walkthroughId: "create-journey",
     needsAny: ["paths.manage"],
-    href: (base) => `${base}/learning`,
+    href: (base) => `${base}/learning/paths`,
     title: (term) => `Create your first ${term("learning_path").singular}`,
     explanation: (term) =>
       `A ${term("learning_path").singular} is the complete learning experience — it can contain multiple ${term("course").plural}.`,

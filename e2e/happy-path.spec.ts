@@ -123,6 +123,89 @@ test.describe("NovaKore happy path", () => {
     expect(secondPageRows).not.toEqual(firstPageRows);
   });
 
+  test("every navigable destination in the shell actually resolves", async ({
+    page,
+  }) => {
+    // This test exists because of a real defect: the six-domain shell shipped
+    // with three domain links pointing at routes that did not exist, and the
+    // journey test above did not catch it because it only clicks ONE domain.
+    // A navigation model is a promise that every link leads somewhere; the
+    // only honest way to keep that promise is to walk all of them.
+    test.setTimeout(180_000);
+
+    await signIn(page);
+    await page.goto(`/${ORG}/admin`);
+    await assertNoErrorPage(page);
+
+    const domainNav = page
+      .getByRole("navigation", { name: /workspace domains/i })
+      .first();
+    await expect(domainNav).toBeVisible();
+
+    const domainHrefs = await domainNav
+      .getByRole("link")
+      .evaluateAll((els) =>
+        els.map((el) => (el as HTMLAnchorElement).getAttribute("href") ?? ""),
+      );
+    expect(domainHrefs.length).toBe(6);
+
+    // Breadth first: every domain, then every card on every domain landing.
+    // Collected as a set so shared destinations are visited once.
+    const visited = new Set<string>();
+    const broken: string[] = [];
+
+    for (const href of domainHrefs) {
+      if (!href || visited.has(href)) continue;
+      visited.add(href);
+
+      const response = await page.goto(href);
+      const status = response?.status() ?? 0;
+      if (status >= 400) {
+        broken.push(`${href} -> ${status}`);
+        continue;
+      }
+      // A route that quietly bounces to sign-in is broken too, just less
+      // visibly: it means the page exists but rejects a session that the
+      // navigation just told the user was welcome there.
+      if (/\/sign-in/.test(page.url())) {
+        broken.push(`${href} -> bounced to sign-in`);
+        continue;
+      }
+      await assertNoErrorPage(page);
+
+      // Every card on this landing is a navigation object; follow them all.
+      const cardHrefs = await page
+        .locator(`main a[href^="/${ORG}/admin/"]`)
+        .evaluateAll((els) =>
+          els.map((el) => (el as HTMLAnchorElement).getAttribute("href") ?? ""),
+        );
+
+      for (const card of cardHrefs) {
+        if (!card || visited.has(card)) continue;
+        visited.add(card);
+        const cardResponse = await page.goto(card);
+        const cardStatus = cardResponse?.status() ?? 0;
+        if (cardStatus >= 400) broken.push(`${card} -> ${cardStatus}`);
+        else if (/\/sign-in/.test(page.url()))
+          broken.push(`${card} -> bounced to sign-in`);
+      }
+    }
+
+    // Report every broken link at once. Failing on the first would turn a
+    // single run into one bug report per fix cycle.
+    expect(broken, `broken navigation targets:\n${broken.join("\n")}`).toEqual(
+      [],
+    );
+    // Guard against the assertion passing vacuously. An owner of a seeded
+    // tenant reaches roughly 27 destinations; a floor of 20 fails loudly if
+    // the card selector stops matching and "no broken links" starts meaning
+    // "no links were checked" — which is how this class of bug hides.
+    expect(
+      visited.size,
+      `walked only ${visited.size} destinations: ${[...visited].join(", ")}`,
+    ).toBeGreaterThan(20);
+  });
+
   test("sign in → command center → studio → lesson → learner academy", async ({
     page,
   }) => {

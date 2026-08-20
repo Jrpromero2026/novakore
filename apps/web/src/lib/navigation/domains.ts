@@ -141,7 +141,7 @@ export function buildDomains(
     {
       key: "learning",
       label: "Learning",
-      href: `${base}/learning-domain`,
+      href: `${base}/learning`,
       summary:
         "How knowledge becomes structured development, assessment and competency.",
       sections: [
@@ -158,7 +158,7 @@ export function buildDomains(
               keywords: ["program", "lessons", "modules"],
             },
             {
-              href: `${base}/learning`,
+              href: `${base}/learning/paths`,
               label: "Learning paths",
               description: "Sequenced journeys across several courses",
               icon: "path",
@@ -260,7 +260,7 @@ export function buildDomains(
     {
       key: "intelligence",
       label: "Intelligence",
-      href: `${base}/intelligence-domain`,
+      href: `${base}/intelligence`,
       summary: "What the evidence actually supports — and nothing beyond it.",
       sections: [
         {
@@ -268,7 +268,7 @@ export function buildDomains(
           description: "Derived from real platform activity only.",
           items: [
             {
-              href: `${base}/intelligence`,
+              href: `${base}/intelligence/insights`,
               label: "Insights",
               description: "Knowledge scorecard, digest and coaching signals",
               icon: "ai",
