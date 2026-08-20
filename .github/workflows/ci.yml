@@ -66,11 +66,19 @@ jobs:
 
       - name: Validate real-database secrets
         # A secret that exists but is malformed is worse than one that is
-        # missing: the skip guards see a non-empty string, run the suite, and
-        # the failure surfaces as `Invalid supabaseUrl` from inside the
-        # Supabase client with a stack trace into node_modules — which says
-        # nothing about the actual cause. The commonest mistake is pasting a
-        # whole line from .env.test.local, variable name and "=" included.
+        # missing: the skip guards test only for emptiness, so a wrong value
+        # sails past them and fails later as `Invalid supabaseUrl` from inside
+        # the Supabase client, with a stack trace into node_modules that says
+        # nothing about the cause. The commonest mistake is pasting a whole
+        # line from .env.test.local, variable name and "=" included.
+        #
+        # Malformed is treated as NOT CONFIGURED, not as a build failure.
+        # These suites were always opt-in — absent secrets skip and stay
+        # green, so that forks and secretless contexts are not punished for a
+        # configuration they cannot supply. A half-finished setup is the same
+        # situation and gets the same answer: skip loudly, stay green. Failing
+        # the build instead would leave a permanently red pipeline that says
+        # nothing about the code, which is how a team learns to ignore it.
         #
         # Shapes only. Values are never echoed; GitHub would mask them, but
         # a log that cannot leak is better than one that relies on masking.
@@ -79,22 +87,29 @@ jobs:
           KEY: ${{ secrets.NOVAKORE_TEST_SUPABASE_ANON_KEY }}
           PW: ${{ secrets.NOVAKORE_TEST_PASSWORD }}
         run: |
-          fail=0
+          usable=true
+          if [ -z "$URL" ] || [ -z "$KEY" ] || [ -z "$PW" ]; then
+            usable=false
+          fi
           if [ -n "$URL" ] && ! printf '%s' "$URL" | grep -Eq '^https://[a-z0-9]+\.supabase\.co/?$'; then
-            echo "::error title=Malformed secret::NOVAKORE_TEST_SUPABASE_URL is set but is not a Supabase URL. Expected exactly https://<project-ref>.supabase.co — copy only the value after the '=' in .env.test.local, with no variable name, quotes, or trailing newline."
-            fail=1
+            echo "::warning title=Malformed secret::NOVAKORE_TEST_SUPABASE_URL is set but is not a Supabase URL. Expected exactly https://<project-ref>.supabase.co — copy only the value after the '=' in .env.test.local, with no variable name, quotes, or trailing newline."
+            usable=false
           fi
           if [ -n "$KEY" ] && ! printf '%s' "$KEY" | grep -Eq '^eyJ'; then
-            echo "::error title=Malformed secret::NOVAKORE_TEST_SUPABASE_ANON_KEY does not look like a JWT (expected it to start with 'eyJ'). Copy only the value after the '='."
-            fail=1
+            echo "::warning title=Malformed secret::NOVAKORE_TEST_SUPABASE_ANON_KEY does not look like a JWT (expected it to start with 'eyJ'). Copy only the value after the '='."
+            usable=false
           fi
           case "$PW" in
             NOVAKORE_TEST_PASSWORD=*)
-              echo "::error title=Malformed secret::NOVAKORE_TEST_PASSWORD still contains the variable name. Copy only the value after the '='."
-              fail=1 ;;
+              echo "::warning title=Malformed secret::NOVAKORE_TEST_PASSWORD still contains the variable name. Copy only the value after the '='."
+              usable=false ;;
           esac
-          if [ "$fail" = "1" ]; then exit 1; fi
-          if [ -n "$URL" ]; then echo "Real-database secrets present and well-formed."; fi
+          echo "REAL_DB_SECRETS_USABLE=$usable" >> "$GITHUB_ENV"
+          if [ "$usable" = "true" ]; then
+            echo "Real-database secrets present and well-formed."
+          else
+            echo "::warning::Real-database and browser suites will be SKIPPED. They run locally via 'npm run test:rls' and 'npm run test:e2e'."
+          fi
 
       - name: Real-database RLS tests
         # Runs only when the live-DB secrets exist; otherwise skipped loudly.
@@ -105,8 +120,8 @@ jobs:
           # this secret is required for the suite to authenticate.
           NOVAKORE_TEST_PASSWORD: ${{ secrets.NOVAKORE_TEST_PASSWORD }}
         run: |
-          if [ -z "$NOVAKORE_TEST_SUPABASE_URL" ]; then
-            echo "::warning::Real-DB secrets not configured — RLS suite SKIPPED (94 tests). Configure repo secrets for full coverage."
+          if [ "$REAL_DB_SECRETS_USABLE" != "true" ]; then
+            echo "::warning::Real-DB secrets not usable — RLS suite SKIPPED (134 tests). See the validation step above."
           else
             npm run test:rls
           fi
@@ -117,7 +132,16 @@ jobs:
           # honest when repo secrets are absent (zod requires ≥20 chars).
           NEXT_PUBLIC_SUPABASE_URL: ${{ secrets.NOVAKORE_TEST_SUPABASE_URL || 'https://ci-placeholder.supabase.co' }}
           NEXT_PUBLIC_SUPABASE_ANON_KEY: ${{ secrets.NOVAKORE_TEST_SUPABASE_ANON_KEY || 'ci-placeholder-anon-key-0000000000' }}
-        run: npm run build
+        run: |
+          # A malformed secret is long enough to satisfy the length check and
+          # still be wrong, which would fail the build for a reason that has
+          # nothing to do with the commit. Fall back to the placeholders the
+          # secretless path already uses.
+          if [ "$REAL_DB_SECRETS_USABLE" != "true" ]; then
+            export NEXT_PUBLIC_SUPABASE_URL="https://ci-placeholder.supabase.co"
+            export NEXT_PUBLIC_SUPABASE_ANON_KEY="ci-placeholder-anon-key-0000000000"
+          fi
+          npm run build
 
       - name: End-to-end happy path (real browser)
         # Exercises the journey a customer takes: anonymous refusal → sign-in
@@ -139,8 +163,8 @@ jobs:
           NOVAKORE_TEST_SUPABASE_ANON_KEY: ${{ secrets.NOVAKORE_TEST_SUPABASE_ANON_KEY }}
           NOVAKORE_TEST_PASSWORD: ${{ secrets.NOVAKORE_TEST_PASSWORD }}
         run: |
-          if [ -z "$NOVAKORE_TEST_PASSWORD" ]; then
-            echo "::warning::E2E SKIPPED — no credentials. Set the NOVAKORE_TEST_* repo secrets to enable browser coverage."
+          if [ "$REAL_DB_SECRETS_USABLE" != "true" ]; then
+            echo "::warning::E2E SKIPPED — credentials not usable. See the validation step above."
           else
             npx playwright install --with-deps chromium
             npm run test:e2e
