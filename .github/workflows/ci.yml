@@ -5,8 +5,13 @@
 # the canonical repo gets full coverage.
 #
 # Owner setup (one-time, documented in docs/operations/runbook.md):
-#   1. Repo → Settings → Secrets and variables → Actions:
-#        NOVAKORE_TEST_SUPABASE_URL, NOVAKORE_TEST_SUPABASE_ANON_KEY
+#   1. Repo → Settings → Secrets and variables → Actions — ALL THREE:
+#        NOVAKORE_TEST_SUPABASE_URL
+#        NOVAKORE_TEST_SUPABASE_ANON_KEY
+#        NOVAKORE_TEST_PASSWORD
+#      Values live in the gitignored .env.test.local. Setting only the first
+#      two enables the RLS suite but leaves the browser suite skipping in
+#      silence, which reads as coverage that is not running.
 #   2. Repo → Settings → Branches → protect `main`:
 #        require the "verify" check before merging.
 
@@ -80,6 +85,17 @@ jobs:
         # Exercises the journey a customer takes: anonymous refusal → sign-in
         # → Command Center → Studio → Knowledge IDE → Intelligence → learner
         # Academy → public credential verification. Read-only by design.
+        #
+        # Also the shell guarantees that only a real browser can check, each
+        # added after a defect reached main: every domain and card link
+        # resolves, detail pages carry a trail, the skip link moves focus, no
+        # page scrolls sideways at 375px, and text meets AA contrast in both
+        # colour schemes (measured from computed pixels, not from the CSS).
+        #
+        # The suite signs in several times against the shared dev project,
+        # which rate-limits auth. It runs single-worker for that reason. If
+        # this step starts failing on sign-in rather than on an assertion,
+        # that is the cause — reuse a stored session before adding retries.
         env:
           NOVAKORE_TEST_SUPABASE_URL: ${{ secrets.NOVAKORE_TEST_SUPABASE_URL }}
           NOVAKORE_TEST_SUPABASE_ANON_KEY: ${{ secrets.NOVAKORE_TEST_SUPABASE_ANON_KEY }}
