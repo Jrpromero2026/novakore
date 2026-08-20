@@ -12,18 +12,17 @@
  */
 
 export const TOUR_TARGETS = {
-  // Sidebar navigation (stamped automatically from nav-config `tourId`).
-  navOverview: "admin-sidebar-overview",
-  navLearning: "admin-sidebar-learning-paths",
-  navCourses: "admin-sidebar-courses",
-  navStudio: "admin-sidebar-studio",
-  navMembers: "admin-sidebar-members",
-  navEnrollments: "admin-sidebar-enrollments",
-  navBranding: "admin-sidebar-branding",
-  navSettings: "admin-sidebar-settings",
-  navOrganization: "admin-sidebar-organization",
-  navAnalytics: "admin-sidebar-analytics",
-  navMyLearning: "admin-sidebar-my-learning",
+  // Global navigation. The previous eleven `admin-sidebar-*` ids addressed a
+  // sidebar that no longer renders, which left eight walkthrough steps
+  // falling through to missing-target recovery. Tours anchor to the DOMAIN
+  // link — present on every admin route — and complete on arrival at the
+  // real destination, so the shell's second click needs no second anchor.
+  navDomainHome: "nav-domain-home",
+  navDomainKnowledge: "nav-domain-knowledge",
+  navDomainLearning: "nav-domain-learning",
+  navDomainPeople: "nav-domain-people",
+  navDomainIntelligence: "nav-domain-intelligence",
+  navDomainWorkspace: "nav-domain-workspace",
 
   // Settings / organization hub
   settingsNameField: "settings-org-name-field",

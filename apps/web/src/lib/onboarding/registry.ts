@@ -70,22 +70,29 @@ const onRoute =
     `${base}${path}`;
 
 /** Sidebar step factory — the one pattern every walkthrough starts with. */
-function sidebarStep(
-  target: TourTargetId,
+function navigationStep(
+  domain: TourTargetId,
+  domainLabel: string,
   path: string,
   title: (term: TermResolver) => string,
   body: (term: TermResolver) => string,
 ): WalkthroughStepDefinition {
   return {
     id: `nav`,
+    // Anchored to the DOMAIN link, which the global navigation renders on
+    // every admin route, rather than to a card that exists only once the
+    // landing is open. The step still completes on arrival at the real
+    // destination, so it stays one step even though the shell now asks for
+    // two clicks — the hint says so rather than the engine enforcing it.
     route: (base) => base,
-    target,
-    placement: "right",
+    target: domain,
+    placement: "bottom",
     title,
     body,
     advance: "condition",
     completeWhen: ({ pathname, base }) => pathname.startsWith(`${base}${path}`),
-    waitHint: () => "Click the highlighted navigation item to continue.",
+    waitHint: () =>
+      `Open ${domainLabel} in the navigation, then choose it there.`,
     openMobileNav: true,
   };
 }
@@ -107,8 +114,9 @@ export const WALKTHROUGHS: WalkthroughDefinition[] = [
     checklistStep: "org-details",
     needsAny: ["org.manage"],
     steps: [
-      sidebarStep(
-        TOUR_TARGETS.navOrganization,
+      navigationStep(
+        TOUR_TARGETS.navDomainWorkspace,
+        "Workspace",
         "/organization",
         () => "Open the Organization hub",
         () =>
@@ -136,8 +144,9 @@ export const WALKTHROUGHS: WalkthroughDefinition[] = [
     checklistStep: "branding",
     needsAny: ["org.branding.manage"],
     steps: [
-      sidebarStep(
-        TOUR_TARGETS.navBranding,
+      navigationStep(
+        TOUR_TARGETS.navDomainWorkspace,
+        "Workspace",
         "/branding",
         () => "Open Branding",
         () =>
@@ -166,8 +175,9 @@ export const WALKTHROUGHS: WalkthroughDefinition[] = [
     checklistStep: "journey",
     needsAny: ["paths.manage"],
     steps: [
-      sidebarStep(
-        TOUR_TARGETS.navLearning,
+      navigationStep(
+        TOUR_TARGETS.navDomainLearning,
+        "Learning",
         "/learning",
         (term) => `Open ${term("learning_path").plural}`,
         (term) =>
@@ -198,8 +208,9 @@ export const WALKTHROUGHS: WalkthroughDefinition[] = [
     checklistStep: "program",
     needsAny: ["content.author", "content.view_draft"],
     steps: [
-      sidebarStep(
-        TOUR_TARGETS.navCourses,
+      navigationStep(
+        TOUR_TARGETS.navDomainLearning,
+        "Learning",
         "/courses",
         (term) => `Open ${term("course").plural}`,
         (term) =>
@@ -229,8 +240,9 @@ export const WALKTHROUGHS: WalkthroughDefinition[] = [
     checklistStep: "phase",
     needsAny: ["content.author", "content.view_draft"],
     steps: [
-      sidebarStep(
-        TOUR_TARGETS.navCourses,
+      navigationStep(
+        TOUR_TARGETS.navDomainLearning,
+        "Learning",
         "/courses",
         (term) => `Open ${term("course").plural}`,
         (term) =>
@@ -349,15 +361,16 @@ export const WALKTHROUGHS: WalkthroughDefinition[] = [
       {
         id: "nav",
         route: (base) => base,
-        target: TOUR_TARGETS.navMyLearning,
-        placement: "right",
+        target: TOUR_TARGETS.navDomainLearning,
+        placement: "bottom",
         title: () => 'Open "My learning"',
         body: (term) =>
           `This is the ${term("learner").singular} surface. You are a member of this organization too, so you can walk the same path your ${term("learner").plural} do.`,
         advance: "condition",
         completeWhen: ({ pathname, base }) =>
           pathname.startsWith(base.replace(/\/admin$/, "/learn")),
-        waitHint: () => "Click the highlighted navigation item to continue.",
+        waitHint: () =>
+          "Open Learning in the navigation, then choose it there.",
         openMobileNav: true,
       },
       {
@@ -380,8 +393,9 @@ export const WALKTHROUGHS: WalkthroughDefinition[] = [
     checklistStep: "invite",
     needsAny: ["org.members.manage"],
     steps: [
-      sidebarStep(
-        TOUR_TARGETS.navMembers,
+      navigationStep(
+        TOUR_TARGETS.navDomainPeople,
+        "People",
         "/members",
         () => "Open Members",
         () =>
@@ -409,8 +423,9 @@ export const WALKTHROUGHS: WalkthroughDefinition[] = [
     checklistStep: "progress",
     needsAny: ["enrollment.manage", "analytics.view"],
     steps: [
-      sidebarStep(
-        TOUR_TARGETS.navEnrollments,
+      navigationStep(
+        TOUR_TARGETS.navDomainLearning,
+        "Learning",
         "/enrollments",
         () => "Open Enrollments",
         (term) =>

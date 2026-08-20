@@ -201,6 +201,23 @@ export function buildDomains(
               needsAny: ["enrollment.manage"],
               keywords: ["assign", "progress", "learners"],
             },
+            {
+              // The learner shell, not an admin route. Every administrator is
+              // also a member, so this is the one place the workspace lets you
+              // stand where your learners stand. The old sidebar carried it as
+              // "My learning"; the redesign dropped it without a disposition,
+              // which also stranded the learner-preview walkthrough.
+              href: `/${orgSlug}/learn`,
+              label: "My learning",
+              description: "The workspace as your learners see it",
+              icon: "academy",
+              // Gated on authorship, not membership. Every member can reach
+              // the learner shell directly; its place in the ADMIN workspace
+              // is previewing what you are building, so an account with no
+              // admin permissions must not gain a domain because of it.
+              needsAny: ["content.view_draft"],
+              keywords: ["learner", "preview", "academy", "my learning"],
+            },
           ],
         },
         {

@@ -89,12 +89,17 @@ describe("buildDomains — permission filtering", () => {
   });
 
   test("an empty section is dropped rather than rendered empty", () => {
-    // content.view_draft alone: Knowledge survives, but Learning keeps only
-    // the sections whose items survive.
+    // content.view_draft alone: Knowledge survives, and Learning keeps only
+    // the sections whose items survive — Programs (Courses) and Participation
+    // (My learning, the author's view of the learner shell). Assessment and
+    // Credentials drop entirely because nothing in them clears the filter.
     const learning = buildDomains(ORG, ["content.view_draft"]).find(
       (d) => d.key === "learning",
     );
-    expect(learning?.sections.map((s) => s.label)).toEqual(["Programs"]);
+    expect(learning?.sections.map((s) => s.label)).toEqual([
+      "Programs",
+      "Participation",
+    ]);
     for (const section of learning?.sections ?? []) {
       expect(section.items.length).toBeGreaterThan(0);
     }

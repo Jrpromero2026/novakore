@@ -1,6 +1,8 @@
 "use client";
 
 import Link from "next/link";
+import { domainTourId } from "@/lib/navigation/domain-tour-id";
+import { tourTarget } from "@/lib/onboarding/targets";
 import { usePathname } from "next/navigation";
 import type { Domain } from "@/lib/navigation/domains";
 import { cx } from "@/components/ui/primitives";
@@ -85,6 +87,7 @@ export function GlobalNav({
                 <li key={domain.key}>
                   <Link
                     href={domain.href}
+                    {...tourTarget(domainTourId(domain.key))}
                     aria-current={active ? "page" : undefined}
                     className={cx(
                       "relative flex items-center rounded-md px-3 text-body-sm font-medium transition-colors",
@@ -131,6 +134,7 @@ export function GlobalNav({
               <li key={domain.key} className="shrink-0">
                 <Link
                   href={domain.href}
+                  {...tourTarget(domainTourId(domain.key))}
                   aria-current={active ? "page" : undefined}
                   className={cx(
                     "block rounded-md px-3 py-1.5 text-body-sm font-medium",

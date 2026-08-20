@@ -392,6 +392,18 @@ function WalkthroughOverlay({
   const missingReportedRef = useRef(false);
   const conditionFiredRef = useRef(false);
 
+  // Both latches belong to a STEP, not to the walkthrough. Left unreset,
+  // `conditionFiredRef` lets the engine auto-advance exactly one condition
+  // step per tour and silently stalls every later one — which stayed hidden
+  // until a walkthrough first had two already-satisfied condition steps in a
+  // row. Declared before the effects that read them so React runs the reset
+  // first on the commit where the step changes; keyed on `step` alone so a
+  // mid-step route change cannot clear a latch and double-advance.
+  useEffect(() => {
+    conditionFiredRef.current = false;
+    missingReportedRef.current = false;
+  }, [step]);
+
   const onRoute = pathname.startsWith(step.route(base));
   // Latest pathname for interval closures (App Router owns the URL).
   const pathnameRef = useRef(pathname);

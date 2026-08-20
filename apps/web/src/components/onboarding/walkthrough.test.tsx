@@ -112,8 +112,9 @@ describe("walkthrough engine", () => {
 
     fireEvent.click(screen.getByRole("button", { name: "Show me" }));
 
-    // Step 1 (sidebar) auto-completes because we are already on the route;
-    // the engine advances to the final, target-anchored step.
+    // The navigation step auto-completes because we are already on the
+    // destination route; the engine advances to the final, target-anchored
+    // step.
     await screen.findByText("Step 2 of 2", {}, { timeout: 4000 });
     const dialog = screen.getByRole("dialog", {
       name: /review learner progress/i,
