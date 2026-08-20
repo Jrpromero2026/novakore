@@ -139,9 +139,42 @@ test.describe("NovaKore happy path", () => {
     // The hero greeting is the signature element of the Executive Command
     // Center; its absence means the dashboard composition broke.
     await expect(page.getByRole("heading", { level: 1 }).first()).toBeVisible();
+    // The six-domain shell. Asserting the DOMAIN LIST rather than merely
+    // that some navigation exists: the whole claim of the redesign is that a
+    // user meets six words instead of twenty destinations, so that is the
+    // thing worth failing on.
+    const domainNav = page
+      .getByRole("navigation", { name: /workspace domains/i })
+      .first();
+    await expect(domainNav).toBeVisible();
+    await expect(domainNav.getByRole("link")).toHaveText([
+      "Home",
+      "Knowledge",
+      "Learning",
+      "People",
+      "Intelligence",
+      "Workspace",
+    ]);
+
+    // Progressive disclosure, exercised rather than asserted: click into a
+    // domain and confirm it lands on its own level with a working trail.
+    await domainNav.getByRole("link", { name: "Workspace" }).click();
+    await page.waitForURL(/\/admin\/workspace/, { timeout: 20_000 });
+    await assertNoErrorPage(page);
     await expect(
-      page.getByRole("navigation", { name: /workspace navigation/i }),
+      page.getByRole("heading", { level: 1, name: "Workspace" }),
     ).toBeVisible();
+    await expect(
+      page.getByRole("navigation", { name: /breadcrumb/i }),
+    ).toBeVisible();
+
+    // And the cards are navigation objects, not decoration.
+    await page
+      .getByRole("link", { name: /branding/i })
+      .first()
+      .click();
+    await page.waitForURL(/\/admin\/branding/, { timeout: 20_000 });
+    await assertNoErrorPage(page);
 
     // --- Studio: the knowledge graph -------------------------------------
     await page.goto(`/${ORG}/admin/studio`);

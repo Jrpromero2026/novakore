@@ -1,4 +1,3 @@
-import Link from "next/link";
 import { requireOrgContext } from "@/lib/org-context";
 import { getUser } from "@/lib/auth";
 import { getOrgBrandContext } from "@/lib/data/branding";
@@ -17,8 +16,8 @@ import {
   type PaletteEntry,
 } from "@/components/command-palette";
 import { CommandPaletteTrigger } from "@/components/command-palette";
-import { buildNavSections } from "./nav-config";
-import { AdminSidebar, MobileNavButton, PinButton, ShellProvider } from "./nav";
+import { buildDomains } from "@/lib/navigation/domains";
+import { GlobalNav } from "@/components/shell/global-nav";
 
 export default async function OrgAdminLayout({
   children,
@@ -37,7 +36,7 @@ export default async function OrgAdminLayout({
   const displayName = brand.displayName ?? ctx.organization.name;
 
   const permissions = [...ctx.orgPermissions] as string[];
-  const sections = buildNavSections(orgSlug, permissions);
+  const domains = buildDomains(orgSlug, permissions);
 
   // Palette entries: every visible destination + creation surfaces the
   // member can actually reach. All real routes — the server authorizes.
@@ -86,15 +85,30 @@ export default async function OrgAdminLayout({
   }
 
   const paletteEntries: PaletteEntry[] = [
-    ...sections.flatMap((section) =>
-      section.items.map((item) => ({
-        id: item.href,
-        label: item.label,
-        group: "Navigate",
-        href: item.href,
-        keywords: [...(item.keywords ?? []), section.label ?? ""],
-      })),
+    // With no sidebar the palette becomes the fastest route to a specific
+    // page, so it is fed from the same domain model the navigation uses —
+    // one source of truth, and the domain name becomes a search keyword.
+    ...domains.flatMap((domain) =>
+      domain.sections.flatMap((section) =>
+        section.items.map((item) => ({
+          id: item.href,
+          label: item.label,
+          group: domain.label,
+          href: item.href,
+          keywords: [...(item.keywords ?? []), section.label, domain.label],
+        })),
+      ),
     ),
+    // The domain landing pages are destinations in their own right.
+    ...domains
+      .filter((d) => d.sections.length > 0)
+      .map((d) => ({
+        id: d.href,
+        label: d.label,
+        group: "Domains",
+        href: d.href,
+        keywords: ["domain", "overview"],
+      })),
     ...(held.has("content.view_draft")
       ? [
           {
@@ -150,72 +164,41 @@ export default async function OrgAdminLayout({
   ];
 
   return (
-    <ShellProvider>
-      <WalkthroughProvider
-        orgId={ctx.organization.id}
-        orgSlug={orgSlug}
-        permissions={permissions}
-        terminologyOverrides={terminology.overrides}
-        recordEvent={recordOnboardingEventAction}
-      >
-        <div className="flex min-h-dvh flex-col">
-          <OrgThemeStyle theme={brand.theme} />
-          <header
-            className="sticky top-0 border-b border-border-subtle bg-background/85 backdrop-blur-md"
-            style={{ zIndex: "var(--z-nav)" }}
+    <WalkthroughProvider
+      orgId={ctx.organization.id}
+      orgSlug={orgSlug}
+      permissions={permissions}
+      terminologyOverrides={terminology.overrides}
+      recordEvent={recordOnboardingEventAction}
+    >
+      <div className="flex min-h-dvh flex-col">
+        <OrgThemeStyle theme={brand.theme} />
+
+        <GlobalNav domains={domains} organizationName={displayName}>
+          <CommandPaletteTrigger />
+          <HelpMenu orgSlug={orgSlug} />
+          <ThemeToggle />
+          <UserMenu email={user?.email ?? null} signOutAction={signOutAction} />
+        </GlobalNav>
+
+        <main className="min-w-0 flex-1">
+          {/*
+            The layout owns the page frame — width, gutters, rhythm — so that
+            every page, migrated or not, sits in the same column. PageShell
+            composes CONTENT inside this frame and deliberately does not set
+            its own width, or the two would fight.
+          */}
+          <div
+            className="nk-fade-up mx-auto w-full px-4 py-8 sm:px-6 sm:py-10"
+            style={{ maxWidth: "var(--layout-page-max)" }}
           >
-            <div
-              className="flex w-full items-center justify-between gap-3 px-4 sm:px-5"
-              style={{ height: "var(--layout-header)" }}
-            >
-              <div className="flex min-w-0 items-center gap-1.5">
-                <MobileNavButton />
-                <Link
-                  href={`/${orgSlug}/admin`}
-                  className="truncate text-title font-semibold text-text-primary"
-                >
-                  {displayName}
-                </Link>
-                <span
-                  className="mt-px hidden text-caption uppercase text-text-muted lg:inline"
-                  style={{ letterSpacing: "var(--tracking-caps)" }}
-                >
-                  · Workspace
-                </span>
-              </div>
-              <div className="flex shrink-0 items-center gap-2">
-                <CommandPaletteTrigger />
-                <PinButton orgSlug={orgSlug} />
-                <HelpMenu orgSlug={orgSlug} />
-                <ThemeToggle />
-                <UserMenu
-                  email={user?.email ?? null}
-                  signOutAction={signOutAction}
-                />
-              </div>
-            </div>
-          </header>
-
-          <div className="flex w-full flex-1">
-            <AdminSidebar
-              sections={sections}
-              orgName={displayName}
-              orgSlug={orgSlug}
-            />
-            <main className="min-w-0 flex-1">
-              <div
-                className="nk-fade-up mx-auto w-full px-4 py-8 sm:px-8"
-                style={{ maxWidth: "var(--layout-page-max)" }}
-              >
-                {children}
-              </div>
-            </main>
+            {children}
           </div>
+        </main>
 
-          <CommandPalette entries={paletteEntries} />
-          <FeedbackWidget orgSlug={orgSlug} roleHint="admin" />
-        </div>
-      </WalkthroughProvider>
-    </ShellProvider>
+        <CommandPalette entries={paletteEntries} />
+        <FeedbackWidget orgSlug={orgSlug} roleHint="admin" />
+      </div>
+    </WalkthroughProvider>
   );
 }

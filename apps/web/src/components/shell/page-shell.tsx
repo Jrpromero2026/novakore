@@ -8,6 +8,9 @@ import { Breadcrumbs } from "./breadcrumbs";
  * its content; none of them decides where the trail sits or how wide the
  * column is.
  *
+ * Width and gutters belong to the layout, not here — otherwise a page that
+ * uses PageShell and one that does not would sit in different columns.
+ *
  * The rail is optional and collapses beneath the content on narrow screens
  * rather than disappearing — organization identity is exactly the thing that
  * must survive a small viewport, since "which workspace am I editing?" gets
@@ -30,10 +33,7 @@ export function PageShell({
   children: React.ReactNode;
 }) {
   return (
-    <div
-      className="mx-auto w-full px-4 py-8 sm:px-6 sm:py-10"
-      style={{ maxWidth: "var(--layout-page-max)" }}
-    >
+    <div>
       <Breadcrumbs crumbs={crumbs} />
 
       <div className="mt-4 flex flex-wrap items-start justify-between gap-4">
