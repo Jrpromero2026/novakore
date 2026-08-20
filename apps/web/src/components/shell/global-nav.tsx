@@ -93,8 +93,8 @@ export function GlobalNav({
                       "relative flex items-center rounded-md px-3 text-body-sm font-medium transition-colors",
                       "focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent",
                       active
-                        ? "text-accent"
-                        : "text-text-muted hover:text-text",
+                        ? "text-text-primary"
+                        : "text-text-secondary hover:text-text-primary",
                     )}
                     style={{ height: "calc(var(--layout-header) - 1px)" }}
                   >
@@ -139,8 +139,8 @@ export function GlobalNav({
                   className={cx(
                     "block rounded-md px-3 py-1.5 text-body-sm font-medium",
                     active
-                      ? "bg-accent-soft text-accent"
-                      : "text-text-muted hover:text-text",
+                      ? "bg-accent-soft text-text-primary"
+                      : "text-text-secondary hover:text-text-primary",
                   )}
                 >
                   {domain.label}

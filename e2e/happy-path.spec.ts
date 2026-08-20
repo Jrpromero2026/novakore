@@ -285,6 +285,92 @@ test.describe("NovaKore happy path", () => {
       .toBe("main");
   });
 
+  for (const scheme of ["light", "dark"] as const) {
+    test(`shell text meets AA contrast in ${scheme} mode`, async ({ page }) => {
+      // This found a live defect on its first run, and not a subtle one: in
+      // dark mode the tenant's branded LIGHT background stayed in force while
+      // the text tokens correctly flipped, leaving near-white text on cream
+      // at about 1:1. Reading the CSS would not have shown it — the cascade
+      // only misbehaves once a real tenant theme is layered onto it.
+      test.setTimeout(120_000);
+      await page.emulateMedia({ colorScheme: scheme });
+      await signIn(page);
+      await page.goto(`/${ORG}/admin/courses`);
+      await assertNoErrorPage(page);
+
+      const failures = await page.evaluate(() => {
+        const parse = (c: string) => {
+          const m = c.match(/[\d.]+/g)!.map(Number);
+          return { r: m[0]!, g: m[1]!, b: m[2]!, a: m[3] ?? 1 };
+        };
+        const luminance = (c: { r: number; g: number; b: number }) => {
+          const f = (v: number) => {
+            v /= 255;
+            return v <= 0.03928 ? v / 12.92 : ((v + 0.055) / 1.055) ** 2.4;
+          };
+          return 0.2126 * f(c.r) + 0.7152 * f(c.g) + 0.0722 * f(c.b);
+        };
+        // Walk up for the first opaque ancestor: the painted background.
+        const backgroundOf = (el: Element) => {
+          let node: Element | null = el;
+          while (node) {
+            const c = parse(getComputedStyle(node).backgroundColor);
+            if (c.a > 0.9) return c;
+            node = node.parentElement;
+          }
+          return { r: 255, g: 255, b: 255 };
+        };
+        const ratioOf = (el: Element) => {
+          const [hi, lo] = [
+            luminance(parse(getComputedStyle(el).color)),
+            luminance(backgroundOf(el)),
+          ].sort((a, b) => b - a);
+          return (hi! + 0.05) / (lo! + 0.05);
+        };
+
+        const targets: [string, string][] = [
+          ['nav[aria-label="Breadcrumb"] a', "breadcrumb link"],
+          [
+            'nav[aria-label="Breadcrumb"] [aria-current="page"]',
+            "breadcrumb current",
+          ],
+          [
+            'nav[aria-label="Workspace domains"] a[aria-current="page"]',
+            "active domain",
+          ],
+          [
+            'nav[aria-label="Workspace domains"] a:not([aria-current])',
+            "inactive domain",
+          ],
+          ["main h1", "page title"],
+        ];
+
+        const bad: string[] = [];
+        for (const [selector, name] of targets) {
+          const el = document.querySelector(selector);
+          if (!el) continue; // Absent on some routes; other specs cover presence.
+          const style = getComputedStyle(el);
+          const px = parseFloat(style.fontSize);
+          const large =
+            px >= 24 || (parseInt(style.fontWeight, 10) >= 700 && px >= 18.66);
+          const required = large ? 3 : 4.5;
+          const ratio = ratioOf(el);
+          if (ratio < required) {
+            bad.push(
+              `${name}: ${ratio.toFixed(2)}:1 (needs ${required}:1 at ${px}px)`,
+            );
+          }
+        }
+        return bad;
+      });
+
+      expect(
+        failures,
+        `contrast failures in ${scheme} mode:\n${failures.join("\n")}`,
+      ).toEqual([]);
+    });
+  }
+
   test("no page pushes a horizontal scrollbar on a phone", async ({ page }) => {
     // Sideways scroll on a phone is the failure mode a desktop-built redesign
     // ships without noticing. It found a real one on its first run: a

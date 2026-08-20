@@ -45,31 +45,76 @@ const TOKEN_TO_VAR: Record<keyof Omit<ThemeTokens, "secondary">, string> = {
   info: "--info",
 };
 
-/** CSS declarations for tokens that differ from base; validated hex only. */
-export function themeOverrideDeclarations(
-  theme: TenantTheme | null,
+/** Tokens that differ from the NovaKore base for one mode; validated hex. */
+function overridesFor(
+  theme: TenantTheme,
   mode: ThemeMode,
-): string {
-  if (!theme) return "";
+): Map<string, string> {
   const base = NOVAKORE_BASE[mode];
   const resolved = resolveThemeTokens(theme, mode);
-  const declarations: string[] = [];
+  const out = new Map<string, string>();
   for (const [token, cssVar] of Object.entries(TOKEN_TO_VAR) as [
     keyof typeof TOKEN_TO_VAR,
     string,
   ][]) {
     const value = resolved[token];
     if (value !== base[token] && HEX.test(value)) {
-      declarations.push(`${cssVar}:${value.toLowerCase()}`);
+      out.set(cssVar, value.toLowerCase());
     }
   }
-  return declarations.join(";");
+  return out;
+}
+
+const serialize = (m: Map<string, string>) =>
+  [...m].map(([k, v]) => `${k}:${v}`).join(";");
+
+/** CSS declarations for tokens that differ from base; validated hex only. */
+export function themeOverrideDeclarations(
+  theme: TenantTheme | null,
+  mode: ThemeMode,
+): string {
+  if (!theme) return "";
+  return serialize(overridesFor(theme, mode));
+}
+
+/**
+ * The dark declarations, including every light override neutralised.
+ *
+ * The light block is emitted unconditionally on `:root` and this stylesheet
+ * comes after globals.css, so a light override at equal specificity wins
+ * against the dark `@media` block that came earlier. A tenant whose brand
+ * background differs from base in light but MATCHES base in dark therefore
+ * emitted nothing for dark, and the light background stayed in force while
+ * the text tokens correctly flipped: near-white text on a cream ground, at
+ * about 1:1 contrast, for anyone whose OS prefers dark and who has not
+ * explicitly chosen a theme in the app.
+ *
+ * So dark must restate any token light touched, at its base dark value,
+ * rather than only the ones the tenant customised.
+ */
+function darkDeclarations(theme: TenantTheme): string {
+  const light = overridesFor(theme, "light");
+  const dark = overridesFor(theme, "dark");
+  const baseDark = NOVAKORE_BASE["dark"];
+  const byVar = new Map(
+    (Object.entries(TOKEN_TO_VAR) as [keyof typeof TOKEN_TO_VAR, string][]).map(
+      ([token, cssVar]) => [cssVar, token],
+    ),
+  );
+
+  for (const cssVar of light.keys()) {
+    if (dark.has(cssVar)) continue;
+    const token = byVar.get(cssVar);
+    const value = token ? baseDark[token] : undefined;
+    if (value && HEX.test(value)) dark.set(cssVar, value.toLowerCase());
+  }
+  return serialize(dark);
 }
 
 export function OrgThemeStyle({ theme }: { theme: TenantTheme | null }) {
   if (!theme) return null;
   const light = themeOverrideDeclarations(theme, "light");
-  const dark = themeOverrideDeclarations(theme, "dark");
+  const dark = darkDeclarations(theme);
   const fontStack = FONT_STACKS[theme.typography.interfaceFont];
 
   // Enum-validated non-color preferences resolve to numeric/keyword values

@@ -51,3 +51,51 @@ describe("tenant theme application (CSS-injection boundary)", () => {
     expect(dark).not.toContain(NOVAKORE_BASE.dark.background.slice(1));
   });
 });
+
+const NL = String.fromCharCode(10);
+
+describe("mode isolation", () => {
+  // The shape of a real tenant: a branded LIGHT background, dark left at the
+  // platform default. This is the combination that broke.
+  const brandedLight = tenantThemeSchema.parse({
+    schemaVersion: 1,
+    colors: {
+      accentLight: "#6d28d9",
+      accentDark: "#a78bfa",
+      backgroundLight: "#f3f0e9",
+    },
+  });
+
+  test("a light-only brand background does not leak into dark mode", () => {
+    const { container } = render(<OrgThemeStyle theme={brandedLight} />);
+    const css = container.querySelector("style")?.textContent ?? "";
+
+    const darkBlock = css
+      .split(NL)
+      .find((line) => line.startsWith("@media (prefers-color-scheme: dark)"));
+    expect(darkBlock, "a dark block must be emitted").toBeTruthy();
+
+    // Dark must RESTATE the background at the platform value. Emitting only
+    // the tokens a tenant customised leaves the unconditional light :root
+    // override — which comes after globals.css — winning against the dark
+    // media query, putting near-white text on a cream ground.
+    expect(darkBlock).toContain(
+      `--background:${NOVAKORE_BASE.dark.background}`,
+    );
+    expect(darkBlock).not.toContain("#f3f0e9");
+
+    // And the explicit toggle must agree with the media query.
+    const explicitDark = css
+      .split(NL)
+      .find((line) => line.startsWith(':root[data-theme="dark"]'));
+    expect(explicitDark).toContain(
+      `--background:${NOVAKORE_BASE.dark.background}`,
+    );
+  });
+
+  test("light still carries the brand background", () => {
+    const { container } = render(<OrgThemeStyle theme={brandedLight} />);
+    const css = container.querySelector("style")?.textContent ?? "";
+    expect(css).toContain("--background:#f3f0e9");
+  });
+});
