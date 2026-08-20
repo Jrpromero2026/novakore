@@ -14,6 +14,7 @@ import { ContextRail } from "./context-rail";
 import { GlobalNav } from "./global-nav";
 import { NavigationCard, SectionCard } from "./navigation-card";
 import { PageShell } from "./page-shell";
+import { AutoHeader } from "./auto-header";
 
 const ALL = [
   "content.view_draft",
@@ -272,5 +273,44 @@ describe("PageShell", () => {
       </PageShell>,
     );
     expect(screen.getAllByRole("heading", { level: 1 })).toHaveLength(1);
+  });
+});
+
+describe("AutoHeader", () => {
+  test("names the destination, not the layout that wraps it", () => {
+    // Library and the review queue previously shared one hard-coded
+    // "Learning Studio" heading supplied by their layout. They are different
+    // levels of the organization, not tabs of one screen.
+    pathname = "/acme/admin/studio/library";
+    render(<AutoHeader domains={domains} />);
+    expect(
+      screen.getByRole("heading", { level: 1, name: "Library" }),
+    ).toBeTruthy();
+    expect(screen.queryByText(/learning studio/i)).toBeNull();
+  });
+
+  test("longest match wins over the parent destination", () => {
+    pathname = "/acme/admin/studio/templates";
+    render(<AutoHeader domains={domains} />);
+    expect(
+      screen.getByRole("heading", { level: 1, name: "Templates" }),
+    ).toBeTruthy();
+  });
+
+  test("renders the full trail for the current route", () => {
+    pathname = "/acme/admin/studio/library";
+    render(<AutoHeader domains={domains} />);
+    const nav = screen.getByRole("navigation", { name: /breadcrumb/i });
+    expect(
+      within(nav)
+        .getAllByRole("listitem")
+        .map((li) => li.textContent),
+    ).toEqual(["Knowledge", "/Reusable material", "/Library"]);
+  });
+
+  test("renders nothing for a route it does not own", () => {
+    pathname = "/acme/admin/nowhere";
+    const { container } = render(<AutoHeader domains={domains} />);
+    expect(container.firstChild).toBeNull();
   });
 });

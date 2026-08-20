@@ -50,11 +50,18 @@ export function PageShell({
         ) : null}
       </div>
 
+      {/*
+        Without a rail the content is capped near the width it WOULD have had
+        beside one. Card proportions should not depend on whether a domain
+        happens to show organization identity — a two-column grid stretched
+        across the full page reads as a different design language, which is
+        exactly what having one shell is meant to prevent.
+      */}
       <div
         className={
           rail
             ? "mt-8 grid gap-5 lg:grid-cols-[minmax(0,1fr)_20rem] lg:items-start"
-            : "mt-8"
+            : "mt-8 max-w-5xl"
         }
       >
         <div className="min-w-0 space-y-5">{children}</div>
