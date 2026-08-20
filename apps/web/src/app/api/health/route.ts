@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { createClient } from "@supabase/supabase-js";
 import { publicEnv } from "@novakore/database";
 import { cached } from "@/lib/cache";
+import { siteUrl } from "@/lib/site-url";
 
 export const dynamic = "force-dynamic";
 
@@ -42,6 +43,13 @@ export async function GET() {
     // Vercel injects the commit; local/dev reports "dev".
     version: process.env.VERCEL_GIT_COMMIT_SHA?.slice(0, 7) ?? "dev",
     environment: process.env.VERCEL_ENV ?? "local",
+    // The origin this instance puts into emailed sign-in and recovery links.
+    // Operationally load-bearing: when a magic link or password reset arrives
+    // pointing at the wrong host, this is the first thing worth reading, and
+    // it distinguishes an app misconfiguration from the identity provider
+    // overriding the redirect. It is the site's own public address, so
+    // reporting it discloses nothing.
+    siteUrl: siteUrl(),
     db,
     totalMs: Date.now() - startedAt,
     at: new Date().toISOString(),
