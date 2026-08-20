@@ -6,6 +6,10 @@ import { describe, expect, test, vi } from "vitest";
 vi.mock("@/lib/actions/auth", () => ({
   signInAction: vi.fn(async () => ({ ok: false })),
   magicLinkAction: vi.fn(async () => ({ ok: true, message: "sent" })),
+  requestPasswordResetAction: vi.fn(async () => ({
+    ok: true,
+    message: "sent",
+  })),
 }));
 
 import { SignInForm } from "./sign-in-form";
@@ -49,5 +53,24 @@ describe("sign-in form", () => {
     ]) {
       expect(screen.queryByText(provider)).not.toBeInTheDocument();
     }
+  });
+
+  test("a forgotten password has a way out of the sign-in screen", async () => {
+    // Regression guard: the app shipped with no route from "I cannot sign in"
+    // to "set a new password", which stranded the account holder.
+    render(<SignInForm />);
+    await userEvent.click(
+      screen.getByRole("button", { name: /forgot your password/i }),
+    );
+
+    const form = screen.getByRole("form", {
+      name: /request a password reset/i,
+    });
+    expect(form).toBeTruthy();
+    // Email only — a reset request must never ask for the password you lost.
+    expect(
+      screen.queryByLabelText(/^password$/i, { selector: "input" }),
+    ).toBeNull();
+    expect(screen.getByLabelText(/email/i)).toBeTruthy();
   });
 });

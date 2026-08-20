@@ -8,6 +8,12 @@ const PUBLIC_PATHS = [
   "/sign-in",
   "/auth/callback",
   "/auth/error",
+  // Password recovery. The link establishes a session before landing here, so
+  // an authenticated visitor is the normal case — but an EXPIRED link arrives
+  // without one, and that visitor needs to be told so. Bouncing them to
+  // /sign-in instead is the silent dead end this flow exists to fix. The page
+  // renders nothing sensitive: signed out it shows only "request a new link".
+  "/auth/reset",
   "/verify",
   // PWA manifest must be fetchable by the browser without a session.
   "/manifest.webmanifest",

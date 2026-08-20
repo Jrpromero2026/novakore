@@ -427,7 +427,17 @@ describe.skipIf(!configured)(
         .select("id")
         .order("id");
       expect(error).toBeNull();
-      expect(orgs?.map((o) => o.id)).toEqual([ORG_A, ORG_B, ORG_GAMMA]);
+      // A SUPERSET assertion, not an exact list. The property under test is
+      // that a platform administrator sees across every tenant boundary —
+      // not that exactly three tenants exist. The exact-list form broke the
+      // first time a real organization was provisioned, which is a test
+      // fragility rather than a regression.
+      const visible = new Set(orgs?.map((o) => o.id));
+      for (const seeded of [ORG_A, ORG_B, ORG_GAMMA]) {
+        expect(visible.has(seeded), `platform admin should see ${seeded}`).toBe(
+          true,
+        );
+      }
 
       // but platform admins are not org members: memberships stay invisible
       const { data: memberships } = await platformAdmin

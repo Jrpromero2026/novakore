@@ -32,6 +32,30 @@ export const signInSchema = z.object({
 
 export const magicLinkSchema = z.object({ email: emailSchema });
 
+export const passwordResetRequestSchema = z.object({ email: emailSchema });
+
+/**
+ * Setting a NEW password, unlike signing in with an existing one.
+ *
+ * The floor is 12 rather than the more common 8: this platform holds
+ * emergency procedures and competency records, and the accounts being
+ * protected are staff accounts rather than consumer logins. Supabase's
+ * leaked-password protection is the second layer and is enabled at the
+ * project level, not here.
+ */
+export const newPasswordSchema = z
+  .object({
+    password: z
+      .string()
+      .min(12, { error: "Use at least 12 characters." })
+      .max(200, { error: "That is longer than 200 characters." }),
+    confirm: z.string(),
+  })
+  .refine((v) => v.password === v.confirm, {
+    error: "Both passwords must match.",
+    path: ["confirm"],
+  });
+
 export const inviteMemberSchema = z.object({ email: emailSchema });
 
 export const organizationNameSchema = z.object({

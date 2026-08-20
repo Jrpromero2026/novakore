@@ -1,7 +1,11 @@
 "use client";
 
 import { useActionState, useState } from "react";
-import { magicLinkAction, signInAction } from "@/lib/actions/auth";
+import {
+  magicLinkAction,
+  requestPasswordResetAction,
+  signInAction,
+} from "@/lib/actions/auth";
 import { idle } from "@/lib/actions/types";
 import {
   ActionBanner,
@@ -11,7 +15,7 @@ import {
   cx,
 } from "@/components/ui/primitives";
 
-type Mode = "password" | "magic-link";
+type Mode = "password" | "magic-link" | "reset";
 
 export function SignInForm() {
   const [mode, setMode] = useState<Mode>("password");
@@ -21,6 +25,10 @@ export function SignInForm() {
   );
   const [magicState, magicAction, magicPending] = useActionState(
     magicLinkAction,
+    idle,
+  );
+  const [resetState, resetAction, resetPending] = useActionState(
+    requestPasswordResetAction,
     idle,
   );
 
@@ -40,7 +48,9 @@ export function SignInForm() {
           <button
             key={value}
             role="tab"
-            aria-selected={mode === value}
+            aria-selected={
+              mode === value || (mode === "reset" && value === "password")
+            }
             onClick={() => setMode(value)}
             className={cx(
               "rounded-[5px] px-3 py-1.5 text-sm font-medium transition-colors",
@@ -94,8 +104,15 @@ export function SignInForm() {
           >
             {passwordPending ? "Signing in…" : "Sign in"}
           </Button>
+          <button
+            type="button"
+            onClick={() => setMode("reset")}
+            className="w-full text-center text-caption text-text-muted underline underline-offset-2 hover:text-text"
+          >
+            Forgot your password?
+          </button>
         </form>
-      ) : (
+      ) : mode === "magic-link" ? (
         <form
           action={magicAction}
           className="space-y-4"
@@ -124,7 +141,45 @@ export function SignInForm() {
             {magicPending ? "Sending…" : "Email me a sign-in link"}
           </Button>
         </form>
-      )}
+      ) : null}
+
+      {mode === "reset" ? (
+        <form
+          action={resetAction}
+          className="space-y-4"
+          aria-label="Request a password reset"
+        >
+          <Field
+            label="Email"
+            htmlFor="reset-email"
+            error={resetState.errors?.email}
+            hint="We'll email you a link to set a new password."
+          >
+            <Input
+              id="reset-email"
+              name="email"
+              type="email"
+              autoComplete="email"
+              required
+            />
+          </Field>
+          <ActionBanner state={resetState} />
+          <Button
+            type="submit"
+            disabled={resetPending}
+            className="w-full justify-center"
+          >
+            {resetPending ? "Sending…" : "Email me a reset link"}
+          </Button>
+          <button
+            type="button"
+            onClick={() => setMode("password")}
+            className="w-full text-center text-caption text-text-muted underline underline-offset-2 hover:text-text"
+          >
+            Back to sign in
+          </button>
+        </form>
+      ) : null}
     </div>
   );
 }

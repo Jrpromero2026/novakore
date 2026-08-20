@@ -2,7 +2,12 @@
 
 import { redirect } from "next/navigation";
 import { supabaseServer } from "../supabase/server";
-import { magicLinkSchema, signInSchema } from "../validation";
+import {
+  magicLinkSchema,
+  newPasswordSchema,
+  passwordResetRequestSchema,
+  signInSchema,
+} from "../validation";
 import { fieldErrors, type ActionState } from "./types";
 
 export async function signInAction(
@@ -54,6 +59,82 @@ export async function magicLinkAction(
     ok: true,
     message: "If that account exists, a sign-in link is on its way.",
   };
+}
+
+/**
+ * Send a password-recovery link.
+ *
+ * Recovery lands on `/auth/callback`, which exchanges the code for a session
+ * and then forwards to `/auth/reset` — the only screen that can actually set
+ * a new password. Without that `next`, a recovery link merely signs you in
+ * and drops you at the org picker with no way to change anything, which is
+ * exactly the dead end this flow was missing.
+ */
+export async function requestPasswordResetAction(
+  _prev: ActionState,
+  formData: FormData,
+): Promise<ActionState> {
+  const parsed = passwordResetRequestSchema.safeParse({
+    email: formData.get("email"),
+  });
+  if (!parsed.success) return fieldErrors(parsed.error);
+
+  const supabase = await supabaseServer();
+  const site = process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000";
+  await supabase.auth.resetPasswordForEmail(parsed.data.email, {
+    redirectTo: `${site}/auth/callback?next=${encodeURIComponent("/auth/reset")}`,
+  });
+
+  // Uniform response whether or not the account exists — same
+  // no-account-existence-oracle rule the magic link follows. Errors are
+  // deliberately not surfaced.
+  return {
+    ok: true,
+    message: "If that account exists, a reset link is on its way.",
+  };
+}
+
+/**
+ * Set a new password for the session established by a recovery link.
+ *
+ * Requires an authenticated session: the recovery link creates one before
+ * this runs. A visitor who reaches this action without one gets told the
+ * link expired rather than a generic failure, because that is almost always
+ * what happened.
+ */
+export async function updatePasswordAction(
+  _prev: ActionState,
+  formData: FormData,
+): Promise<ActionState> {
+  const parsed = newPasswordSchema.safeParse({
+    password: formData.get("password"),
+    confirm: formData.get("confirm"),
+  });
+  if (!parsed.success) return fieldErrors(parsed.error);
+
+  const supabase = await supabaseServer();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  if (!user) {
+    return {
+      ok: false,
+      message:
+        "That reset link has expired or was already used. Request a new one.",
+    };
+  }
+
+  const { error } = await supabase.auth.updateUser({
+    password: parsed.data.password,
+  });
+  if (error) {
+    // Surfaced verbatim on purpose: this is where leaked-password protection
+    // and length rules report back, and a generic message would leave someone
+    // guessing why a valid-looking password was refused.
+    return { ok: false, message: error.message };
+  }
+
+  redirect("/select-org");
 }
 
 export async function signOutAction(): Promise<void> {
