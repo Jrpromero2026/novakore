@@ -323,6 +323,15 @@ test.describe("NovaKore happy path", () => {
     await page.waitForURL(/\/courses\/[0-9a-f-]{36}/, { timeout: 30_000 });
     await assertNoErrorPage(page);
 
+    // A detail page is where orientation matters most — it is the furthest
+    // from the domain landing and the only place the trail carries names the
+    // shell cannot derive. These pages hand-wrote their own trails until the
+    // migration, and one of them climbed to Studio, which is not where a
+    // lesson lives.
+    await expect(
+      page.getByRole("navigation", { name: /breadcrumb/i }).first(),
+    ).toBeVisible();
+
     const lessonLink = page.locator('a[href*="/lessons/"]').first();
     if (await lessonLink.count()) {
       await lessonLink.click();

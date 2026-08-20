@@ -11,6 +11,7 @@ import { IconArrowRight } from "@/components/ui/icons";
 import { identityIsEmpty } from "@/lib/org-identity";
 import { tourState, tourTarget, TOUR_TARGETS } from "@/lib/onboarding/targets";
 import { IdentityForm } from "./identity-form";
+import { AutoBreadcrumbs } from "@/components/shell/auto-breadcrumbs";
 
 export const metadata: Metadata = { title: "Organization" };
 
@@ -48,6 +49,12 @@ export default async function OrganizationHubPage({
       className="space-y-8"
       {...tourState({ identity: !identityIsEmpty(identity) })}
     >
+      {/*
+        Above the hero, not inside it. The panel's own eyebrow carries live
+        status, which is a different job from saying where this page sits.
+      */}
+      <AutoBreadcrumbs />
+
       {/* ---- Identity hero -------------------------------------------------- */}
       <Panel tone="hero" className="nk-fade-up rounded-xl p-6 sm:p-7">
         <p className="flex items-center gap-2 text-caption font-medium uppercase tracking-[var(--tracking-caps)] text-text-muted">

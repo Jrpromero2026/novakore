@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import Link from "next/link";
+import { AutoBreadcrumbs } from "@/components/shell/auto-breadcrumbs";
 import { notFound } from "next/navigation";
 import { contentBlockSchema, type ContentBlock } from "@novakore/domain";
 import { can, requireOrgContext, requirePermission } from "@/lib/org-context";
@@ -107,25 +107,20 @@ export default async function LessonEditorPage({
 
   return (
     <div className="space-y-4">
-      <p
-        className="text-caption uppercase text-text-muted"
-        style={{ letterSpacing: "var(--tracking-caps)" }}
-      >
-        <Link
-          href={`/${orgSlug}/admin/studio`}
-          className="hover:text-text-primary"
-        >
-          Studio
-        </Link>{" "}
-        /{" "}
-        <Link
-          href={`/${orgSlug}/admin/courses/${courseId}`}
-          className="hover:text-text-primary"
-        >
-          {workspace.tree.currentCourse?.title ?? "Course"}
-        </Link>{" "}
-        / {lesson.title}
-      </p>
+      {/*
+        The hand-written trail here climbed to Studio, which is not where a
+        lesson lives — it lives under its course. The derived spine gets that
+        right; only the course and lesson names are the page's to supply.
+      */}
+      <AutoBreadcrumbs
+        trail={[
+          {
+            label: workspace.tree.currentCourse?.title ?? "Course",
+            href: `/${orgSlug}/admin/courses/${courseId}`,
+          },
+          { label: lesson.title },
+        ]}
+      />
 
       <LessonEditor
         orgSlug={orgSlug}

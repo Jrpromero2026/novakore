@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import Link from "next/link";
+import { AutoBreadcrumbs } from "@/components/shell/auto-breadcrumbs";
 import { notFound } from "next/navigation";
 import { courseStructureSchema } from "@novakore/domain";
 import { requireOrgContext, requirePermission } from "@/lib/org-context";
@@ -38,19 +38,16 @@ export default async function CourseVersionPage({
   return (
     <div className="space-y-6">
       <header className="space-y-1">
-        <p
-          className="text-caption uppercase text-text-muted"
-          style={{ letterSpacing: "var(--tracking-caps)" }}
-        >
-          <Link
-            href={`/${orgSlug}/admin/courses/${courseId}`}
-            className="hover:text-text-primary"
-          >
-            Course builder
-          </Link>{" "}
-          / published version
-        </p>
-        <h1 className="text-h1 text-text-primary">
+        <AutoBreadcrumbs
+          trail={[
+            {
+              label: version.title,
+              href: `/${orgSlug}/admin/courses/${courseId}`,
+            },
+            { label: `Version ${version.version_number}` },
+          ]}
+        />
+        <h1 className="pt-2 text-h1 text-text-primary">
           {version.title} — Version {version.version_number}
         </h1>
         <p className="text-body-sm text-text-secondary">
