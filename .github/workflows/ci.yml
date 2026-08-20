@@ -64,6 +64,38 @@ jobs:
           npm run test:run --workspace=@novakore/domain
           npm run test:run --workspace=@novakore/design-system
 
+      - name: Validate real-database secrets
+        # A secret that exists but is malformed is worse than one that is
+        # missing: the skip guards see a non-empty string, run the suite, and
+        # the failure surfaces as `Invalid supabaseUrl` from inside the
+        # Supabase client with a stack trace into node_modules — which says
+        # nothing about the actual cause. The commonest mistake is pasting a
+        # whole line from .env.test.local, variable name and "=" included.
+        #
+        # Shapes only. Values are never echoed; GitHub would mask them, but
+        # a log that cannot leak is better than one that relies on masking.
+        env:
+          URL: ${{ secrets.NOVAKORE_TEST_SUPABASE_URL }}
+          KEY: ${{ secrets.NOVAKORE_TEST_SUPABASE_ANON_KEY }}
+          PW: ${{ secrets.NOVAKORE_TEST_PASSWORD }}
+        run: |
+          fail=0
+          if [ -n "$URL" ] && ! printf '%s' "$URL" | grep -Eq '^https://[a-z0-9]+\.supabase\.co/?$'; then
+            echo "::error title=Malformed secret::NOVAKORE_TEST_SUPABASE_URL is set but is not a Supabase URL. Expected exactly https://<project-ref>.supabase.co — copy only the value after the '=' in .env.test.local, with no variable name, quotes, or trailing newline."
+            fail=1
+          fi
+          if [ -n "$KEY" ] && ! printf '%s' "$KEY" | grep -Eq '^eyJ'; then
+            echo "::error title=Malformed secret::NOVAKORE_TEST_SUPABASE_ANON_KEY does not look like a JWT (expected it to start with 'eyJ'). Copy only the value after the '='."
+            fail=1
+          fi
+          case "$PW" in
+            NOVAKORE_TEST_PASSWORD=*)
+              echo "::error title=Malformed secret::NOVAKORE_TEST_PASSWORD still contains the variable name. Copy only the value after the '='."
+              fail=1 ;;
+          esac
+          if [ "$fail" = "1" ]; then exit 1; fi
+          if [ -n "$URL" ]; then echo "Real-database secrets present and well-formed."; fi
+
       - name: Real-database RLS tests
         # Runs only when the live-DB secrets exist; otherwise skipped loudly.
         env:
