@@ -21,6 +21,12 @@ on:
   push:
     branches: [main]
   pull_request:
+  # Re-run the gate on demand from the Actions tab. Needed because the
+  # real-database steps depend on repository secrets and on the state of the
+  # dev project, so a run can go red for reasons that have nothing to do with
+  # the commit — a rotated password, a rate-limited sign-in. Without this the
+  # only way to re-verify unchanged code is an empty commit.
+  workflow_dispatch:
 
 concurrency:
   group: ci-${{ github.ref }}
