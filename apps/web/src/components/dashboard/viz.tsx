@@ -81,24 +81,34 @@ export function ActivitySparkline({
           vectorEffect="non-scaling-stroke"
         />
       </svg>
-      {/* Text equivalent for assistive tech and print. */}
-      <table className="sr-only">
-        <caption>{label}</caption>
-        <thead>
-          <tr>
-            <th scope="col">Day</th>
-            <th scope="col">Events</th>
-          </tr>
-        </thead>
-        <tbody>
-          {data.map((d) => (
-            <tr key={d.day}>
-              <th scope="row">{d.day}</th>
-              <td>{d.count}</td>
+      {/*
+        Text equivalent for assistive tech and print.
+
+        The sr-only class must sit on a WRAPPER, not on the table. sr-only
+        pins width to 1px, but under automatic table layout a width is only a
+        minimum — the table grows to fit its content regardless, so it stayed
+        353px wide and pushed a horizontal scrollbar onto every page carrying
+        a sparkline at phone width. A div honours the width and clips it.
+      */}
+      <div className="sr-only">
+        <table>
+          <caption>{label}</caption>
+          <thead>
+            <tr>
+              <th scope="col">Day</th>
+              <th scope="col">Events</th>
             </tr>
-          ))}
-        </tbody>
-      </table>
+          </thead>
+          <tbody>
+            {data.map((d) => (
+              <tr key={d.day}>
+                <th scope="row">{d.day}</th>
+                <td>{d.count}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
     </div>
   );
 }

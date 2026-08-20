@@ -254,6 +254,79 @@ test.describe("NovaKore happy path", () => {
       .toBeLessThanOrEqual(2);
   });
 
+  test("a keyboard user can skip the global navigation", async ({ page }) => {
+    // The sidebar used to come after the page in tab order. The global
+    // navigation comes before it, so without a skip link every keyboard or
+    // switch user traverses six domain links, the palette, help, theme and
+    // the account menu before reaching the content — on every navigation.
+    await signIn(page);
+    await page.goto(`/${ORG}/admin/courses`);
+    await assertNoErrorPage(page);
+
+    await page.keyboard.press("Tab");
+    const focused = await page.evaluate(() => {
+      const el = document.activeElement as HTMLElement | null;
+      const box = el?.getBoundingClientRect();
+      return {
+        text: el?.textContent?.trim() ?? "",
+        // sr-only until focused: a skip link nobody can see is not one.
+        visible: !!box && box.width > 1 && box.height > 1,
+      };
+    });
+    expect(focused.text).toMatch(/skip to content/i);
+    expect(focused.visible, "the skip link must appear when focused").toBe(
+      true,
+    );
+
+    // And it must actually move focus, not just the scroll position.
+    await page.keyboard.press("Enter");
+    await expect
+      .poll(() => page.evaluate(() => document.activeElement?.id ?? ""))
+      .toBe("main");
+  });
+
+  test("no page pushes a horizontal scrollbar on a phone", async ({ page }) => {
+    // Sideways scroll on a phone is the failure mode a desktop-built redesign
+    // ships without noticing. It found a real one on its first run: a
+    // screen-reader-only <table> carrying the text equivalent of a sparkline.
+    // sr-only pins width to 1px, but under automatic table layout a width is
+    // only a minimum, so the table stayed 353px wide and pushed every page
+    // with a sparkline sideways.
+    test.setTimeout(180_000);
+    await page.setViewportSize({ width: 375, height: 812 });
+    await signIn(page);
+
+    const offenders: string[] = [];
+    for (const path of [
+      "",
+      "/workspace",
+      "/knowledge",
+      "/learning",
+      "/people",
+      "/intelligence",
+      "/intelligence/insights",
+      "/courses",
+      "/members",
+      "/studio",
+    ]) {
+      await page.goto(`/${ORG}/admin${path}`);
+      await assertNoErrorPage(page);
+      const width = await page.evaluate(() => ({
+        scroll: document.documentElement.scrollWidth,
+        client: document.documentElement.clientWidth,
+      }));
+      // One pixel of slack: sub-pixel layout rounding is not a defect.
+      if (width.scroll > width.client + 1) {
+        offenders.push(`${path || "/"} (${width.scroll} > ${width.client})`);
+      }
+    }
+
+    expect(
+      offenders,
+      `pages scrolling sideways at 375px:\n${offenders.join("\n")}`,
+    ).toEqual([]);
+  });
+
   test("sign in → command center → studio → lesson → learner academy", async ({
     page,
   }) => {

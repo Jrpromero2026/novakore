@@ -176,6 +176,19 @@ export default async function OrgAdminLayout({
         <div className="flex min-h-dvh flex-col">
           <OrgThemeStyle theme={brand.theme} />
 
+          {/*
+            Visible only on focus. Every admin page now opens with the global
+            navigation, so without this a keyboard or switch user tabs through
+            six domain links, the palette, help, theme and the account menu
+            before reaching the page itself — on every single navigation.
+          */}
+          <a
+            href="#main"
+            className="sr-only rounded-md bg-surface px-4 py-2 text-body-sm font-medium text-accent shadow-lg outline-2 outline-offset-2 outline-accent focus:not-sr-only focus:absolute focus:left-4 focus:top-4 focus:z-50"
+          >
+            Skip to content
+          </a>
+
           <GlobalNav domains={domains} organizationName={displayName}>
             <CommandPaletteTrigger />
             <HelpMenu orgSlug={orgSlug} />
@@ -186,7 +199,7 @@ export default async function OrgAdminLayout({
             />
           </GlobalNav>
 
-          <main className="min-w-0 flex-1">
+          <main id="main" tabIndex={-1} className="min-w-0 flex-1">
             {/*
             The layout owns the page frame — width, gutters, rhythm — so that
             every page, migrated or not, sits in the same column. PageShell
