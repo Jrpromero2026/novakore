@@ -37,7 +37,6 @@ export default async function RolesPage({
   return (
     <div className="space-y-8">
       <PageHeader
-        eyebrow="Organization"
         title="Roles & permissions"
         description="Roles bundle platform permissions. System roles are managed by NovaKore; create custom roles for anything else."
       />

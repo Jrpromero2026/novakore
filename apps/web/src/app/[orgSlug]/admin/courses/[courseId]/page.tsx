@@ -6,6 +6,7 @@ import { getTerminology } from "@/lib/terminology";
 import { supabaseServer } from "@/lib/supabase/server";
 import { Badge, Card, CardHeader } from "@/components/ui/primitives";
 import { Alert } from "@/components/ui/feedback";
+import { PageHeader } from "@/components/ui/layout";
 import { tourState } from "@/lib/onboarding/targets";
 import { CourseStructurePanel, PublishCoursePanel } from "./course-builder";
 
@@ -84,39 +85,29 @@ export default async function CourseBuilderPage({
         published: (versions ?? []).length,
       })}
     >
-      <header className="flex flex-wrap items-start justify-between gap-3">
-        <div className="space-y-1">
-          <p
-            className="text-caption uppercase text-text-muted"
-            style={{ letterSpacing: "var(--tracking-caps)" }}
-          >
-            <Link
-              href={`/${orgSlug}/admin/courses`}
-              className="hover:text-text-primary"
-            >
-              {term("course").plural}
-            </Link>{" "}
-            / builder
-          </p>
-          <h1 className="text-h1 text-text-primary">{course.title}</h1>
-          <p className="text-body-sm text-text-secondary">
-            Draft is editable · published versions are immutable
-          </p>
-        </div>
-        <div className="flex items-center gap-2">
-          <Badge tone={currentVersion ? "positive" : "neutral"}>
-            {currentVersion
-              ? `Live: v${currentVersion.version_number}`
-              : "Never published"}
-          </Badge>
-          {unpublishedCount > 0 ? (
-            <Badge tone="warning">
-              {unpublishedCount} unpublished{" "}
-              {term("lesson").plural.toLowerCase()}
+      <PageHeader
+        // The leaf names the ACTIVITY, not the course: the title is already
+        // the heading directly beneath, and a trail that ends by repeating it
+        // spends the reader's attention without adding orientation.
+        trail={[{ label: "Builder" }]}
+        title={course.title}
+        description="Draft is editable · published versions are immutable"
+        actions={
+          <>
+            <Badge tone={currentVersion ? "positive" : "neutral"}>
+              {currentVersion
+                ? `Live: v${currentVersion.version_number}`
+                : "Never published"}
             </Badge>
-          ) : null}
-        </div>
-      </header>
+            {unpublishedCount > 0 ? (
+              <Badge tone="warning">
+                {unpublishedCount} unpublished{" "}
+                {term("lesson").plural.toLowerCase()}
+              </Badge>
+            ) : null}
+          </>
+        }
+      />
 
       <CourseStructurePanel
         orgSlug={orgSlug}

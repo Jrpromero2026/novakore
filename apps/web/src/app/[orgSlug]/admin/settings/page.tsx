@@ -22,8 +22,7 @@ export default async function OrgSettingsPage({
   return (
     <div className="space-y-8">
       <PageHeader
-        eyebrow="Organization"
-        title="Settings"
+        title="Organization profile"
         description="Identity and profile for this organization. Theme and logo live in Branding; vocabulary lives in Terminology."
       />
 

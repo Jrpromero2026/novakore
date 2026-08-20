@@ -1,10 +1,10 @@
 import type { Metadata } from "next";
-import Link from "next/link";
 import { notFound } from "next/navigation";
 import { requireOrgContext, requirePermission } from "@/lib/org-context";
 import { getReviewDetail } from "@/lib/data/assessments";
 import { Badge, Card, CardHeader } from "@/components/ui/primitives";
 import { Alert } from "@/components/ui/feedback";
+import { PageHeader } from "@/components/ui/layout";
 import { ReviewForm } from "./review-form";
 
 export const metadata: Metadata = { title: "Review attempt" };
@@ -24,19 +24,10 @@ export default async function ReviewDetailPage({
   return (
     <div className="space-y-6">
       <header className="space-y-1">
-        <p
-          className="text-caption uppercase text-text-muted"
-          style={{ letterSpacing: "var(--tracking-caps)" }}
-        >
-          <Link
-            href={`/${orgSlug}/admin/reviews`}
-            className="hover:text-text-primary"
-          >
-            Review queue
-          </Link>{" "}
-          / attempt
-        </p>
-        <h1 className="text-h1 text-text-primary">{detail.assessmentTitle}</h1>
+        <PageHeader
+          trail={[{ label: "Attempt" }]}
+          title={detail.assessmentTitle}
+        />
         <p className="flex flex-wrap items-center gap-2 text-body-sm text-text-secondary">
           Attempt {detail.attemptNumber} · passing threshold{" "}
           {detail.passingPercent}%

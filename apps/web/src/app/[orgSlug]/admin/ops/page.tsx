@@ -8,6 +8,7 @@ import { OnboardingPageMarker } from "@/components/onboarding/page-marker";
 import { pageMeta, parsePage, rangeFor } from "@/lib/pagination";
 import { Pagination } from "@/components/ui/pagination";
 import { FeedbackReview } from "./ops-review";
+import { PageHeader } from "@/components/ui/layout";
 
 export const metadata: Metadata = { title: "Operations" };
 
@@ -71,13 +72,10 @@ export default async function OperationsPage({
         orgSlug={orgSlug}
         event="onboarding.progress.reviewed"
       />
-      <header className="space-y-1">
-        <h1 className="text-h1 text-text-primary">Operations</h1>
-        <p className="text-body-sm text-text-secondary">
-          Live alpha activity from the event log and tester feedback. Real data
-          only.
-        </p>
-      </header>
+      <PageHeader
+        title="Operations"
+        description="Live alpha activity from the event log and tester feedback. Real data only."
+      />
 
       {/* Cohort filter */}
       <div className="flex flex-wrap items-center gap-2">

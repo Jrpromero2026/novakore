@@ -61,7 +61,6 @@ export default async function LearningPage({
   return (
     <div className="space-y-8" {...tourState({ paths: (paths ?? []).length })}>
       <PageHeader
-        eyebrow="Learning"
         title={`${term("learning_system").plural} & ${term("learning_path").plural}`}
         description={`${term("learning_path").plural} sequence ${term("course").plural.toLowerCase()} with governed prerequisites. Cycles are rejected by the platform.`}
       />

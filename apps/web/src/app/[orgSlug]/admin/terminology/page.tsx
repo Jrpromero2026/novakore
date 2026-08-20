@@ -4,6 +4,7 @@ import { requireOrgContext, requirePermission } from "@/lib/org-context";
 import { getTerminology } from "@/lib/terminology";
 import { Card, CardHeader } from "@/components/ui/primitives";
 import { TermRow } from "./terminology-ui";
+import { PageHeader } from "@/components/ui/layout";
 
 export const metadata: Metadata = { title: "Terminology" };
 
@@ -20,16 +21,10 @@ export default async function TerminologyPage({
 
   return (
     <div className="space-y-6">
-      <header className="space-y-1">
-        <h1 className="text-xl font-semibold tracking-tight text-text">
-          Terminology
-        </h1>
-        <p className="text-sm text-text-muted">
-          Rename what learners and staff see — a Course can be a Program, an
-          Instructor a Coach. The platform&apos;s internal names never change,
-          so integrations stay stable.
-        </p>
-      </header>
+      <PageHeader
+        title="Terminology"
+        description="Rename what learners and staff see — a Course can be a Program, an Instructor a Coach. The platform's internal names never change, so integrations stay stable."
+      />
 
       <Card>
         <CardHeader

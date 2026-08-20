@@ -1,11 +1,11 @@
 import type { Metadata } from "next";
-import Link from "next/link";
 import { notFound } from "next/navigation";
 import { can, requireOrgContext, requirePermission } from "@/lib/org-context";
 import { getTerminology } from "@/lib/terminology";
 import { getAssessmentDetail } from "@/lib/data/assessments";
 import { supabaseServer } from "@/lib/supabase/server";
 import { AssessmentEditor } from "./assessment-editor";
+import { PageHeader } from "@/components/ui/layout";
 
 export const metadata: Metadata = { title: "Assessment editor" };
 
@@ -34,21 +34,7 @@ export default async function AssessmentEditorPage({
 
   return (
     <div className="space-y-6">
-      <header className="space-y-1">
-        <p
-          className="text-caption uppercase text-text-muted"
-          style={{ letterSpacing: "var(--tracking-caps)" }}
-        >
-          <Link
-            href={`/${orgSlug}/admin/assessments`}
-            className="hover:text-text-primary"
-          >
-            {term("assessment").plural}
-          </Link>{" "}
-          / editor
-        </p>
-        <h1 className="text-h1 text-text-primary">{detail.title}</h1>
-      </header>
+      <PageHeader trail={[{ label: "Editor" }]} title={detail.title} />
 
       <AssessmentEditor
         orgSlug={orgSlug}

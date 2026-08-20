@@ -65,7 +65,6 @@ export default async function CoursesPage({
   return (
     <div className="space-y-8" {...tourState({ courses: courseTotal })}>
       <PageHeader
-        eyebrow="Knowledge"
         title={courseTerm.plural}
         description="Drafts are editable; published versions are immutable snapshots learners experience."
       />

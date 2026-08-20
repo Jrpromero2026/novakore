@@ -97,6 +97,17 @@ export function buildBreadcrumbs(
 
   crumbs.push(...trail);
 
+  // Collapse an adjacent repeat. Section labels are static while item labels
+  // follow the tenant's vocabulary, so a rename can make them collide —
+  // "Curriculum › Programs" becomes "Programs › Programs" the moment an
+  // organization renames Course to Program. Handled here rather than by
+  // choosing section names no tenant would pick, because the set of names a
+  // tenant might pick is not ours to predict. Keeps the LATER crumb, which
+  // is the one carrying the link and the position.
+  for (let i = crumbs.length - 1; i > 0; i--) {
+    if (crumbs[i]!.label === crumbs[i - 1]!.label) crumbs.splice(i - 1, 1);
+  }
+
   // The last crumb is always the current location, never a link — even when
   // a page appended one carrying an href.
   const last = crumbs[crumbs.length - 1];

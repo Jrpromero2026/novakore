@@ -1,3 +1,4 @@
+import { PLATFORM_TERM_DEFAULTS } from "@novakore/domain";
 import { describe, expect, test } from "vitest";
 import { buildBreadcrumbs } from "./breadcrumbs";
 import { buildDomains } from "./domains";
@@ -66,7 +67,7 @@ describe("buildBreadcrumbs", () => {
       trail(`${BASE}/courses/abc-123`, [{ label: "Safety Procedures" }]),
     ).toEqual([
       `Learning→${BASE}/learning`,
-      "Programs",
+      "Curriculum",
       `Courses→${BASE}/courses`,
       "Safety Procedures",
     ]);
@@ -77,7 +78,7 @@ describe("buildBreadcrumbs", () => {
     // becomes the way back.
     expect(trail(`${BASE}/courses`)).toEqual([
       `Learning→${BASE}/learning`,
-      "Programs",
+      "Curriculum",
       "Courses",
     ]);
     const deeper = trail(`${BASE}/courses/abc`, [{ label: "A course" }]);
@@ -92,7 +93,7 @@ describe("buildBreadcrumbs", () => {
       ]),
     ).toEqual([
       `Learning→${BASE}/learning`,
-      "Programs",
+      "Curriculum",
       `Courses→${BASE}/courses`,
       `Safety Procedures→${BASE}/courses/abc`,
       "SAF-01",
@@ -152,5 +153,29 @@ describe("buildBreadcrumbs", () => {
 
   test("Home resolves without claiming a section", () => {
     expect(trail(BASE)).toEqual(["Home"]);
+  });
+});
+
+describe("adjacent duplicates", () => {
+  test("a tenant rename that collides with a section shows one crumb", () => {
+    // The organization renamed Course to Program; the section is Curriculum,
+    // so nothing collides. Rename it to Curriculum instead and the trail must
+    // not read "Curriculum > Curriculum".
+    const term = ((key: string) =>
+      key === "course"
+        ? { singular: "Curriculum", plural: "Curriculum" }
+        : PLATFORM_TERM_DEFAULTS[
+            key as keyof typeof PLATFORM_TERM_DEFAULTS
+          ]) as Parameters<typeof buildDomains>[2];
+
+    const domains = buildDomains(ORG, ["content.view_draft"], term);
+    const labels = buildBreadcrumbs(domains, `${BASE}/courses`).map(
+      (c) => c.label,
+    );
+
+    expect(labels.filter((l) => l === "Curriculum")).toHaveLength(1);
+    // The trail still climbs: domain first, destination last.
+    expect(labels[0]).toBe("Learning");
+    expect(labels[labels.length - 1]).toBe("Curriculum");
   });
 });

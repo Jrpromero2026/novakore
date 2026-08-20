@@ -1,3 +1,4 @@
+import { PLATFORM_TERM_DEFAULTS } from "@novakore/domain";
 import { describe, expect, test } from "vitest";
 import {
   allDestinations,
@@ -90,14 +91,14 @@ describe("buildDomains — permission filtering", () => {
 
   test("an empty section is dropped rather than rendered empty", () => {
     // content.view_draft alone: Knowledge survives, and Learning keeps only
-    // the sections whose items survive — Programs (Courses) and Participation
+    // the sections whose items survive — Curriculum (Courses) and Participation
     // (My learning, the author's view of the learner shell). Assessment and
     // Credentials drop entirely because nothing in them clears the filter.
     const learning = buildDomains(ORG, ["content.view_draft"]).find(
       (d) => d.key === "learning",
     );
     expect(learning?.sections.map((s) => s.label)).toEqual([
-      "Programs",
+      "Curriculum",
       "Participation",
     ]);
     for (const section of learning?.sections ?? []) {
@@ -211,5 +212,36 @@ describe("allDestinations", () => {
 
   test("returns nothing when nothing is visible", () => {
     expect(allDestinations(buildDomains(ORG, []))).toEqual([]);
+  });
+});
+
+describe("terminology", () => {
+  test("a renamed concept reaches the navigation, not just the page", () => {
+    // An organization that calls a Course a Program must see Program in the
+    // trail too. Breadcrumbs are now the only thing on screen answering
+    // "where am I?", so a trail using vocabulary the tenant has renamed away
+    // describes a product they do not recognize.
+    const term = ((key: string) =>
+      key === "course"
+        ? { singular: "Program", plural: "Programs" }
+        : PLATFORM_TERM_DEFAULTS[
+            key as keyof typeof PLATFORM_TERM_DEFAULTS
+          ]) as Parameters<typeof buildDomains>[2];
+
+    const labels = buildDomains(ORG, ALL, term)
+      .flatMap((d) => d.sections)
+      .flatMap((s) => s.items)
+      .map((i) => i.label);
+
+    expect(labels).toContain("Programs");
+    expect(labels).not.toContain("Courses");
+  });
+
+  test("without a tenant resolver the platform vocabulary is used", () => {
+    const labels = buildDomains(ORG, ALL)
+      .flatMap((d) => d.sections)
+      .flatMap((s) => s.items)
+      .map((i) => i.label);
+    expect(labels).toContain("Courses");
   });
 });

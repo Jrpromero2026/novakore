@@ -19,6 +19,24 @@
  * it, so a destination cannot drift into belonging to two domains.
  */
 
+import {
+  PLATFORM_TERM_DEFAULTS,
+  type TermDisplay,
+  type TermKey,
+} from "@novakore/domain";
+
+/**
+ * Resolves a tenant's display term. Navigation labels go through this so the
+ * trail and the page it leads to cannot disagree about what a thing is
+ * called: an organization that renames Course to Program sees Program in
+ * both, or the breadcrumb starts describing a product the tenant does not
+ * recognize. Defaults to the platform vocabulary so callers that genuinely
+ * have no tenant context (tests, the palette's static entries) still work.
+ */
+export type NavTermResolver = (key: TermKey) => TermDisplay;
+
+const DEFAULT_TERMS: NavTermResolver = (key) => PLATFORM_TERM_DEFAULTS[key];
+
 export type DomainKey =
   "home" | "knowledge" | "learning" | "people" | "intelligence" | "workspace";
 
@@ -57,6 +75,7 @@ export interface Domain {
 export function buildDomains(
   orgSlug: string,
   permissions: readonly string[],
+  term: NavTermResolver = DEFAULT_TERMS,
 ): Domain[] {
   const base = `/${orgSlug}/admin`;
   const held = new Set(permissions);
@@ -146,12 +165,12 @@ export function buildDomains(
         "How knowledge becomes structured development, assessment and competency.",
       sections: [
         {
-          label: "Programs",
+          label: "Curriculum",
           description: "The structures people move through.",
           items: [
             {
               href: `${base}/courses`,
-              label: "Courses",
+              label: term("course").plural,
               description: "Versioned programs of modules and lessons",
               icon: "course",
               needsAny: ["content.view_draft"],
@@ -159,7 +178,7 @@ export function buildDomains(
             },
             {
               href: `${base}/learning/paths`,
-              label: "Learning paths",
+              label: term("learning_path").plural,
               description: "Sequenced journeys across several courses",
               icon: "path",
               needsAny: ["paths.manage"],
@@ -173,7 +192,7 @@ export function buildDomains(
           items: [
             {
               href: `${base}/assessments`,
-              label: "Assessments",
+              label: term("assessment").plural,
               description: "Evaluations attached to learning content",
               icon: "assessment",
               needsAny: ["assessment.author", "assessment.publish"],
@@ -195,7 +214,7 @@ export function buildDomains(
           items: [
             {
               href: `${base}/enrollments`,
-              label: "Enrollments",
+              label: term("enrollment").plural,
               description: "Assign programs and track progress",
               icon: "enrollment",
               needsAny: ["enrollment.manage"],
@@ -221,12 +240,12 @@ export function buildDomains(
           ],
         },
         {
-          label: "Credentials",
-          description: "Proof of completion, and when it expires.",
+          label: "Proof",
+          description: "Evidence of completion, and when it expires.",
           items: [
             {
               href: `${base}/credentials`,
-              label: "Credentials",
+              label: term("credential").plural,
               description: "Issued certificates, expiry and verification",
               icon: "credential",
               needsAny: ["certificates.manage"],
@@ -281,7 +300,7 @@ export function buildDomains(
       summary: "What the evidence actually supports — and nothing beyond it.",
       sections: [
         {
-          label: "Insight",
+          label: "Signals",
           description: "Derived from real platform activity only.",
           items: [
             {
@@ -300,8 +319,9 @@ export function buildDomains(
           items: [
             {
               href: `${base}/ops`,
-              label: "Analytics",
-              description: "Learner activity, drop-off and feedback",
+              label: "Operations",
+              description:
+                "Live activity from the event log and tester feedback",
               icon: "analytics",
               needsAny: ["analytics.view"],
               keywords: ["metrics", "operations", "feedback", "reports"],
@@ -366,7 +386,7 @@ export function buildDomains(
           items: [
             {
               href: `${base}/academies`,
-              label: "Academies",
+              label: term("academy").plural,
               description: "Group learning under distinct organizations",
               icon: "academy",
               needsAny: ["academy.manage"],

@@ -18,6 +18,7 @@ import {
 import { CommandPaletteTrigger } from "@/components/command-palette";
 import { buildDomains } from "@/lib/navigation/domains";
 import { GlobalNav } from "@/components/shell/global-nav";
+import { DomainsProvider } from "@/components/shell/domains-context";
 
 export default async function OrgAdminLayout({
   children,
@@ -36,7 +37,7 @@ export default async function OrgAdminLayout({
   const displayName = brand.displayName ?? ctx.organization.name;
 
   const permissions = [...ctx.orgPermissions] as string[];
-  const domains = buildDomains(orgSlug, permissions);
+  const domains = buildDomains(orgSlug, permissions, terminology.term);
 
   // Palette entries: every visible destination + creation surfaces the
   // member can actually reach. All real routes — the server authorizes.
@@ -133,7 +134,7 @@ export default async function OrgAdminLayout({
             id: "create-path",
             label: "New learning path",
             group: "Create",
-            href: `${base}/learning`,
+            href: `${base}/learning/paths`,
             keywords: ["journey"],
           },
         ]
@@ -164,41 +165,46 @@ export default async function OrgAdminLayout({
   ];
 
   return (
-    <WalkthroughProvider
-      orgId={ctx.organization.id}
-      orgSlug={orgSlug}
-      permissions={permissions}
-      terminologyOverrides={terminology.overrides}
-      recordEvent={recordOnboardingEventAction}
-    >
-      <div className="flex min-h-dvh flex-col">
-        <OrgThemeStyle theme={brand.theme} />
+    <DomainsProvider domains={domains}>
+      <WalkthroughProvider
+        orgId={ctx.organization.id}
+        orgSlug={orgSlug}
+        permissions={permissions}
+        terminologyOverrides={terminology.overrides}
+        recordEvent={recordOnboardingEventAction}
+      >
+        <div className="flex min-h-dvh flex-col">
+          <OrgThemeStyle theme={brand.theme} />
 
-        <GlobalNav domains={domains} organizationName={displayName}>
-          <CommandPaletteTrigger />
-          <HelpMenu orgSlug={orgSlug} />
-          <ThemeToggle />
-          <UserMenu email={user?.email ?? null} signOutAction={signOutAction} />
-        </GlobalNav>
+          <GlobalNav domains={domains} organizationName={displayName}>
+            <CommandPaletteTrigger />
+            <HelpMenu orgSlug={orgSlug} />
+            <ThemeToggle />
+            <UserMenu
+              email={user?.email ?? null}
+              signOutAction={signOutAction}
+            />
+          </GlobalNav>
 
-        <main className="min-w-0 flex-1">
-          {/*
+          <main className="min-w-0 flex-1">
+            {/*
             The layout owns the page frame — width, gutters, rhythm — so that
             every page, migrated or not, sits in the same column. PageShell
             composes CONTENT inside this frame and deliberately does not set
             its own width, or the two would fight.
           */}
-          <div
-            className="nk-fade-up mx-auto w-full px-4 py-8 sm:px-6 sm:py-10"
-            style={{ maxWidth: "var(--layout-page-max)" }}
-          >
-            {children}
-          </div>
-        </main>
+            <div
+              className="nk-fade-up mx-auto w-full px-4 py-8 sm:px-6 sm:py-10"
+              style={{ maxWidth: "var(--layout-page-max)" }}
+            >
+              {children}
+            </div>
+          </main>
 
-        <CommandPalette entries={paletteEntries} />
-        <FeedbackWidget orgSlug={orgSlug} roleHint="admin" />
-      </div>
-    </WalkthroughProvider>
+          <CommandPalette entries={paletteEntries} />
+          <FeedbackWidget orgSlug={orgSlug} roleHint="admin" />
+        </div>
+      </WalkthroughProvider>
+    </DomainsProvider>
   );
 }

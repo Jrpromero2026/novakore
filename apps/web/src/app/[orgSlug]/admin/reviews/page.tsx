@@ -27,7 +27,6 @@ export default async function ReviewQueuePage({
   return (
     <div className="space-y-8">
       <PageHeader
-        eyebrow="Learning"
         title="Review queue"
         description="Submitted attempts with subjective work awaiting a decision. Reviewers can never grade their own attempts."
       />

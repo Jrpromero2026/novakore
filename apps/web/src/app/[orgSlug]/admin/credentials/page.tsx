@@ -6,6 +6,7 @@ import { pageMeta, parsePage, rangeFor } from "@/lib/pagination";
 import { supabaseServer } from "@/lib/supabase/server";
 import { Pagination } from "@/components/ui/pagination";
 import { CredentialsAdmin } from "./credentials-ui";
+import { PageHeader } from "@/components/ui/layout";
 
 export const metadata: Metadata = { title: "Credentials" };
 
@@ -57,16 +58,10 @@ export default async function CredentialsPage({
 
   return (
     <div className="space-y-6">
-      <header className="space-y-1">
-        <h1 className="text-h1 text-text-primary">
-          {term("certificate").plural}
-        </h1>
-        <p className="text-body-sm text-text-secondary">
-          Templates define the look; certificate rules define eligibility;
-          issued credentials are immutable evidence with public verification
-          codes.
-        </p>
-      </header>
+      <PageHeader
+        title={term("certificate").plural}
+        description="Templates define the look; certificate rules define eligibility; issued credentials are immutable evidence with public verification codes."
+      />
 
       <CredentialsAdmin
         orgSlug={orgSlug}

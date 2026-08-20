@@ -8,6 +8,7 @@ import { OnboardingPageMarker } from "@/components/onboarding/page-marker";
 import { pageMeta, parsePage, rangeFor } from "@/lib/pagination";
 import { Pagination } from "@/components/ui/pagination";
 import { CreateEnrollmentPanel, EnrollmentRow } from "./enrollments-ui";
+import { PageHeader } from "@/components/ui/layout";
 
 export const metadata: Metadata = { title: "Enrollments" };
 
@@ -95,13 +96,10 @@ export default async function EnrollmentsPage({
         orgSlug={orgSlug}
         event="onboarding.progress.reviewed"
       />
-      <header className="space-y-1">
-        <h1 className="text-h1 text-text-primary">Enrollments</h1>
-        <p className="text-body-sm text-text-secondary">
-          Assignments pin the exact published version at creation (
-          {term("learner").plural} never migrate silently).
-        </p>
-      </header>
+      <PageHeader
+        title="Enrollments"
+        description={`Assignments pin the exact published version at creation (${term("learner").plural} never migrate silently).`}
+      />
 
       <CreateEnrollmentPanel
         orgSlug={orgSlug}

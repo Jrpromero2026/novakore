@@ -8,52 +8,59 @@
  */
 import Link from "next/link";
 import type { ReactNode } from "react";
+import { AutoBreadcrumbs } from "@/components/shell/auto-breadcrumbs";
+import type { Crumb } from "@/lib/navigation/breadcrumbs";
 import { cx } from "./primitives";
 
 /**
- * Standard page opening: eyebrow, title, supporting line, actions.
+ * Standard page opening: trail, title, supporting line, actions.
  * Every priority admin interior uses this so headers stop drifting.
  */
+/**
+ * The heading block every admin page shares.
+ *
+ * The trail above the title is DERIVED from the route, not passed in. It
+ * replaced an `eyebrow` string each page wrote by hand, which had already
+ * drifted: Courses announced "Knowledge" while living in Learning, and
+ * Members announced "Organization" after moving to People. A hierarchy
+ * maintained in twenty places is a hierarchy that disagrees with itself.
+ *
+ * Pages that sit below a destination pass `trail` for the part only they
+ * know — a course's title, a member's name.
+ */
 export function PageHeader({
-  eyebrow,
   title,
   description,
   actions,
   className,
+  trail,
 }: {
-  eyebrow?: string;
   title: string;
   description?: string;
   actions?: ReactNode;
   className?: string;
+  trail?: readonly Crumb[];
 }) {
   return (
-    <header
-      className={cx(
-        "flex flex-wrap items-end justify-between gap-x-6 gap-y-3",
-        className,
-      )}
-    >
-      <div className="min-w-0">
-        {eyebrow ? (
-          <p className="text-caption font-medium uppercase tracking-[var(--tracking-caps)] text-text-muted">
-            {eyebrow}
-          </p>
-        ) : null}
-        <h1 className="mt-1 text-xl font-semibold tracking-tight text-text-primary">
-          {title}
-        </h1>
-        {description ? (
-          <p className="mt-1.5 max-w-2xl text-body-sm leading-relaxed text-text-secondary">
-            {description}
-          </p>
+    <header className={cx("min-w-0", className)}>
+      <AutoBreadcrumbs trail={trail} />
+      <div className="mt-3 flex flex-wrap items-end justify-between gap-x-6 gap-y-3">
+        <div className="min-w-0">
+          <h1 className="text-xl font-semibold tracking-tight text-text-primary">
+            {title}
+          </h1>
+          {description ? (
+            <p className="mt-1.5 max-w-2xl text-body-sm leading-relaxed text-text-secondary">
+              {description}
+            </p>
+          ) : null}
+        </div>
+        {actions ? (
+          <div className="flex shrink-0 flex-wrap items-center gap-2">
+            {actions}
+          </div>
         ) : null}
       </div>
-      {actions ? (
-        <div className="flex shrink-0 flex-wrap items-center gap-2">
-          {actions}
-        </div>
-      ) : null}
     </header>
   );
 }

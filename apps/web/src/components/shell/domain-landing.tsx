@@ -1,5 +1,6 @@
 import { redirect } from "next/navigation";
 import { requireOrgContext } from "@/lib/org-context";
+import { getTerminology } from "@/lib/terminology";
 import { supabaseServer } from "@/lib/supabase/server";
 import { buildDomains, type DomainKey } from "@/lib/navigation/domains";
 import { buildBreadcrumbs } from "@/lib/navigation/breadcrumbs";
@@ -30,7 +31,12 @@ export async function DomainLanding({
   showRail?: boolean;
 }) {
   const ctx = await requireOrgContext(orgSlug);
-  const domains = buildDomains(orgSlug, [...ctx.orgPermissions] as string[]);
+  const terminology = await getTerminology(ctx.organization.id);
+  const domains = buildDomains(
+    orgSlug,
+    [...ctx.orgPermissions] as string[],
+    terminology.term,
+  );
   const domain = domains.find((d) => d.key === domainKey);
 
   // No visible sections means no business on the landing page. Not a security

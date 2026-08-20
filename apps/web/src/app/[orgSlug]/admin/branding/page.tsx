@@ -108,7 +108,6 @@ export default async function BrandingPage({
   return (
     <div className="space-y-8" {...tourState({ branding: brandingConfigured })}>
       <PageHeader
-        eyebrow="Organization"
         title="Branding"
         description="Configure this organization's identity. Drafts are private until published; platform status and security colors always stay readable."
       />

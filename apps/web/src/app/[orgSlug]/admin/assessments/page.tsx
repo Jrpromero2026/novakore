@@ -39,7 +39,6 @@ export default async function AssessmentsPage({
   return (
     <div className="space-y-8">
       <PageHeader
-        eyebrow="Learning"
         title={term("assessment").plural}
         description="Drafts are editable; published versions are immutable and are what learners attempt. Grading is server-side, always."
       />

@@ -32,7 +32,6 @@ export default async function AcademiesPage({
   return (
     <div className="space-y-8">
       <PageHeader
-        eyebrow="Organization"
         title={academyTerm.plural}
         description={`${academyTerm.plural} group audiences and programs. Learning systems and paths attach here.`}
       />

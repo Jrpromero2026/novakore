@@ -35,8 +35,7 @@ export default async function IntelligencePage({
   return (
     <div className="space-y-8">
       <PageHeader
-        eyebrow="Nova"
-        title="Intelligence"
+        title="Insights"
         description="How your knowledge system is doing — every score explained, every observation grounded in real records."
       />
 

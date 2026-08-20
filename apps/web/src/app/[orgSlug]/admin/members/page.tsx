@@ -81,7 +81,6 @@ export default async function MembersPage({
   return (
     <div className="space-y-8" {...tourState({ others: othersCount })}>
       <PageHeader
-        eyebrow="Organization"
         title="Members"
         description={`Memberships, invitations, and role assignments. ${memberTerm.plural} and staff both live here.`}
       />
