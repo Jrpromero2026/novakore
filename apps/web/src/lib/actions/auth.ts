@@ -2,6 +2,7 @@
 
 import { redirect } from "next/navigation";
 import { supabaseServer } from "../supabase/server";
+import { siteLink } from "../site-url";
 import {
   magicLinkSchema,
   newPasswordSchema,
@@ -46,7 +47,7 @@ export async function magicLinkAction(
       // Public organization creation is disabled: magic links may only sign
       // in existing accounts, never create them.
       shouldCreateUser: false,
-      emailRedirectTo: `${process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000"}/auth/callback`,
+      emailRedirectTo: siteLink("/auth/callback"),
     },
   });
   if (error) {
@@ -80,9 +81,10 @@ export async function requestPasswordResetAction(
   if (!parsed.success) return fieldErrors(parsed.error);
 
   const supabase = await supabaseServer();
-  const site = process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000";
   await supabase.auth.resetPasswordForEmail(parsed.data.email, {
-    redirectTo: `${site}/auth/callback?next=${encodeURIComponent("/auth/reset")}`,
+    redirectTo: siteLink(
+      `/auth/callback?next=${encodeURIComponent("/auth/reset")}`,
+    ),
   });
 
   // Uniform response whether or not the account exists — same
