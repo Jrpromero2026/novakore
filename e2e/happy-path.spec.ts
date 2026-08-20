@@ -206,6 +206,54 @@ test.describe("NovaKore happy path", () => {
     ).toBeGreaterThan(20);
   });
 
+  test("on a phone, a walkthrough anchors somewhere the user can see", async ({
+    page,
+  }) => {
+    // The six-domain navigation is a horizontal scroll row on mobile, not a
+    // drawer. That removed the need for the tour's old "open the nav drawer"
+    // event, but only if scrollIntoView really scrolls the ROW and not just
+    // the page — Workspace sits off the right edge at 375px until it does.
+    // Asserted rather than assumed, because the coachmark would otherwise
+    // point confidently at something outside the viewport.
+    test.setTimeout(120_000);
+    await page.setViewportSize({ width: 375, height: 812 });
+    await signIn(page);
+    await page.goto(`/${ORG}/admin`);
+    await assertNoErrorPage(page);
+
+    const show = page.getByRole("button", { name: /show me/i }).first();
+    await expect(show).toBeVisible({ timeout: 20_000 });
+    await show.click();
+
+    const dialog = page.getByRole("dialog");
+    await expect(dialog).toBeVisible({ timeout: 15_000 });
+    // Never the missing-target recovery panel: that is what a tour pointing
+    // at the deleted sidebar used to render.
+    await expect(dialog).not.toContainText(/can't find|cannot find/i);
+
+    // Polled, not slept: the scroll is smooth, so the first measurement is
+    // mid-animation and a fixed wait would encode a guess about its duration.
+    const anchored = page
+      .locator('[data-tour-id="nav-domain-workspace"]')
+      .locator("visible=true")
+      .first();
+    await expect(anchored).toBeVisible();
+    await expect
+      .poll(
+        async () => {
+          const box = await anchored.boundingBox();
+          if (!box) return null;
+          // How far the element spills outside the viewport, either side.
+          return Math.max(0, -box.x, box.x + box.width - 375);
+        },
+        {
+          message: "tour anchor never scrolled fully into the mobile viewport",
+          timeout: 15_000,
+        },
+      )
+      .toBeLessThanOrEqual(2);
+  });
+
   test("sign in → command center → studio → lesson → learner academy", async ({
     page,
   }) => {
