@@ -12,7 +12,7 @@ import type { Database } from "../types/database";
 const url = process.env.NOVAKORE_TEST_SUPABASE_URL;
 const anonKey = process.env.NOVAKORE_TEST_SUPABASE_ANON_KEY;
 const configured = Boolean(url && anonKey);
-const ORG_B = "00000000-0000-4000-8000-000000000102"; // bfh-dev
+const ORG_B = "00000000-0000-4000-8000-000000000102"; // builtforher
 const runTag = Date.now().toString(36);
 
 // Sessions come from the suite-wide pool (vitest.globalSetup.ts).
@@ -57,7 +57,7 @@ describe.skipIf(!configured)("alpha operations RLS", () => {
       membership_id: memberMembershipId,
       category: "usability",
       message: `member self test ${runTag}`,
-      context: { route: "/bfh-dev/learn", roleHint: "member" },
+      context: { route: "/builtforher/learn", roleHint: "member" },
     });
     expect(error).toBeNull();
   });

@@ -62,7 +62,7 @@ describe.skipIf(!configured)("BFH integration isolation (real RLS)", () => {
 
   test("the SSO exchange is service_role-only (anon cannot execute it)", async () => {
     const { error } = await anon().rpc("bfh_exchange_handoff", {
-      p_organization_slug: "bfh-dev",
+      p_organization_slug: "builtforher",
       p_external_user_id: "attacker",
       p_email: "attacker@example.com",
       p_display_name: null,
@@ -123,7 +123,7 @@ describe.skipIf(!configured)("BFH integration isolation (real RLS)", () => {
     const admin = await signedIn("bfh.owner@novakore.test"); // integrations.manage
     // revoke the coach mapping
     const { data: rev } = await admin.rpc("bfh_set_external_identity_status", {
-      p_organization_slug: "bfh-dev",
+      p_organization_slug: "builtforher",
       p_external_user_id: "bfh-coach-alpha",
       p_status: "revoked",
     });
@@ -144,7 +144,7 @@ describe.skipIf(!configured)("BFH integration isolation (real RLS)", () => {
     } finally {
       // always restore so shared QA data is not left revoked
       await admin.rpc("bfh_set_external_identity_status", {
-        p_organization_slug: "bfh-dev",
+        p_organization_slug: "builtforher",
         p_external_user_id: "bfh-coach-alpha",
         p_status: "active",
       });
@@ -154,7 +154,7 @@ describe.skipIf(!configured)("BFH integration isolation (real RLS)", () => {
   test("a member (no integrations.manage) cannot revoke a mapping", async () => {
     const member = await signedIn("bfh.member@novakore.test");
     const { data } = await member.rpc("bfh_set_external_identity_status", {
-      p_organization_slug: "bfh-dev",
+      p_organization_slug: "builtforher",
       p_external_user_id: "bfh-coach-alpha",
       p_status: "revoked",
     });

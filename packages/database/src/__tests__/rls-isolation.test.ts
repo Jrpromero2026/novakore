@@ -99,6 +99,18 @@ describe.skipIf(!configured)(
     });
 
     test("#2 a member of org A cannot update org B", async () => {
+      // Read the name first and assert it is UNCHANGED afterwards. Pinning a
+      // literal here made the test fail when the tenant was legitimately
+      // renamed — asserting a specific name tests the fixture, while
+      // asserting no-change tests the isolation this is actually about.
+      const { data: before } = await bfhOwner
+        .from("organizations")
+        .select("name")
+        .eq("id", ORG_B);
+      const nameBefore = before?.[0]?.name;
+      expect(nameBefore, "fixture organization must be readable").toBeTruthy();
+      expect(nameBefore).not.toBe("Hijacked");
+
       const { data } = await alphaOwner
         .from("organizations")
         .update({ name: "Hijacked" })
@@ -110,7 +122,7 @@ describe.skipIf(!configured)(
         .from("organizations")
         .select("name")
         .eq("id", ORG_B);
-      expect(check?.[0]?.name).toBe("Built For Her (Dev Tenant)");
+      expect(check?.[0]?.name).toBe(nameBefore);
     });
 
     test("#3 a member of org A cannot access org B memberships", async () => {

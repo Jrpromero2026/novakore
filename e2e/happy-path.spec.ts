@@ -19,7 +19,7 @@ import { expect, test, type Page } from "@playwright/test";
 
 const EMAIL = "bfh.owner@novakore.test";
 const PASSWORD = process.env.NOVAKORE_TEST_PASSWORD;
-const ORG = "bfh-dev";
+const ORG = "builtforher";
 // Seeded QA credential on the dev project. The assertion tolerates either
 // outcome (found / not found) so a cold reset cannot make this flake — what
 // matters is that the anonymous route renders instead of erroring.
@@ -70,7 +70,7 @@ test.describe("NovaKore happy path", () => {
   test("a multi-page collection actually pages, and page 2 differs", async ({
     page,
   }) => {
-    // alpha-learning carries enough courses to span pages; bfh-dev does not,
+    // alpha-learning carries enough courses to span pages; builtforher does not,
     // so this is the tenant that can prove paging rather than assume it.
     await page.goto("/sign-in");
     await page
