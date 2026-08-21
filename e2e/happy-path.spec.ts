@@ -356,6 +356,51 @@ test.describe("NovaKore happy path", () => {
       .toContain("/admin/denied");
   });
 
+  test("the Academy does not slow down with more enrollments", async ({
+    page,
+  }) => {
+    // This page loaded in 640ms for a learner with one enrollment and 14.5
+    // SECONDS for one with 113, because it looked up each enrollment's title
+    // and progress inside a loop. The fixture below is the heavy case.
+    //
+    // The budget is deliberately loose. It is not a performance target — it
+    // is far enough below the old behaviour to catch the query-per-row
+    // pattern coming back, and far enough above the current ~1s to survive a
+    // slow machine without crying wolf.
+    test.setTimeout(120_000);
+
+    // The heavy fixture specifically — the shared signIn helper is the owner,
+    // who has barely any enrollments and would pass this trivially.
+    await page.goto("/sign-in");
+    await page
+      .getByRole("textbox", { name: /email/i })
+      .fill("alpha.learner@novakore.test");
+    await page.getByRole("textbox", { name: /password/i }).fill(PASSWORD!);
+    await page.getByRole("button", { name: /^sign in$/i }).click();
+    await page.waitForURL(/\/select-org|\/(admin|learn)(\/|$|\?)/, {
+      timeout: 30_000,
+    });
+
+    await page.goto(`/${ORG}/learn`); // warm the route
+    const started = Date.now();
+    await page.goto(`/${ORG}/learn`);
+    const elapsed = Date.now() - started;
+
+    await assertNoErrorPage(page);
+
+    // Every enrollment still resolves a real title. The loop version fell
+    // back to the literal "Enrollment" whenever a lookup missed, so its
+    // absence is the correctness half of this check.
+    const links = await page.locator('a[href*="/learn/"]').count();
+    expect(links, "the learner's enrollments render").toBeGreaterThan(20);
+    await expect(page.getByText(/^Enrollment$/)).toHaveCount(0);
+
+    expect(
+      elapsed,
+      `Academy took ${elapsed}ms for ${links} enrollments — the per-row query pattern is back`,
+    ).toBeLessThan(6_000);
+  });
+
   test("a keyboard user can skip the global navigation", async ({ page }) => {
     // The sidebar used to come after the page in tab order. The global
     // navigation comes before it, so without a skip link every keyboard or
