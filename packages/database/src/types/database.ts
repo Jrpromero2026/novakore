@@ -3010,7 +3010,12 @@ export type Database = {
         }[];
       };
       invite_member: {
-        Args: { p_email: string; p_organization_id: string };
+        Args: {
+          p_academy_id?: string;
+          p_email: string;
+          p_organization_id: string;
+          p_role_id?: string;
+        };
         Returns: string;
       };
       issue_credential: {

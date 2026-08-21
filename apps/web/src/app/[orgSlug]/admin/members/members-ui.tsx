@@ -22,7 +22,20 @@ import {
 import { ConfirmButton } from "@/components/ui/feedback";
 import { tourTarget, TOUR_TARGETS } from "@/lib/onboarding/targets";
 
-export function InvitePanel({ orgSlug }: { orgSlug: string }) {
+export function InvitePanel({
+  orgSlug,
+  roles,
+  canManageRoles,
+}: {
+  orgSlug: string;
+  roles: { id: string; name: string; key: string }[];
+  /**
+   * Whether the viewer may grant an access level. Adding a person and
+   * deciding what they can do are separate permissions, so someone may hold
+   * the first without the second.
+   */
+  canManageRoles: boolean;
+}) {
   const [state, action, pending] = useActionState(
     inviteMemberAction.bind(null, orgSlug),
     idle,
@@ -54,6 +67,26 @@ export function InvitePanel({ orgSlug }: { orgSlug: string }) {
             />
           </Field>
         </div>
+        {canManageRoles ? (
+          <div className="sm:w-56">
+            <Field label="Access level" htmlFor="invite-role">
+              {/*
+                Defaults to "Decide later" rather than to a role. A default
+                that grants something is a default that eventually grants it
+                to the wrong person — the least-privilege choice is to grant
+                nothing until someone chooses.
+              */}
+              <Select id="invite-role" name="roleId" defaultValue="">
+                <option value="">Decide later</option>
+                {roles.map((r) => (
+                  <option key={r.id} value={r.id}>
+                    {r.name}
+                  </option>
+                ))}
+              </Select>
+            </Field>
+          </div>
+        ) : null}
         <Button
           type="submit"
           disabled={pending}

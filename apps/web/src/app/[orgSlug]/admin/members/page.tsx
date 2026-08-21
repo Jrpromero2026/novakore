@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { requireOrgContext, requirePermission } from "@/lib/org-context";
+import { can, requireOrgContext, requirePermission } from "@/lib/org-context";
 import { getTerminology } from "@/lib/terminology";
 import { supabaseServer } from "@/lib/supabase/server";
 import { PageHeader, Panel, SectionHeader } from "@/components/ui/layout";
@@ -85,7 +85,15 @@ export default async function MembersPage({
         description={`Memberships, invitations, and role assignments. ${memberTerm.plural} and staff both live here.`}
       />
 
-      <InvitePanel orgSlug={orgSlug} />
+      <InvitePanel
+        orgSlug={orgSlug}
+        roles={(roles ?? []).map((r) => ({
+          id: r.id,
+          name: r.name,
+          key: r.key,
+        }))}
+        canManageRoles={can(ctx, "org.roles.manage")}
+      />
 
       <section>
         <SectionHeader

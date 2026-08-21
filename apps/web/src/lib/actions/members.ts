@@ -22,10 +22,31 @@ export async function inviteMemberAction(
   const parsed = inviteMemberSchema.safeParse({ email: formData.get("email") });
   if (!parsed.success) return fieldErrors(parsed.error);
 
+  // Optional: the access level chosen while onboarding. Empty string is the
+  // "decide later" option, not a role, so it must become null rather than an
+  // empty uuid the database would reject.
+  const roleId = (formData.get("roleId") as string | null) || null;
+  const academyId = (formData.get("academyId") as string | null) || null;
+
+  // Granting a role is a higher act than adding a person, so it carries the
+  // stricter permission. Checked here for a usable message and again inside
+  // invite_member, which is the boundary that actually enforces it — this
+  // check is an affordance, not the gate.
+  if (roleId && !can(ctx, "org.roles.manage")) {
+    return {
+      ok: false,
+      message:
+        "You can invite people, but assigning an access level requires the role-management permission. Invite without one and ask an owner to set it.",
+    };
+  }
+
   const supabase = await supabaseServer();
   const { error } = await supabase.rpc("invite_member", {
     p_organization_id: ctx.organization.id,
     p_email: parsed.data.email,
+    ...(roleId ? { p_role_id: roleId } : {}),
+    // An academy-scoped grant only means something alongside a role.
+    ...(roleId && academyId ? { p_academy_id: academyId } : {}),
   });
   if (error) return { ok: false, message: dbErrorMessage(error) };
 
