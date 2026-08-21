@@ -1,0 +1,4 @@
+-- `text[] || 'literal'` makes Postgres parse the right side as an array
+-- literal, so every blocked case raised 22P02 instead of reporting why it was
+-- blocked. array_append is unambiguous. (The final definition of this
+-- function is in 20260821233522.)

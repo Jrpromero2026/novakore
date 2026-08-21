@@ -3004,6 +3004,14 @@ export type Database = {
         Args: { p_decision: string; p_note?: string; p_request_id: string };
         Returns: undefined;
       };
+      delete_empty_organization: {
+        Args: {
+          p_confirm?: boolean;
+          p_min_age_days?: number;
+          p_organization_id: string;
+        };
+        Returns: Json;
+      };
       emit_studio_event: {
         Args: {
           p_context?: Json;
