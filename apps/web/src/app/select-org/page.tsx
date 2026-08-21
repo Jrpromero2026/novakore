@@ -7,6 +7,7 @@ import { requireUser } from "@/lib/auth";
 import { supabaseServer } from "@/lib/supabase/server";
 import { PlatformMark } from "@/components/brand";
 import { CreateOrganizationForm } from "./create-org-form";
+import { landingPathFor } from "@/lib/navigation/landing";
 import { Badge, Button } from "@/components/ui/primitives";
 import { ThemeToggle } from "@/components/theme-toggle";
 
@@ -26,7 +27,12 @@ export default async function SelectOrgPage({
   const [{ data: activeRows }, { data: invitedRows }] = await Promise.all([
     supabase
       .from("organization_memberships")
-      .select("id, organization_id, organizations!inner(id, name, slug)")
+      .select(
+        // Roles come along so the destination can be decided per organization
+        // without a query each: a learner belongs in the Academy, an author in
+        // the workspace, and the same person can be both in different tenants.
+        "id, organization_id, organizations!inner(id, name, slug), organization_member_roles(academy_id, organization_roles!inner(status, organization_role_permissions(permission_code)))",
+      )
       .eq("user_id", user.id)
       .eq("status", "active")
       .order("created_at"),
@@ -45,9 +51,29 @@ export default async function SelectOrgPage({
   const active = activeRows ?? [];
   const invited = invitedRows ?? [];
 
+  /**
+   * Where this membership should land — the workspace or the Academy.
+   *
+   * Mirrors how org-context resolves grants: only ACTIVE roles count, and
+   * only organization-wide assignments (academy_id null) contribute
+   * organization-wide permissions.
+   */
+  const destinationFor = (m: (typeof active)[number]) =>
+    landingPathFor(
+      m.organizations.slug,
+      (m.organization_member_roles ?? [])
+        .filter((a) => a.academy_id === null)
+        .filter((a) => a.organization_roles.status === "active")
+        .flatMap((a) =>
+          a.organization_roles.organization_role_permissions.map(
+            (p) => p.permission_code,
+          ),
+        ),
+    );
+
   // Single active org and nothing pending: skip the selector entirely.
   if (active.length === 1 && invited.length === 0) {
-    redirect(`/${active[0]!.organizations.slug}/admin`);
+    redirect(destinationFor(active[0]!));
   }
 
   const signOutButton = (
@@ -119,7 +145,7 @@ export default async function SelectOrgPage({
             {active.map((m) => (
               <li key={m.id}>
                 <Link
-                  href={`/${m.organizations.slug}/admin`}
+                  href={destinationFor(m)}
                   className="flex items-center justify-between rounded-lg border border-border bg-surface px-4 py-3.5 shadow-raised transition-colors hover:border-border-strong"
                 >
                   <span className="text-sm font-medium text-text">

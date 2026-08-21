@@ -254,6 +254,68 @@ test.describe("NovaKore happy path", () => {
       .toBeLessThanOrEqual(2);
   });
 
+  test("people land where their permissions actually lead", async ({
+    page,
+  }) => {
+    // Everyone used to be sent to /admin, so a learner signing in met the
+    // administration workspace: one navigation item, an empty dashboard, and
+    // nothing indicating their courses were elsewhere.
+    //
+    // The observer case is the one that makes this a capability rule rather
+    // than a seniority rule — they hold only analytics.view, which opens a
+    // real destination, so the workspace is right for them.
+    test.setTimeout(180_000);
+
+    const expectations = [
+      ["bfh.member@novakore.test", "/learn", "learner"],
+      ["bfh.observer@novakore.test", "/admin", "observer"],
+      ["bfh.owner@novakore.test", "/admin", "owner"],
+    ] as const;
+
+    for (const [email, expected, label] of expectations) {
+      await page.context().clearCookies();
+      await page.goto("/sign-in");
+      await page.getByRole("textbox", { name: /email/i }).fill(email);
+      await page.getByRole("textbox", { name: /password/i }).fill(PASSWORD!);
+      await page.getByRole("button", { name: /^sign in$/i }).click();
+      // Wait for the DESTINATION, not the waypoint. /select-org is a stop on
+      // the way for a single-organization member, so a pattern that matches
+      // it resolves before the onward redirect and asserts against the
+      // wrong URL.
+      await page.waitForURL(/\/(admin|learn)(\/|$|\?)/, { timeout: 30_000 });
+      await assertNoErrorPage(page);
+      expect(
+        new URL(page.url()).pathname,
+        `${label} should land on ${expected}`,
+      ).toContain(expected);
+
+      // And a stale bookmark to the workspace index resolves the same way.
+      // Polled: the redirect is issued by the server component after the
+      // navigation resolves, so reading the URL once can catch it mid-flight.
+      await page.goto(`/${ORG}/admin`);
+      await expect
+        .poll(() => new URL(page.url()).pathname, {
+          message: `${label} visiting /admin directly`,
+          timeout: 15_000,
+        })
+        .toContain(expected);
+
+      // A deep admin link must still explain itself rather than silently move
+      // someone elsewhere: only the INDEX redirects. Checked while the
+      // non-holder is signed in — asserting this after the loop tested the
+      // owner, who can legitimately open that page.
+      if (expected === "/learn") {
+        await page.goto(`/${ORG}/admin/members`);
+        await expect
+          .poll(() => new URL(page.url()).pathname, {
+            message: `${label} opening a deep admin link`,
+            timeout: 15_000,
+          })
+          .toContain("/admin/denied");
+      }
+    }
+  });
+
   test("a keyboard user can skip the global navigation", async ({ page }) => {
     // The sidebar used to come after the page in tab order. The global
     // navigation comes before it, so without a skip link every keyboard or
