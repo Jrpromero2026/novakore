@@ -31,10 +31,15 @@ export default async function SelectOrgPage({
         // Roles come along so the destination can be decided per organization
         // without a query each: a learner belongs in the Academy, an author in
         // the workspace, and the same person can be both in different tenants.
-        "id, organization_id, organizations!inner(id, name, slug), organization_member_roles(academy_id, organization_roles!inner(status, organization_role_permissions(permission_code)))",
+        "id, organization_id, organizations!inner(id, name, slug, status), organization_member_roles(academy_id, organization_roles!inner(status, organization_role_permissions(permission_code)))",
       )
       .eq("user_id", user.id)
       .eq("status", "active")
+      // An ARCHIVED organization is not somewhere anyone can go, so offering
+      // it is a dead end dressed as a choice. Suspended ones stay listed on
+      // purpose: an owner may need to open a suspended workspace to
+      // understand or resolve why.
+      .neq("organizations.status", "archived")
       .order("created_at"),
     user.email
       ? supabase

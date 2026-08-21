@@ -1,9 +1,7 @@
 import type { Metadata } from "next";
 import type { CSSProperties, ReactNode } from "react";
-import { redirect } from "next/navigation";
 import Link from "next/link";
 import { can, requireOrgContext } from "@/lib/org-context";
-import { landingPathFor } from "@/lib/navigation/landing";
 import { getUser } from "@/lib/auth";
 import { getTerminology } from "@/lib/terminology";
 import { supabaseServer } from "@/lib/supabase/server";
@@ -63,14 +61,6 @@ export default async function OrgOverviewPage({
 }) {
   const { orgSlug } = await params;
   const ctx = await requireOrgContext(orgSlug);
-
-  // A bookmark, an old link, or the sign-in redirect from before this fix can
-  // still land a learner here, where the whole page resolves to empty panels.
-  // Only the INDEX redirects: a deep link to a specific admin page keeps
-  // showing the access-denied surface, which explains itself, rather than
-  // silently teleporting someone away from the thing they asked for.
-  const landing = landingPathFor(orgSlug, [...ctx.orgPermissions] as string[]);
-  if (landing !== `/${orgSlug}/admin`) redirect(landing);
 
   const supabase = await supabaseServer();
   const { term } = await getTerminology(ctx.organization.id);

@@ -27,10 +27,31 @@ const created: { slug: string; account: string }[] = [];
 afterAll(async () => {
   for (const { slug, account } of created) {
     const client = await signedIn(account);
-    await client
+    const { data: org } = await client
       .from("organizations")
       .update({ status: "archived", name: "ARCHIVED test fixture" })
-      .eq("slug", slug);
+      .eq("slug", slug)
+      .select("id")
+      .single();
+
+    // Archiving the organization is not enough on its own: the creator keeps
+    // an ACTIVE membership, and an account that accumulates them stops being
+    // a usable fixture — one of these grew to eighteen memberships and broke
+    // an unrelated routing test, because a member of many organizations
+    // never gets redirected past the picker.
+    if (org) {
+      const { data: membership } = await client
+        .from("organization_memberships")
+        .select("id")
+        .eq("organization_id", org.id)
+        .single();
+      if (membership) {
+        await client.rpc("set_membership_status", {
+          p_membership_id: membership.id,
+          p_status: "removed",
+        });
+      }
+    }
   }
 });
 

@@ -17,13 +17,20 @@ import { expect, test, type Page } from "@playwright/test";
  * of regression that six phases of UI work had no automated coverage for.
  */
 
-const EMAIL = "bfh.owner@novakore.test";
+const EMAIL = "alpha.owner@novakore.test";
 const PASSWORD = process.env.NOVAKORE_TEST_PASSWORD;
-const ORG = "builtforher";
-// Seeded QA credential on the dev project. The assertion tolerates either
-// outcome (found / not found) so a cold reset cannot make this flake — what
-// matters is that the anonymous route renders instead of erroring.
-const CREDENTIAL_CODE = "NVK-3BAD-3B25-FB7B-8EC3";
+// The synthetic tenant, deliberately — NOT Built For Her.
+//
+// The suite used to sign in as seven @novakore.test accounts inside what is
+// now a real customer's organization, which meant fabricated staff in their
+// member list and test traffic in their audit trail. Alpha exists to be used
+// this way: 226 published courses (enough to prove pagination rather than
+// assume it), a seeded academy, and a full spread of roles.
+const ORG = "alpha-learning";
+// Seeded QA credential in the synthetic tenant. The assertion tolerates
+// either outcome (found / not found) so a cold reset cannot make this flake —
+// what matters is that the anonymous route renders instead of erroring.
+const CREDENTIAL_CODE = "NVK-7378-0256-F472-2AD3";
 
 test.skip(
   !PASSWORD,
@@ -70,21 +77,12 @@ test.describe("NovaKore happy path", () => {
   test("a multi-page collection actually pages, and page 2 differs", async ({
     page,
   }) => {
-    // alpha-learning carries enough courses to span pages; builtforher does not,
-    // so this is the tenant that can prove paging rather than assume it.
-    await page.goto("/sign-in");
-    await page
-      .getByRole("textbox", { name: /email/i })
-      .fill("alpha.owner@novakore.test");
-    await page.getByRole("textbox", { name: /password/i }).fill(PASSWORD!);
-    await page.getByRole("button", { name: /^sign in$/i }).click();
-    // Must reach a signed-in destination. A looser pattern silently matches
-    // the "//localhost:3000/" inside the URL's authority, returns instantly,
-    // and lets the next navigation race the session — which then bounces to
-    // /sign-in and makes this test skip while looking like it passed.
-    await page.waitForURL(/\/select-org|\/admin/, { timeout: 30_000 });
+    // This tenant carries enough courses to span pages, which is why the
+    // whole suite now runs here. It used to sign in separately because it
+    // needed a different organization from everything else.
+    await signIn(page);
 
-    await page.goto("/alpha-learning/admin/courses");
+    await page.goto(`/${ORG}/admin/courses`);
     await assertNoErrorPage(page);
     expect(page.url(), "expected a signed-in session, not /sign-in").toContain(
       "/admin/courses",
@@ -267,9 +265,14 @@ test.describe("NovaKore happy path", () => {
     test.setTimeout(180_000);
 
     const expectations = [
-      ["bfh.member@novakore.test", "/learn", "learner"],
-      ["bfh.observer@novakore.test", "/admin", "observer"],
-      ["bfh.owner@novakore.test", "/admin", "owner"],
+      ["alpha.learner@novakore.test", "/learn", "learner"],
+      // A narrow permission set is still a reason to be in the workspace.
+      // The sharpest version of that — an observer holding ONLY
+      // analytics.view — has no account in this tenant, and is covered
+      // exactly in landing.test.ts where the permissions can be stated
+      // directly rather than depended on as a fixture.
+      ["alpha.reviewer@novakore.test", "/admin", "reviewer"],
+      ["alpha.owner@novakore.test", "/admin", "owner"],
     ] as const;
 
     for (const [email, expected, label] of expectations) {
@@ -278,16 +281,29 @@ test.describe("NovaKore happy path", () => {
       await page.getByRole("textbox", { name: /email/i }).fill(email);
       await page.getByRole("textbox", { name: /password/i }).fill(PASSWORD!);
       await page.getByRole("button", { name: /^sign in$/i }).click();
-      // Wait for the DESTINATION, not the waypoint. /select-org is a stop on
-      // the way for a single-organization member, so a pattern that matches
-      // it resolves before the onward redirect and asserts against the
-      // wrong URL.
-      await page.waitForURL(/\/(admin|learn)(\/|$|\?)/, { timeout: 30_000 });
+      // Two legitimate shapes, and the test has to accept both. A member of
+      // ONE organization is forwarded straight in. A member of several — like
+      // the owner, who also owns the isolation-test tenant — stops at the
+      // picker and chooses, which is correct rather than a failure.
+      await page.waitForURL(/\/select-org|\/(admin|learn)(\/|$|\?)/, {
+        timeout: 30_000,
+      });
       await assertNoErrorPage(page);
-      expect(
-        new URL(page.url()).pathname,
-        `${label} should land on ${expected}`,
-      ).toContain(expected);
+
+      if (new URL(page.url()).pathname === "/select-org") {
+        // The picker's link is the routing decision, made per organization.
+        const href = await page
+          .locator(`a[href^="/${ORG}/"]`)
+          .first()
+          .getAttribute("href");
+        expect(href, `${label}'s entry for ${ORG}`).toContain(expected);
+        await page.goto(href!);
+      } else {
+        expect(
+          new URL(page.url()).pathname,
+          `${label} should land on ${expected}`,
+        ).toContain(expected);
+      }
 
       // And a stale bookmark to the workspace index resolves the same way.
       // Polled: the redirect is issued by the server component after the
@@ -296,24 +312,48 @@ test.describe("NovaKore happy path", () => {
       await expect
         .poll(() => new URL(page.url()).pathname, {
           message: `${label} visiting /admin directly`,
-          timeout: 15_000,
+          // Generous because the redirect's DESTINATION is what is slow: the
+          // Academy takes ~130ms per enrollment to render, and this fixture
+          // holds 111 of them. The redirect itself is prompt.
+          timeout: 45_000,
         })
         .toContain(expected);
 
-      // A deep admin link must still explain itself rather than silently move
-      // someone elsewhere: only the INDEX redirects. Checked while the
-      // non-holder is signed in — asserting this after the loop tested the
-      // owner, who can legitimately open that page.
+      // A deep admin link resolves by whether this person has ANY admin
+      // surface. A learner has none, so /admin/members is not a page they
+      // were refused — it is a wing of the building they have no business
+      // in, and sending them home beats explaining each locked door.
       if (expected === "/learn") {
         await page.goto(`/${ORG}/admin/members`);
         await expect
           .poll(() => new URL(page.url()).pathname, {
             message: `${label} opening a deep admin link`,
-            timeout: 15_000,
+            timeout: 45_000,
           })
-          .toContain("/admin/denied");
+          .toContain("/learn");
       }
     }
+  });
+
+  test("partial access is explained, not redirected away", async ({ page }) => {
+    // The counterpart to the rule above. An author holds real permissions,
+    // so a page they happen to lack is a refusal that deserves saying so —
+    // exactly the case that would be lost if the redirect applied to
+    // everyone who cannot open a particular page.
+    await page.goto("/sign-in");
+    await page
+      .getByRole("textbox", { name: /email/i })
+      .fill("alpha.author@novakore.test");
+    await page.getByRole("textbox", { name: /password/i }).fill(PASSWORD!);
+    await page.getByRole("button", { name: /^sign in$/i }).click();
+    await page.waitForURL(/\/select-org|\/(admin|learn)(\/|$|\?)/, {
+      timeout: 30_000,
+    });
+
+    await page.goto(`/${ORG}/admin/members`);
+    await expect
+      .poll(() => new URL(page.url()).pathname, { timeout: 30_000 })
+      .toContain("/admin/denied");
   });
 
   test("a keyboard user can skip the global navigation", async ({ page }) => {

@@ -1,3 +1,4 @@
+import { redirect } from "next/navigation";
 import { requireOrgContext } from "@/lib/org-context";
 import { getUser } from "@/lib/auth";
 import { getOrgBrandContext } from "@/lib/data/branding";
@@ -17,6 +18,7 @@ import {
 } from "@/components/command-palette";
 import { CommandPaletteTrigger } from "@/components/command-palette";
 import { buildDomains } from "@/lib/navigation/domains";
+import { landingPathFor } from "@/lib/navigation/landing";
 import { GlobalNav } from "@/components/shell/global-nav";
 import { DomainsProvider } from "@/components/shell/domains-context";
 
@@ -29,6 +31,25 @@ export default async function OrgAdminLayout({
 }) {
   const { orgSlug } = await params;
   const ctx = await requireOrgContext(orgSlug);
+
+  // Someone whose permissions open NOTHING in this workspace is sent to the
+  // Academy from anywhere under /admin, not just the index.
+  //
+  // The check lives here rather than on the page because this route streams —
+  // loading.tsx flushes a shell immediately, and a page-level redirect cannot
+  // land until the layout's data fetching finishes. Measured at four to nine
+  // seconds of staring at an administration shell before being bounced, which
+  // is worse than either destination.
+  //
+  // Partial access still gets the access-denied surface: an author who opens
+  // Members holds real permissions elsewhere and deserves the explanation.
+  // A member with no admin surface at all has nothing under /admin to
+  // explain, so there is nothing lost by not stopping to say so.
+  const permissions = [...ctx.orgPermissions] as string[];
+  if (landingPathFor(orgSlug, permissions) !== `/${orgSlug}/admin`) {
+    redirect(`/${orgSlug}/learn`);
+  }
+
   const [brand, user, terminology] = await Promise.all([
     getOrgBrandContext(ctx.organization.id),
     getUser(),
@@ -36,7 +57,6 @@ export default async function OrgAdminLayout({
   ]);
   const displayName = brand.displayName ?? ctx.organization.name;
 
-  const permissions = [...ctx.orgPermissions] as string[];
   const domains = buildDomains(orgSlug, permissions, terminology.term);
 
   // Palette entries: every visible destination + creation surfaces the
