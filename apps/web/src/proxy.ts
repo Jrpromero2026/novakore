@@ -6,6 +6,10 @@ import { NextResponse, type NextRequest } from "next/server";
 // docs/architecture/certificates-and-credentials.md §4).
 const PUBLIC_PATHS = [
   "/sign-in",
+  // Self-serve signup. The whole point is that someone with no account can
+  // reach it, so it must be public — the same omission that made the
+  // password-reset page bounce to /sign-in and look broken.
+  "/sign-up",
   "/auth/callback",
   "/auth/error",
   // Password recovery. The link establishes a session before landing here, so

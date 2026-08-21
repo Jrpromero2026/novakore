@@ -2208,6 +2208,8 @@ export type Database = {
           slug: string;
           status: string;
           updated_at: string;
+          use_case: string | null;
+          use_case_detail: string | null;
         };
         Insert: {
           created_at?: string;
@@ -2216,6 +2218,8 @@ export type Database = {
           slug: string;
           status?: string;
           updated_at?: string;
+          use_case?: string | null;
+          use_case_detail?: string | null;
         };
         Update: {
           created_at?: string;
@@ -2224,6 +2228,8 @@ export type Database = {
           slug?: string;
           status?: string;
           updated_at?: string;
+          use_case?: string | null;
+          use_case_detail?: string | null;
         };
         Relationships: [];
       };
@@ -2982,6 +2988,17 @@ export type Database = {
           p_target_type: string;
         };
         Returns: string;
+      };
+      create_own_organization: {
+        Args: {
+          p_name: string;
+          p_use_case?: string;
+          p_use_case_detail?: string;
+        };
+        Returns: {
+          organization_id: string;
+          slug: string;
+        }[];
       };
       decide_review: {
         Args: { p_decision: string; p_note?: string; p_request_id: string };

@@ -257,15 +257,20 @@ describe.skipIf(!configured)(
     });
 
     test("#13 a multi-org user holds only the selected organization's permissions", async () => {
-      // alpha.author belongs to both orgs (author in A, learner in B)
+      // alpha.author belongs to both orgs (author in A, learner in B).
+      //
+      // Containment, not an exact list. Since self-serve signup shipped, any
+      // account can create organizations of its own, so a fixed membership
+      // list is no longer a property of a fixture — it is a snapshot that any
+      // unrelated test can invalidate. What this case is actually about is
+      // the two seeded memberships and the permissions that do NOT travel
+      // between them, both asserted below.
       const { data: memberships } = await alphaAuthor
         .from("organization_memberships")
-        .select("organization_id")
-        .order("organization_id");
-      expect(memberships?.map((m) => m.organization_id)).toEqual([
-        ORG_A,
-        ORG_B,
-      ]);
+        .select("organization_id");
+      const orgIds = memberships?.map((m) => m.organization_id) ?? [];
+      expect(orgIds).toContain(ORG_A);
+      expect(orgIds).toContain(ORG_B);
 
       // as a member they can SEE org B academies…
       const { data: bAcademies } = await alphaAuthor

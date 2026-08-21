@@ -4,10 +4,12 @@ import { redirect } from "next/navigation";
 import { supabaseServer } from "../supabase/server";
 import { siteLink } from "../site-url";
 import {
+  createOrganizationSchema,
   magicLinkSchema,
   newPasswordSchema,
   passwordResetRequestSchema,
   signInSchema,
+  signUpSchema,
 } from "../validation";
 import { fieldErrors, type ActionState } from "./types";
 
@@ -31,6 +33,105 @@ export async function signInAction(
     };
   }
   redirect("/select-org");
+}
+
+/**
+ * Self-serve signup.
+ *
+ * The organization is NOT created here. Supabase issues no session until the
+ * address is confirmed, so at this moment there is no authenticated caller to
+ * own anything — and creating tenants for unverified addresses is how a
+ * tenant table fills with junk. The answers ride along in user metadata and
+ * the organization is created on first sign-in, from /select-org.
+ */
+export async function signUpAction(
+  _prev: ActionState,
+  formData: FormData,
+): Promise<ActionState> {
+  const parsed = signUpSchema.safeParse({
+    email: formData.get("email"),
+    password: formData.get("password"),
+    organizationName: formData.get("organizationName"),
+    useCase: formData.get("useCase"),
+    useCaseDetail: formData.get("useCaseDetail") || undefined,
+  });
+  if (!parsed.success) return fieldErrors(parsed.error);
+
+  const supabase = await supabaseServer();
+  const { error } = await supabase.auth.signUp({
+    email: parsed.data.email,
+    password: parsed.data.password,
+    options: {
+      emailRedirectTo: siteLink("/auth/callback"),
+      data: {
+        organization_name: parsed.data.organizationName,
+        use_case: parsed.data.useCase,
+        use_case_detail: parsed.data.useCaseDetail ?? null,
+      },
+    },
+  });
+
+  if (error) {
+    return {
+      ok: false,
+      message:
+        error.status === 429
+          ? "Too many attempts. Try again in a few minutes."
+          : "Could not create the account. Check the address and try again.",
+    };
+  }
+
+  // Deliberately the same wording whether or not the address was already
+  // registered: a distinct message here would confirm who has an account.
+  return {
+    ok: true,
+    message:
+      "Check your email to confirm the address. Your workspace is created when you first sign in.",
+  };
+}
+
+/**
+ * Create the organization for the signed-in caller.
+ *
+ * Runs after confirmation, from /select-org, for an account that belongs to
+ * nothing yet. The database function is what enforces the rules — it can only
+ * ever create an organization owned by the caller, and it is rate limited.
+ */
+export async function createOrganizationAction(
+  _prev: ActionState,
+  formData: FormData,
+): Promise<ActionState> {
+  const parsed = createOrganizationSchema.safeParse({
+    organizationName: formData.get("organizationName"),
+    useCase: formData.get("useCase"),
+    useCaseDetail: formData.get("useCaseDetail") || undefined,
+  });
+  if (!parsed.success) return fieldErrors(parsed.error);
+
+  const supabase = await supabaseServer();
+  const { data, error } = await supabase.rpc("create_own_organization", {
+    p_name: parsed.data.organizationName,
+    p_use_case: parsed.data.useCase,
+    ...(parsed.data.useCaseDetail
+      ? { p_use_case_detail: parsed.data.useCaseDetail }
+      : {}),
+  });
+
+  if (error) {
+    return {
+      ok: false,
+      message:
+        error.code === "53400"
+          ? "That is a lot of organizations in one hour. Try again shortly."
+          : "Could not create the organization. Please try again.",
+    };
+  }
+
+  const created = data?.[0];
+  if (!created) {
+    return { ok: false, message: "Could not create the organization." };
+  }
+  redirect(`/${created.slug}/admin`);
 }
 
 export async function magicLinkAction(

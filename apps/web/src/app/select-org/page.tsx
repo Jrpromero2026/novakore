@@ -5,8 +5,8 @@ import { acceptInvitationAction } from "@/lib/actions/members";
 import { signOutAction } from "@/lib/actions/auth";
 import { requireUser } from "@/lib/auth";
 import { supabaseServer } from "@/lib/supabase/server";
-import { NoOrganization } from "@/components/states";
 import { PlatformMark } from "@/components/brand";
+import { CreateOrganizationForm } from "./create-org-form";
 import { Badge, Button } from "@/components/ui/primitives";
 import { ThemeToggle } from "@/components/theme-toggle";
 
@@ -58,13 +58,38 @@ export default async function SelectOrgPage({
     </form>
   );
 
+  // Belonging to nothing is no longer a dead end. It is the second half of
+  // signup: the account is confirmed, so there is now an authenticated caller
+  // who can own an organization. The answers given at signup were parked in
+  // user metadata and come back as defaults here.
   if (active.length === 0 && invited.length === 0) {
+    const asText = (key: string) =>
+      typeof user.metadata[key] === "string"
+        ? (user.metadata[key] as string)
+        : "";
+
     return (
-      <main className="flex min-h-dvh flex-col px-6">
-        <div className="flex justify-end py-4">
+      <main className="mx-auto flex min-h-dvh w-full max-w-sm flex-col px-6 py-10">
+        <div className="flex items-center justify-between">
+          <PlatformMark />
           <ThemeToggle />
         </div>
-        <NoOrganization email={user.email} signOut={signOutButton} />
+        <div className="mt-12 space-y-6">
+          <header className="space-y-1">
+            <h1 className="text-h1 text-text-primary">
+              Name your organization
+            </h1>
+            <p className="text-body-sm text-text-secondary">
+              One more step and your workspace is ready.
+            </p>
+          </header>
+          <CreateOrganizationForm
+            defaultName={asText("organization_name")}
+            defaultUseCase={asText("use_case")}
+            defaultUseCaseDetail={asText("use_case_detail")}
+          />
+          <div className="flex justify-center">{signOutButton}</div>
+        </div>
       </main>
     );
   }

@@ -3,11 +3,13 @@ import Link from "next/link";
 import { redirect } from "next/navigation";
 import { getUser } from "@/lib/auth";
 import { PlatformMark } from "@/components/brand";
-import { SignInForm } from "./sign-in-form";
+import { SignUpForm } from "./sign-up-form";
 
-export const metadata: Metadata = { title: "Sign in" };
+export const metadata: Metadata = { title: "Create your organization" };
 
-export default async function SignInPage() {
+export default async function SignUpPage() {
+  // Already signed in: the picker decides where to go, including offering to
+  // create an organization if this account has none.
   const user = await getUser();
   if (user) redirect("/select-org");
 
@@ -18,22 +20,23 @@ export default async function SignInPage() {
           <div className="flex justify-center">
             <PlatformMark />
           </div>
-          <h1 className="text-h1 text-text-primary">Sign in</h1>
+          <h1 className="text-h1 text-text-primary">
+            Create your organization
+          </h1>
           <p className="text-body-sm text-text-secondary">
-            Learning infrastructure for organizations
+            Your own workspace for courses, assessments and credentials.
           </p>
         </header>
-        <SignInForm />
 
-        {/* The page said organization access was by invitation. It no longer
-            is, and a sign-in page with no route to signup is a closed door. */}
+        <SignUpForm />
+
         <p className="text-center text-body-sm text-text-secondary">
-          Need a workspace?{" "}
+          Already have an account?{" "}
           <Link
-            href="/sign-up"
+            href="/sign-in"
             className="font-medium text-text-primary underline underline-offset-2"
           >
-            Create your organization
+            Sign in
           </Link>
         </p>
       </div>

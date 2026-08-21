@@ -56,6 +56,50 @@ export const newPasswordSchema = z
     path: ["confirm"],
   });
 
+/**
+ * The use cases offered at signup.
+ *
+ * A closed set rather than free text so the answer is worth segmenting on
+ * later, with "other" plus an optional line for everything the list misses.
+ * The value is descriptive only — it grants nothing and restricts nothing,
+ * and the database mirrors this list as a CHECK constraint.
+ */
+export const USE_CASES = [
+  { value: "certification", label: "Certifying professionals" },
+  { value: "corporate_training", label: "Training our staff" },
+  { value: "coaching", label: "Coaching clients" },
+  { value: "education", label: "Teaching students" },
+  { value: "association", label: "Serving our members" },
+  { value: "other", label: "Something else" },
+] as const;
+
+export const signUpSchema = z
+  .object({
+    email: emailSchema,
+    // Same floor as setting a new password: this account will own an
+    // organization's records from the moment it exists.
+    password: z
+      .string()
+      .min(12, { error: "Use at least 12 characters." })
+      .max(200, { error: "That is longer than 200 characters." }),
+    organizationName: z
+      .string()
+      .trim()
+      .min(2, { error: "Enter your organization's name." })
+      .max(120, { error: "That is longer than 120 characters." }),
+    useCase: z.enum(USE_CASES.map((u) => u.value) as [string, ...string[]], {
+      error: "Tell us what you'll use NovaKore for.",
+    }),
+    useCaseDetail: z.string().trim().max(280).optional(),
+  })
+  .strict();
+
+export const createOrganizationSchema = signUpSchema.pick({
+  organizationName: true,
+  useCase: true,
+  useCaseDetail: true,
+});
+
 export const inviteMemberSchema = z.object({ email: emailSchema });
 
 export const organizationNameSchema = z.object({

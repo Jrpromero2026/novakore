@@ -1,6 +1,4 @@
 import Link from "next/link";
-import type { ReactNode } from "react";
-import { PlatformMark } from "./brand";
 
 /** Access-denied state: honest, calm, with a way back. */
 export function AccessDenied({ backHref }: { backHref: string }) {
@@ -28,31 +26,3 @@ export function AccessDenied({ backHref }: { backHref: string }) {
 }
 
 /** No-organization state for authenticated users without memberships. */
-export function NoOrganization({
-  email,
-  signOut,
-}: {
-  email: string | null;
-  signOut: ReactNode;
-}) {
-  return (
-    <div className="flex min-h-[60vh] flex-col items-center justify-center gap-3 text-center">
-      <PlatformMark />
-      <h1 className="text-h2 text-text-primary">No organization yet</h1>
-      <p className="max-w-md text-sm text-text-muted">
-        {email ? (
-          <>
-            <span className="font-medium text-text">{email}</span> isn&apos;t a
-            member of any organization.
-          </>
-        ) : (
-          "This account isn't a member of any organization."
-        )}{" "}
-        Organizations are created by the NovaKore platform team and joined by
-        invitation — ask your organization&apos;s administrator to invite you,
-        then sign in again.
-      </p>
-      <div className="mt-2">{signOut}</div>
-    </div>
-  );
-}
