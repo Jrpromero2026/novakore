@@ -220,3 +220,57 @@ describe("view model", () => {
     }
   });
 });
+
+describe("use case shapes the checklist", () => {
+  test("an internal SOP library is not told to brand or preview an academy", () => {
+    const all = resolveChecklist(emptySignals, ALL_PERMISSIONS, term, BASE);
+    const sop = resolveChecklist(
+      emptySignals,
+      ALL_PERMISSIONS,
+      term,
+      BASE,
+      "staff_onboarding",
+    );
+
+    const ids = sop.steps.map((s) => s.id);
+    expect(ids).not.toContain("branding");
+    expect(ids).not.toContain("preview");
+    expect(sop.totalCount).toBe(all.totalCount - 2);
+
+    // Guidance is filtered; the work itself is not. The steps that represent
+    // the platform's actual objects survive, because a use case sets defaults
+    // and must never remove a capability.
+    expect(ids).toContain("program");
+    expect(ids).toContain("publish");
+  });
+
+  test("progress is measured against the steps that apply", () => {
+    // Percentages must divide by the filtered total, or an SOP library sits
+    // permanently at 80% having finished everything asked of it.
+    const sop = resolveChecklist(
+      { ...emptySignals, identityConfigured: true },
+      ALL_PERMISSIONS,
+      term,
+      BASE,
+      "staff_onboarding",
+    );
+    expect(sop.totalCount).toBe(sop.steps.length);
+    expect(sop.percentComplete).toBe(
+      Math.round((sop.completedCount / sop.totalCount) * 100),
+    );
+  });
+
+  test("no use case, or an unknown one, changes nothing", () => {
+    const base = resolveChecklist(emptySignals, ALL_PERMISSIONS, term, BASE);
+    for (const id of [undefined, null, "not_a_use_case"]) {
+      const view = resolveChecklist(
+        emptySignals,
+        ALL_PERMISSIONS,
+        term,
+        BASE,
+        id,
+      );
+      expect(view.steps.map((s) => s.id)).toEqual(base.steps.map((s) => s.id));
+    }
+  });
+});

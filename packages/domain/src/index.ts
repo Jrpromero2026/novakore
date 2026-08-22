@@ -12,3 +12,4 @@ export * from "./studio";
 export * from "./ai";
 export * from "./webhooks";
 export * from "./content-templates";
+export * from "./use-cases";

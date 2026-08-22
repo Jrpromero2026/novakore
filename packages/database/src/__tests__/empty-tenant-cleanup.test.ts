@@ -1,5 +1,26 @@
 import { describe, expect, test } from "vitest";
+import { seedTerminologyFor } from "@novakore/domain";
 import { bareClient, signedIn } from "./_session";
+
+/**
+ * Mirrors app.organization_content's allowlist. Duplicated deliberately: the
+ * SQL is the enforcement and this is a tripwire, so that removing a table
+ * from one side without the other fails a test rather than silently changing
+ * which tenants can be deleted.
+ */
+const ALLOWLISTED_AS_CONFIGURATION = [
+  "organization_settings",
+  "organization_branding",
+  "organization_roles",
+  "organization_role_permissions",
+  "organization_memberships",
+  "organization_member_roles",
+  "organization_onboarding",
+  "organization_terminology",
+  "audit_logs",
+  "analytics_events",
+  "onboarding_events",
+];
 
 /**
  * Deleting organizations that were never used.
@@ -103,5 +124,19 @@ describe("delete_empty_organization", () => {
     const report = data as unknown as Report;
     expect(report.would_delete).toBe(false);
     expect(report.blockers.join(" ")).toMatch(/days old/);
+  });
+
+  test("a workspace that only chose a vocabulary is still empty", () => {
+    // Signup seeds terminology from the chosen use case, so every self-serve
+    // organization has those rows from birth. Counting them as content made
+    // every such tenant permanently undeletable — exactly the ones this tool
+    // exists for. Terminology is configuration: "we call a course an SOP"
+    // says nothing about whether anyone created one.
+    //
+    // Asserted against the catalog rather than the database, because the
+    // interaction is between two design decisions and this is where a future
+    // change to either would break it.
+    expect(seedTerminologyFor("staff_onboarding").length).toBeGreaterThan(0);
+    expect(ALLOWLISTED_AS_CONFIGURATION).toContain("organization_terminology");
   });
 });

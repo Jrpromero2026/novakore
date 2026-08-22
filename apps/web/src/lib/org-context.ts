@@ -17,6 +17,11 @@ export interface OrgContext {
     name: string;
     slug: string;
     status: string;
+    /**
+     * What the organization said it came here to do at signup. Shapes setup
+     * GUIDANCE only — never an input to an authorization decision.
+     */
+    useCase: string | null;
   };
   membershipId: string;
   grants: ActorGrants;
@@ -40,7 +45,7 @@ export const getOrgContext = cache(
 
     const { data: org } = await supabase
       .from("organizations")
-      .select("id, name, slug, status")
+      .select("id, name, slug, status, use_case")
       .eq("slug", orgSlug)
       .maybeSingle();
     if (!org) return null;
@@ -74,7 +79,13 @@ export const getOrgContext = cache(
     };
 
     return {
-      organization: org,
+      organization: {
+        id: org.id,
+        name: org.name,
+        slug: org.slug,
+        status: org.status,
+        useCase: org.use_case,
+      },
       membershipId: membership.id,
       grants,
       orgPermissions: effectiveOrgPermissions(grants),

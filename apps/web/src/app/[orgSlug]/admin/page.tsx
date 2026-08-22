@@ -112,6 +112,7 @@ export default async function OrgOverviewPage({
     ctx.orgPermissions,
     term,
     base,
+    ctx.organization.useCase,
   );
   const launchMode =
     checklist.totalCount > 0 &&
@@ -260,8 +261,8 @@ export default async function OrgOverviewPage({
           },
           {
             href: `${base}/courses`,
-            label: "Create course",
-            description: "Start a versioned course",
+            label: `Create ${term("course").singular}`,
+            description: `Start a versioned ${term("course").singular}`,
             icon: IconCourse,
           },
         ]
@@ -472,7 +473,7 @@ export default async function OrgOverviewPage({
               ) : (
                 <p className="mt-1.5 text-body-sm text-text-muted">
                   {canStudio
-                    ? "Publish your first course to start tracking readiness."
+                    ? `Publish your first ${term("course").singular} to start tracking readiness.`
                     : "Publishing detail requires content access."}
                 </p>
               )}

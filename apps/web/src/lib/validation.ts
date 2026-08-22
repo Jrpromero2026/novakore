@@ -1,4 +1,9 @@
-import { TERM_KEYS, contrastRatio } from "@novakore/domain";
+import {
+  TERM_KEYS,
+  USE_CASES as DOMAIN_USE_CASES,
+  USE_CASE_IDS,
+  contrastRatio,
+} from "@novakore/domain";
 import { z } from "zod";
 
 /**
@@ -59,19 +64,15 @@ export const newPasswordSchema = z
 /**
  * The use cases offered at signup.
  *
- * A closed set rather than free text so the answer is worth segmenting on
- * later, with "other" plus an optional line for everything the list misses.
- * The value is descriptive only — it grants nothing and restricts nothing,
- * and the database mirrors this list as a CHECK constraint.
+ * Re-exported from the domain package rather than restated here: the same
+ * catalog defines the vocabulary each one seeds, and two copies of a list
+ * like this drift within a release.
  */
-export const USE_CASES = [
-  { value: "certification", label: "Certifying professionals" },
-  { value: "corporate_training", label: "Training our staff" },
-  { value: "coaching", label: "Coaching clients" },
-  { value: "education", label: "Teaching students" },
-  { value: "association", label: "Serving our members" },
-  { value: "other", label: "Something else" },
-] as const;
+export const USE_CASES = DOMAIN_USE_CASES.map((u) => ({
+  value: u.id,
+  label: u.label,
+  description: u.description,
+}));
 
 export const signUpSchema = z
   .object({
@@ -87,7 +88,7 @@ export const signUpSchema = z
       .trim()
       .min(2, { error: "Enter your organization's name." })
       .max(120, { error: "That is longer than 120 characters." }),
-    useCase: z.enum(USE_CASES.map((u) => u.value) as [string, ...string[]], {
+    useCase: z.enum(USE_CASE_IDS as unknown as [string, ...string[]], {
       error: "Tell us what you'll use NovaKore for.",
     }),
     useCaseDetail: z.string().trim().max(280).optional(),

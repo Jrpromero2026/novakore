@@ -1,6 +1,7 @@
 "use server";
 
 import { redirect } from "next/navigation";
+import { seedTerminologyFor } from "@novakore/domain";
 import { supabaseServer } from "../supabase/server";
 import { siteLink } from "../site-url";
 import {
@@ -131,6 +132,27 @@ export async function createOrganizationAction(
   if (!created) {
     return { ok: false, message: "Could not create the organization." };
   }
+
+  // Seed the vocabulary this kind of organization actually uses, so the
+  // workspace says "SOP" or "CEU Course" from the first screen rather than
+  // asking someone to rename twenty concepts before it reads correctly.
+  //
+  // Deliberately not fatal. The organization exists and is usable with the
+  // platform vocabulary; failing the whole signup because a naming preference
+  // did not save would be a worse outcome than the wrong noun. Every row
+  // written here is editable at /admin/terminology like any other.
+  const terms = seedTerminologyFor(parsed.data.useCase);
+  if (terms.length > 0) {
+    await supabase.from("organization_terminology").insert(
+      terms.map((t) => ({
+        organization_id: created.organization_id,
+        term_key: t.termKey,
+        singular: t.singular,
+        plural: t.plural,
+      })),
+    );
+  }
+
   redirect(`/${created.slug}/admin`);
 }
 

@@ -1,3 +1,4 @@
+import { checklistStepApplies } from "@novakore/domain";
 import type { Permission, TermDisplay, TermKey } from "@novakore/domain";
 
 /**
@@ -93,10 +94,10 @@ export const CHECKLIST_STEPS: ChecklistStepDefinition[] = [
     needsAny: ["org.branding.manage"],
     href: (base) => `${base}/branding`,
     title: () => "Add organization branding",
-    explanation: () =>
-      "Choose your accent colors and display name so learners see your brand, not a generic platform.",
-    whyItMatters: () =>
-      "A branded workspace builds trust with learners from their very first sign-in.",
+    explanation: (term) =>
+      `Choose your accent colors and display name so ${term("learner").plural.toLowerCase()} see your brand, not a generic platform.`,
+    whyItMatters: (term) =>
+      `A branded workspace builds trust with ${term("learner").plural.toLowerCase()} from their very first sign-in.`,
     estimatedMinutes: 10,
     complete: (s) => s.brandingConfigured,
   },
@@ -108,8 +109,8 @@ export const CHECKLIST_STEPS: ChecklistStepDefinition[] = [
     title: (term) => `Create your first ${term("learning_path").singular}`,
     explanation: (term) =>
       `A ${term("learning_path").singular} is the complete learning experience — it can contain multiple ${term("course").plural}.`,
-    whyItMatters: () =>
-      "Everything learners do lives inside one — for example Coach Certification or Leadership Development.",
+    whyItMatters: (term) =>
+      `Everything ${term("learner").plural.toLowerCase()} do lives inside one — for example Coach Certification or Leadership Development.`,
     estimatedMinutes: 5,
     complete: (s) => s.journeys >= 1,
   },
@@ -134,8 +135,8 @@ export const CHECKLIST_STEPS: ChecklistStepDefinition[] = [
     title: (term) => `Add a ${term("module").singular}`,
     explanation: (term) =>
       `A ${term("module").singular} organizes a ${term("course").singular} into a sequence or milestone.`,
-    whyItMatters: () =>
-      "Clear structure helps learners understand where they are and what comes next.",
+    whyItMatters: (term) =>
+      `Clear structure helps ${term("learner").plural.toLowerCase()} understand where they are and what comes next.`,
     estimatedMinutes: 3,
     complete: (s) => s.modules >= 1,
   },
@@ -147,8 +148,8 @@ export const CHECKLIST_STEPS: ChecklistStepDefinition[] = [
     title: (term) => `Create your first ${term("lesson").singular}`,
     explanation: (term) =>
       `A ${term("lesson").singular} holds the actual learning content — video, reading, activities, and reflection.`,
-    whyItMatters: () =>
-      "This is the moment your knowledge becomes something a learner can experience.",
+    whyItMatters: (term) =>
+      `This is the moment your knowledge becomes something a ${term("learner").singular.toLowerCase()} can experience.`,
     estimatedMinutes: 15,
     // "Meaningful content" = the lesson exists AND real content blocks exist.
     complete: (s) => s.lessons >= 1 && s.lessonsWithContent >= 1,
@@ -159,10 +160,10 @@ export const CHECKLIST_STEPS: ChecklistStepDefinition[] = [
     needsAny: ["content.publish"],
     href: (base) => `${base}/courses`,
     title: () => "Publish learning content",
-    explanation: () =>
-      "Draft changes stay private until published. Publishing freezes a version learners can enroll in.",
-    whyItMatters: () =>
-      "Nothing reaches a learner until you publish — this is the safety line between drafting and delivery.",
+    explanation: (term) =>
+      `Draft changes stay private until published. Publishing freezes a version ${term("learner").plural.toLowerCase()} can enroll in.`,
+    whyItMatters: (term) =>
+      `Nothing reaches a ${term("learner").singular.toLowerCase()} until you publish — this is the safety line between drafting and delivery.`,
     estimatedMinutes: 2,
     complete: (s) => s.publishedCourses >= 1 || s.publishedLessons >= 1,
   },
@@ -243,10 +244,19 @@ export function resolveChecklist(
   permissions: ReadonlySet<Permission> | readonly Permission[],
   term: TermResolver,
   base: string,
+  /**
+   * What this organization said it came here to do. Filters GUIDANCE only:
+   * an internal SOP library is not told to brand an academy and preview it as
+   * a learner, because it has no public front door. The surfaces themselves
+   * stay reachable — a use case sets defaults and removes nothing.
+   */
+  useCaseId?: string | null,
 ): ChecklistView {
   const held = new Set(permissions);
-  const steps = CHECKLIST_STEPS.filter((step) =>
-    step.needsAny.some((p) => held.has(p)),
+  const steps = CHECKLIST_STEPS.filter(
+    (step) =>
+      step.needsAny.some((p) => held.has(p)) &&
+      checklistStepApplies(useCaseId, step.id),
   ).map<ChecklistStepView>((step) => ({
     id: step.id,
     walkthroughId: step.walkthroughId,
