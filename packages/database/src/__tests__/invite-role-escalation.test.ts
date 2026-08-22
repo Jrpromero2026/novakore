@@ -45,52 +45,74 @@ let createdRoleId: string | null = null;
 let createdGrantId: string | null = null;
 
 afterAll(async () => {
+  // The role is a permanent fixture; the GRANT is what each run must undo,
+  // or the subject keeps a permission the next test assumes they lack.
+  if (!createdGrantId) return;
   const owner = await signedIn(OWNER);
-  if (createdGrantId) {
-    await owner
-      .from("organization_member_roles")
-      .delete()
-      .eq("id", createdGrantId);
-  }
-  if (createdRoleId) {
-    await owner
-      .from("organization_role_permissions")
-      .delete()
-      .eq("role_id", createdRoleId);
-    await owner.from("organization_roles").delete().eq("id", createdRoleId);
-  }
+  await owner
+    .from("organization_member_roles")
+    .delete()
+    .eq("id", createdGrantId);
+
+  // Verified, not assumed. `.delete()` under RLS returns no error when the
+  // policy matches no rows, so a cleanup that quietly does nothing looks
+  // exactly like one that worked — which is how this file leaked fixtures
+  // in the first place.
+  const { count } = await owner
+    .from("organization_member_roles")
+    .select("id", { count: "exact", head: true })
+    .eq("id", createdGrantId);
+  expect(count ?? 0, "the temporary grant must actually be revoked").toBe(0);
 });
 
 describe("invite_member — role assignment cannot be escalated", () => {
   test("a member-manager without org.roles.manage is refused a role on invite", async () => {
     const owner = await signedIn(OWNER);
 
-    // A custom role that can add people and nothing else.
-    const key = `test_inviter_${Date.now().toString(36)}`;
-    const { data: role, error: roleError } = await owner
+    // ONE role, reused across runs, under a fixed key.
+    //
+    // The first version minted a fresh role each run and deleted it in
+    // afterAll — except organization_roles has no DELETE policy at all
+    // (roles are archived, never dropped), so the delete silently matched
+    // nothing and 21 orphans accumulated in the tenant before anyone looked.
+    // A stable fixture cannot accumulate, whatever RLS permits.
+    const key = "test_inviter_fixture";
+    const { data: existing } = await owner
       .from("organization_roles")
-      .insert({
-        organization_id: ALPHA_ORG,
-        key,
-        name: "Test Inviter (temporary)",
-        description: "Fixture for the invite escalation test.",
-      })
       .select("id")
-      .single();
-    expect(
-      roleError,
-      "owner should be able to define a custom role",
-    ).toBeNull();
-    createdRoleId = role!.id;
+      .eq("organization_id", ALPHA_ORG)
+      .eq("key", key)
+      .maybeSingle();
 
-    const { error: permError } = await owner
-      .from("organization_role_permissions")
-      .insert({
+    if (existing) {
+      createdRoleId = existing.id;
+    } else {
+      const { data: role, error: roleError } = await owner
+        .from("organization_roles")
+        .insert({
+          organization_id: ALPHA_ORG,
+          key,
+          name: "Test Inviter (fixture)",
+          description: "Reused fixture for the invite escalation test.",
+        })
+        .select("id")
+        .single();
+      expect(
+        roleError,
+        "owner should be able to define a custom role",
+      ).toBeNull();
+      createdRoleId = role!.id;
+    }
+
+    // Idempotent: the permission may already be there from an earlier run.
+    await owner.from("organization_role_permissions").upsert(
+      {
         organization_id: ALPHA_ORG,
         role_id: createdRoleId,
         permission_code: "org.members.manage",
-      });
-    expect(permError).toBeNull();
+      },
+      { onConflict: "role_id,permission_code" },
+    );
 
     // Give it to someone who holds nothing else.
     const subjectUserId = await userIdFor(SUBJECT);
