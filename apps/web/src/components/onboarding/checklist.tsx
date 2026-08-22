@@ -83,12 +83,18 @@ export function OnboardingChecklist({
   dismissed,
   celebrated,
   canManage,
+  seededVocabularyFor,
 }: {
   orgSlug: string;
   view: ChecklistView;
   dismissed: boolean;
   celebrated: boolean;
   canManage: boolean;
+  /**
+   * The use case whose vocabulary was seeded at signup, if any. Absent for
+   * organizations created before this existed, and for "not sure yet".
+   */
+  seededVocabularyFor?: string | null;
 }) {
   const [expanded, setExpanded] = useState(!view.allComplete);
   const [openWhy, setOpenWhy] = useState<string | null>(null);
@@ -190,6 +196,24 @@ export function OnboardingChecklist({
                   next ? ` · next: ${next.title}` : ""
                 }`}
           </p>
+          {/*
+            Signup seeded this workspace's vocabulary, and someone should be
+            able to see and change it without hunting. Deliberately a line of
+            text next to the setup checklist rather than a banner or an extra
+            confirmation screen: it appears where setup already lives, blocks
+            nothing, and leaves with the checklist.
+          */}
+          {seededVocabularyFor ? (
+            <p className="mt-1.5 text-body-sm text-text-muted">
+              Terminology set up for {seededVocabularyFor}.{" "}
+              <Link
+                href={`/${orgSlug}/admin/terminology`}
+                className="font-medium text-accent underline underline-offset-2"
+              >
+                Review terms
+              </Link>
+            </p>
+          ) : null}
         </div>
         <div className="flex shrink-0 items-center gap-1.5">
           {canManage && !view.allComplete ? (

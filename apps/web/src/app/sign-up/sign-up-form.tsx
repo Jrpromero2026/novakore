@@ -41,7 +41,7 @@ export function SignUpForm() {
       </Field>
 
       <Field
-        label="What will you use NovaKore for?"
+        label="What are you primarily here to do?"
         htmlFor="signup-use-case"
         error={state.errors?.useCase}
       >

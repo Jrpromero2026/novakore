@@ -70,7 +70,11 @@ export const newPasswordSchema = z
  */
 export const USE_CASES = DOMAIN_USE_CASES.map((u) => ({
   value: u.id,
-  label: u.label,
+  // The action-oriented wording, not the canonical name: the question at
+  // signup is what someone is here to DO, and "Train or onboard my team"
+  // answers that where "Onboarding staff and documenting SOPs" describes a
+  // category.
+  label: u.signupLabel,
   description: u.description,
 }));
 

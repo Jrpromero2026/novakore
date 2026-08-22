@@ -30,6 +30,7 @@ import { Greeting } from "@/components/dashboard/greeting";
 import { OnboardingChecklist } from "@/components/onboarding/checklist";
 import { getOnboardingSnapshot } from "@/lib/data/onboarding";
 import { resolveChecklist } from "@/lib/onboarding/steps";
+import { findUseCase } from "@novakore/domain";
 import {
   CreateActions,
   MetricCard,
@@ -114,6 +115,16 @@ export default async function OrgOverviewPage({
     base,
     ctx.organization.useCase,
   );
+  // Only when the use case actually seeded words. "Not sure yet" seeds
+  // nothing, and pointing someone at a terminology screen that matches the
+  // platform defaults would be a link to nowhere.
+  const useCaseForVocabulary = findUseCase(ctx.organization.useCase);
+  const seededVocabularyFor =
+    useCaseForVocabulary &&
+    Object.keys(useCaseForVocabulary.terminology).length > 0
+      ? useCaseForVocabulary.label
+      : null;
+
   const launchMode =
     checklist.totalCount > 0 &&
     !checklist.allComplete &&
@@ -509,6 +520,7 @@ export default async function OrgOverviewPage({
         dismissed={onboarding.lifecycle.dismissedAt !== null}
         celebrated={onboarding.lifecycle.completedCelebratedAt !== null}
         canManage={can(ctx, "org.manage")}
+        seededVocabularyFor={seededVocabularyFor}
       />
 
       {/* ---- Executive metrics — deferred while launch is in progress so a

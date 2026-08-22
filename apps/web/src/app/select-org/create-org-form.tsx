@@ -53,7 +53,7 @@ export function CreateOrganizationForm({
       </Field>
 
       <Field
-        label="What will you use NovaKore for?"
+        label="What are you primarily here to do?"
         htmlFor="create-org-use-case"
         error={state.errors?.useCase}
       >
