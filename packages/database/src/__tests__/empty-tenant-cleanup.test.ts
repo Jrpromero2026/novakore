@@ -20,6 +20,7 @@ const ALLOWLISTED_AS_CONFIGURATION = [
   "audit_logs",
   "analytics_events",
   "onboarding_events",
+  "outbox_events",
 ];
 
 /**
@@ -138,5 +139,18 @@ describe("delete_empty_organization", () => {
     // change to either would break it.
     expect(seedTerminologyFor("staff_onboarding").length).toBeGreaterThan(0);
     expect(ALLOWLISTED_AS_CONFIGURATION).toContain("organization_terminology");
+  });
+
+  test("a workspace is not held hostage by its own creation events", () => {
+    // Creating an organization emits events into the outbox, so counting them
+    // as content made every tenant undeletable from the instant it existed —
+    // the same mistake as seeded terminology, found the same way. The line the
+    // allowlist draws is whether a row records SOMEONE DOING WORK or the
+    // platform operating.
+    expect(ALLOWLISTED_AS_CONFIGURATION).toContain("outbox_events");
+    // Not extended to deliveries: those imply an endpoint the customer
+    // configured, and that endpoint correctly blocks deletion on its own.
+    expect(ALLOWLISTED_AS_CONFIGURATION).not.toContain("webhook_deliveries");
+    expect(ALLOWLISTED_AS_CONFIGURATION).not.toContain("webhook_endpoints");
   });
 });

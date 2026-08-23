@@ -23,4 +23,25 @@ describe("Greeting", () => {
     expect(handleFromEmail(undefined)).toBeNull();
     expect(handleFromEmail("")).toBeNull();
   });
+
+  test("a plus-tagged address is greeted by the name, not the tag", () => {
+    // Subaddressing is ordinary — people sign up with sam+trial@ — and the
+    // separator split used to run first, producing "Sam+trial" as a name.
+    expect(handleFromEmail("sam+trial@acme.com")).toBe("Sam");
+    expect(handleFromEmail("jrpromero16+empty-abc@gmail.com")).toBe(
+      "Jrpromero16",
+    );
+  });
+
+  test("an address with no name in it yields no name", () => {
+    // Better a bare "Good morning" than "Good morning, 12345".
+    expect(handleFromEmail("12345@example.com")).toBeNull();
+    expect(handleFromEmail("+tag@example.com")).toBeNull();
+  });
+
+  test("ordinary addresses still resolve", () => {
+    expect(handleFromEmail("team@builtforher.io")).toBe("Team");
+    expect(handleFromEmail("alpha.owner@novakore.test")).toBe("Alpha");
+    expect(handleFromEmail("jane_doe@example.com")).toBe("Jane");
+  });
 });

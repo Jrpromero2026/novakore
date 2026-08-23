@@ -30,11 +30,26 @@ export function relativeTime(iso: string, now: Date = new Date()): string {
   return new Date(iso).toLocaleDateString();
 }
 
-/** Email → a display handle, when no richer profile name exists. */
+/**
+ * Email → a display handle, when no richer profile name exists.
+ *
+ * This is the first thing a new customer reads — the dashboard greets them by
+ * it — so it errs toward saying nothing rather than saying something wrong.
+ *
+ * A plus-tag is stripped before anything else: an address like
+ * `sam+trial@acme.com` greeted someone as "Sam+trial", because the separator
+ * split happened first and `+` was not one of the separators.
+ *
+ * Returning null is a real answer, not a failure. The greeting renders a bare
+ * "Good morning" without a name, which reads better than "Good morning,
+ * 12345" for an address whose local part is not a name at all.
+ */
 export function handleFromEmail(
   email: string | null | undefined,
 ): string | null {
-  const local = email?.split("@")[0]?.split(/[._-]/)[0];
+  const local = email?.split("@")[0]?.split("+")[0]?.split(/[._-]/)[0];
   if (!local) return null;
+  // No letters means no name — an account number, a date, a hash.
+  if (!/[a-z]/i.test(local)) return null;
   return local.charAt(0).toUpperCase() + local.slice(1);
 }
