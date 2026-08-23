@@ -47,7 +47,7 @@ describe.skipIf(!configured)(
           signedIn("alpha.author@novakore.test"),
           signedIn("alpha.reviewer@novakore.test"),
           signedIn("alpha.learner@novakore.test"),
-          signedIn("bfh.owner@novakore.test"),
+          signedIn("beta.owner@novakore.test"),
         ]);
     });
 

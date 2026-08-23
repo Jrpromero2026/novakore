@@ -12,20 +12,22 @@ import { signedIn } from "./_session";
  * construction rather than by judgement, because guessing wrong overwrites a
  * customer's own words with no way back.
  *
- * Built For Her is the case that matters: seven overrides, chosen before use
- * cases existed, on a tenant with no use_case at all.
+ * Beta Institute is the shape that matters: seven overrides chosen before use
+ * cases existed, on a tenant with no use_case at all. It carries a copy of the
+ * vocabulary the first real customer authored, so the invariant is proven
+ * against a fixture rather than by reading a live tenant's data.
  */
 
-const BFH = "00000000-0000-4000-8000-000000000102";
+const ORG_WITH_PRIOR_TERMS = "00000000-0000-4000-8000-000000000104";
 const PLATFORM_ADMIN = "platform.admin@novakore.test";
 
 describe("existing tenants are protected from use-case seeding", () => {
-  test("Built For Her keeps the vocabulary it already had", async () => {
-    const owner = await signedIn("bfh.owner@novakore.test");
+  test("a tenant keeps vocabulary it authored before use cases existed", async () => {
+    const owner = await signedIn("beta.owner@novakore.test");
     const { data } = await owner
       .from("organization_terminology")
       .select("term_key, singular")
-      .eq("organization_id", BFH)
+      .eq("organization_id", ORG_WITH_PRIOR_TERMS)
       .order("term_key");
 
     const terms = Object.fromEntries(
@@ -52,7 +54,7 @@ describe("existing tenants are protected from use-case seeding", () => {
     const { data } = await admin
       .from("organizations")
       .select("slug, use_case")
-      .eq("id", BFH)
+      .eq("id", ORG_WITH_PRIOR_TERMS)
       .single();
     // Never backfilled. Inferring a use case for an existing tenant would be a
     // guess, and the only thing it would earn is the right to overwrite words.

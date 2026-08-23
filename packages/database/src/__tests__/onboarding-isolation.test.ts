@@ -15,7 +15,7 @@ const url = process.env.NOVAKORE_TEST_SUPABASE_URL;
 const anonKey = process.env.NOVAKORE_TEST_SUPABASE_ANON_KEY;
 const configured = Boolean(url && anonKey);
 const ORG_A = "00000000-0000-4000-8000-000000000101"; // Alpha Learning Collective
-const ORG_B = "00000000-0000-4000-8000-000000000102"; // Built For Her (Dev Tenant)
+const ORG_B = "00000000-0000-4000-8000-000000000104"; // Beta Institute
 const DEV_PASSWORD =
   process.env.NOVAKORE_TEST_PASSWORD ?? "NovaKore-dev-password-1";
 const runTag = Date.now().toString(36);
@@ -59,7 +59,7 @@ describe.skipIf(!configured)("onboarding RLS", () => {
     [alphaOwner, alphaLearner, bfhOwner] = await Promise.all([
       signedIn("alpha.owner@novakore.test"),
       signedIn("alpha.learner@novakore.test"),
-      signedIn("bfh.owner@novakore.test"),
+      signedIn("beta.owner@novakore.test"),
     ]);
     [alphaOwnerMembership, alphaLearnerMembership, bfhOwnerMembership] =
       await Promise.all([

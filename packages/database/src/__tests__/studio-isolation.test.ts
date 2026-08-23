@@ -14,7 +14,7 @@ const anonKey = process.env.NOVAKORE_TEST_SUPABASE_ANON_KEY;
 const configured = Boolean(url && anonKey);
 
 const ORG_A = "00000000-0000-4000-8000-000000000101";
-const ORG_B = "00000000-0000-4000-8000-000000000102";
+const ORG_B = "00000000-0000-4000-8000-000000000104";
 const DEV_PASSWORD =
   process.env.NOVAKORE_TEST_PASSWORD ?? "NovaKore-dev-password-1";
 
@@ -35,7 +35,7 @@ describe.skipIf(!configured)("studio isolation + integrity (real RLS)", () => {
       signedIn("alpha.owner@novakore.test"),
       signedIn("alpha.author@novakore.test"),
       signedIn("alpha.reviewer@novakore.test"),
-      signedIn("bfh.owner@novakore.test"),
+      signedIn("beta.owner@novakore.test"),
     ]);
   });
   // No sign-out: sessions are shared suite-wide, and signing out revokes the

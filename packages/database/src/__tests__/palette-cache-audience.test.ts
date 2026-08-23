@@ -104,7 +104,7 @@ describe.skipIf(!configured)("palette cache audience (real RLS)", () => {
         signedIn("alpha.reviewer@novakore.test"),
         signedIn("alpha.academy@novakore.test"),
         signedIn("alpha.learner@novakore.test"),
-        signedIn("bfh.owner@novakore.test"),
+        signedIn("beta.owner@novakore.test"),
       ]);
   });
 

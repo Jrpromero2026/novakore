@@ -19,7 +19,7 @@ const anonKey = process.env.NOVAKORE_TEST_SUPABASE_ANON_KEY;
 const configured = Boolean(url && anonKey);
 
 const ALPHA = "00000000-0000-4000-8000-000000000101";
-const BFH = "00000000-0000-4000-8000-000000000102";
+const BFH = "00000000-0000-4000-8000-000000000104";
 
 type Client = SharedClient;
 const runTag = Date.now().toString(36);
@@ -50,7 +50,7 @@ describe.skipIf(!configured)("content templates (real RLS)", () => {
       signedIn("alpha.author@novakore.test"),
       signedIn("alpha.reviewer@novakore.test"),
       signedIn("alpha.learner@novakore.test"),
-      signedIn("bfh.owner@novakore.test"),
+      signedIn("beta.owner@novakore.test"),
     ]);
   });
 

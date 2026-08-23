@@ -31,7 +31,7 @@ if (!configured) {
 
 // Seeded fixtures (supabase/seed.sql) — deterministic ids.
 const ORG_A = "00000000-0000-4000-8000-000000000101"; // Alpha Learning Collective
-const ORG_B = "00000000-0000-4000-8000-000000000102"; // Built For Her (Dev Tenant)
+const ORG_B = "00000000-0000-4000-8000-000000000104"; // Beta Institute
 const ORG_GAMMA = "00000000-0000-4000-8000-000000000103"; // fallback-branding fixture (alpha.owner also owns it)
 const ACADEMY_A = "00000000-0000-4000-8000-000000000201";
 
@@ -63,7 +63,7 @@ describe.skipIf(!configured)(
         signedIn("alpha.author@novakore.test"),
         signedIn("alpha.reviewer@novakore.test"),
         signedIn("alpha.learner@novakore.test"),
-        signedIn("bfh.owner@novakore.test"),
+        signedIn("beta.owner@novakore.test"),
       ]);
       anon = bareClient();
     });

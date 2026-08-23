@@ -12,7 +12,7 @@ import type { Database } from "../types/database";
 const url = process.env.NOVAKORE_TEST_SUPABASE_URL;
 const anonKey = process.env.NOVAKORE_TEST_SUPABASE_ANON_KEY;
 const configured = Boolean(url && anonKey);
-const ORG_B = "00000000-0000-4000-8000-000000000102"; // builtforher
+const ORG_B = "00000000-0000-4000-8000-000000000104"; // beta-institute
 const runTag = Date.now().toString(36);
 
 // Sessions come from the suite-wide pool (vitest.globalSetup.ts).
@@ -26,14 +26,14 @@ describe.skipIf(!configured)("alpha operations RLS", () => {
 
   beforeAll(async () => {
     [member, admin] = await Promise.all([
-      signedIn("bfh.member@novakore.test"),
-      signedIn("bfh.owner@novakore.test"),
+      signedIn("beta.member@novakore.test"),
+      signedIn("beta.owner@novakore.test"),
     ]);
     // Pooled clients carry a bearer token and hold no local session, so the
     // user id comes from the pool rather than `auth.getUser()`.
     const [memberUserId, ownerUserId] = await Promise.all([
-      userIdFor("bfh.member@novakore.test"),
-      userIdFor("bfh.owner@novakore.test"),
+      userIdFor("beta.member@novakore.test"),
+      userIdFor("beta.owner@novakore.test"),
     ]);
     const { data: ms } = await member
       .from("organization_memberships")
@@ -57,7 +57,7 @@ describe.skipIf(!configured)("alpha operations RLS", () => {
       membership_id: memberMembershipId,
       category: "usability",
       message: `member self test ${runTag}`,
-      context: { route: "/builtforher/learn", roleHint: "member" },
+      context: { route: "/beta-institute/learn", roleHint: "member" },
     });
     expect(error).toBeNull();
   });

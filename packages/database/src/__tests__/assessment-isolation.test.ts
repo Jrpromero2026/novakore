@@ -16,7 +16,7 @@ const anonKey = process.env.NOVAKORE_TEST_SUPABASE_ANON_KEY;
 const configured = Boolean(url && anonKey);
 
 const ORG_A = "00000000-0000-4000-8000-000000000101";
-const ORG_B = "00000000-0000-4000-8000-000000000102";
+const ORG_B = "00000000-0000-4000-8000-000000000104";
 const MEMBERSHIP_LEARNER = "00000000-0000-4000-8000-000000000306";
 // Seeded BFH fixtures (cross-tenant targets)
 const BFH_ASSESSMENT = "00000000-0000-4000-8000-000000000801";
@@ -60,7 +60,7 @@ describe.skipIf(!configured)(
           signedIn("alpha.author@novakore.test"),
           signedIn("alpha.reviewer@novakore.test"),
           signedIn("alpha.learner@novakore.test"),
-          signedIn("bfh.owner@novakore.test"),
+          signedIn("beta.owner@novakore.test"),
         ]);
     });
 
