@@ -1,4 +1,4 @@
-import { render, screen, within } from "@testing-library/react";
+import { fireEvent, render, screen, within } from "@testing-library/react";
 import { describe, expect, test, vi } from "vitest";
 
 let pathname = "/acme/admin/branding";
@@ -28,16 +28,16 @@ const ALL = [
 const domains = buildDomains("acme", ALL);
 
 describe("GlobalNav", () => {
-  test("exposes six words, not twenty destinations", () => {
+  test("six primary words; hover reveals a domain's secondary droplist", () => {
     render(<GlobalNav domains={domains} organizationName="Acme Athletic" />);
-    // Two navs render (desktop + narrow); both carry the same domain list.
+    // Two navs render (desktop + narrow); the desktop one carries droplists.
     const navs = screen.getAllByRole("navigation", {
       name: /workspace domains/i,
     });
-    const labels = within(navs[0]!)
+    const primary = within(navs[0]!)
       .getAllByRole("link")
-      .map((a) => a.textContent);
-    expect(labels).toEqual([
+      .map((a) => a.textContent?.replace(/▾$/, ""));
+    expect(primary).toEqual([
       "Home",
       "Knowledge",
       "Learning",
@@ -45,6 +45,17 @@ describe("GlobalNav", () => {
       "Intelligence",
       "Workspace",
     ]);
+
+    // Closed by default; entering the domain opens its droplist.
+    expect(within(navs[0]!).queryByText("Studio")).toBeNull();
+    const knowledge = within(navs[0]!).getByText(/^Knowledge/);
+    fireEvent.mouseEnter(knowledge.closest("li")!);
+    for (const expected of ["Studio", "Library", "AI Workspace"]) {
+      expect(within(navs[0]!).getByText(expected)).toBeTruthy();
+    }
+    // Escape closes it again.
+    fireEvent.keyDown(knowledge.closest("li")!, { key: "Escape" });
+    expect(within(navs[0]!).queryByText("Studio")).toBeNull();
   });
 
   test("derives the active domain from a DEEP route, not a prop", () => {
@@ -53,15 +64,19 @@ describe("GlobalNav", () => {
     pathname = "/acme/admin/branding";
     render(<GlobalNav domains={domains} organizationName="Acme" />);
     const current = screen.getAllByRole("link", { current: "page" });
-    expect(current.every((el) => el.textContent === "Workspace")).toBe(true);
+    expect(current.every((el) => /^Workspace/.test(el.textContent ?? ""))).toBe(
+      true,
+    );
   });
 
   test("a nested child route still resolves to its domain", () => {
     pathname = "/acme/admin/courses/abc-123/lessons/def";
     render(<GlobalNav domains={domains} organizationName="Acme" />);
     expect(
-      screen.getAllByRole("link", { current: "page" })[0]?.textContent,
-    ).toBe("Learning");
+      /^Learning/.test(
+        screen.getAllByRole("link", { current: "page" })[0]?.textContent ?? "",
+      ),
+    ).toBe(true);
   });
 
   test("shows the organization so the workspace is never in doubt", () => {

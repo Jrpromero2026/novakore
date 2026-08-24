@@ -584,13 +584,14 @@ test.describe("NovaKore happy path", () => {
       .getByRole("navigation", { name: /workspace domains/i })
       .first();
     await expect(domainNav).toBeVisible();
+    // Domains with a secondary droplist carry a ▾ affordance after the word.
     await expect(domainNav.getByRole("link")).toHaveText([
       "Home",
-      "Knowledge",
-      "Learning",
-      "People",
-      "Intelligence",
-      "Workspace",
+      "Knowledge▾",
+      "Learning▾",
+      "People▾",
+      "Intelligence▾",
+      "Workspace▾",
     ]);
 
     // Progressive disclosure, exercised rather than asserted: click into a
