@@ -261,30 +261,42 @@ export default async function OrgOverviewPage({
     });
   }
 
+  // Ordered top-down through the hierarchy: the containing structure first
+  // (journey → course), then composing, then the material it's built from.
   const createActions = [
-    ...(canStudio
+    ...(can(ctx, "paths.manage")
       ? [
           {
-            href: `${base}/studio`,
-            label: "Compose in Studio",
-            description: "Author lessons and structure",
-            icon: IconStudio,
+            href: `${base}/learning/paths`,
+            label: `Create ${term("learning_path").singular.toLowerCase()}`,
+            description: `Sequence ${term("course").plural.toLowerCase()} into journeys`,
+            icon: IconPath,
           },
+        ]
+      : []),
+    ...(canStudio
+      ? [
           {
             href: `${base}/courses`,
             label: `Create ${term("course").singular}`,
             description: `Start a versioned ${term("course").singular}`,
             icon: IconCourse,
           },
+          {
+            href: `${base}/studio`,
+            label: "Compose in Studio",
+            description: "Author lessons and structure",
+            icon: IconStudio,
+          },
         ]
       : []),
-    ...(can(ctx, "paths.manage")
+    ...(can(ctx, "sources.manage")
       ? [
           {
-            href: `${base}/learning`,
-            label: "Create learning path",
-            description: "Sequence courses into journeys",
-            icon: IconPath,
+            href: `${base}/studio/sources`,
+            label: "Upload sources",
+            description: "Documents, data, images, video",
+            icon: IconLibrary,
           },
         ]
       : []),
@@ -301,16 +313,16 @@ export default async function OrgOverviewPage({
     ...(canStudio
       ? [
           {
-            href: `${base}/studio/library`,
-            label: "Open library",
-            description: "Reusable content blocks",
-            icon: IconLibrary,
-          },
-          {
             href: `${base}/studio/ai`,
             label: "Open AI Studio",
             description: "Governed drafting assistance",
             icon: IconAi,
+          },
+          {
+            href: `/${orgSlug}/learn`,
+            label: "Preview the Academy",
+            description: "The workspace as learners see it",
+            icon: IconEnrollment,
           },
         ]
       : []),

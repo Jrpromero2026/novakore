@@ -183,15 +183,8 @@ export function buildDomains(
         {
           label: "Curriculum",
           description: "The structures people move through.",
+          // Top-down: the containing structure first, then what it contains.
           items: [
-            {
-              href: `${base}/courses`,
-              label: term("course").plural,
-              description: "Versioned programs of modules and lessons",
-              icon: "course",
-              needsAny: ["content.view_draft"],
-              keywords: ["program", "lessons", "modules"],
-            },
             {
               href: `${base}/learning/paths`,
               label: term("learning_path").plural,
@@ -199,6 +192,14 @@ export function buildDomains(
               icon: "path",
               needsAny: ["paths.manage"],
               keywords: ["journey", "sequence", "systems"],
+            },
+            {
+              href: `${base}/courses`,
+              label: term("course").plural,
+              description: "Versioned programs of modules and lessons",
+              icon: "course",
+              needsAny: ["content.view_draft"],
+              keywords: ["program", "lessons", "modules"],
             },
           ],
         },
