@@ -5,7 +5,7 @@ import { expect, test, type Page } from "@playwright/test";
  * database — the journey a customer actually takes:
  *
  *   anonymous is refused → sign in → choose an organization → the Command
- *   Center renders real signals → Studio opens the knowledge graph → a
+ *   Center renders real signals → Studio opens the curriculum map → a
  *   lesson opens in the Knowledge IDE → the learner Academy renders →
  *   the public credential-verification page works without a session.
  *
@@ -613,10 +613,10 @@ test.describe("NovaKore happy path", () => {
     await page.waitForURL(/\/admin\/branding/, { timeout: 20_000 });
     await assertNoErrorPage(page);
 
-    // --- Studio: the knowledge graph -------------------------------------
+    // --- Studio: the curriculum map --------------------------------------
     await page.goto(`/${ORG}/admin/studio`);
     await assertNoErrorPage(page);
-    await expect(page.getByText(/knowledge graph/i).first()).toBeVisible();
+    await expect(page.getByText(/curriculum map/i).first()).toBeVisible();
 
     // --- Knowledge IDE: open a real lesson via the UI ----------------------
     await page.goto(`/${ORG}/admin/courses`);

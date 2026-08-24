@@ -613,85 +613,174 @@ export async function getLessonWorkspace(
 }
 
 // ---------------------------------------------------------------------------
-// Knowledge graph
+// Curriculum map
 // ---------------------------------------------------------------------------
 
-export interface KnowledgeGraphData {
-  journeys: { id: string; title: string; status: string }[];
-  courses: { id: string; title: string; published: boolean }[];
-  assessments: { id: string; title: string; status: string }[];
-  /** journey → course containment (real path_nodes rows). */
-  pathEdges: { journeyId: string; courseId: string }[];
-  /** assessment → course attachment (real assignment rows). */
-  assessmentEdges: { assessmentId: string; courseId: string }[];
+export interface CurriculumMapCourse {
+  id: string;
+  title: string;
+  published: boolean;
+  moduleCount: number;
+  lessonCount: number;
+  assessmentCount: number;
+  practicalCount: number;
+  /** Titles of the courses this one unlocks after (real prerequisites rows). */
+  requires: string[];
+}
+
+export interface CurriculumMapJourney {
+  id: string;
+  title: string;
+  status: string;
+  /** Courses in journey order (path_nodes.position). */
+  courses: CurriculumMapCourse[];
+}
+
+export interface CurriculumMapData {
+  journeys: CurriculumMapJourney[];
+  /** Courses on no journey — knowledge learners may never be routed to. */
+  unattachedCourses: CurriculumMapCourse[];
+  /** Non-archived assessments with no active lesson assignment. */
+  unattachedAssessmentCount: number;
 }
 
 /**
- * Real relationship graph across the organization's knowledge: journeys own
- * courses (path_nodes); assessments attach to courses (assessment
- * assignments). Nothing inferred — every edge is a database row. Certificate
- * templates carry no relational source link, so credentials are deliberately
- * NOT drawn (no fabricated edges).
+ * The organization's curriculum as structure, not decoration: journeys own
+ * courses in a real order (path_nodes), courses unlock after real
+ * prerequisites rows, and every count is a count of real rows (modules,
+ * lessons, active evaluation assignments, practical requirements). Nothing
+ * inferred, nothing drawn that is not a database row — the same honesty rule
+ * the knowledge graph carried, at a grain that stays readable as content
+ * grows.
  */
-export async function getKnowledgeGraph(
+export async function getCurriculumMap(
   organizationId: string,
-): Promise<KnowledgeGraphData> {
+): Promise<CurriculumMapData> {
   const supabase = await supabaseServer();
   const [
     { data: journeys },
     { data: courses },
-    { data: assessments },
     { data: nodes },
+    { data: prereqs },
+    { data: modules },
+    { data: lessons },
     { data: assignments },
+    { data: practicals },
+    { data: assessments },
   ] = await Promise.all([
     supabase
       .from("learning_paths")
       .select("id, title, status")
       .eq("organization_id", organizationId)
       .neq("status", "archived")
-      .order("title")
-      .limit(30),
+      .order("title"),
     supabase
       .from("courses")
       .select("id, title, current_published_version_id")
       .eq("organization_id", organizationId)
       .neq("status", "archived")
-      .order("title")
-      .limit(60),
-    supabase
-      .from("assessments")
-      .select("id, title, status")
-      .eq("organization_id", organizationId)
-      .neq("status", "archived")
-      .order("title")
-      .limit(60),
+      .order("title"),
     supabase
       .from("path_nodes")
-      .select("path_id, course_id")
+      .select("id, path_id, course_id, position")
       .eq("organization_id", organizationId),
+    supabase
+      .from("prerequisites")
+      .select("node_id, requires_node_id")
+      .eq("organization_id", organizationId),
+    supabase
+      .from("modules")
+      .select("id, course_id")
+      .eq("organization_id", organizationId)
+      .is("archived_at", null),
+    supabase
+      .from("lessons")
+      .select("id, course_id")
+      .eq("organization_id", organizationId)
+      .neq("status", "archived"),
     supabase
       .from("assessment_assignments")
       .select("assessment_id, course_id")
       .eq("organization_id", organizationId)
       .eq("status", "active"),
+    supabase
+      .from("practical_requirements")
+      .select("id, course_id")
+      .eq("organization_id", organizationId),
+    supabase
+      .from("assessments")
+      .select("id")
+      .eq("organization_id", organizationId)
+      .neq("status", "archived"),
   ]);
 
+  const countBy = (rows: { course_id: string }[] | null) => {
+    const map = new Map<string, number>();
+    for (const row of rows ?? [])
+      map.set(row.course_id, (map.get(row.course_id) ?? 0) + 1);
+    return map;
+  };
+  const moduleCounts = countBy(modules);
+  const lessonCounts = countBy(lessons);
+  const assignmentCounts = countBy(assignments);
+  const practicalCounts = countBy(practicals);
+
+  const nodeCourse = new Map((nodes ?? []).map((n) => [n.id, n.course_id]));
+  const courseTitle = new Map((courses ?? []).map((c) => [c.id, c.title]));
+  const requiresByCourse = new Map<string, string[]>();
+  for (const edge of prereqs ?? []) {
+    const courseId = nodeCourse.get(edge.node_id);
+    const requiredTitle = courseTitle.get(
+      nodeCourse.get(edge.requires_node_id) ?? "",
+    );
+    if (!courseId || !requiredTitle) continue;
+    const list = requiresByCourse.get(courseId) ?? [];
+    list.push(requiredTitle);
+    requiresByCourse.set(courseId, list);
+  }
+
+  const toCourse = (id: string): CurriculumMapCourse | null => {
+    const row = (courses ?? []).find((c) => c.id === id);
+    if (!row) return null;
+    return {
+      id: row.id,
+      title: row.title,
+      published: row.current_published_version_id !== null,
+      moduleCount: moduleCounts.get(id) ?? 0,
+      lessonCount: lessonCounts.get(id) ?? 0,
+      assessmentCount: assignmentCounts.get(id) ?? 0,
+      practicalCount: practicalCounts.get(id) ?? 0,
+      requires: (requiresByCourse.get(id) ?? []).sort(),
+    };
+  };
+
+  const onAJourney = new Set<string>();
+  const journeyRows: CurriculumMapJourney[] = (journeys ?? []).map((j) => {
+    const ordered = (nodes ?? [])
+      .filter((n) => n.path_id === j.id)
+      .sort((a, b) => (a.position < b.position ? -1 : 1))
+      .map((n) => toCourse(n.course_id))
+      .filter((c): c is CurriculumMapCourse => c !== null);
+    for (const c of ordered) onAJourney.add(c.id);
+    return { id: j.id, title: j.title, status: j.status, courses: ordered };
+  });
+
+  const unattachedCourses = (courses ?? [])
+    .filter((c) => !onAJourney.has(c.id))
+    .map((c) => toCourse(c.id))
+    .filter((c): c is CurriculumMapCourse => c !== null);
+
+  const assignedAssessments = new Set(
+    (assignments ?? []).map((a) => a.assessment_id),
+  );
+  const unattachedAssessmentCount = (assessments ?? []).filter(
+    (a) => !assignedAssessments.has(a.id),
+  ).length;
+
   return {
-    journeys: journeys ?? [],
-    courses: (courses ?? []).map((c) => ({
-      id: c.id,
-      title: c.title,
-      published: c.current_published_version_id !== null,
-    })),
-    assessments: assessments ?? [],
-    pathEdges: (nodes ?? []).map((n) => ({
-      journeyId: n.path_id,
-      courseId: n.course_id,
-    })),
-    assessmentEdges: (assignments ?? []).map((a) => ({
-      assessmentId: a.assessment_id,
-      courseId: a.course_id,
-    })),
+    journeys: journeyRows,
+    unattachedCourses,
+    unattachedAssessmentCount,
   };
 }
 

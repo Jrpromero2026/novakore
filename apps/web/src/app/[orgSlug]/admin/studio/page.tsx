@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { requireOrgContext } from "@/lib/org-context";
 import { getTerminology } from "@/lib/terminology";
-import { getKnowledgeGraph, getStudioHome } from "@/lib/data/studio";
+import { getCurriculumMap, getStudioHome } from "@/lib/data/studio";
 import {
   Badge,
   Card,
@@ -10,7 +10,7 @@ import {
   EmptyState,
 } from "@/components/ui/primitives";
 import { StudioSessionPing } from "./session-ping";
-import { KnowledgeGraph } from "./knowledge-graph";
+import { CurriculumMap } from "./curriculum-map";
 
 export const metadata: Metadata = { title: "Learning Studio" };
 
@@ -22,29 +22,34 @@ export default async function StudioHomePage({
   const { orgSlug } = await params;
   const ctx = await requireOrgContext(orgSlug);
   const { term } = await getTerminology(ctx.organization.id);
-  const [home, graph] = await Promise.all([
+  const [home, map] = await Promise.all([
     getStudioHome(ctx.organization.id),
-    getKnowledgeGraph(ctx.organization.id),
+    getCurriculumMap(ctx.organization.id),
   ]);
 
   return (
     <div className="space-y-5">
       <Card className="nk-fade-up">
         <CardHeader
-          title="Knowledge graph"
-          description="How your knowledge connects — every line is a real relationship. Hover to trace, click to open."
+          title="Curriculum map"
+          description="Your knowledge as structure — sequences, prerequisites, and counts, every row a real relationship."
         />
-        <div className="px-5 pb-5 pt-2">
-          <KnowledgeGraph
-            data={graph}
-            orgSlug={orgSlug}
-            labels={{
-              journey: term("learning_path").singular,
-              course: term("course").singular,
-              assessment: term("assessment").singular,
-            }}
-          />
-        </div>
+        <CurriculumMap
+          data={map}
+          orgSlug={orgSlug}
+          labels={{
+            journey: term("learning_path").singular,
+            journeys: term("learning_path").plural,
+            course: term("course").singular,
+            courses: term("course").plural,
+            module: term("module").singular,
+            modules: term("module").plural,
+            lesson: term("lesson").singular,
+            lessons: term("lesson").plural,
+            assessment: term("assessment").singular,
+            assessments: term("assessment").plural,
+          }}
+        />
       </Card>
 
       <div className="grid gap-5 lg:grid-cols-2">
