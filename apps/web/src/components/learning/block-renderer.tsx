@@ -11,6 +11,15 @@ import { Alert } from "@/components/ui/feedback";
 export type MediaUrlMap = ReadonlyMap<string, string>;
 
 /**
+ * Base path for resolving lesson_reference blocks into in-app links on the
+ * current surface — the learner viewer passes
+ * `/{org}/learn/{enrollmentId}/courses` (its enrollment covers every course a
+ * reference may target); surfaces without one render a reference card.
+ * A string, not a resolver function, so server components can pass it.
+ */
+export type LessonHrefBase = string;
+
+/**
  * THE block renderer — used by the learner viewer, the admin lesson preview,
  * and published-version inspection. Escape-first by construction: all text
  * flows through React text nodes; the minimal inline subset (**bold**,
@@ -68,9 +77,11 @@ function Paragraphs({ text }: { text: string }) {
 export function BlockRenderer({
   block,
   mediaUrls,
+  lessonHrefBase,
 }: {
   block: ContentBlock;
   mediaUrls?: MediaUrlMap;
+  lessonHrefBase?: LessonHrefBase;
 }) {
   switch (block.type) {
     case "quote":
@@ -388,6 +399,41 @@ export function BlockRenderer({
           ))}
         </ul>
       );
+    case "lesson_reference": {
+      const href = lessonHrefBase
+        ? `${lessonHrefBase}/${block.data.courseId}/lessons/${block.data.lessonId}`
+        : null;
+      const body = (
+        <>
+          <p
+            className="text-caption uppercase text-text-muted"
+            style={{ letterSpacing: "var(--tracking-caps)" }}
+          >
+            Recall
+          </p>
+          <p className="mt-1 text-body font-medium text-text-primary">
+            {block.data.label}
+          </p>
+          {block.data.note ? (
+            <p className="mt-0.5 text-caption text-text-muted">
+              {block.data.note}
+            </p>
+          ) : null}
+        </>
+      );
+      return href ? (
+        <a
+          href={href}
+          className="block rounded-md border border-border-default bg-surface p-4 transition-colors hover:border-border-strong"
+        >
+          {body}
+        </a>
+      ) : (
+        <div className="rounded-md border border-dashed border-border-default bg-background-subtle p-4">
+          {body}
+        </div>
+      );
+    }
     case "assessment_reference":
       return (
         <div className="rounded-md border border-dashed border-border-strong bg-background-subtle p-4">
@@ -420,9 +466,11 @@ export function BlockRenderer({
 export function BlockList({
   blocks,
   mediaUrls,
+  lessonHrefBase,
 }: {
   blocks: ContentBlock[];
   mediaUrls?: MediaUrlMap;
+  lessonHrefBase?: LessonHrefBase;
 }) {
   const ordered = [...blocks].sort((a, b) =>
     a.position < b.position ? -1 : a.position > b.position ? 1 : 0,
@@ -430,7 +478,12 @@ export function BlockList({
   return (
     <div className="space-y-5">
       {ordered.map((block) => (
-        <BlockRenderer key={block.id} block={block} mediaUrls={mediaUrls} />
+        <BlockRenderer
+          key={block.id}
+          block={block}
+          mediaUrls={mediaUrls}
+          lessonHrefBase={lessonHrefBase}
+        />
       ))}
     </div>
   );

@@ -54,6 +54,8 @@ export const BLOCK_TYPES = [
   "instructor_feedback",
   "live_session",
   "diagram",
+  // Cross-lesson recall reference (deep link within the reader's enrollment).
+  "lesson_reference",
 ] as const;
 export type BlockType = (typeof BLOCK_TYPES)[number];
 
@@ -92,6 +94,7 @@ export const BLOCK_STATUS: Record<
   instructor_feedback: "schema_only",
   live_session: "schema_only",
   diagram: "schema_only", // safe diagram rendering not ready
+  lesson_reference: "implemented", // renders a link when the surface can resolve one, a reference card otherwise
 };
 
 const blockBase = z.object({
@@ -192,6 +195,19 @@ export const checklistDataV1 = z.strictObject({
 export const assessmentReferenceDataV1 = z.strictObject({
   assessmentId: z.uuid(),
   title: z.string().min(1).max(200),
+});
+
+/**
+ * Recall reference to another lesson (same course or another course covered by
+ * the reader's enrollment). Renderers that know the reader's enrollment turn
+ * it into a deep link; other surfaces show a labeled reference card. This is
+ * how downstream material recalls an upstream concept without duplicating it.
+ */
+export const lessonReferenceDataV1 = z.strictObject({
+  courseId: z.uuid(),
+  lessonId: z.uuid(),
+  label: z.string().min(1).max(200),
+  note: z.string().min(1).max(300).optional(),
 });
 
 // ---------------------------------------------------------------------------
@@ -438,6 +454,11 @@ export const contentBlockSchema = z.discriminatedUnion("type", [
     data: assessmentReferenceDataV1,
   }),
   blockBase.extend({
+    type: z.literal("lesson_reference"),
+    schemaVersion: z.literal(1),
+    data: lessonReferenceDataV1,
+  }),
+  blockBase.extend({
     type: z.literal("quote"),
     schemaVersion: z.literal(1),
     data: quoteDataV1,
@@ -584,6 +605,7 @@ const dataSchemas: Record<RegistryKey, z.ZodType> = {
   "instructor_feedback:1": instructorFeedbackDataV1,
   "live_session:1": liveSessionDataV1,
   "diagram:1": diagramDataV1,
+  "lesson_reference:1": lessonReferenceDataV1,
 };
 
 /** Pure migration functions, registered per upgrade step. */
@@ -628,6 +650,7 @@ export const CURRENT_SCHEMA_VERSION: Record<BlockType, number> = {
   instructor_feedback: 1,
   live_session: 1,
   diagram: 1,
+  lesson_reference: 1,
 };
 
 export function validateBlockData(

@@ -921,6 +921,63 @@ export type Database = {
           },
         ];
       };
+      content_blocks: {
+        Row: {
+          block_type: string;
+          created_at: string;
+          data: Json;
+          id: string;
+          lesson_id: string;
+          organization_id: string;
+          position: string;
+          schema_version: number;
+          source_reusable_block_id: string | null;
+          updated_at: string;
+          word_count: number | null;
+        };
+        Insert: {
+          block_type: string;
+          created_at?: string;
+          data: Json;
+          id?: string;
+          lesson_id: string;
+          organization_id: string;
+          position: string;
+          schema_version: number;
+          source_reusable_block_id?: string | null;
+          updated_at?: string;
+          word_count?: number | null;
+        };
+        Update: {
+          block_type?: string;
+          created_at?: string;
+          data?: Json;
+          id?: string;
+          lesson_id?: string;
+          organization_id?: string;
+          position?: string;
+          schema_version?: number;
+          source_reusable_block_id?: string | null;
+          updated_at?: string;
+          word_count?: number | null;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "content_blocks_lesson_id_fkey";
+            columns: ["lesson_id"];
+            isOneToOne: false;
+            referencedRelation: "lessons";
+            referencedColumns: ["id"];
+          },
+          {
+            foreignKeyName: "content_blocks_source_reusable_fk";
+            columns: ["source_reusable_block_id"];
+            isOneToOne: false;
+            referencedRelation: "reusable_blocks";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
       content_templates: {
         Row: {
           archived_at: string | null;
@@ -964,59 +1021,12 @@ export type Database = {
           updated_at?: string;
           variables?: Json;
         };
-        Relationships: [];
-      };
-      content_blocks: {
-        Row: {
-          block_type: string;
-          created_at: string;
-          data: Json;
-          id: string;
-          lesson_id: string;
-          organization_id: string;
-          position: string;
-          schema_version: number;
-          source_reusable_block_id: string | null;
-          updated_at: string;
-          word_count: number | null;
-        };
-        Insert: {
-          block_type: string;
-          created_at?: string;
-          data: Json;
-          id?: string;
-          lesson_id: string;
-          organization_id: string;
-          position: string;
-          schema_version: number;
-          source_reusable_block_id?: string | null;
-          updated_at?: string;
-        };
-        Update: {
-          block_type?: string;
-          created_at?: string;
-          data?: Json;
-          id?: string;
-          lesson_id?: string;
-          organization_id?: string;
-          position?: string;
-          schema_version?: number;
-          source_reusable_block_id?: string | null;
-          updated_at?: string;
-        };
         Relationships: [
           {
-            foreignKeyName: "content_blocks_lesson_id_fkey";
-            columns: ["lesson_id"];
+            foreignKeyName: "content_templates_organization_id_fkey";
+            columns: ["organization_id"];
             isOneToOne: false;
-            referencedRelation: "lessons";
-            referencedColumns: ["id"];
-          },
-          {
-            foreignKeyName: "content_blocks_source_reusable_fk";
-            columns: ["source_reusable_block_id"];
-            isOneToOne: false;
-            referencedRelation: "reusable_blocks";
+            referencedRelation: "organizations";
             referencedColumns: ["id"];
           },
         ];
@@ -1090,6 +1100,7 @@ export type Database = {
           created_by: string | null;
           current_published_version_id: string | null;
           description: string | null;
+          enforce_sequence: boolean;
           id: string;
           organization_id: string;
           slug: string;
@@ -1107,6 +1118,7 @@ export type Database = {
           created_by?: string | null;
           current_published_version_id?: string | null;
           description?: string | null;
+          enforce_sequence?: boolean;
           id?: string;
           organization_id: string;
           slug: string;
@@ -1124,6 +1136,7 @@ export type Database = {
           created_by?: string | null;
           current_published_version_id?: string | null;
           description?: string | null;
+          enforce_sequence?: boolean;
           id?: string;
           organization_id?: string;
           slug?: string;
@@ -1143,6 +1156,70 @@ export type Database = {
           },
           {
             foreignKeyName: "courses_organization_id_fkey";
+            columns: ["organization_id"];
+            isOneToOne: false;
+            referencedRelation: "organizations";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
+      curriculum_records: {
+        Row: {
+          code: string;
+          course_id: string | null;
+          created_at: string;
+          data: Json;
+          id: string;
+          kind: string;
+          learning_path_id: string | null;
+          organization_id: string;
+          position: string;
+          title: string;
+          updated_at: string;
+        };
+        Insert: {
+          code: string;
+          course_id?: string | null;
+          created_at?: string;
+          data?: Json;
+          id?: string;
+          kind: string;
+          learning_path_id?: string | null;
+          organization_id: string;
+          position?: string;
+          title: string;
+          updated_at?: string;
+        };
+        Update: {
+          code?: string;
+          course_id?: string | null;
+          created_at?: string;
+          data?: Json;
+          id?: string;
+          kind?: string;
+          learning_path_id?: string | null;
+          organization_id?: string;
+          position?: string;
+          title?: string;
+          updated_at?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "curriculum_records_course_id_fkey";
+            columns: ["course_id"];
+            isOneToOne: false;
+            referencedRelation: "courses";
+            referencedColumns: ["id"];
+          },
+          {
+            foreignKeyName: "curriculum_records_learning_path_id_fkey";
+            columns: ["learning_path_id"];
+            isOneToOne: false;
+            referencedRelation: "learning_paths";
+            referencedColumns: ["id"];
+          },
+          {
+            foreignKeyName: "curriculum_records_organization_id_fkey";
             columns: ["organization_id"];
             isOneToOne: false;
             referencedRelation: "organizations";
@@ -2400,6 +2477,165 @@ export type Database = {
         };
         Relationships: [];
       };
+      practical_evaluations: {
+        Row: {
+          code: string;
+          comments: string | null;
+          competency_codes: string[];
+          course_id: string;
+          created_at: string;
+          enrollment_id: string;
+          evaluated_at: string;
+          evaluator_id: string;
+          evidence: string | null;
+          id: string;
+          kind: string;
+          lesson_id: string;
+          membership_id: string;
+          organization_id: string;
+          requirement_id: string;
+          result: string;
+          rubric: Json;
+        };
+        Insert: {
+          code: string;
+          comments?: string | null;
+          competency_codes?: string[];
+          course_id: string;
+          created_at?: string;
+          enrollment_id: string;
+          evaluated_at?: string;
+          evaluator_id: string;
+          evidence?: string | null;
+          id?: string;
+          kind: string;
+          lesson_id: string;
+          membership_id: string;
+          organization_id: string;
+          requirement_id: string;
+          result: string;
+          rubric?: Json;
+        };
+        Update: {
+          code?: string;
+          comments?: string | null;
+          competency_codes?: string[];
+          course_id?: string;
+          created_at?: string;
+          enrollment_id?: string;
+          evaluated_at?: string;
+          evaluator_id?: string;
+          evidence?: string | null;
+          id?: string;
+          kind?: string;
+          lesson_id?: string;
+          membership_id?: string;
+          organization_id?: string;
+          requirement_id?: string;
+          result?: string;
+          rubric?: Json;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "practical_evaluations_enrollment_id_fkey";
+            columns: ["enrollment_id"];
+            isOneToOne: false;
+            referencedRelation: "enrollments";
+            referencedColumns: ["id"];
+          },
+          {
+            foreignKeyName: "practical_evaluations_membership_id_organization_id_fkey";
+            columns: ["membership_id", "organization_id"];
+            isOneToOne: false;
+            referencedRelation: "organization_memberships";
+            referencedColumns: ["id", "organization_id"];
+          },
+          {
+            foreignKeyName: "practical_evaluations_organization_id_fkey";
+            columns: ["organization_id"];
+            isOneToOne: false;
+            referencedRelation: "organizations";
+            referencedColumns: ["id"];
+          },
+          {
+            foreignKeyName: "practical_evaluations_requirement_id_fkey";
+            columns: ["requirement_id"];
+            isOneToOne: false;
+            referencedRelation: "practical_requirements";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
+      practical_requirements: {
+        Row: {
+          code: string;
+          competency_codes: string[];
+          course_id: string;
+          created_at: string;
+          created_by: string | null;
+          guidance: string | null;
+          id: string;
+          kind: string;
+          lesson_id: string;
+          organization_id: string;
+          rubric: Json;
+          title: string;
+          updated_at: string;
+        };
+        Insert: {
+          code: string;
+          competency_codes?: string[];
+          course_id: string;
+          created_at?: string;
+          created_by?: string | null;
+          guidance?: string | null;
+          id?: string;
+          kind: string;
+          lesson_id: string;
+          organization_id: string;
+          rubric?: Json;
+          title: string;
+          updated_at?: string;
+        };
+        Update: {
+          code?: string;
+          competency_codes?: string[];
+          course_id?: string;
+          created_at?: string;
+          created_by?: string | null;
+          guidance?: string | null;
+          id?: string;
+          kind?: string;
+          lesson_id?: string;
+          organization_id?: string;
+          rubric?: Json;
+          title?: string;
+          updated_at?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "practical_requirements_course_id_organization_id_fkey";
+            columns: ["course_id", "organization_id"];
+            isOneToOne: false;
+            referencedRelation: "courses";
+            referencedColumns: ["id", "organization_id"];
+          },
+          {
+            foreignKeyName: "practical_requirements_lesson_id_fkey";
+            columns: ["lesson_id"];
+            isOneToOne: true;
+            referencedRelation: "lessons";
+            referencedColumns: ["id"];
+          },
+          {
+            foreignKeyName: "practical_requirements_organization_id_fkey";
+            columns: ["organization_id"];
+            isOneToOne: false;
+            referencedRelation: "organizations";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
       prerequisites: {
         Row: {
           created_at: string;
@@ -2929,8 +3165,6 @@ export type Database = {
       bfh_enroll_or_assign_external: {
         Args: {
           p_api_key: string;
-          // Nullable in the function signature (no default, plain
-          // timestamptz); the generator emits it as non-null.
           p_due_at: string | null;
           p_external_user_id: string;
           p_idempotency_key: string;
@@ -3051,15 +3285,6 @@ export type Database = {
         };
         Returns: string;
       };
-      override_progress: {
-        Args: {
-          p_enrollment_id: string;
-          p_lesson_id: string;
-          p_reason: string;
-          p_status: string;
-        };
-        Returns: undefined;
-      };
       org_event_daily_by_type: {
         Args: { p_organization_id: string; p_window_days?: number };
         Returns: Json;
@@ -3070,11 +3295,26 @@ export type Database = {
       };
       org_lesson_term_usage: {
         Args: { p_organization_id: string; p_terms: string[] };
-        Returns: { term: string; lesson_count: number }[];
+        Returns: {
+          lesson_count: number;
+          term: string;
+        }[];
       };
       org_lesson_word_counts: {
         Args: { p_organization_id: string };
-        Returns: { lesson_id: string; words: number }[];
+        Returns: {
+          lesson_id: string;
+          words: number;
+        }[];
+      };
+      override_progress: {
+        Args: {
+          p_enrollment_id: string;
+          p_lesson_id: string;
+          p_reason: string;
+          p_status: string;
+        };
+        Returns: undefined;
       };
       provision_organization: {
         Args: { p_name: string; p_owner_email: string; p_slug: string };
@@ -3093,6 +3333,17 @@ export type Database = {
           p_lesson_id: string;
         };
         Returns: undefined;
+      };
+      record_practical_evaluation: {
+        Args: {
+          p_comments?: string;
+          p_enrollment_id: string;
+          p_evidence?: string;
+          p_requirement_id: string;
+          p_result: string;
+          p_rubric?: Json;
+        };
+        Returns: string;
       };
       register_submission_file: {
         Args: {

@@ -28,20 +28,21 @@ carries the resolution chain (exact version ids where applicable);
 
 Phase 1D additions:
 
-| Type                                          | Subject               | Emitted by                                   | Context highlights                           | Idempotency key                                |
-| --------------------------------------------- | --------------------- | -------------------------------------------- | -------------------------------------------- | ---------------------------------------------- |
-| `content.assessment.created`                  | assessment            | insert trigger                               | `data.assessment_type`                       | `assessment-created:<assessment>`              |
-| `content.assessment.updated`                  | assessment            | update trigger (title/settings/type only)    | —                                            | `assessment-updated:<assessment>:<epoch>`      |
-| `content.assessment.published`                | assessment            | `publish_assessment`                         | assessment_version_id; `data.version_number` | `assessment-published:<version>`               |
-| `assessment.assignment.created`               | assessment_assignment | `assign_assessment`                          | lesson, assessment, pinned version           | `assessment-assigned:<assignment>`             |
-| `assessment.attempt.started`                  | assessment_attempt    | `start_assessment_attempt`                   | assignment, enrollment, pinned version       | `attempt-started:<attempt>`                    |
-| `assessment.attempt.submitted`                | assessment_attempt    | `submit_assessment_attempt`                  | version, enrollment                          | `attempt-submitted:<attempt>`                  |
-| `assessment.attempt.pending_review`           | assessment_attempt    | submit (subjective work)                     | version                                      | `attempt-pending-review:<attempt>`             |
-| `assessment.attempt.passed` / `.failed`       | assessment_attempt    | finalization (submit OR review — never both) | version, enrollment; `data.score_percent`    | `attempt-finalized:<attempt>`                  |
-| `assessment.review.completed`                 | assessment_attempt    | `complete_assessment_review`                 | version; `data.decision`                     | `review-completed:<review>`                    |
-| `credential.certificate.issued`               | issued_credential     | `app.issue_credential_internal`              | certificate, membership, attempt             | `credential-issued:<certificate>:<membership>` |
-| `credential.certificate.revoked`              | issued_credential     | `revoke_credential`                          | certificate; `data.reason`                   | `credential-revoked:<credential>`              |
-| `learning.completion.triggered_by_assessment` | lesson                | `app.apply_assessment_outcome`               | enrollment, attempt, assessment version      | `assessment-completion:<attempt>`              |
+| Type                                          | Subject               | Emitted by                                   | Context highlights                                 | Idempotency key                                |
+| --------------------------------------------- | --------------------- | -------------------------------------------- | -------------------------------------------------- | ---------------------------------------------- |
+| `content.assessment.created`                  | assessment            | insert trigger                               | `data.assessment_type`                             | `assessment-created:<assessment>`              |
+| `content.assessment.updated`                  | assessment            | update trigger (title/settings/type only)    | —                                                  | `assessment-updated:<assessment>:<epoch>`      |
+| `content.assessment.published`                | assessment            | `publish_assessment`                         | assessment_version_id; `data.version_number`       | `assessment-published:<version>`               |
+| `assessment.assignment.created`               | assessment_assignment | `assign_assessment`                          | lesson, assessment, pinned version                 | `assessment-assigned:<assignment>`             |
+| `assessment.attempt.started`                  | assessment_attempt    | `start_assessment_attempt`                   | assignment, enrollment, pinned version             | `attempt-started:<attempt>`                    |
+| `assessment.attempt.submitted`                | assessment_attempt    | `submit_assessment_attempt`                  | version, enrollment                                | `attempt-submitted:<attempt>`                  |
+| `assessment.attempt.pending_review`           | assessment_attempt    | submit (subjective work)                     | version                                            | `attempt-pending-review:<attempt>`             |
+| `assessment.attempt.passed` / `.failed`       | assessment_attempt    | finalization (submit OR review — never both) | version, enrollment; `data.score_percent`          | `attempt-finalized:<attempt>`                  |
+| `assessment.review.completed`                 | assessment_attempt    | `complete_assessment_review`                 | version; `data.decision`                           | `review-completed:<review>`                    |
+| `assessment.practical.recorded`               | lesson                | `record_practical_evaluation`                | enrollment, requirement, kind, code; `data.result` | `practical-recorded:<evaluation>`              |
+| `credential.certificate.issued`               | issued_credential     | `app.issue_credential_internal`              | certificate, membership, attempt                   | `credential-issued:<certificate>:<membership>` |
+| `credential.certificate.revoked`              | issued_credential     | `revoke_credential`                          | certificate; `data.reason`                         | `credential-revoked:<credential>`              |
+| `learning.completion.triggered_by_assessment` | lesson                | `app.apply_assessment_outcome`               | enrollment, attempt, assessment version            | `assessment-completion:<attempt>`              |
 
 The pass/fail pair shares ONE key (`attempt-finalized:<attempt>`): an
 attempt finalizes exactly once, through either the objective or the

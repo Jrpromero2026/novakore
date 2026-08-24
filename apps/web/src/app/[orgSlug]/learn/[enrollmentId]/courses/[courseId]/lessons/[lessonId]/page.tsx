@@ -5,6 +5,8 @@ import { requireOrgContext } from "@/lib/org-context";
 import { requireUser } from "@/lib/auth";
 import { getEnrolledCourse, parseFrozenBlocks } from "@/lib/data/learning";
 import { getLessonAssessments } from "@/lib/data/assessments";
+import { getLessonPractical } from "@/lib/data/practicals";
+import { practicalStatus } from "@novakore/domain";
 import { resolveMediaUrls } from "@/lib/data/media";
 import { getTerminology } from "@/lib/terminology";
 import { supabaseServer } from "@/lib/supabase/server";
@@ -82,6 +84,21 @@ export default async function LessonViewerPage({
     (entry) =>
       entry.required && !entry.attempts.some((a) => a.status === "passed"),
   );
+  const practical = await getLessonPractical(
+    ctx.organization.id,
+    lessonId,
+    enrollmentId,
+  );
+  const practicalState = practical
+    ? practicalStatus(
+        practical.requirement.id,
+        practical.evaluations.map((e) => ({
+          requirementId: e.requirementId,
+          result: e.result,
+          evaluatedAt: e.evaluatedAt,
+        })),
+      )
+    : null;
 
   return (
     <article className="space-y-6">
@@ -110,7 +127,11 @@ export default async function LessonViewerPage({
       </header>
 
       {blocks.length > 0 ? (
-        <BlockList blocks={blocks} mediaUrls={mediaUrls} />
+        <BlockList
+          blocks={blocks}
+          mediaUrls={mediaUrls}
+          lessonHrefBase={`/${orgSlug}/learn/${enrollmentId}/courses`}
+        />
       ) : (
         <Alert tone="info" title="Empty lesson">
           This {term("lesson").singular.toLowerCase()} has no content yet.
@@ -184,6 +205,92 @@ export default async function LessonViewerPage({
         </Card>
       ) : null}
 
+      {practical ? (
+        <Card>
+          <CardHeader
+            title={`${practical.requirement.code} · ${practical.requirement.title}`}
+            description={
+              practical.requirement.kind === "terminal_defense"
+                ? "Terminal defense — evaluated live by an approved evaluator."
+                : "Observed practical sign-off — recorded by an approved assessor."
+            }
+          />
+          <div className="space-y-4 px-5 pb-5">
+            <div className="flex flex-wrap items-center gap-2">
+              <Badge
+                tone={
+                  practicalState === "passed"
+                    ? "positive"
+                    : practicalState === "remediation_open"
+                      ? "warning"
+                      : practicalState === "failed"
+                        ? "danger"
+                        : "neutral"
+                }
+              >
+                {practicalState === "passed"
+                  ? "Passed"
+                  : practicalState === "remediation_open"
+                    ? "Remediation open"
+                    : practicalState === "failed"
+                      ? "Not yet at standard"
+                      : "Awaiting evaluation"}
+              </Badge>
+              {practical.requirement.competencyCodes.map((code) => (
+                <Badge key={code} tone="neutral">
+                  {code}
+                </Badge>
+              ))}
+            </div>
+            {practical.requirement.rubric ? (
+              <div className="space-y-1">
+                <p className="text-caption uppercase text-text-muted">
+                  Rubric
+                  {practical.requirement.rubric.scale
+                    ? ` · scale ${practical.requirement.rubric.scale}`
+                    : ""}
+                </p>
+                <ul className="list-disc pl-5 text-body-sm text-text-secondary">
+                  {practical.requirement.rubric.dimensions.map((dimension) => (
+                    <li key={dimension}>{dimension}</li>
+                  ))}
+                </ul>
+                {practical.requirement.rubric.pass ? (
+                  <p className="text-caption text-text-muted">
+                    Pass standard: {practical.requirement.rubric.pass}
+                  </p>
+                ) : null}
+              </div>
+            ) : null}
+            {practical.evaluations.length > 0 ? (
+              <div className="space-y-2">
+                <p className="text-caption uppercase text-text-muted">Record</p>
+                <ul className="space-y-2">
+                  {practical.evaluations.map((entry) => (
+                    <li
+                      key={entry.id}
+                      className="rounded-md border border-border-subtle px-3 py-2 text-body-sm"
+                    >
+                      <span className="font-medium text-text-primary">
+                        {entry.result.replace(/_/g, " ")}
+                      </span>{" "}
+                      <span className="text-text-muted">
+                        · {new Date(entry.evaluatedAt).toLocaleDateString()}
+                      </span>
+                      {entry.comments ? (
+                        <p className="mt-1 text-text-secondary">
+                          {entry.comments}
+                        </p>
+                      ) : null}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            ) : null}
+          </div>
+        </Card>
+      ) : null}
+
       <LessonActions
         orgSlug={orgSlug}
         enrollmentId={enrollmentId}
@@ -191,6 +298,7 @@ export default async function LessonViewerPage({
         lessonId={lessonId}
         completed={completed}
         assessmentGated={requiredAssessmentPending}
+        practicalGated={practical !== null && practicalState !== "passed"}
         backHref={`/${orgSlug}/learn/${enrollmentId}/courses/${courseId}`}
       />
     </article>

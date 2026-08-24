@@ -13,6 +13,7 @@ export function LessonActions({
   lessonId,
   completed,
   assessmentGated = false,
+  practicalGated = false,
   backHref,
 }: {
   orgSlug: string;
@@ -22,6 +23,8 @@ export function LessonActions({
   completed: boolean;
   /** A required assessment owns completion — hide self-complete. */
   assessmentGated?: boolean;
+  /** An observed practical evaluation owns completion — hide self-complete. */
+  practicalGated?: boolean;
   backHref: string;
 }) {
   const [state, setState] = useState<ActionState>(idle);
@@ -65,7 +68,11 @@ export function LessonActions({
         ← Back
       </Link>
       <div className="ml-auto">
-        {assessmentGated ? (
+        {practicalGated ? (
+          <p className="text-body-sm text-text-muted">
+            Your evaluator records this step once it is observed at standard.
+          </p>
+        ) : assessmentGated ? (
           <p className="text-body-sm text-text-muted">
             Pass the check above to complete this lesson.
           </p>

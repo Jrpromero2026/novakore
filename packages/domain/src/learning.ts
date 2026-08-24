@@ -335,6 +335,7 @@ export const EVENT_TYPES = [
   "assessment.attempt.passed",
   "assessment.attempt.failed",
   "assessment.review.completed",
+  "assessment.practical.recorded",
   "credential.certificate.issued",
   "credential.certificate.revoked",
   "learning.completion.triggered_by_assessment",

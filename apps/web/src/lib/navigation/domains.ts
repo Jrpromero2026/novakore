@@ -206,6 +206,14 @@ export function buildDomains(
               needsAny: ["assessment.grade"],
               keywords: ["grading", "sign-off", "queue"],
             },
+            {
+              href: `${base}/practicals`,
+              label: "Practicals",
+              description: "Observed sign-offs and terminal defenses",
+              icon: "review",
+              needsAny: ["assessment.grade"],
+              keywords: ["sign-off", "defense", "observation", "practical"],
+            },
           ],
         },
         {
