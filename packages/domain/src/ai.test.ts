@@ -26,9 +26,10 @@ const id = (n: number) =>
 describe("AI cost math (integer cents, never floats)", () => {
   test("estimates ceil and never round to free", () => {
     expect(estimateCostCents("drafting", 1, 1)).toBe(2); // each side ceils to 1
-    expect(estimateCostCents("drafting", 1_000_000, 0)).toBe(300);
-    expect(estimateCostCents("drafting", 0, 1_000_000)).toBe(1_500);
-    expect(estimateCostCents("rewrite", 1_000_000, 1_000_000)).toBe(480);
+    // Claude Opus 5 rates: $5 in / $25 out per MTok
+    expect(estimateCostCents("drafting", 1_000_000, 0)).toBe(500);
+    expect(estimateCostCents("drafting", 0, 1_000_000)).toBe(2_500);
+    expect(estimateCostCents("rewrite", 1_000_000, 1_000_000)).toBe(3_000);
     expect(
       Number.isInteger(estimateCostCents("structured", 123_456, 78_901)),
     ).toBe(true);
@@ -38,7 +39,7 @@ describe("AI cost math (integer cents, never floats)", () => {
     expect(reservationCents("drafting")).toBeGreaterThan(
       reservationCents("rewrite"),
     );
-    expect(reservationCents("drafting")).toBe(9); // 3 + 6 cents
+    expect(reservationCents("drafting")).toBe(14); // 4 + 10 cents at Opus 5 rates
   });
 
   test("the platform cap is the owner-approved $50", () => {

@@ -1,4 +1,5 @@
 import "server-only";
+import Anthropic from "@anthropic-ai/sdk";
 import {
   normalizeProviderError,
   validateAiOutput,
@@ -13,19 +14,14 @@ import { buildFixtureOutput } from "./fixtures";
  *
  *   NOVAKORE_AI_PROVIDER = mock (default) | deterministic | anthropic
  *   ANTHROPIC_API_KEY    = required only for the anthropic adapter
+ *   NOVAKORE_AI_MODEL    = optional model override (default claude-opus-5)
  *
- * No provider credentials exist in this development environment, so the
- * anthropic adapter is UNVERIFIED against the live API — the abstraction,
- * workflow, budget enforcement, and UI are proven with the mock and
- * deterministic providers (owner decision 6). Keys never reach the
- * browser: this module is server-only and adapters run inside actions.
+ * Keys never reach the browser: this module is server-only and adapters run
+ * inside actions. The anthropic adapter uses the official SDK; every profile
+ * runs Claude Opus 5 unless the owner overrides the model via env.
  */
 
-const PROFILE_TO_ANTHROPIC_MODEL: Record<string, string> = {
-  drafting: "claude-sonnet-5",
-  structured: "claude-sonnet-5",
-  rewrite: "claude-haiku-4-5-20251001",
-};
+const DEFAULT_ANTHROPIC_MODEL = "claude-opus-5";
 
 /** Development mock: realistic fixture output after a short delay. */
 export class MockProvider implements AiProvider {
@@ -86,62 +82,63 @@ export class DeterministicProvider implements AiProvider {
 }
 
 /**
- * Anthropic adapter. UNVERIFIED without credentials — activation:
- * set NOVAKORE_AI_PROVIDER=anthropic and ANTHROPIC_API_KEY in the
- * server environment (never committed, never NEXT_PUBLIC_).
+ * Anthropic adapter — official SDK, Claude Opus 5 (adaptive thinking is the
+ * model default, so no thinking config is sent). Activation: set
+ * NOVAKORE_AI_PROVIDER=anthropic and ANTHROPIC_API_KEY in the server
+ * environment (never committed, never NEXT_PUBLIC_).
  */
 export class AnthropicProvider implements AiProvider {
   readonly name = "anthropic";
-  constructor(private readonly apiKey: string) {}
+  private readonly client: Anthropic;
+  private readonly model: string;
+
+  constructor(apiKey: string, model?: string) {
+    this.client = new Anthropic({ apiKey, maxRetries: 2 });
+    this.model = model ?? DEFAULT_ANTHROPIC_MODEL;
+  }
 
   async generate(
     request: GenerationRequest,
     signal?: AbortSignal,
   ): Promise<ProviderResult> {
-    const model = PROFILE_TO_ANTHROPIC_MODEL[request.profile]!;
     const sources = request.sources
       .map((s) => `<source title="${s.title}">\n${s.excerpt}\n</source>`)
       .join("\n");
-    const timeout = AbortSignal.timeout(60_000);
     try {
-      const response = await fetch("https://api.anthropic.com/v1/messages", {
-        method: "POST",
-        headers: {
-          "content-type": "application/json",
-          "x-api-key": this.apiKey,
-          "anthropic-version": "2023-06-01",
-        },
-        signal: signal ? AbortSignal.any([signal, timeout]) : timeout,
-        body: JSON.stringify({
-          model,
-          max_tokens: 4096,
+      const response = await this.client.messages.create(
+        {
+          model: this.model,
+          max_tokens: 16_000,
           system:
-            "You are NovaKore's authoring assistant. Respond with ONLY a JSON object matching the requested structure. Use only the supplied tenant sources; never invent citations.",
+            "You are NovaKore's authoring assistant. Respond with ONLY a JSON object matching the requested structure — no prose, no code fences. Use only the supplied tenant sources; never invent citations.",
           messages: [
             {
               role: "user",
               content: `Operation: ${request.operation}\nObjective: ${request.objective}\nAudience: ${request.audience ?? "general"}\nReading level: ${request.readingLevel ?? "intermediate"}\n${sources}\n${request.inputText ? `<input>\n${request.inputText}\n</input>` : ""}`,
             },
           ],
-        }),
-      });
-      if (!response.ok) {
+        },
+        { signal, timeout: 300_000 },
+      );
+
+      if (response.stop_reason === "refusal") {
         return {
           ok: false,
-          error: normalizeProviderError({
-            status: response.status,
-            message: `Anthropic request failed (${response.status})`,
-          }),
+          error: {
+            kind: "invalid_output",
+            message: "The provider declined this request.",
+            retryable: false,
+          },
         };
       }
-      const body = (await response.json()) as {
-        content?: { type: string; text?: string }[];
-        usage?: { input_tokens?: number; output_tokens?: number };
-      };
-      const text = body.content?.find((c) => c.type === "text")?.text ?? "";
+
+      let text = "";
+      for (const block of response.content) {
+        if (block.type === "text") text += block.text;
+      }
       let parsed: unknown;
       try {
-        parsed = JSON.parse(text.replace(/^```json\s*|\s*```$/g, ""));
+        parsed = JSON.parse(text.replace(/^```json\s*|\s*```$/g, "").trim());
       } catch {
         return {
           ok: false,
@@ -156,13 +153,24 @@ export class AnthropicProvider implements AiProvider {
         ok: true,
         output: parsed,
         usage: {
-          inputTokens: body.usage?.input_tokens ?? 0,
-          outputTokens: body.usage?.output_tokens ?? 0,
+          inputTokens: response.usage.input_tokens,
+          outputTokens: response.usage.output_tokens,
         },
-        providerModel: model,
+        providerModel: response.model,
       };
     } catch (cause) {
-      const aborted = cause instanceof Error && cause.name === "TimeoutError";
+      if (cause instanceof Anthropic.APIError) {
+        return {
+          ok: false,
+          error: normalizeProviderError({
+            status: cause.status,
+            message: cause.message,
+          }),
+        };
+      }
+      const aborted =
+        cause instanceof Error &&
+        (cause.name === "AbortError" || cause.name === "APIUserAbortError");
       return {
         ok: false,
         error: normalizeProviderError({
@@ -183,7 +191,7 @@ export function getProvider(): AiProvider {
         "NOVAKORE_AI_PROVIDER=anthropic requires ANTHROPIC_API_KEY in the server environment.",
       );
     }
-    return new AnthropicProvider(key);
+    return new AnthropicProvider(key, process.env.NOVAKORE_AI_MODEL);
   }
   if (selection === "deterministic") return new DeterministicProvider();
   return new MockProvider();

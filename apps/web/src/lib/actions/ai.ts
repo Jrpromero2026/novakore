@@ -67,7 +67,7 @@ export async function runGenerationAction(
       if (doc.content === null) {
         return {
           ok: false,
-          message: `“${doc.title}” is a file source without extracted text yet — PDF extraction is not implemented in this phase.`,
+          message: `“${doc.title}” has no extracted text (extraction failed, or the format carries none — images and video are stored without claimed text). Attach sources that show extracted characters.`,
         };
       }
       sources.push({

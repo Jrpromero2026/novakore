@@ -2933,14 +2933,19 @@ export type Database = {
       source_documents: {
         Row: {
           archived_at: string | null;
+          byte_size: number | null;
           content: string | null;
           content_hash: string | null;
           created_at: string;
           created_by: string | null;
+          extracted_chars: number | null;
+          extraction_note: string | null;
           extraction_status: string;
           id: string;
           kind: string;
+          mime_type: string | null;
           organization_id: string;
+          original_filename: string | null;
           provenance: string | null;
           review_state: string;
           status: string;
@@ -2950,14 +2955,19 @@ export type Database = {
         };
         Insert: {
           archived_at?: string | null;
+          byte_size?: number | null;
           content?: string | null;
           content_hash?: string | null;
           created_at?: string;
           created_by?: string | null;
+          extracted_chars?: number | null;
+          extraction_note?: string | null;
           extraction_status?: string;
           id?: string;
           kind: string;
+          mime_type?: string | null;
           organization_id: string;
+          original_filename?: string | null;
           provenance?: string | null;
           review_state?: string;
           status?: string;
@@ -2967,14 +2977,19 @@ export type Database = {
         };
         Update: {
           archived_at?: string | null;
+          byte_size?: number | null;
           content?: string | null;
           content_hash?: string | null;
           created_at?: string;
           created_by?: string | null;
+          extracted_chars?: number | null;
+          extraction_note?: string | null;
           extraction_status?: string;
           id?: string;
           kind?: string;
+          mime_type?: string | null;
           organization_id?: string;
+          original_filename?: string | null;
           provenance?: string | null;
           review_state?: string;
           status?: string;

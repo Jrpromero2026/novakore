@@ -352,6 +352,74 @@ export interface AiWorkspaceData {
   }[];
 }
 
+// ---------------------------------------------------------------------------
+// Source workspace
+// ---------------------------------------------------------------------------
+
+export interface SourceWorkspaceItem {
+  id: string;
+  title: string;
+  kind: string;
+  mimeType: string | null;
+  byteSize: number | null;
+  originalFilename: string | null;
+  reviewState: string;
+  extractionStatus: string;
+  extractionNote: string | null;
+  extractedChars: number | null;
+  hasContent: boolean;
+  contentPreview: string | null;
+  provenance: string | null;
+  createdAt: string;
+  /** Signed download URL (1 hour) for file sources; null for inline text. */
+  downloadUrl: string | null;
+}
+
+/** Everything in the org's source workspace, newest first. */
+export async function getSourceWorkspace(
+  organizationId: string,
+): Promise<SourceWorkspaceItem[]> {
+  const supabase = await supabaseServer();
+  const { data: rows } = await supabase
+    .from("source_documents")
+    .select(
+      "id, title, kind, mime_type, byte_size, original_filename, review_state, extraction_status, extraction_note, extracted_chars, content, provenance, storage_path, created_at",
+    )
+    .eq("organization_id", organizationId)
+    .neq("status", "archived")
+    .order("created_at", { ascending: false })
+    .limit(200);
+
+  return Promise.all(
+    (rows ?? []).map(async (row) => {
+      let downloadUrl: string | null = null;
+      if (row.storage_path) {
+        const { data: signed } = await supabase.storage
+          .from("source-documents")
+          .createSignedUrl(row.storage_path, 3600);
+        downloadUrl = signed?.signedUrl ?? null;
+      }
+      return {
+        id: row.id,
+        title: row.title,
+        kind: row.kind,
+        mimeType: row.mime_type,
+        byteSize: row.byte_size,
+        originalFilename: row.original_filename,
+        reviewState: row.review_state,
+        extractionStatus: row.extraction_status,
+        extractionNote: row.extraction_note,
+        extractedChars: row.extracted_chars,
+        hasContent: row.content !== null,
+        contentPreview: row.content?.slice(0, 600) ?? null,
+        provenance: row.provenance,
+        createdAt: row.created_at,
+        downloadUrl,
+      };
+    }),
+  );
+}
+
 export async function getAiWorkspace(
   organizationId: string,
 ): Promise<AiWorkspaceData> {

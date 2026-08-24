@@ -275,6 +275,153 @@ export async function createSourceDocumentAction(
   return { ok: true, message: "Source added." };
 }
 
+/**
+ * File upload into the Source Workspace: the file lands in the
+ * source-documents bucket, a source row records its metadata, and text
+ * extraction runs where it is real (PDF, DOCX, TXT, MD, CSV). Images and
+ * video are stored without claimed text — the extraction note says so.
+ */
+export async function uploadSourceFileAction(
+  orgSlug: string,
+  _prev: ActionState,
+  formData: FormData,
+): Promise<ActionState> {
+  const ctx = await requireOrgContext(orgSlug);
+  if (!can(ctx, "sources.manage")) {
+    return { ok: false, message: "Managing sources requires sources.manage." };
+  }
+  const file = formData.get("file");
+  if (!(file instanceof File) || file.size === 0) {
+    return { ok: false, message: "Choose a file to upload." };
+  }
+  const { SOURCE_UPLOAD_LIMITS, extractSourceText } =
+    await import("../ai/extract");
+  const limit = SOURCE_UPLOAD_LIMITS[file.type];
+  if (limit === undefined) {
+    return {
+      ok: false,
+      message:
+        "Unsupported file type. Accepted: PDF, DOCX, TXT, MD, CSV, PNG, JPEG, WEBP, MP4, WEBM, MOV.",
+    };
+  }
+  if (file.size > limit) {
+    return {
+      ok: false,
+      message: `That file is ${(file.size / 1_048_576).toFixed(1)}MB — the limit for its type is ${Math.round(limit / 1_048_576)}MB.`,
+    };
+  }
+  const titleInput = z
+    .string()
+    .trim()
+    .min(2)
+    .max(200)
+    .safeParse(formData.get("title") || file.name.slice(0, 200));
+  if (!titleInput.success) {
+    return { ok: false, message: "Provide a title (2–200 characters)." };
+  }
+  const provenance = z
+    .string()
+    .trim()
+    .max(500)
+    .optional()
+    .safeParse(formData.get("provenance") || undefined);
+
+  const user = await requireUser();
+  const supabase = await supabaseServer();
+
+  const extension = (file.name.split(".").pop() ?? "bin")
+    .toLowerCase()
+    .replace(/[^a-z0-9]/g, "")
+    .slice(0, 10);
+  const objectName = `${crypto.randomUUID()}.${extension || "bin"}`;
+  const storagePath = `organizations/${ctx.organization.id}/sources/${objectName}`;
+
+  const bytes = new Uint8Array(await file.arrayBuffer());
+  const { error: uploadError } = await supabase.storage
+    .from("source-documents")
+    .upload(storagePath, bytes, { contentType: file.type, upsert: false });
+  if (uploadError) {
+    return { ok: false, message: `Upload failed: ${uploadError.message}` };
+  }
+
+  const extraction = await extractSourceText(bytes, file.type);
+  let contentHash: string | null = null;
+  if (extraction.text !== null) {
+    const digest = await crypto.subtle.digest(
+      "SHA-256",
+      new TextEncoder().encode(extraction.text),
+    );
+    contentHash = [...new Uint8Array(digest)]
+      .map((b) => b.toString(16).padStart(2, "0"))
+      .join("");
+  }
+
+  const { data: row, error } = await supabase
+    .from("source_documents")
+    .insert({
+      organization_id: ctx.organization.id,
+      title: titleInput.data,
+      kind: "file",
+      storage_path: storagePath,
+      content: extraction.text,
+      content_hash: contentHash,
+      mime_type: file.type,
+      byte_size: file.size,
+      original_filename: file.name.slice(0, 200),
+      extraction_status: extraction.status,
+      extraction_note: extraction.note,
+      extracted_chars: extraction.extractedChars,
+      provenance: provenance.success ? (provenance.data ?? null) : null,
+      created_by: user.id,
+    })
+    .select("id")
+    .single();
+  if (error) {
+    // The row is the source of record — without it the object is orphaned.
+    await supabase.storage.from("source-documents").remove([storagePath]);
+    return { ok: false, message: dbErrorMessage(error) };
+  }
+
+  await supabase.rpc("emit_studio_event", {
+    p_organization_id: ctx.organization.id,
+    p_type: "content.source_document.created",
+    p_subject_kind: "source_document",
+    p_subject_id: row.id,
+    p_data: { kind: "file", mime_type: file.type },
+  });
+  revalidatePath(`/${orgSlug}/admin/studio/sources`);
+  revalidatePath(`/${orgSlug}/admin/studio/ai`);
+  return {
+    ok: true,
+    message:
+      extraction.status === "extracted"
+        ? `Uploaded — ${(extraction.extractedChars ?? 0).toLocaleString()} characters of text extracted.`
+        : extraction.status === "not_needed"
+          ? "Uploaded and stored."
+          : `Uploaded, but extraction did not produce text: ${extraction.note ?? "no detail"}`,
+  };
+}
+
+export async function archiveSourceDocumentAction(
+  orgSlug: string,
+  sourceId: string,
+): Promise<ActionState> {
+  const ctx = await requireOrgContext(orgSlug);
+  if (!can(ctx, "sources.manage")) {
+    return { ok: false, message: "Managing sources requires sources.manage." };
+  }
+  const supabase = await supabaseServer();
+  const { error } = await supabase
+    .from("source_documents")
+    .update({ status: "archived", archived_at: new Date().toISOString() })
+    .eq("id", sourceId)
+    .eq("organization_id", ctx.organization.id);
+  if (error) return { ok: false, message: dbErrorMessage(error) };
+  revalidatePath(`/${orgSlug}/admin/studio/sources`);
+  revalidatePath(`/${orgSlug}/admin/studio/ai`);
+  return { ok: true, message: "Source archived." };
+}
+
 export async function approveSourceDocumentAction(
   orgSlug: string,
   sourceId: string,

@@ -109,6 +109,22 @@ export function buildDomains(
               keywords: ["author", "create", "editor", "compose"],
             },
             {
+              href: `${base}/studio/sources`,
+              label: "Sources",
+              description:
+                "Upload documents, data, images, and video to build from",
+              icon: "library",
+              needsAny: ["sources.manage"],
+              keywords: [
+                "upload",
+                "pdf",
+                "docx",
+                "video",
+                "import",
+                "material",
+              ],
+            },
+            {
               href: `${base}/studio/ai`,
               label: "AI Workspace",
               description: "Draft from source documents with assistance",

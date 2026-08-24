@@ -31,9 +31,12 @@ export const PROFILE_COST_CENTS_PER_MTOK: Record<
   ModelProfile,
   { input: number; output: number }
 > = {
-  drafting: { input: 300, output: 1_500 },
-  structured: { input: 300, output: 1_500 },
-  rewrite: { input: 80, output: 400 },
+  // Claude Opus 5 rates ($5 / $25 per MTok) — every profile runs Opus 5 in
+  // the anthropic adapter; the profile distinction remains for reservation
+  // sizing and future routing.
+  drafting: { input: 500, output: 2_500 },
+  structured: { input: 500, output: 2_500 },
+  rewrite: { input: 500, output: 2_500 },
 };
 
 /** Ceiling-divide so estimates never round to free. */
