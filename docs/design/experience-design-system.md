@@ -248,12 +248,15 @@ naturally via native `<details>`.
 - **Publishing is a ceremony**: a confirm dialog states the immutable-version
   contract, lists real checks (validity, health, drift vs the live version),
   names the version being created, and celebrates success (`.nk-scale-in`).
-- **The curriculum map** (successor to the knowledge graph, which stopped
-  being readable past a handful of nodes) shows only real relationships:
-  journeys list their courses in path_nodes order, prerequisite rows render
-  as "unlocks after …", and every count is a count of real rows. Content no
-  enrollment can reach — courses on no journey, evaluations attached to no
-  lesson — is called out explicitly. Nothing inferred, nothing decorative.
+- **The Builder** (successor to the knowledge graph, which stopped being
+  readable past a handful of nodes) is the academy as one expandable
+  top-down hierarchy — journey → course → module → lesson — showing only
+  real relationships: courses in path_nodes order, prerequisite rows as
+  "unlocks after …", modules and lessons in position order, every count a
+  count of real rows. Rows click through to the real editing surface.
+  Content no enrollment can reach — courses on no journey, evaluations
+  attached to no lesson — is called out explicitly. Nothing inferred,
+  nothing decorative.
 - **Focus mode** hides both rails for distraction-free writing. `⌘/Ctrl+S`
   saves; every version ever published stays visible in the inspector.
 

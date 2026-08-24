@@ -31,8 +31,8 @@ export default async function StudioHomePage({
     <div className="space-y-5">
       <Card className="nk-fade-up">
         <CardHeader
-          title="Curriculum map"
-          description="Your knowledge as structure — sequences, prerequisites, and counts, every row a real relationship."
+          title="Builder"
+          description="Your academy top to bottom — journeys, courses, modules, lessons. Expand to drill in; click to edit."
         />
         <CurriculumMap
           data={map}

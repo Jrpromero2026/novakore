@@ -20,7 +20,6 @@ import { CommandPaletteTrigger } from "@/components/command-palette";
 import { buildDomains } from "@/lib/navigation/domains";
 import { landingPathFor } from "@/lib/navigation/landing";
 import { GlobalNav } from "@/components/shell/global-nav";
-import { SideNav } from "@/components/shell/side-nav";
 import { DomainsProvider } from "@/components/shell/domains-context";
 
 export default async function OrgAdminLayout({
@@ -220,26 +219,20 @@ export default async function OrgAdminLayout({
             />
           </GlobalNav>
 
-          {/* The build rail sits beside the page frame on large screens —
-              every destination visible at once, ordered down the content
-              hierarchy. Below lg the top bar's domain row keeps working. */}
-          <div className="flex min-w-0 flex-1">
-            <SideNav domains={domains} />
-            <main id="main" tabIndex={-1} className="min-w-0 flex-1">
-              {/*
-              The layout owns the page frame — width, gutters, rhythm — so that
-              every page, migrated or not, sits in the same column. PageShell
-              composes CONTENT inside this frame and deliberately does not set
-              its own width, or the two would fight.
-            */}
-              <div
-                className="nk-fade-up mx-auto w-full px-4 py-8 sm:px-6 sm:py-10"
-                style={{ maxWidth: "var(--layout-page-max)" }}
-              >
-                {children}
-              </div>
-            </main>
-          </div>
+          <main id="main" tabIndex={-1} className="min-w-0 flex-1">
+            {/*
+            The layout owns the page frame — width, gutters, rhythm — so that
+            every page, migrated or not, sits in the same column. PageShell
+            composes CONTENT inside this frame and deliberately does not set
+            its own width, or the two would fight.
+          */}
+            <div
+              className="nk-fade-up mx-auto w-full px-4 py-8 sm:px-6 sm:py-10"
+              style={{ maxWidth: "var(--layout-page-max)" }}
+            >
+              {children}
+            </div>
+          </main>
 
           <CommandPalette entries={paletteEntries} />
           <FeedbackWidget orgSlug={orgSlug} roleHint="admin" />

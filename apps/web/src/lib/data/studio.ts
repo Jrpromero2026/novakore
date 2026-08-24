@@ -684,6 +684,20 @@ export async function getLessonWorkspace(
 // Curriculum map
 // ---------------------------------------------------------------------------
 
+export interface CurriculumMapLesson {
+  id: string;
+  title: string;
+  status: string;
+  estimatedMinutes: number | null;
+}
+
+export interface CurriculumMapModule {
+  id: string;
+  title: string;
+  /** Lessons in module order (lessons.position). */
+  lessons: CurriculumMapLesson[];
+}
+
 export interface CurriculumMapCourse {
   id: string;
   title: string;
@@ -694,6 +708,8 @@ export interface CurriculumMapCourse {
   practicalCount: number;
   /** Titles of the courses this one unlocks after (real prerequisites rows). */
   requires: string[];
+  /** Modules in course order (modules.position), each with its lessons. */
+  modules: CurriculumMapModule[];
 }
 
 export interface CurriculumMapJourney {
@@ -758,12 +774,14 @@ export async function getCurriculumMap(
       .eq("organization_id", organizationId),
     supabase
       .from("modules")
-      .select("id, course_id")
+      .select("id, course_id, title, position")
       .eq("organization_id", organizationId)
       .is("archived_at", null),
     supabase
       .from("lessons")
-      .select("id, course_id")
+      .select(
+        "id, course_id, module_id, title, status, position, estimated_minutes",
+      )
       .eq("organization_id", organizationId)
       .neq("status", "archived"),
     supabase
@@ -807,6 +825,31 @@ export async function getCurriculumMap(
     requiresByCourse.set(courseId, list);
   }
 
+  // The full drill-down: modules in position order, each with its lessons.
+  const byPosition = (a: { position: string }, b: { position: string }) =>
+    a.position < b.position ? -1 : a.position > b.position ? 1 : 0;
+  const lessonsByModule = new Map<string, CurriculumMapLesson[]>();
+  for (const lesson of [...(lessons ?? [])].sort(byPosition)) {
+    const list = lessonsByModule.get(lesson.module_id) ?? [];
+    list.push({
+      id: lesson.id,
+      title: lesson.title,
+      status: lesson.status,
+      estimatedMinutes: lesson.estimated_minutes,
+    });
+    lessonsByModule.set(lesson.module_id, list);
+  }
+  const modulesByCourse = new Map<string, CurriculumMapModule[]>();
+  for (const moduleRow of [...(modules ?? [])].sort(byPosition)) {
+    const list = modulesByCourse.get(moduleRow.course_id) ?? [];
+    list.push({
+      id: moduleRow.id,
+      title: moduleRow.title,
+      lessons: lessonsByModule.get(moduleRow.id) ?? [],
+    });
+    modulesByCourse.set(moduleRow.course_id, list);
+  }
+
   const toCourse = (id: string): CurriculumMapCourse | null => {
     const row = (courses ?? []).find((c) => c.id === id);
     if (!row) return null;
@@ -819,6 +862,7 @@ export async function getCurriculumMap(
       assessmentCount: assignmentCounts.get(id) ?? 0,
       practicalCount: practicalCounts.get(id) ?? 0,
       requires: (requiresByCourse.get(id) ?? []).sort(),
+      modules: modulesByCourse.get(id) ?? [],
     };
   };
 
