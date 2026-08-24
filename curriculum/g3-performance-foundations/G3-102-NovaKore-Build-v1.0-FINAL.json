@@ -1,0 +1,3406 @@
+{
+  "schema_version": "1.0",
+  "generated_for": "NovaKore course build",
+  "source_specification": "G3-102-Course-Specification-v1.0-FINAL.md",
+  "build_file_name": "G3-102-NovaKore-Build-v1.0-FINAL.json",
+  "review_gates": {
+    "evidence_review_gate": {
+      "applies_to": "G3 102 Evidence Pack",
+      "status": "PASS WITH CONDITIONS"
+    },
+    "production_specification_review_gate": {
+      "applies_to": "G3-102 Course Specification v1.0",
+      "status": "PASS WITH MINOR PRODUCTION CORRECTIONS",
+      "approved": [
+        "doctrine",
+        "competencies",
+        "course architecture",
+        "assessments",
+        "practical model",
+        "G3 Programming Decision Model",
+        "evidence classifications",
+        "NovaKore implementation architecture"
+      ],
+      "corrections_applied": [
+        "document status and gate record",
+        "delivery description corrected to four practical sign-offs plus final defense",
+        "citation-integrity production note added",
+        "mechanical consistency audit"
+      ]
+    }
+  },
+  "production_status": "APPROVED FOR NOVAKORE PRODUCTION",
+  "course": {
+    "id": "G3-102",
+    "code": "G3-102",
+    "title": "Needs Analysis & Performance Program Design",
+    "division": "G3 Performance",
+    "parent_org": "G3 Sports & Fitness",
+    "version": "1.0",
+    "status": "APPROVED FOR NOVAKORE PRODUCTION",
+    "production_specification_review_gate": "PASS",
+    "authority": "G3 Performance",
+    "date": "2026-08",
+    "owner": "JR Romero, CSCS - Director of Training",
+    "evidence_pack": "G3 102 Needs Analysis & Performance Program Design Evidence Pack",
+    "evidence_gate_status": "PASS WITH CONDITIONS",
+    "purpose": "Teach a G3 Performance coach to make defensible programming decisions - not to write workouts.",
+    "prerequisite": "G3 101 and active G3 Performance coaching status",
+    "audience": [
+      "G3 Performance coaches",
+      "G3 Youth S&C staff",
+      "G3 Volleyball Development staff",
+      "scholastic and collegiate contract coaches"
+    ],
+    "delivery": "NovaKore self-paced modules with four observed practical sign-offs (PS-1, PS-2, PS-3, PS-4) plus the final oral defense (T-01). PS-1 and PS-2 are hard gates; PS-3 and PS-4 are completion requirements.",
+    "practical_sign_offs": [
+      "PS-1",
+      "PS-2",
+      "PS-3",
+      "PS-4"
+    ],
+    "final_defense": "T-01",
+    "directed_study_hours": 18.5,
+    "practical_window_weeks_min": 4,
+    "nine_questions": [
+      "What does this athlete's sport or role actually require?",
+      "What does this athlete currently possess?",
+      "Which of those differences matter?",
+      "Which differences do not matter enough to prioritize right now?",
+      "What is being trained now?",
+      "What is being maintained?",
+      "What is deliberately deprioritized, and at what accepted cost?",
+      "How do those decisions show up in the actual written program?",
+      "What evidence would make me change this program?"
+    ],
+    "outcomes": [
+      "CO-1 Conduct a sport and role demand analysis distinguishing average from peak demands",
+      "CO-2 Construct an athlete profile from decision-useful information",
+      "CO-3 Interpret test results within measurement limitations",
+      "CO-4 Distinguish measured deficit from probable limiting factor",
+      "CO-5 Establish and defend priorities as relevance and opportunity cost",
+      "CO-6 Select exercises based on adaptation",
+      "CO-7 Order sessions so priority receives best effort",
+      "CO-8 Organize concurrent development with explicit emphasis tiers",
+      "CO-9 Distinguish development, maintenance, and exposure within a phase",
+      "CO-10 Individualize inside a group structure",
+      "CO-11 Apply autoregulation appropriately by population",
+      "CO-12 Interpret readiness through baseline, reliability, context, convergence, judgment",
+      "CO-13 Monitor program response across four information layers",
+      "CO-14 Justify why a program was changed or deliberately left alone"
+    ],
+    "module_count": 12,
+    "directed_study_minutes": 1110,
+    "terminal_defense": "T-01"
+  },
+  "evidence_classes": [
+    {
+      "class": "A",
+      "name": "Established Evidence",
+      "teaching_rule": "May be taught as established, bounded by population and context."
+    },
+    {
+      "class": "B",
+      "name": "Supported Practice",
+      "teaching_rule": "Taught as well-supported practice; the interpretive step must be stated."
+    },
+    {
+      "class": "C",
+      "name": "Emerging / Conditional Evidence",
+      "teaching_rule": "Taught as conditional; never the sole basis for a required behavior."
+    },
+    {
+      "class": "D",
+      "name": "Applied Coaching Inference",
+      "teaching_rule": "Taught explicitly as inference; must be labeled when taught."
+    },
+    {
+      "class": "E",
+      "name": "Historical / Practitioner Framework",
+      "teaching_rule": "Taught as framework and history; never as proof."
+    }
+  ],
+  "standing_labels": [
+    {
+      "label": "G3 Doctrine",
+      "binding": true,
+      "note": "Coaches teach and reason from it."
+    },
+    {
+      "label": "G3 Applied Standard",
+      "binding": true,
+      "note": "Organizational rule where evidence does not determine an answer."
+    },
+    {
+      "label": "Coach Judgment",
+      "binding": false,
+      "note": "No fixed answer; reasoning must be documented."
+    }
+  ],
+  "decision_model": {
+    "id": "g3-decision-model",
+    "sequence": [
+      "DEMAND",
+      "PROFILE",
+      "GAP",
+      "PRIORITY",
+      "PRESCRIPTION",
+      "RESPONSE",
+      "ADJUST"
+    ],
+    "evidence_class": "D",
+    "integrity_rules": [
+      "No stage is skipped; a program without a documented priority stage is not a G3 program.",
+      "Changing a prescription requires revisiting the priority that produced it.",
+      "The model produces defensible decisions, not correct ones.",
+      "No automated scoring; any tool converting inputs into a recommended target requires Director of Training approval."
+    ],
+    "stages": [
+      {
+        "id": "demand",
+        "name": "DEMAND",
+        "question": "What does this sport, position, or role actually require?",
+        "artifact": "sport_demand_profile",
+        "exit_criterion": "Three to five demands named; peak separated from average",
+        "common_failure": "Listing every demand as important; using averages as the whole picture"
+      },
+      {
+        "id": "profile",
+        "name": "PROFILE",
+        "question": "What does this athlete currently possess?",
+        "artifact": "athlete_profile",
+        "exit_criterion": "Complete enough to program from; no item without a decision",
+        "common_failure": "Testing to fill a form; failing to record conditions"
+      },
+      {
+        "id": "gap",
+        "name": "GAP",
+        "question": "Which differences are real, and which are relevant?",
+        "artifact": "gap_statement",
+        "exit_criterion": "Carried-forward and set-aside items both stated",
+        "common_failure": "Treating the lowest score as the biggest problem"
+      },
+      {
+        "id": "priority",
+        "name": "PRIORITY",
+        "question": "What earns the athlete's highest-quality effort right now?",
+        "artifact": "priority_sheet",
+        "exit_criterion": "Every quality tiered; cost written",
+        "common_failure": "Weakness-first reflex; everything primary"
+      },
+      {
+        "id": "prescription",
+        "name": "PRESCRIPTION",
+        "question": "What is the actual program, and does it reflect the priorities?",
+        "artifact": "program",
+        "exit_criterion": "An outside coach can infer the priority from the order",
+        "common_failure": "Priority stated but contradicted by session order"
+      },
+      {
+        "id": "response",
+        "name": "RESPONSE",
+        "question": "What is actually happening?",
+        "artifact": "response_review",
+        "exit_criterion": "Working, not working, or cannot yet tell",
+        "common_failure": "Judging the program by competitive results"
+      },
+      {
+        "id": "adjust",
+        "name": "ADJUST",
+        "question": "Change, hold, or progress - and why?",
+        "artifact": "adjustment_log_entry",
+        "exit_criterion": "Every change has a reason that is not the calendar",
+        "common_failure": "Change for novelty; no record of reasoning"
+      }
+    ],
+    "applications": [
+      "education",
+      "practical coaching",
+      "athlete evaluations",
+      "GPI interpretation",
+      "team programming",
+      "NovaKore workflows"
+    ],
+    "gpi_rule": "GPI output enters at PROFILE and is filtered at GAP. GPI never enters at PRIORITY."
+  },
+  "doctrine": [
+    {
+      "id": "D1",
+      "title": "Needs analysis must change decisions",
+      "statement": "Assessment exists to improve coaching decisions. A test, metric, questionnaire, or observation earns its place when it can meaningfully influence exercise selection, training priority, load, volume, progression, regression, recovery, readiness modification, return-to-performance decisions, or program evaluation. G3 favors decision-useful information over maximal data collection.",
+      "evidence_class": "B",
+      "teaching_boundary": "Do not teach that a specific battery size is correct. Teach that unused data has a cost that must be earned.",
+      "modules": [
+        "M1",
+        "M3"
+      ],
+      "citation_tags": [
+        "cite:4",
+        "cite:20",
+        "cite:48"
+      ],
+      "standing": "G3 Doctrine"
+    },
+    {
+      "id": "D2",
+      "title": "Sport demand is more than the average",
+      "statement": "Sport-demand analysis must consider movement, force, velocity, power, energetic, repeated-effort, and positional demands, competition and practice density, peak or worst-case passages, injury exposure, and season structure. Average match demands can conceal the highest-performance requirements.",
+      "evidence_class": "B",
+      "teaching_boundary": "Peak-demand evidence is largely locomotor and largely professional. Teach peak-demand thinking without claiming measurement precision the environment does not have.",
+      "modules": [
+        "M2"
+      ],
+      "citation_tags": [
+        "cite:18",
+        "cite:22"
+      ],
+      "standing": "G3 Doctrine"
+    },
+    {
+      "id": "D3",
+      "title": "A deficit is not automatically a limiting factor",
+      "statement": "G3 distinguishes a measured deficit from a probable performance limiting factor. A deficit's claim strengthens when it matters to the sport or role, is meaningfully below the required level, can be changed, is relevant to current performance, can be addressed at acceptable cost, and deserves emphasis relative to competing priorities. Testing identifies information; coaching determines significance.",
+      "evidence_class": "B/D",
+      "teaching_boundary": "No G3 material may state that a test identifies a limiting factor. The term 'confirmed limiting factor' is prohibited.",
+      "modules": [
+        "M4"
+      ],
+      "citation_tags": [
+        "cite:4",
+        "cite:20",
+        "cite:27"
+      ],
+      "standing": "G3 Doctrine"
+    },
+    {
+      "id": "D4",
+      "title": "Priority is a relevance x opportunity-cost decision",
+      "statement": "G3 does not adopt 'always train the greatest weakness.' Priority considers sport relevance, deficit magnitude, athlete level, training age, phase, injury/availability, adaptation potential, time, practice and competition demands, fatigue cost, interference, maintenance requirements, and expected performance return. A strength may deserve development; a weakness may deserve maintenance or no direct intervention.",
+      "evidence_class": "B/C",
+      "teaching_boundary": "Prioritization worksheets organize judgment; they never compute an answer. No weighted priority score may be created.",
+      "modules": [
+        "M5"
+      ],
+      "citation_tags": [
+        "cite:19",
+        "cite:20",
+        "cite:35",
+        "cite:48"
+      ],
+      "standing": "G3 Doctrine"
+    },
+    {
+      "id": "D5",
+      "title": "Exercise selection serves adaptation",
+      "statement": "Do not confuse visual resemblance to sport with transfer. Selection considers desired adaptation, competency, loading potential, velocity, intent, range of motion, complexity, fatigue cost, risk/reward, equipment, history, training age, progression potential, and place in the total program.",
+      "evidence_class": "A/B",
+      "teaching_boundary": "Rejecting resemblance-as-transfer is not rejecting specificity of adaptation.",
+      "modules": [
+        "M6"
+      ],
+      "citation_tags": [
+        "cite:34",
+        "cite:43"
+      ],
+      "standing": "G3 Doctrine"
+    },
+    {
+      "id": "D6",
+      "title": "Priority determines order",
+      "statement": "Exercises and qualities placed earlier in a session generally receive greater performance capacity. Session order reflects training priority rather than habit.",
+      "evidence_class": "A",
+      "teaching_boundary": "Order effects are clearest in untrained to moderately trained populations. Do not teach a numeric penalty for ordering second.",
+      "modules": [
+        "M7"
+      ],
+      "citation_tags": [
+        "cite:19",
+        "cite:43"
+      ],
+      "standing": "G3 Doctrine"
+    },
+    {
+      "id": "D7",
+      "title": "Multiple qualities can be developed concurrently",
+      "statement": "Strength, speed, power, conditioning, and movement skill can coexist in a program. Concurrent does not mean equal emphasis: programs distinguish primary development, secondary development, maintenance, and exposure qualities. Interference is conditional and managed through sequencing, spacing, modality, volume, intensity, recovery, training status, and schedule.",
+      "evidence_class": "A/B/C",
+      "teaching_boundary": "No numeric interference thresholds or mandatory spacing presented as evidence. G3 spacing conventions are Applied Standards.",
+      "modules": [
+        "M8"
+      ],
+      "citation_tags": [
+        "cite:5",
+        "cite:35",
+        "cite:63",
+        "cite:68",
+        "cite:71"
+      ],
+      "standing": "G3 Doctrine"
+    },
+    {
+      "id": "D8",
+      "title": "Individualization does not require unique programs for everyone",
+      "statement": "Standardize where athletes are similar; individualize where differences matter. Teams standardize session structure, movement categories, objectives, coaching language, and progression framework, and individualize through variation, load, volume, complexity, range of motion, progression rate, regression, substitution, and readiness adjustment.",
+      "evidence_class": "D",
+      "teaching_boundary": "Taught explicitly as applied inference, while binding as a G3 Applied Standard for team environments.",
+      "modules": [
+        "M10"
+      ],
+      "citation_tags": [
+        "cite:19",
+        "cite:20",
+        "cite:35",
+        "cite:51"
+      ],
+      "standing": "G3 Doctrine"
+    },
+    {
+      "id": "D9",
+      "title": "Youth training is readiness-based, not age-myth-based",
+      "statement": "Supervised progressive resistance training is appropriate for youth. Readiness considers instructional responsiveness, psychological readiness, movement competency, maturity, training history, supervision, and progression.",
+      "evidence_class": "A",
+      "teaching_boundary": "The safety and efficacy claim is conditioned on supervision and progression; state both conditions whenever the claim is made.",
+      "modules": [
+        "M10",
+        "M3"
+      ],
+      "citation_tags": [
+        "cite:3",
+        "cite:38",
+        "cite:44",
+        "cite:53",
+        "cite:55",
+        "cite:57"
+      ],
+      "standing": "G3 Doctrine"
+    },
+    {
+      "id": "D10",
+      "title": "Autoregulation is a tool, not a religion",
+      "statement": "G3 may use RPE, RIR, velocity, performance feedback, structured readiness indicators, and coach observation. Autoregulation can improve individualization but is not universally superior to well-designed standardized programming.",
+      "evidence_class": "B/C",
+      "teaching_boundary": "Never teach that autoregulation beats a fixed program. Compare design quality against design quality.",
+      "modules": [
+        "M11"
+      ],
+      "citation_tags": [
+        "cite:20",
+        "cite:54",
+        "cite:56",
+        "cite:58",
+        "cite:60",
+        "cite:61"
+      ],
+      "standing": "G3 Doctrine"
+    },
+    {
+      "id": "D11",
+      "title": "No single readiness metric runs the program",
+      "statement": "No single wellness score, jump score, HRV value, questionnaire, subjective rating, or wearable metric automatically dictates training. Readiness is interpreted through Baseline + Reliability + Context + Multiple Signals + Coaching Judgment.",
+      "evidence_class": "A/B",
+      "teaching_boundary": "Confident dashboards, composite scores, and automated recommendations require independent validation - including G3's own GPI outputs.",
+      "modules": [
+        "M11",
+        "M12"
+      ],
+      "citation_tags": [
+        "cite:4",
+        "cite:14",
+        "cite:20",
+        "cite:36",
+        "cite:62"
+      ],
+      "standing": "G3 Doctrine"
+    },
+    {
+      "id": "D12",
+      "title": "Programs change for reasons",
+      "statement": "Programs do not need to change because four weeks passed, the athlete is bored, or novelty appears advanced. Change is justified by adaptation, stagnation, technical mastery, pain, athlete response, schedule, phase objectives, progression needs, changing sport demands, or poor fit.",
+      "evidence_class": "D",
+      "teaching_boundary": "Absence of evidence for mandatory change is not evidence that programs should rarely change. A coach who never changes anything also fails this doctrine.",
+      "modules": [
+        "M9",
+        "M12"
+      ],
+      "citation_tags": [
+        "cite:4",
+        "cite:19",
+        "cite:20",
+        "cite:27"
+      ],
+      "standing": "G3 Doctrine"
+    }
+  ],
+  "applied_standards": [
+    {
+      "id": "AS-01",
+      "domain": "assessment",
+      "text": "Every assessment item is traceable to at least one of the ten decision categories, documented when the battery is built.",
+      "evidence_basis": "D",
+      "standing": "applied_standard",
+      "note": null
+    },
+    {
+      "id": "AS-02",
+      "domain": "assessment",
+      "text": "The G3 decision model is the required reasoning sequence for all G3 program documentation.",
+      "evidence_basis": "D",
+      "standing": "applied_standard",
+      "note": null
+    },
+    {
+      "id": "AS-03",
+      "domain": "demand",
+      "text": "Every team and sport-group program is preceded by a written Sport Demand Profile, reviewed annually or on change of level or role.",
+      "evidence_basis": "D",
+      "standing": "applied_standard",
+      "note": null
+    },
+    {
+      "id": "AS-04",
+      "domain": "demand",
+      "text": "Demand profiles label every element measured, estimated, or assumed.",
+      "evidence_basis": "D",
+      "standing": "applied_standard",
+      "note": null
+    },
+    {
+      "id": "AS-05",
+      "domain": "profile",
+      "text": "All six profile domains are completed for athletes carrying individual programs; team athletes carry domains (i)-(iv) at minimum.",
+      "evidence_basis": "D",
+      "standing": "applied_standard",
+      "note": null
+    },
+    {
+      "id": "AS-06",
+      "domain": "profile",
+      "text": "Test conditions are recorded at the time of testing. A retest without recorded original conditions is reported as a new baseline, not as a change.",
+      "evidence_basis": "A-supported",
+      "standing": "applied_standard",
+      "note": null
+    },
+    {
+      "id": "AS-07",
+      "domain": "gap",
+      "text": "G3 written programming carries a Gap Statement with all three lists.",
+      "evidence_basis": "D",
+      "standing": "applied_standard",
+      "note": null
+    },
+    {
+      "id": "AS-08",
+      "domain": "gap",
+      "text": "The phrase 'confirmed limiting factor' is prohibited in G3 documentation, education, and athlete communication.",
+      "evidence_basis": "B-derived",
+      "standing": "prohibition",
+      "note": null
+    },
+    {
+      "id": "AS-09",
+      "domain": "priority",
+      "text": "Every program assigns an emphasis tier to every trained quality.",
+      "evidence_basis": "D",
+      "standing": "applied_standard",
+      "note": null
+    },
+    {
+      "id": "AS-10",
+      "domain": "priority",
+      "text": "Every program carries a written opportunity-cost statement.",
+      "evidence_basis": "D",
+      "standing": "applied_standard",
+      "note": null
+    },
+    {
+      "id": "AS-11",
+      "domain": "priority",
+      "text": "No G3 tool may compute a priority. Prioritization worksheets organize judgment; they do not output decisions.",
+      "evidence_basis": "doctrine-derived",
+      "standing": "prohibition",
+      "note": null
+    },
+    {
+      "id": "AS-12",
+      "domain": "selection",
+      "text": "Every exercise carries a stated intended adaptation and an emphasis tier in the program document.",
+      "evidence_basis": "D",
+      "standing": "applied_standard",
+      "note": null
+    },
+    {
+      "id": "AS-13",
+      "domain": "selection",
+      "text": "G3 programs are built on standardized movement categories; individualization occurs within the category.",
+      "evidence_basis": "D",
+      "standing": "applied_standard",
+      "note": null
+    },
+    {
+      "id": "AS-14",
+      "domain": "session",
+      "text": "Sessions follow the standardized architecture, with the primary development quality positioned first after preparation unless a documented reason exists.",
+      "evidence_basis": "A-supported",
+      "standing": "applied_standard",
+      "note": null
+    },
+    {
+      "id": "AS-15",
+      "domain": "session",
+      "text": "Every team session carries a written protection order for lost time.",
+      "evidence_basis": "D",
+      "standing": "applied_standard",
+      "note": null
+    },
+    {
+      "id": "AS-16",
+      "domain": "week",
+      "text": "Weekly plans display the emphasis tier against every quality trained.",
+      "evidence_basis": "D",
+      "standing": "applied_standard",
+      "note": null
+    },
+    {
+      "id": "AS-17",
+      "domain": "week",
+      "text": "Weekly plans are written against actual available training slots, with the primary quality assigned to the most reliable slots.",
+      "evidence_basis": "D",
+      "standing": "applied_standard",
+      "note": null
+    },
+    {
+      "id": "AS-18",
+      "domain": "week",
+      "text": "G3 spacing and sequencing conventions are organizational conventions, documented locally with a review date and taught with that label attached. G3 publishes no spacing threshold as an evidence-derived rule.",
+      "evidence_basis": "C",
+      "standing": "applied_standard",
+      "note": "local documentation required"
+    },
+    {
+      "id": "AS-19",
+      "domain": "phase",
+      "text": "Every phase document states an objective, a progression plan for the primary quality, maintenance prescriptions with verification tests, and defined review points.",
+      "evidence_basis": "D",
+      "standing": "applied_standard",
+      "note": null
+    },
+    {
+      "id": "AS-20",
+      "domain": "phase",
+      "text": "No G3 material publishes universal maintenance doses or mandatory phase lengths.",
+      "evidence_basis": "C",
+      "standing": "prohibition",
+      "note": null
+    },
+    {
+      "id": "AS-21",
+      "domain": "scale",
+      "text": "Every team template names its open individualization channels and who may adjust each.",
+      "evidence_basis": "D",
+      "standing": "applied_standard",
+      "note": null
+    },
+    {
+      "id": "AS-22",
+      "domain": "scale",
+      "text": "Every movement category in a template carries a defined regression and progression.",
+      "evidence_basis": "D",
+      "standing": "applied_standard",
+      "note": null
+    },
+    {
+      "id": "AS-23",
+      "domain": "scale",
+      "text": "Substitutions preserve intended adaptation, movement category, and emphasis tier.",
+      "evidence_basis": "D",
+      "standing": "applied_standard",
+      "note": null
+    },
+    {
+      "id": "AS-24",
+      "domain": "autoregulation",
+      "text": "Autoregulation operates within written decision boundaries; changes beyond them are logged decisions.",
+      "evidence_basis": "B",
+      "standing": "applied_standard",
+      "note": null
+    },
+    {
+      "id": "AS-25",
+      "domain": "autoregulation",
+      "text": "Formal autoregulation systems are not used as primary prescription tools in G3 Youth S&C.",
+      "evidence_basis": "D",
+      "standing": "applied_standard",
+      "note": "adult evidence extrapolated"
+    },
+    {
+      "id": "AS-26",
+      "domain": "readiness",
+      "text": "No G3 readiness display may present an automated training recommendation.",
+      "evidence_basis": "B-derived",
+      "standing": "prohibition",
+      "note": null
+    },
+    {
+      "id": "AS-27",
+      "domain": "monitoring",
+      "text": "Every program carries an adjustment log; holds are recorded as decisions.",
+      "evidence_basis": "D",
+      "standing": "applied_standard",
+      "note": null
+    },
+    {
+      "id": "AS-28",
+      "domain": "monitoring",
+      "text": "Program evaluation reads process, then training, then performance, then outcome.",
+      "evidence_basis": "B",
+      "standing": "applied_standard",
+      "note": null
+    },
+    {
+      "id": "AS-29",
+      "domain": "monitoring",
+      "text": "'We cannot yet tell' is an acceptable and expected review outcome.",
+      "evidence_basis": "B-derived",
+      "standing": "applied_standard",
+      "note": null
+    },
+    {
+      "id": "AS-30",
+      "domain": "population-youth",
+      "text": "Entry to loaded progressions is governed by readiness criteria, never by chronological age alone. Supervision ratio is part of the safety claim and is documented for every youth group.",
+      "evidence_basis": "A",
+      "standing": "applied_standard",
+      "note": null
+    },
+    {
+      "id": "AS-31",
+      "domain": "population-female",
+      "text": "G3 applies foundational resistance-training and program-design principles across sexes and does not publish sex-specific programming modifications where direct evidence is insufficient. Individual modification proceeds on individual grounds. Under review.",
+      "evidence_basis": "evidence-insufficient",
+      "standing": "restraint_standard",
+      "note": "under review"
+    },
+    {
+      "id": "AS-32",
+      "domain": "return-to-performance",
+      "text": "Athletes returning from injury re-enter the decision model at Stage 1. Medical clearance is a precondition, not a programming decision.",
+      "evidence_basis": "D",
+      "standing": "applied_standard",
+      "note": null
+    }
+  ],
+  "prohibited_claims": [
+    {
+      "id": "P-01",
+      "claim": "Always train the weakest quality first.",
+      "reason": "Unsupported as a universal rule; relevance and opportunity cost vary.",
+      "taught_instead": "Priority is a relevance x opportunity-cost decision (D4).",
+      "citation_tags": [
+        "cite:19",
+        "cite:20",
+        "cite:35"
+      ]
+    },
+    {
+      "id": "P-02",
+      "claim": "Every athlete requires a completely unique program.",
+      "reason": "Overstated; scalable templates can be defensible.",
+      "taught_instead": "Standardize where similar, individualize where differences matter (D8).",
+      "citation_tags": [
+        "cite:20",
+        "cite:51"
+      ]
+    },
+    {
+      "id": "P-03",
+      "claim": "Templates are inherently inferior.",
+      "reason": "Unsupported; quality depends on how the template handles priorities, progressions, and modifications.",
+      "taught_instead": "Evaluate the template, not the format.",
+      "citation_tags": [
+        "cite:51"
+      ]
+    },
+    {
+      "id": "P-04",
+      "claim": "Exercises must rotate frequently.",
+      "reason": "Unsupported; frequent rotation may obstruct evaluation of adaptation.",
+      "taught_instead": "Variation serves adaptation (D12).",
+      "citation_tags": [
+        "cite:19",
+        "cite:20"
+      ]
+    },
+    {
+      "id": "P-05",
+      "claim": "Programs must change every four weeks.",
+      "reason": "No universal evidence-backed interval exists.",
+      "taught_instead": "A phase is defined by objective, not duration (M9).",
+      "citation_tags": [
+        "cite:4",
+        "cite:20"
+      ]
+    },
+    {
+      "id": "P-06",
+      "claim": "One periodization model is universally best.",
+      "reason": "Unsupported and conditional; effectiveness depends on context and implementation.",
+      "taught_instead": "Model literacy and defended choice; models taught as Class E.",
+      "citation_tags": [
+        "cite:51",
+        "cite:52"
+      ]
+    },
+    {
+      "id": "P-07",
+      "claim": "Every testing deficit requires intervention.",
+      "reason": "Unsupported; some deficits are neither priorities nor causal drivers.",
+      "taught_instead": "Deficit is not a limiting factor (D3).",
+      "citation_tags": [
+        "cite:4",
+        "cite:20"
+      ]
+    },
+    {
+      "id": "P-08",
+      "claim": "More exercises make a program more complete.",
+      "reason": "Unsupported; added content dilutes focus and adds cost.",
+      "taught_instead": "Selection serves adaptation (D5).",
+      "citation_tags": [
+        "cite:19",
+        "cite:43"
+      ]
+    },
+    {
+      "id": "P-09",
+      "claim": "Sport-looking exercises automatically transfer better.",
+      "reason": "Unsupported; visual specificity is not proof of transfer.",
+      "taught_instead": "Adaptation-first selection (D5).",
+      "citation_tags": [
+        "cite:34",
+        "cite:43"
+      ]
+    },
+    {
+      "id": "P-10",
+      "claim": "Fatigue proves that training is effective.",
+      "reason": "Unsupported; fatigue may reflect overload, poor timing, or insufficient recovery.",
+      "taught_instead": "Four-layer response review (M12).",
+      "citation_tags": [
+        "cite:4",
+        "cite:20",
+        "cite:62"
+      ]
+    },
+    {
+      "id": "P-11",
+      "claim": "Every physical quality must improve simultaneously.",
+      "reason": "Unsupported; prioritization and maintenance are necessary.",
+      "taught_instead": "Emphasis tiers (D7).",
+      "citation_tags": [
+        "cite:19",
+        "cite:35"
+      ]
+    },
+    {
+      "id": "P-12",
+      "claim": "One readiness metric can determine daily training.",
+      "reason": "Unsupported; no single metric is an established trigger.",
+      "taught_instead": "Baseline + Reliability + Context + Multiple Signals + Judgment (D11).",
+      "citation_tags": [
+        "cite:4",
+        "cite:20",
+        "cite:62"
+      ]
+    },
+    {
+      "id": "P-13",
+      "claim": "Autoregulation always beats standardized programming.",
+      "reason": "Unsupported; well-designed versions often produce similar outcomes.",
+      "taught_instead": "Autoregulation is a tool, not an upgrade (D10).",
+      "citation_tags": [
+        "cite:58",
+        "cite:52"
+      ]
+    },
+    {
+      "id": "P-14",
+      "claim": "Exact universal maintenance doses exist for every quality.",
+      "reason": "Unsupported; doses vary too much for precise universal rules.",
+      "taught_instead": "Maintenance as defended reduction with verification test (M9).",
+      "citation_tags": [
+        "cite:35",
+        "cite:43"
+      ]
+    },
+    {
+      "id": "P-15",
+      "claim": "Resistance training is unsafe for youth or must wait for a given age.",
+      "reason": "Contradicted by strong evidence, conditioned on supervision and progression.",
+      "taught_instead": "Readiness-based youth training (D9). Do not overstate in either direction.",
+      "citation_tags": [
+        "cite:3",
+        "cite:38",
+        "cite:53",
+        "cite:55",
+        "cite:57"
+      ]
+    },
+    {
+      "id": "P-16",
+      "claim": "A test identified this athlete's limiting factor.",
+      "reason": "Field tests identify deficits and associations, not causes.",
+      "taught_instead": "Probable limiting factor as coaching judgment (D3).",
+      "citation_tags": [
+        "cite:4",
+        "cite:20",
+        "cite:27"
+      ]
+    }
+  ],
+  "judgment_areas": [
+    {
+      "id": "J-01",
+      "area": "Exact limiting-factor identification",
+      "evidence_position": "Indirect; field tests show deficits and associations, not causes. Identified research gap.",
+      "g3_standard": "AS-07, AS-08",
+      "coach_judgment": "Which probable limiting factors to carry, and how confidently."
+    },
+    {
+      "id": "J-02",
+      "area": "Strengths vs weaknesses prioritization",
+      "evidence_position": "Literature is stronger on the need to prioritize than on how.",
+      "g3_standard": "AS-09, AS-10",
+      "coach_judgment": "The priority itself."
+    },
+    {
+      "id": "J-03",
+      "area": "Exact maintenance doses",
+      "evidence_position": "Maintenance likely requires less dose than development; exact doses underdetermined.",
+      "g3_standard": "AS-20",
+      "coach_judgment": "The dose for this athlete, schedule, and quality."
+    },
+    {
+      "id": "J-04",
+      "area": "Optimal exercise variation frequency",
+      "evidence_position": "No direct evidence supports frequent rotation; restrained variation aids evaluation.",
+      "g3_standard": "AS-12",
+      "coach_judgment": "When an exercise has done its work."
+    },
+    {
+      "id": "J-05",
+      "area": "Exact phase duration",
+      "evidence_position": "No universal interval established.",
+      "g3_standard": "AS-19",
+      "coach_judgment": "Phase length."
+    },
+    {
+      "id": "J-06",
+      "area": "Periodization model selection",
+      "evidence_position": "No universally superior model established.",
+      "g3_standard": "Model literacy taught; no model adopted as doctrine.",
+      "coach_judgment": "Which model's logic fits this athlete and season."
+    },
+    {
+      "id": "J-07",
+      "area": "Large-team individualization architecture",
+      "evidence_position": "Practice-based and inferential; acknowledged research gap.",
+      "g3_standard": "AS-21 to AS-23",
+      "coach_judgment": "How many channels to open at a given ratio."
+    },
+    {
+      "id": "J-08",
+      "area": "Readiness-trigger thresholds",
+      "evidence_position": "No single metric established as a trigger.",
+      "g3_standard": "AS-24, AS-26",
+      "coach_judgment": "What convergence justifies a change today."
+    },
+    {
+      "id": "J-09",
+      "area": "Female-athlete-specific modifications",
+      "evidence_position": "Source set does not support strong sex-specific program-design claims.",
+      "g3_standard": "AS-31",
+      "coach_judgment": "Individual modification on individual evidence."
+    },
+    {
+      "id": "J-10",
+      "area": "Complex autoregulation in younger populations",
+      "evidence_position": "Adult evidence extrapolated; limited direct youth evidence.",
+      "g3_standard": "AS-25",
+      "coach_judgment": "How much perceptual input to use with a given adolescent."
+    },
+    {
+      "id": "J-11",
+      "area": "Peak-demand translation to program design",
+      "evidence_position": "Peak-demand evidence largely locomotor and professional; translation is interpretive.",
+      "g3_standard": "AS-03, AS-04",
+      "coach_judgment": "Which peak demands actually shape this program."
+    },
+    {
+      "id": "J-12",
+      "area": "Concurrent spacing and sequencing thresholds",
+      "evidence_position": "Conditional; mechanisms and practical thresholds unsettled.",
+      "g3_standard": "AS-18",
+      "coach_judgment": "Sequencing for this week and this schedule."
+    }
+  ],
+  "competencies": [
+    {
+      "id": "C-01",
+      "title": "Conduct a basic sport needs analysis",
+      "observable_standard": "Produces a written demand profile across all twelve categories, with elements labeled measured/estimated/assumed, for a sport and role they coach.",
+      "modules": [
+        "M1",
+        "M2"
+      ],
+      "assessments": [
+        "A1",
+        "A2"
+      ],
+      "cases": [
+        "case-1",
+        "case-3"
+      ],
+      "sign_off": "PS-1"
+    },
+    {
+      "id": "C-02",
+      "title": "Identify relevant sport demands",
+      "observable_standard": "Ranks the three to five demands that will shape the program and distinguishes average from peak-passage demands.",
+      "modules": [
+        "M2"
+      ],
+      "assessments": [
+        "A2"
+      ],
+      "cases": [
+        "case-2",
+        "case-3"
+      ],
+      "sign_off": "PS-1"
+    },
+    {
+      "id": "C-03",
+      "title": "Construct an athlete profile",
+      "observable_standard": "Produces a profile across all six domains with recorded testing conditions and no item unconnected to a decision.",
+      "modules": [
+        "M3"
+      ],
+      "assessments": [
+        "A3"
+      ],
+      "cases": [
+        "case-1"
+      ],
+      "sign_off": "PS-1"
+    },
+    {
+      "id": "C-04",
+      "title": "Interpret testing within measurement limitations",
+      "observable_standard": "States whether a change exceeds typical error and whether it is practically significant; declines to act inside the noise band.",
+      "modules": [
+        "M3",
+        "M4",
+        "M12"
+      ],
+      "assessments": [
+        "A4",
+        "A12"
+      ],
+      "cases": [
+        "case-2",
+        "case-4",
+        "case-5"
+      ],
+      "sign_off": "PS-1"
+    },
+    {
+      "id": "C-05",
+      "title": "Distinguish deficit from probable limiting factor",
+      "observable_standard": "Produces a gap statement with all three lists and uses no causal language.",
+      "modules": [
+        "M4"
+      ],
+      "assessments": [
+        "A4"
+      ],
+      "cases": [
+        "case-2",
+        "case-4"
+      ],
+      "sign_off": "PS-1"
+    },
+    {
+      "id": "C-06",
+      "title": "Establish defensible priorities",
+      "observable_standard": "Assigns emphasis tiers to every quality and writes a complete opportunity-cost statement.",
+      "modules": [
+        "M5"
+      ],
+      "assessments": [
+        "A5"
+      ],
+      "cases": [
+        "case-2",
+        "case-3",
+        "case-4"
+      ],
+      "sign_off": "PS-2"
+    },
+    {
+      "id": "C-07",
+      "title": "Select exercises based on adaptation",
+      "observable_standard": "States intended adaptation for every exercise and rejects at least one candidate in writing.",
+      "modules": [
+        "M6"
+      ],
+      "assessments": [
+        "A6"
+      ],
+      "cases": [
+        "case-1",
+        "case-2"
+      ],
+      "sign_off": "PS-2"
+    },
+    {
+      "id": "C-08",
+      "title": "Order exercises based on priority",
+      "observable_standard": "Builds a session whose order an outside coach reads back as the stated priority; provides a protection order.",
+      "modules": [
+        "M7"
+      ],
+      "assessments": [
+        "A7"
+      ],
+      "cases": [
+        "case-2"
+      ],
+      "sign_off": "PS-2"
+    },
+    {
+      "id": "C-09",
+      "title": "Organize concurrent qualities",
+      "observable_standard": "Builds a deliverable week with visible tiers and annotated sequencing, labeling convention versus evidence.",
+      "modules": [
+        "M8"
+      ],
+      "assessments": [
+        "A8"
+      ],
+      "cases": [
+        "case-2",
+        "case-3"
+      ],
+      "sign_off": "PS-2"
+    },
+    {
+      "id": "C-10",
+      "title": "Distinguish development from maintenance",
+      "observable_standard": "Prescribes maintenance as a defended reduction with a scheduled verification test.",
+      "modules": [
+        "M5",
+        "M9"
+      ],
+      "assessments": [
+        "A9"
+      ],
+      "cases": [
+        "case-3"
+      ],
+      "sign_off": "PS-2"
+    },
+    {
+      "id": "C-11",
+      "title": "Individualize within a group structure",
+      "observable_standard": "Builds a template with named channels, authority levels, and pathways, deliverable at the stated ratio.",
+      "modules": [
+        "M10"
+      ],
+      "assessments": [
+        "A10"
+      ],
+      "cases": [
+        "case-1",
+        "case-3"
+      ],
+      "sign_off": "PS-3"
+    },
+    {
+      "id": "C-12",
+      "title": "Use basic autoregulation appropriately",
+      "observable_standard": "Applies RPE/RIR/velocity within written boundaries appropriate to population; escalates as a logged decision.",
+      "modules": [
+        "M11"
+      ],
+      "assessments": [
+        "A11"
+      ],
+      "cases": [
+        "case-5"
+      ],
+      "sign_off": "PS-3, PS-4"
+    },
+    {
+      "id": "C-13",
+      "title": "Interpret readiness cautiously",
+      "observable_standard": "Applies the five-component formula; makes no single-metric decision; identifies required convergence.",
+      "modules": [
+        "M11"
+      ],
+      "assessments": [
+        "A11"
+      ],
+      "cases": [
+        "case-5"
+      ],
+      "sign_off": "PS-4"
+    },
+    {
+      "id": "C-14",
+      "title": "Monitor program response",
+      "observable_standard": "Completes a four-layer review in order and interprets retests against error.",
+      "modules": [
+        "M12"
+      ],
+      "assessments": [
+        "A12"
+      ],
+      "cases": [
+        "case-5"
+      ],
+      "sign_off": "PS-4"
+    },
+    {
+      "id": "C-15",
+      "title": "Justify program modifications",
+      "observable_standard": "Maintains an adjustment log with trigger, reasoning, expected effect, and review date; logs holds.",
+      "modules": [
+        "M9",
+        "M12"
+      ],
+      "assessments": [
+        "A12"
+      ],
+      "cases": [
+        "case-3",
+        "case-4",
+        "case-5"
+      ],
+      "sign_off": "PS-4"
+    },
+    {
+      "id": "T-01",
+      "title": "Programming defense (terminal)",
+      "observable_standard": "Walks a real program end to end through the decision model, out loud, under questioning, answering all nine questions.",
+      "modules": [
+        "ALL"
+      ],
+      "assessments": [
+        "ALL"
+      ],
+      "cases": [
+        "ALL"
+      ],
+      "sign_off": "PS-4"
+    }
+  ],
+  "modules": [
+    {
+      "id": "M1",
+      "title": "What Needs Analysis Is For",
+      "framing_statement": "Needs analysis is not a form. It is the reason your program looks the way it does.",
+      "model_stage": "frames_all",
+      "duration_minutes": 60,
+      "doctrine_ids": [
+        "D1"
+      ],
+      "applied_standard_ids": [
+        "AS-01",
+        "AS-02"
+      ],
+      "lessons": [
+        {
+          "index": 1,
+          "title": "The purpose problem: descriptive vs decisional assessment"
+        },
+        {
+          "index": 2,
+          "title": "The ten decision categories"
+        },
+        {
+          "index": 3,
+          "title": "The cost of unused data"
+        },
+        {
+          "index": 4,
+          "title": "Why the evidence supports this indirectly"
+        },
+        {
+          "index": 5,
+          "title": "The G3 decision model, introduced"
+        },
+        {
+          "index": 6,
+          "title": "What 'defensible' means at G3"
+        }
+      ],
+      "objectives": [
+        "M1.1 State the purpose of needs analysis in decision terms",
+        "M1.2 Apply the decision test to any proposed assessment item",
+        "M1.3 Name the ten decision categories",
+        "M1.4 Describe the costs of undecidable data",
+        "M1.5 Reproduce the decision model from memory",
+        "M1.6 State the evidence standing of the model"
+      ],
+      "common_errors": [
+        "Testing because the test exists",
+        "Confusing thoroughness with rigor",
+        "No plan for interpreting change",
+        "Presenting a needs analysis as a diagnosis",
+        "Treating the model as a form completed after the program"
+      ],
+      "scenario_id": "M1-A",
+      "applied_assessment_id": "A1",
+      "sign_off": null,
+      "reference_ids": [
+        "EP-01",
+        "EP-02",
+        "EP-26",
+        "EP-27",
+        "EP-31",
+        "EP-32",
+        "EP-33"
+      ],
+      "assessment_counts": {
+        "knowledge": 5,
+        "interpretation": 1,
+        "decision": 1,
+        "error_identification": 0
+      },
+      "content_objects": [
+        "module_header",
+        "objectives",
+        "lesson",
+        "doctrine_block",
+        "evidence_block",
+        "coaching_application",
+        "error_list",
+        "scenario",
+        "knowledge_assessment",
+        "applied_assessment",
+        "references"
+      ]
+    },
+    {
+      "id": "M2",
+      "title": "Analyzing Sport Demands",
+      "framing_statement": "The average tells you what the sport usually asks. The peak tells you what it asks when it matters.",
+      "model_stage": "demand",
+      "duration_minutes": 90,
+      "doctrine_ids": [
+        "D2"
+      ],
+      "applied_standard_ids": [
+        "AS-03",
+        "AS-04"
+      ],
+      "lessons": [
+        {
+          "index": 1,
+          "title": "The twelve demand categories"
+        },
+        {
+          "index": 2,
+          "title": "Averages conceal peaks"
+        },
+        {
+          "index": 3,
+          "title": "How peak demands are estimated"
+        },
+        {
+          "index": 4,
+          "title": "Position and role"
+        },
+        {
+          "index": 5,
+          "title": "Density and season structure"
+        },
+        {
+          "index": 6,
+          "title": "Demand analysis without instruments"
+        }
+      ],
+      "objectives": [
+        "M2.1 Build a demand profile across twelve categories",
+        "M2.2 Distinguish average from peak demands",
+        "M2.3 Explain rolling averages vs fixed epochs",
+        "M2.4 Analyze positional differences",
+        "M2.5 Account for density and season structure",
+        "M2.6 Produce a defensible profile without tracking technology"
+      ],
+      "common_errors": [
+        "Programming from a season average",
+        "Treating one position's profile as the sport's",
+        "Assuming unmeasurable means unanalyzable",
+        "Adopting professional profiles for scholastic rosters",
+        "Building demands from highlight actions"
+      ],
+      "scenario_id": "M2-A",
+      "applied_assessment_id": "A2",
+      "sign_off": null,
+      "reference_ids": [
+        "EP-13",
+        "EP-14",
+        "EP-04",
+        "EP-18"
+      ],
+      "assessment_counts": {
+        "knowledge": 5,
+        "interpretation": 2,
+        "decision": 1,
+        "error_identification": 0
+      },
+      "content_objects": [
+        "module_header",
+        "objectives",
+        "lesson",
+        "doctrine_block",
+        "evidence_block",
+        "coaching_application",
+        "error_list",
+        "scenario",
+        "knowledge_assessment",
+        "applied_assessment",
+        "references"
+      ]
+    },
+    {
+      "id": "M3",
+      "title": "Building the Athlete Profile",
+      "framing_statement": "The profile is not everything you know about the athlete. It is everything you will actually use.",
+      "model_stage": "profile",
+      "duration_minutes": 105,
+      "doctrine_ids": [
+        "D1",
+        "D9"
+      ],
+      "applied_standard_ids": [
+        "AS-05",
+        "AS-06"
+      ],
+      "lessons": [
+        {
+          "index": 1,
+          "title": "The six required domains"
+        },
+        {
+          "index": 2,
+          "title": "Training age is not chronological age"
+        },
+        {
+          "index": 3,
+          "title": "Availability is a programming variable"
+        },
+        {
+          "index": 4,
+          "title": "Movement competency at the depth the decision needs"
+        },
+        {
+          "index": 5,
+          "title": "Testing conditions and future comparability"
+        },
+        {
+          "index": 6,
+          "title": "Reliability, typical error, practical significance introduced"
+        },
+        {
+          "index": 7,
+          "title": "Youth readiness"
+        },
+        {
+          "index": 8,
+          "title": "GPI in the profile"
+        }
+      ],
+      "objectives": [
+        "M3.1 Construct a profile from six domains",
+        "M3.2 Apply the decision test to every item",
+        "M3.3 Record measurement conditions",
+        "M3.4 Assess movement competency appropriately",
+        "M3.5 Apply youth readiness criteria",
+        "M3.6 Integrate GPI at the correct stage",
+        "M3.7 State reliability limitations"
+      ],
+      "common_errors": [
+        "Profile built from test numbers only",
+        "Screening beyond decision need",
+        "Extensive youth testing to appear rigorous",
+        "Failing to record conditions",
+        "Treating GPI as the profile",
+        "Age-gating resistance training"
+      ],
+      "scenario_id": "M3-A",
+      "applied_assessment_id": "A3",
+      "sign_off": "PS-1 (contributing)",
+      "reference_ids": [
+        "EP-01",
+        "EP-25",
+        "EP-24",
+        "EP-08",
+        "EP-09",
+        "EP-10",
+        "EP-11",
+        "EP-12",
+        "EP-19"
+      ],
+      "assessment_counts": {
+        "knowledge": 5,
+        "interpretation": 2,
+        "decision": 1,
+        "error_identification": 1
+      },
+      "content_objects": [
+        "module_header",
+        "objectives",
+        "lesson",
+        "doctrine_block",
+        "evidence_block",
+        "coaching_application",
+        "error_list",
+        "scenario",
+        "knowledge_assessment",
+        "applied_assessment",
+        "sign_off",
+        "references"
+      ]
+    },
+    {
+      "id": "M4",
+      "title": "From Test Result to Limiting Factor",
+      "framing_statement": "The test tells you what the number is. It never tells you what to do.",
+      "model_stage": "gap",
+      "duration_minutes": 105,
+      "doctrine_ids": [
+        "D3"
+      ],
+      "applied_standard_ids": [
+        "AS-07",
+        "AS-08"
+      ],
+      "lessons": [
+        {
+          "index": 1,
+          "title": "Two different objects: deficit vs limiting factor"
+        },
+        {
+          "index": 2,
+          "title": "Filter one: is it real?"
+        },
+        {
+          "index": 3,
+          "title": "Filter two: is it relevant?"
+        },
+        {
+          "index": 4,
+          "title": "The six conditions"
+        },
+        {
+          "index": 5,
+          "title": "Why causation is rarely available"
+        },
+        {
+          "index": 6,
+          "title": "Normative comparison and its limits"
+        },
+        {
+          "index": 7,
+          "title": "Writing the Gap Statement"
+        }
+      ],
+      "objectives": [
+        "M4.1 Define and use both terms correctly",
+        "M4.2 Apply the reality filter",
+        "M4.3 Apply the relevance filter",
+        "M4.4 State the six conditions",
+        "M4.5 Explain why field testing shows association not cause",
+        "M4.6 Produce a three-list gap statement",
+        "M4.7 Explain limits of normative comparison"
+      ],
+      "common_errors": [
+        "Reading the lowest bar as the target",
+        "Acting inside the noise band",
+        "Comparing to inapplicable norms",
+        "Retesting until a number moves",
+        "Causal language",
+        "A gap statement with only one list"
+      ],
+      "scenario_id": "case-4",
+      "applied_assessment_id": "A4",
+      "sign_off": "PS-1",
+      "reference_ids": [
+        "EP-01",
+        "EP-02",
+        "EP-24",
+        "EP-25"
+      ],
+      "assessment_counts": {
+        "knowledge": 5,
+        "interpretation": 3,
+        "decision": 2,
+        "error_identification": 1
+      },
+      "content_objects": [
+        "module_header",
+        "objectives",
+        "lesson",
+        "doctrine_block",
+        "evidence_block",
+        "coaching_application",
+        "error_list",
+        "scenario",
+        "knowledge_assessment",
+        "applied_assessment",
+        "sign_off",
+        "references"
+      ]
+    },
+    {
+      "id": "M5",
+      "title": "Establishing Training Priorities",
+      "framing_statement": "Priority is a decision about where the athlete's best effort goes, and what you give up to put it there.",
+      "model_stage": "priority",
+      "duration_minutes": 90,
+      "doctrine_ids": [
+        "D4",
+        "D7"
+      ],
+      "applied_standard_ids": [
+        "AS-09",
+        "AS-10",
+        "AS-11"
+      ],
+      "lessons": [
+        {
+          "index": 1,
+          "title": "Why 'train the weakness' is not a rule"
+        },
+        {
+          "index": 2,
+          "title": "The thirteen considerations"
+        },
+        {
+          "index": 3,
+          "title": "The four emphasis tiers"
+        },
+        {
+          "index": 4,
+          "title": "The opportunity-cost sentence"
+        },
+        {
+          "index": 5,
+          "title": "When a strength deserves development"
+        },
+        {
+          "index": 6,
+          "title": "When a weakness is tiered down"
+        },
+        {
+          "index": 7,
+          "title": "Priority as communication"
+        }
+      ],
+      "objectives": [
+        "M5.1 Reject the universal weakness-first rule with reasoning",
+        "M5.2 Assign emphasis tiers",
+        "M5.3 Write an opportunity-cost statement",
+        "M5.4 Weigh considerations without scoring them",
+        "M5.5 Defend developing a strength",
+        "M5.6 Defend tiering down a weakness",
+        "M5.7 Distinguish evidence, standard, and judgment"
+      ],
+      "common_errors": [
+        "Weakness-first as reflex",
+        "Everything tiered primary",
+        "Maintenance as euphemism for neglect",
+        "Weighted priority scores",
+        "No stated cost",
+        "Norm tables setting the priority"
+      ],
+      "scenario_id": "M5-A",
+      "applied_assessment_id": "A5",
+      "sign_off": null,
+      "reference_ids": [
+        "EP-03",
+        "EP-02",
+        "EP-04",
+        "EP-26"
+      ],
+      "assessment_counts": {
+        "knowledge": 5,
+        "interpretation": 1,
+        "decision": 3,
+        "error_identification": 1
+      },
+      "content_objects": [
+        "module_header",
+        "objectives",
+        "lesson",
+        "doctrine_block",
+        "evidence_block",
+        "coaching_application",
+        "error_list",
+        "scenario",
+        "knowledge_assessment",
+        "applied_assessment",
+        "references"
+      ]
+    },
+    {
+      "id": "M6",
+      "title": "Exercise Selection",
+      "framing_statement": "Every exercise is an answer to a question. If you cannot state the question, remove the exercise.",
+      "model_stage": "prescription",
+      "duration_minutes": 90,
+      "doctrine_ids": [
+        "D5"
+      ],
+      "applied_standard_ids": [
+        "AS-12",
+        "AS-13"
+      ],
+      "lessons": [
+        {
+          "index": 1,
+          "title": "Start with the adaptation"
+        },
+        {
+          "index": 2,
+          "title": "The fourteen considerations"
+        },
+        {
+          "index": 3,
+          "title": "The specificity trap"
+        },
+        {
+          "index": 4,
+          "title": "Loading and progression potential"
+        },
+        {
+          "index": 5,
+          "title": "Complexity is a cost"
+        },
+        {
+          "index": 6,
+          "title": "Fatigue cost and risk/reward"
+        },
+        {
+          "index": 7,
+          "title": "Movement categories as G3 architecture"
+        },
+        {
+          "index": 8,
+          "title": "More is not more"
+        }
+      ],
+      "objectives": [
+        "M6.1 Select from intended adaptation",
+        "M6.2 Apply the fourteen considerations",
+        "M6.3 Explain why visual specificity is not transfer",
+        "M6.4 Match complexity to competency",
+        "M6.5 Evaluate loading, velocity, ROM, fatigue cost",
+        "M6.6 Justify exercise count by focus",
+        "M6.7 Build a movement-category framework"
+      ],
+      "common_errors": [
+        "Choosing because it looks like the sport",
+        "Adding exercises for thoroughness",
+        "Complexity beyond group competency",
+        "Rotating before adaptation or mastery",
+        "Coach preference over athlete priority",
+        "No stated intended adaptation"
+      ],
+      "scenario_id": "M6-A",
+      "applied_assessment_id": "A6",
+      "sign_off": "PS-2 (contributing)",
+      "reference_ids": [
+        "EP-07",
+        "EP-06",
+        "EP-03"
+      ],
+      "assessment_counts": {
+        "knowledge": 5,
+        "interpretation": 1,
+        "decision": 2,
+        "error_identification": 2
+      },
+      "content_objects": [
+        "module_header",
+        "objectives",
+        "lesson",
+        "doctrine_block",
+        "evidence_block",
+        "coaching_application",
+        "error_list",
+        "scenario",
+        "knowledge_assessment",
+        "applied_assessment",
+        "sign_off",
+        "references"
+      ]
+    },
+    {
+      "id": "M7",
+      "title": "Building the Training Session",
+      "framing_statement": "Whatever you put first is what you decided mattered most, whether or not you meant to decide it.",
+      "model_stage": "prescription",
+      "duration_minutes": 75,
+      "doctrine_ids": [
+        "D6"
+      ],
+      "applied_standard_ids": [
+        "AS-14",
+        "AS-15"
+      ],
+      "lessons": [
+        {
+          "index": 1,
+          "title": "What the order evidence says"
+        },
+        {
+          "index": 2,
+          "title": "G3 session architecture"
+        },
+        {
+          "index": 3,
+          "title": "Placing speed and power"
+        },
+        {
+          "index": 4,
+          "title": "The priority-order audit"
+        },
+        {
+          "index": 5,
+          "title": "Time loss and protection"
+        },
+        {
+          "index": 6,
+          "title": "Session quality as coaching, not layout"
+        }
+      ],
+      "objectives": [
+        "M7.1 Order a session by priority",
+        "M7.2 Explain order evidence and its boundaries",
+        "M7.3 Build G3 session architecture",
+        "M7.4 Position qualities by tier",
+        "M7.5 Detect priority-order mismatch",
+        "M7.6 Protect priority when time is lost"
+      ],
+      "common_errors": [
+        "Conditioning early in a strength session",
+        "Ordering by habit or equipment flow",
+        "Front-loading so nothing after is executed",
+        "Letting the schedule decide what is cut",
+        "Warm-up as ritual"
+      ],
+      "scenario_id": "M7-A",
+      "applied_assessment_id": "A7",
+      "sign_off": "PS-2 (contributing)",
+      "reference_ids": [
+        "EP-03",
+        "EP-06",
+        "EP-07"
+      ],
+      "assessment_counts": {
+        "knowledge": 5,
+        "interpretation": 1,
+        "decision": 2,
+        "error_identification": 2
+      },
+      "content_objects": [
+        "module_header",
+        "objectives",
+        "lesson",
+        "doctrine_block",
+        "evidence_block",
+        "coaching_application",
+        "error_list",
+        "scenario",
+        "knowledge_assessment",
+        "applied_assessment",
+        "sign_off",
+        "references"
+      ]
+    },
+    {
+      "id": "M8",
+      "title": "Building the Training Week",
+      "framing_statement": "The week is where programming stops being a list and starts being a system.",
+      "model_stage": "prescription",
+      "duration_minutes": 105,
+      "doctrine_ids": [
+        "D7"
+      ],
+      "applied_standard_ids": [
+        "AS-16",
+        "AS-17",
+        "AS-18"
+      ],
+      "lessons": [
+        {
+          "index": 1,
+          "title": "Concurrent development is normal"
+        },
+        {
+          "index": 2,
+          "title": "Interference is real and conditional"
+        },
+        {
+          "index": 3,
+          "title": "The six management levers"
+        },
+        {
+          "index": 4,
+          "title": "Emphasis tiers across the week"
+        },
+        {
+          "index": 5,
+          "title": "The schedule is the constraint"
+        },
+        {
+          "index": 6,
+          "title": "Youth and adolescent weeks"
+        },
+        {
+          "index": 7,
+          "title": "Deliverability"
+        }
+      ],
+      "objectives": [
+        "M8.1 Organize concurrent development",
+        "M8.2 Explain conditional interference",
+        "M8.3 Apply the six levers",
+        "M8.4 Distinguish tiers across the week",
+        "M8.5 Integrate the schedule as constraint",
+        "M8.6 Explain how training status modifies tradeoffs",
+        "M8.7 Build a deliverable week"
+      ],
+      "common_errors": [
+        "Interference as universal law",
+        "Interference as myth",
+        "Ideal weeks that cannot be delivered",
+        "Equal weekly presence called concurrent development",
+        "Quoting spacing rules as evidence",
+        "Adult interference expectations in middle-school groups"
+      ],
+      "scenario_id": "case-3",
+      "applied_assessment_id": "A8",
+      "sign_off": "PS-2",
+      "reference_ids": [
+        "EP-04",
+        "EP-05",
+        "EP-21",
+        "EP-22",
+        "EP-23"
+      ],
+      "assessment_counts": {
+        "knowledge": 5,
+        "interpretation": 2,
+        "decision": 2,
+        "error_identification": 1
+      },
+      "content_objects": [
+        "module_header",
+        "objectives",
+        "lesson",
+        "doctrine_block",
+        "evidence_block",
+        "coaching_application",
+        "error_list",
+        "scenario",
+        "knowledge_assessment",
+        "applied_assessment",
+        "sign_off",
+        "references"
+      ]
+    },
+    {
+      "id": "M9",
+      "title": "Building the Training Phase",
+      "framing_statement": "A phase is a promise about what will improve and what will not.",
+      "model_stage": "prescription",
+      "duration_minutes": 90,
+      "doctrine_ids": [
+        "D12",
+        "D7"
+      ],
+      "applied_standard_ids": [
+        "AS-19",
+        "AS-20"
+      ],
+      "lessons": [
+        {
+          "index": 1,
+          "title": "Objective before duration"
+        },
+        {
+          "index": 2,
+          "title": "Progression of the primary"
+        },
+        {
+          "index": 3,
+          "title": "Maintenance as a defended reduction"
+        },
+        {
+          "index": 4,
+          "title": "Variation that serves adaptation"
+        },
+        {
+          "index": 5,
+          "title": "Periodization models"
+        },
+        {
+          "index": 6,
+          "title": "Historical frameworks, accurately stated"
+        },
+        {
+          "index": 7,
+          "title": "Review points"
+        }
+      ],
+      "objectives": [
+        "M9.1 Define a phase by objective",
+        "M9.2 Build progression for the primary quality",
+        "M9.3 Prescribe maintenance with verification",
+        "M9.4 Distinguish justified variation from novelty",
+        "M9.5 Explain why no model is universally superior",
+        "M9.6 Discuss historical models accurately",
+        "M9.7 Set phase review points"
+      ],
+      "common_errors": [
+        "Changing on the calendar",
+        "Rotating before adaptation",
+        "Maintenance without verification",
+        "Quoting precise maintenance doses",
+        "Presenting one model as proven",
+        "Unverified historical claims",
+        "No review points"
+      ],
+      "scenario_id": "M9-A",
+      "applied_assessment_id": "A9",
+      "sign_off": null,
+      "reference_ids": [
+        "EP-20",
+        "EP-06",
+        "EP-04",
+        "EP-02",
+        "EP-26",
+        "EP-28"
+      ],
+      "assessment_counts": {
+        "knowledge": 5,
+        "interpretation": 1,
+        "decision": 2,
+        "error_identification": 2
+      },
+      "content_objects": [
+        "module_header",
+        "objectives",
+        "lesson",
+        "doctrine_block",
+        "evidence_block",
+        "coaching_application",
+        "error_list",
+        "scenario",
+        "knowledge_assessment",
+        "applied_assessment",
+        "references"
+      ]
+    },
+    {
+      "id": "M10",
+      "title": "Individualization at Scale",
+      "framing_statement": "Forty athletes, one coach, one hour. Individualization that cannot survive that room is a theory.",
+      "model_stage": "prescription",
+      "duration_minutes": 105,
+      "doctrine_ids": [
+        "D8",
+        "D9"
+      ],
+      "applied_standard_ids": [
+        "AS-21",
+        "AS-22",
+        "AS-23",
+        "AS-30"
+      ],
+      "lessons": [
+        {
+          "index": 1,
+          "title": "The template question"
+        },
+        {
+          "index": 2,
+          "title": "What is standardized"
+        },
+        {
+          "index": 3,
+          "title": "What is individualized"
+        },
+        {
+          "index": 4,
+          "title": "Progression and regression pathways"
+        },
+        {
+          "index": 5,
+          "title": "Youth group design"
+        },
+        {
+          "index": 6,
+          "title": "Substitution without drift"
+        },
+        {
+          "index": 7,
+          "title": "Stating the evidence standing"
+        }
+      ],
+      "objectives": [
+        "M10.1 Explain why unique programs are not required",
+        "M10.2 Identify what to standardize and individualize",
+        "M10.3 Build a team template with channels",
+        "M10.4 Apply pathways in a group session",
+        "M10.5 Design youth groups around readiness and supervision",
+        "M10.6 Substitute without breaking intent",
+        "M10.7 State the evidence standing honestly"
+      ],
+      "common_errors": [
+        "Forty unique programs delivered badly",
+        "One program with no channels",
+        "Too many channels to coach",
+        "Substituting on equipment availability",
+        "Age-gating youth participation",
+        "Supervision ratio that invalidates the safety claim"
+      ],
+      "scenario_id": "case-1",
+      "applied_assessment_id": "A10",
+      "sign_off": "PS-3",
+      "reference_ids": [
+        "EP-20",
+        "EP-04",
+        "EP-03",
+        "EP-08",
+        "EP-09",
+        "EP-11",
+        "EP-23"
+      ],
+      "assessment_counts": {
+        "knowledge": 5,
+        "interpretation": 1,
+        "decision": 2,
+        "error_identification": 1
+      },
+      "content_objects": [
+        "module_header",
+        "objectives",
+        "lesson",
+        "doctrine_block",
+        "evidence_block",
+        "coaching_application",
+        "error_list",
+        "scenario",
+        "knowledge_assessment",
+        "applied_assessment",
+        "sign_off",
+        "references"
+      ]
+    },
+    {
+      "id": "M11",
+      "title": "Autoregulation & Readiness",
+      "framing_statement": "Autoregulation is a steering input, not a driver. Readiness is an interpretation, not a number.",
+      "model_stage": "prescription_response",
+      "duration_minutes": 90,
+      "doctrine_ids": [
+        "D10",
+        "D11"
+      ],
+      "applied_standard_ids": [
+        "AS-24",
+        "AS-25",
+        "AS-26"
+      ],
+      "lessons": [
+        {
+          "index": 1,
+          "title": "What autoregulation is"
+        },
+        {
+          "index": 2,
+          "title": "RPE and RIR in practice"
+        },
+        {
+          "index": 3,
+          "title": "The comparison that matters"
+        },
+        {
+          "index": 4,
+          "title": "Population boundaries"
+        },
+        {
+          "index": 5,
+          "title": "Readiness is interpreted, not read"
+        },
+        {
+          "index": 6,
+          "title": "Why no single metric decides"
+        },
+        {
+          "index": 7,
+          "title": "Skepticism toward dashboards"
+        },
+        {
+          "index": 8,
+          "title": "Decision boundaries"
+        }
+      ],
+      "objectives": [
+        "M11.1 Define autoregulation and its legitimate inputs",
+        "M11.2 Apply RPE and RIR with their limitations",
+        "M11.3 State the evidence comparison position",
+        "M11.4 Interpret readiness with the five-component formula",
+        "M11.5 Explain why no single metric dictates change",
+        "M11.6 Set boundaries by population",
+        "M11.7 Evaluate dashboards and vendor claims"
+      ],
+      "common_errors": [
+        "Autoregulation as automatically superior",
+        "RIR with uncalibrated athletes",
+        "Gutting a session on one low score",
+        "Invented composite weightings",
+        "Accepting vendor validity claims",
+        "In-session drift replacing the priority"
+      ],
+      "scenario_id": "case-5",
+      "applied_assessment_id": "A11",
+      "sign_off": "PS-4 (contributing)",
+      "reference_ids": [
+        "EP-02",
+        "EP-15",
+        "EP-16",
+        "EP-17",
+        "EP-18",
+        "EP-01",
+        "EP-25",
+        "EP-29",
+        "EP-30"
+      ],
+      "assessment_counts": {
+        "knowledge": 5,
+        "interpretation": 2,
+        "decision": 2,
+        "error_identification": 2
+      },
+      "content_objects": [
+        "module_header",
+        "objectives",
+        "lesson",
+        "doctrine_block",
+        "evidence_block",
+        "coaching_application",
+        "error_list",
+        "scenario",
+        "knowledge_assessment",
+        "applied_assessment",
+        "sign_off",
+        "references"
+      ]
+    },
+    {
+      "id": "M12",
+      "title": "Monitoring & Program Adjustment",
+      "framing_statement": "The last question separates a coach from a program writer: what evidence would make you change your mind?",
+      "model_stage": "response_adjust",
+      "duration_minutes": 105,
+      "doctrine_ids": [
+        "D11",
+        "D12"
+      ],
+      "applied_standard_ids": [
+        "AS-27",
+        "AS-28",
+        "AS-29"
+      ],
+      "lessons": [
+        {
+          "index": 1,
+          "title": "The four information layers"
+        },
+        {
+          "index": 2,
+          "title": "Outcomes are the noisiest layer"
+        },
+        {
+          "index": 3,
+          "title": "Retest interpretation"
+        },
+        {
+          "index": 4,
+          "title": "Fatigue is not evidence"
+        },
+        {
+          "index": 5,
+          "title": "The four adjustment actions"
+        },
+        {
+          "index": 6,
+          "title": "The adjustment log"
+        },
+        {
+          "index": 7,
+          "title": "Defending the decision"
+        }
+      ],
+      "objectives": [
+        "M12.1 Distinguish and order the four information layers",
+        "M12.2 Explain why outcomes cannot evaluate training quality",
+        "M12.3 Interpret retests against error",
+        "M12.4 Diagnose delivery failure before physiological failure",
+        "M12.5 Choose among progress, hold, modify, re-enter",
+        "M12.6 Maintain an adjustment log",
+        "M12.7 Reject fatigue as evidence",
+        "M12.8 Defend a decision under questioning"
+      ],
+      "common_errors": [
+        "Evaluating by wins and losses",
+        "Blaming physiology for delivery failure",
+        "Retesting into noise",
+        "Fatigue as proof",
+        "Unlogged changes",
+        "Treating 'cannot yet tell' as failure"
+      ],
+      "scenario_id": "M12-A",
+      "applied_assessment_id": "A12",
+      "sign_off": "PS-4",
+      "reference_ids": [
+        "EP-01",
+        "EP-02",
+        "EP-18",
+        "EP-24",
+        "EP-25",
+        "EP-20"
+      ],
+      "assessment_counts": {
+        "knowledge": 5,
+        "interpretation": 3,
+        "decision": 2,
+        "error_identification": 2
+      },
+      "content_objects": [
+        "module_header",
+        "objectives",
+        "lesson",
+        "doctrine_block",
+        "evidence_block",
+        "coaching_application",
+        "error_list",
+        "scenario",
+        "knowledge_assessment",
+        "applied_assessment",
+        "sign_off",
+        "references"
+      ]
+    }
+  ],
+  "cases": [
+    {
+      "id": "case-1",
+      "title": "Middle-School Athlete",
+      "competencies": [
+        "C-01",
+        "C-03",
+        "C-04",
+        "C-07",
+        "C-11"
+      ],
+      "doctrine": [
+        "D1",
+        "D5",
+        "D8",
+        "D9"
+      ],
+      "modules": [
+        "M1",
+        "M3",
+        "M6",
+        "M10"
+      ],
+      "situation_summary": "12-year-old, no training history, high instructional responsiveness, 18-athlete group with one coach, two 50-minute sessions weekly. Parent asks for high-school-style testing and raises a lifting-safety concern.",
+      "decision_prompt": "What does the assessment consist of, what does the program prioritize, and what do you say to the parent?",
+      "failure_modes": [
+        "Extensive testing to appear rigorous",
+        "Complexity beyond group competency and supervision ratio",
+        "Age-gating loaded progressions",
+        "Agreeing lifting is unsafe pre-puberty",
+        "Body composition with no attached decision",
+        "One program with no lanes"
+      ],
+      "delivery": [
+        "situation",
+        "decision (commit before feedback)",
+        "defense",
+        "discussion"
+      ],
+      "rubric": "universal_case_rubric"
+    },
+    {
+      "id": "case-2",
+      "title": "High-School Team-Sport Athlete",
+      "competencies": [
+        "C-02",
+        "C-04",
+        "C-05",
+        "C-06",
+        "C-07",
+        "C-08",
+        "C-09"
+      ],
+      "doctrine": [
+        "D2",
+        "D3",
+        "D4",
+        "D6",
+        "D7"
+      ],
+      "modules": [
+        "M2",
+        "M4",
+        "M5",
+        "M7",
+        "M8"
+      ],
+      "situation_summary": "16-year-old outside hitter, second year of structured training, tournament-format competition, eight-week pre-season, three G3 slots against four practices. Strength in bottom quartile; repeated-jump retention declining; jump output high.",
+      "decision_prompt": "What is prioritized in this block, what is deliberately not prioritized, and how is the week ordered?",
+      "failure_modes": [
+        "Selecting the lowest GPI sub-score by default",
+        "Ignoring the tournament peak passage",
+        "Four primary qualities",
+        "'Explosive' work with no stated adaptation",
+        "Weighted approach-jump imitation",
+        "Sex-specific loading rules asserted as evidence"
+      ],
+      "delivery": [
+        "situation",
+        "decision (commit before feedback)",
+        "defense",
+        "discussion"
+      ],
+      "rubric": "universal_case_rubric"
+    },
+    {
+      "id": "case-3",
+      "title": "Collegiate Team",
+      "competencies": [
+        "C-01",
+        "C-02",
+        "C-06",
+        "C-09",
+        "C-10",
+        "C-11",
+        "C-15"
+      ],
+      "doctrine": [
+        "D2",
+        "D4",
+        "D7",
+        "D8",
+        "D12"
+      ],
+      "modules": [
+        "M2",
+        "M5",
+        "M8",
+        "M9",
+        "M10"
+      ],
+      "situation_summary": "28 athletes, four position groups, mid-season, three-match week then a bye, five-week block with two doubleheaders and a road trip. Two slots weekly with one lost roughly every other week. Two coaches. Six low-training-age athletes; two returning from injury.",
+      "decision_prompt": "Build the match week and bye week; state tier movement, individualization delivery, and what cannot be achieved.",
+      "failure_modes": [
+        "28 individual programs",
+        "One program with no lanes",
+        "Bye week as catch-up for every quality",
+        "Promising all three sport-coach outcomes",
+        "Maintenance without verification",
+        "Assuming both slots always occur"
+      ],
+      "delivery": [
+        "situation",
+        "decision (commit before feedback)",
+        "defense",
+        "discussion"
+      ],
+      "rubric": "universal_case_rubric"
+    },
+    {
+      "id": "case-4",
+      "title": "Athlete With a Testing Deficit",
+      "competencies": [
+        "C-04",
+        "C-05",
+        "C-06",
+        "C-15"
+      ],
+      "doctrine": [
+        "D3",
+        "D4",
+        "D11"
+      ],
+      "modules": [
+        "M4",
+        "M5",
+        "M12"
+      ],
+      "situation_summary": "17-year-old starter with the lowest lower-body strength score in the program across four occasions (well outside typical error), the highest approach jump and repeated-jump retention on the team, full availability, no pain, sound landing mechanics. GPI renders the score red; sport coach and parent have seen it.",
+      "decision_prompt": "Does this deficit become the primary programming target, and what do you say to the sport coach and parent?",
+      "failure_modes": [
+        "Lowest score as target by default",
+        "Causal language",
+        "Promising to fix the number for the report",
+        "Dismissing without review or trigger",
+        "Resolving it as measurement error when the data rules that out",
+        "GPI entering the model at Stage 4"
+      ],
+      "delivery": [
+        "situation",
+        "decision (commit before feedback)",
+        "defense",
+        "discussion"
+      ],
+      "rubric": "universal_case_rubric"
+    },
+    {
+      "id": "case-5",
+      "title": "Poor Readiness Day",
+      "competencies": [
+        "C-04",
+        "C-12",
+        "C-13",
+        "C-14",
+        "C-15"
+      ],
+      "doctrine": [
+        "D10",
+        "D11",
+        "D12"
+      ],
+      "modules": [
+        "M11",
+        "M12"
+      ],
+      "situation_summary": "In-season Tuesday, squad's protected strength session. One athlete's wellness composite is two points low (sleep, soreness); platform shows amber and suggests reduction. Warm-up normal, bar speed normal, RPE as expected, jump within typical error, exam the night before, no pain. Sport coach has seen the amber display.",
+      "decision_prompt": "What happens with the session, and what is the reasoning?",
+      "failure_modes": [
+        "Single-metric decision-making",
+        "Deferring to a dashboard recommendation",
+        "Ignoring the athlete's report entirely",
+        "Large change without logging",
+        "Treating a pain report as subject to the convergence rule",
+        "Failing to log the hold"
+      ],
+      "delivery": [
+        "situation",
+        "decision (commit before feedback)",
+        "defense",
+        "discussion"
+      ],
+      "rubric": "universal_case_rubric"
+    }
+  ],
+  "rubrics": {
+    "universal_case_rubric": {
+      "dimensions": [
+        "demand fidelity",
+        "interpretation discipline",
+        "priority defense",
+        "program coherence",
+        "evidence honesty"
+      ],
+      "scale": "0-3",
+      "pass": "11/15 with no dimension below 2"
+    },
+    "applied_competency_rubric": {
+      "dimensions": [
+        "completeness",
+        "reasoning quality",
+        "deliverability",
+        "evidence honesty"
+      ],
+      "scale": "0-3",
+      "pass": "2 = at standard",
+      "automatic_zero_conditions": [
+        "prohibited claim presented as rule or evidence",
+        "session order contradicting stated priority without documented reason",
+        "maintenance without verification test",
+        "single-metric automatic readiness trigger",
+        "causal language applied to a field test",
+        "published universal maintenance dose or mandatory phase length"
+      ]
+    },
+    "defense_rubric": {
+      "dimensions": [
+        "model fluency",
+        "cost articulation",
+        "evidence honesty",
+        "falsifiability",
+        "communication"
+      ],
+      "scale": "0-3",
+      "pass": "11/15, no dimension below 2, never 0 on evidence honesty"
+    }
+  },
+  "assessment_system": {
+    "levels": [
+      {
+        "level": "knowledge",
+        "weight": 0.15
+      },
+      {
+        "level": "interpretation",
+        "weight": 0.2
+      },
+      {
+        "level": "decision",
+        "weight": 0.2
+      },
+      {
+        "level": "application",
+        "weight": 0.3
+      },
+      {
+        "level": "defense",
+        "weight": 0.15
+      }
+    ],
+    "pass_standards": {
+      "knowledge": "80% per module",
+      "interpretation_decision": "80% per module",
+      "applied": "at standard or better, one revision permitted",
+      "cases": "11/15 no dimension below 2",
+      "sign_offs": "all four recorded",
+      "terminal_defense": "pass required, non-compensable"
+    },
+    "item_writing_rules": [
+      "No item answerable from a single memorized sentence outside the knowledge band.",
+      "Every scenario item commits the learner before feedback.",
+      "Distractors are real coaching errors drawn from the prohibited claims and module error lists.",
+      "No key may depend on a claim classified C, D, or E.",
+      "No key may depend on an unmapped citation tag.",
+      "Where multiple answers are defensible, the item is a decision item scored on reasoning.",
+      "Every item carries module, competency, doctrine, evidence class, level, and key source metadata."
+    ]
+  },
+  "sign_offs": [
+    {
+      "id": "PS-1",
+      "title": "Assessment & Profile Sign-Off",
+      "completed_at": "M4",
+      "function": "gates M5",
+      "artifacts": [
+        "A1",
+        "A2",
+        "A3",
+        "A4"
+      ],
+      "observed_behaviors": [
+        "Administers a movement competency screen competently and safely",
+        "Explains testing purpose in plain, non-alarming language",
+        "Records testing conditions without prompting",
+        "States which decision each battery item informs",
+        "Uses 'measured deficit' and 'probable limiting factor' correctly",
+        "Declines to interpret change inside typical error",
+        "States youth safety claims with supervision and progression conditions"
+      ],
+      "assessor_questions": [
+        "Why is this item in your battery?",
+        "What would you have done differently if this result were the opposite?",
+        "Which differences did you set aside, and why?",
+        "What are the conditions of this test, and why did you record them?"
+      ],
+      "record_fields": [
+        "coach_id",
+        "sign_off_id",
+        "assessor_id",
+        "date",
+        "environment",
+        "athlete_or_group_ref",
+        "behaviors_observed",
+        "artifacts",
+        "questions_asked",
+        "outcome",
+        "expiry_date",
+        "notes"
+      ],
+      "expiry_months": 24
+    },
+    {
+      "id": "PS-2",
+      "title": "Program Build & Session Delivery Sign-Off",
+      "completed_at": "M8",
+      "function": "gates M9",
+      "artifacts": [
+        "A5",
+        "A6",
+        "A7",
+        "A8"
+      ],
+      "observed_behaviors": [
+        "Delivers a session as written with the primary block protected",
+        "Coaches the primary quality actively rather than supervising",
+        "Teaches a selected exercise to the standard its adaptation requires",
+        "Applies the protection order when time is lost",
+        "Uses movement-category and emphasis-tier language",
+        "States the session priority and its cost on the spot"
+      ],
+      "assessor_questions": [
+        "From the order alone, what would I say your priority is?",
+        "What comes out if you lose fifteen minutes?",
+        "What adaptation is this exercise producing?",
+        "What is this athlete not getting this week?"
+      ],
+      "record_fields": [
+        "coach_id",
+        "sign_off_id",
+        "assessor_id",
+        "date",
+        "environment",
+        "athlete_or_group_ref",
+        "behaviors_observed",
+        "artifacts",
+        "questions_asked",
+        "outcome",
+        "expiry_date",
+        "notes"
+      ],
+      "expiry_months": 24
+    },
+    {
+      "id": "PS-3",
+      "title": "Group & Team Delivery Sign-Off",
+      "completed_at": "M10",
+      "function": "completion requirement",
+      "artifacts": [
+        "A10",
+        "A11 (provisional)"
+      ],
+      "observed_behaviors": [
+        "Delivers a group session at the stated ratio without loss of standard",
+        "Uses lanes and pathways for a mixed-competency group",
+        "Applies a regression without disrupting the session",
+        "Substitutes preserving adaptation, category, and tier",
+        "Applies readiness-based youth entry criteria and maintains supervision ratio",
+        "Names the channel in use for any athlete"
+      ],
+      "assessor_questions": [
+        "Which channel is open for that athlete?",
+        "What is the regression for this category and who may apply it?",
+        "What ratio does this session require to be defensible?",
+        "Why is this athlete in this lane?"
+      ],
+      "record_fields": [
+        "coach_id",
+        "sign_off_id",
+        "assessor_id",
+        "date",
+        "environment",
+        "athlete_or_group_ref",
+        "behaviors_observed",
+        "artifacts",
+        "questions_asked",
+        "outcome",
+        "expiry_date",
+        "notes"
+      ],
+      "expiry_months": 24
+    },
+    {
+      "id": "PS-4",
+      "title": "Monitoring & Defense Sign-Off",
+      "completed_at": "M12",
+      "function": "terminal",
+      "artifacts": [
+        "A9",
+        "A11",
+        "A12",
+        "delivered program (4-week minimum)"
+      ],
+      "observed_behaviors": [
+        "Makes a real in-session readiness decision and explains it using the five-component formula",
+        "Completes a response review reading the four layers in order",
+        "States 'we cannot yet tell' where honest, without hedging",
+        "Logs a hold as a decision",
+        "Communicates a program decision accurately and briefly"
+      ],
+      "assessor_questions": [
+        "Show me where your stated priority appears in the actual session order.",
+        "Name one thing you decided not to train and what it is costing you.",
+        "Which part of that is evidence, which is G3 standard, and which is your judgment?",
+        "What would make you change this program? Be specific.",
+        "What would make you say you can't tell yet?"
+      ],
+      "record_fields": [
+        "coach_id",
+        "sign_off_id",
+        "assessor_id",
+        "date",
+        "environment",
+        "athlete_or_group_ref",
+        "behaviors_observed",
+        "artifacts",
+        "questions_asked",
+        "outcome",
+        "expiry_date",
+        "notes"
+      ],
+      "expiry_months": 24
+    }
+  ],
+  "references": [
+    {
+      "id": "EP-01",
+      "citation": "Halson SL. Monitoring Training Load to Understand Fatigue in Athletes. Sports Medicine, 2014.",
+      "type": "review",
+      "citation_tag": "cite:4",
+      "supports": "Monitoring interpretation; typical error; caution against arbitrary thresholds",
+      "tier": "essential",
+      "status": "verified"
+    },
+    {
+      "id": "EP-02",
+      "citation": "Helms ER et al. Methods for Regulating and Monitoring Resistance Training. Sports Medicine, 2020.",
+      "type": "review",
+      "citation_tag": "cite:20",
+      "supports": "Autoregulation; monitoring inputs; individualization logic",
+      "tier": "essential",
+      "status": "verified"
+    },
+    {
+      "id": "EP-03",
+      "citation": "Simao R et al. Exercise Order in Resistance Training. Sports Medicine, 2012.",
+      "type": "review",
+      "citation_tag": "cite:19",
+      "supports": "Exercise-order effects; priority-based ordering",
+      "tier": "essential",
+      "status": "verified"
+    },
+    {
+      "id": "EP-04",
+      "citation": "Seipp D et al. Concurrent Training in Team Sports: A Systematic Review. IJSSC, 2023.",
+      "type": "systematic review",
+      "citation_tag": "cite:35",
+      "supports": "Concurrent development; conditional interference",
+      "tier": "essential",
+      "status": "verified"
+    },
+    {
+      "id": "EP-05",
+      "citation": "Effects of Concurrent Strength and HIIT-Based Endurance Training on Physical Fitness in Trained Team Sports Players. 2022.",
+      "type": "SR/meta-analysis",
+      "citation_tag": "cite:5",
+      "supports": "Concurrent-training interference",
+      "tier": "essential",
+      "status": "verified"
+    },
+    {
+      "id": "EP-06",
+      "citation": "Currier BS et al. ACSM Position Stand: Resistance Training for Muscle Strength and Hypertrophy in Healthy Adults. 2026.",
+      "type": "position stand",
+      "citation_tag": "cite:52",
+      "supports": "Prescription variables; limits of generalization",
+      "tier": "essential",
+      "status": "verified"
+    },
+    {
+      "id": "EP-07",
+      "citation": "Makaruk H et al. Effects of Resistance Training on Sport-Specific Performance of Elite Athletes. 2024.",
+      "type": "SR/meta-analysis",
+      "citation_tag": "cite:34",
+      "supports": "RT and sport-performance transfer",
+      "tier": "essential",
+      "status": "verified"
+    },
+    {
+      "id": "EP-08",
+      "citation": "Faigenbaum AD et al. Youth Resistance Training: Updated Position Statement. NSCA/JSCR, 2009.",
+      "type": "position statement",
+      "citation_tag": "cite:3",
+      "supports": "Youth RT safety and programming",
+      "tier": "essential",
+      "status": "verified"
+    },
+    {
+      "id": "EP-09",
+      "citation": "Lloyd RS et al. Position Statement on Youth Resistance Training. UKSCA, 2014.",
+      "type": "position statement",
+      "citation_tag": "cite:38",
+      "supports": "Youth readiness and progression",
+      "tier": "essential",
+      "status": "verified"
+    },
+    {
+      "id": "EP-10",
+      "citation": "Faigenbaum AD et al. Resistance Training Among Young Athletes: Safety, Efficacy and Injury Prevention Effects. 2009.",
+      "type": "review",
+      "citation_tag": "cite:53",
+      "supports": "Youth RT application; supervision",
+      "tier": "essential",
+      "status": "verified"
+    },
+    {
+      "id": "EP-11",
+      "citation": "McQuilliam SJ et al. Free-Weight Resistance Training in Youth Athletes. 2020.",
+      "type": "review",
+      "citation_tag": "cite:55",
+      "supports": "Youth RT consensus and application",
+      "tier": "essential",
+      "status": "verified"
+    },
+    {
+      "id": "EP-12",
+      "citation": "Granacher U et al. Effects of Resistance Training in Youth Athletes on Muscular Fitness and Athletic Performance. 2016.",
+      "type": "scoping review",
+      "citation_tag": "cite:57",
+      "supports": "Youth performance outcomes",
+      "tier": "essential",
+      "status": "verified"
+    },
+    {
+      "id": "EP-13",
+      "citation": "Rico-Gonzalez M et al. Players' Performance During Worst-Case Scenarios in Professional Soccer Matches. 2021.",
+      "type": "systematic review",
+      "citation_tag": "cite:18",
+      "supports": "Peak/worst-case demands",
+      "tier": "essential",
+      "status": "verified"
+    },
+    {
+      "id": "EP-14",
+      "citation": "Fereday K et al. Rolling Averages Versus Discrete Time Epochs for Quantifying Worst-Case Scenario Running Demands. 2020.",
+      "type": "original research",
+      "citation_tag": "cite:22",
+      "supports": "Rolling-average vs fixed-epoch",
+      "tier": "essential",
+      "status": "verified"
+    },
+    {
+      "id": "EP-15",
+      "citation": "Greig L et al. Autoregulation in Resistance Training: Addressing the Inconsistencies. Sports Medicine, 2020.",
+      "type": "review",
+      "citation_tag": "cite:54",
+      "supports": "Definitions and conceptualization of autoregulation",
+      "tier": "essential",
+      "status": "verified"
+    },
+    {
+      "id": "EP-16",
+      "citation": "Larsen S et al. Effects of Subjective and Objective Autoregulation Methods for Enhancing Maximal Strength. 2021.",
+      "type": "systematic review",
+      "citation_tag": "cite:61",
+      "supports": "Autoregulation methods and evidence quality",
+      "tier": "essential",
+      "status": "verified"
+    },
+    {
+      "id": "EP-17",
+      "citation": "Hickmott LM et al. The Effect of Load and Volume Autoregulation on Muscular Strength and Hypertrophy. 2022.",
+      "type": "SR/meta-analysis",
+      "citation_tag": "cite:58",
+      "supports": "Autoregulated vs standardized loading",
+      "tier": "essential",
+      "status": "verified"
+    },
+    {
+      "id": "EP-18",
+      "citation": "Alba-Jimenez C et al. Trends Assessing Neuromuscular Fatigue in Team Sports. 2022.",
+      "type": "narrative review",
+      "citation_tag": "cite:62",
+      "supports": "Fatigue-monitoring tools and caution",
+      "tier": "essential",
+      "status": "verified"
+    },
+    {
+      "id": "EP-19",
+      "citation": "Myers AM et al. Resistance Training for Children and Adolescents. 2017.",
+      "type": "review",
+      "citation_tag": "cite:59",
+      "supports": "Youth cautions; developmental context",
+      "tier": "supporting",
+      "status": "verified"
+    },
+    {
+      "id": "EP-20",
+      "citation": "Weldon A et al. Practices of Strength and Conditioning Coaches in Professional Sports. 2021.",
+      "type": "systematic review",
+      "citation_tag": "cite:51",
+      "supports": "Real-world practice; in-season adjustment",
+      "tier": "supporting",
+      "status": "verified"
+    },
+    {
+      "id": "EP-21",
+      "citation": "Effects, Mechanisms, and Influencing Factors of Concurrent Training Sequence on Athletic Performance. 2026.",
+      "type": "semi-systematic review",
+      "citation_tag": "cite:68",
+      "supports": "Sequencing in concurrent training",
+      "tier": "supporting",
+      "status": "verified"
+    },
+    {
+      "id": "EP-22",
+      "citation": "Optimizing Concurrent Training Programs: Factors Contributing to the Interference Effect. 2024.",
+      "type": "review",
+      "citation_tag": "cite:63",
+      "supports": "Spacing and sequencing considerations",
+      "tier": "supporting",
+      "status": "verified"
+    },
+    {
+      "id": "EP-23",
+      "citation": "Strength and Conditioning Programs in Youth Athletes: A Systematic Review. 2023.",
+      "type": "systematic review",
+      "citation_tag": "cite:67",
+      "supports": "Frequency and mixed-method youth effects",
+      "tier": "supporting",
+      "status": "verified"
+    },
+    {
+      "id": "EP-24",
+      "citation": "What You Need to Know When Using Applied Statistical Approaches to Assess Meaningful Change. 2026.",
+      "type": "methods",
+      "citation_tag": "cite:36",
+      "supports": "Caution with change-threshold conventions",
+      "tier": "supporting",
+      "status": "verified"
+    },
+    {
+      "id": "EP-25",
+      "citation": "Heart Rate Monitoring in Team Sports - A Conceptual Framework. 2018.",
+      "type": "framework",
+      "citation_tag": "cite:14",
+      "supports": "Contextualizing reliability and change interpretation",
+      "tier": "supporting",
+      "status": "verified"
+    },
+    {
+      "id": "EP-26",
+      "citation": "G3 Performance CEU Research Acquisition - Master Prompt",
+      "type": "internal",
+      "citation_tag": "cite:48",
+      "supports": "Evidence standards; source hierarchy; evidence/doctrine separation",
+      "tier": "internal",
+      "status": "internal"
+    },
+    {
+      "id": "EP-27",
+      "citation": "G3 Performance - Doctrine & Competency Framework",
+      "type": "internal",
+      "citation_tag": "cite:50",
+      "supports": "Classification language; research is not doctrine",
+      "tier": "internal",
+      "status": "internal"
+    },
+    {
+      "id": "EP-28",
+      "citation": "Matveyev, Verkhoshansky, Bondarchuk, Bompa, Issurin; conjugate approaches; phase potentiation",
+      "type": "historical/framework",
+      "citation_tag": null,
+      "supports": "Influential frameworks only; not verified evidence anchors",
+      "tier": "historical",
+      "status": "requires archival verification before specific claims"
+    },
+    {
+      "id": "EP-29",
+      "citation": "Systematic Review and Network Meta-Analysis of Auto-Regulated Resistance-Training Modalities. 2026.",
+      "type": "network meta-analysis",
+      "citation_tag": "cite:56",
+      "supports": "Emerging comparative autoregulation evidence",
+      "tier": "emerging",
+      "status": "excluded from answer keys"
+    },
+    {
+      "id": "EP-30",
+      "citation": "Autoregulated Resistance Training for Maximal Strength: SR and Network Meta-Analysis. 2025.",
+      "type": "network meta-analysis",
+      "citation_tag": "cite:60",
+      "supports": "Emerging comparative autoregulation evidence",
+      "tier": "emerging",
+      "status": "excluded from answer keys"
+    },
+    {
+      "id": "EP-31",
+      "citation": "Needs Analysis - Science for Sport",
+      "type": "practitioner summary",
+      "citation_tag": "cite:64",
+      "supports": "Field framing only",
+      "tier": "context",
+      "status": "may not anchor causal claims"
+    },
+    {
+      "id": "EP-32",
+      "citation": "Needs Analysis in Sports Performance - Ben Jane Fitness",
+      "type": "practitioner summary",
+      "citation_tag": "cite:45",
+      "supports": "Field framing only",
+      "tier": "context",
+      "status": "may not anchor causal claims"
+    },
+    {
+      "id": "EP-33",
+      "citation": "CSCS Program Design for Resistance Training - Needs Analysis and Exercise Selection",
+      "type": "educational summary",
+      "citation_tag": "cite:65",
+      "supports": "Teaching conventions only",
+      "tier": "context",
+      "status": "may not anchor causal claims"
+    }
+  ],
+  "citation_integrity_flags": {
+    "unmapped_tags": [
+      "cite:21",
+      "cite:27",
+      "cite:28",
+      "cite:43",
+      "cite:44",
+      "cite:70",
+      "cite:71"
+    ],
+    "handling": "Claims referencing unmapped tags are carried at reduced confidence and always rest on mapped support. No assessment key may depend on them. Resolve or rewrite before external publication.",
+    "production_note": {
+      "blocks_internal_production": false,
+      "statement": "Unresolved citation tags do not block internal G3 or NovaKore production. No assessment key may depend solely on an unresolved citation. Before external publication, third-party CEU recognition, accreditation submission, or public release, every unresolved tag must be mapped to a verified itemized source or its dependent language rewritten onto mapped support. Missing sources are never to be invented or inferred.",
+      "gates_external": [
+        "external publication",
+        "third-party CEU recognition",
+        "accreditation submission",
+        "public release"
+      ],
+      "enforced_by": [
+        "spec section 20.4 production review checklist",
+        "spec section 10.4 item-writing standards"
+      ]
+    },
+    "manual_verification_required": [
+      "change-threshold conventions for G3 testing contexts",
+      "precise maintenance doses by quality and phase",
+      "broad sex-specific programming claims",
+      "comparative superiority among autoregulation methods",
+      "detailed historical periodization claims"
+    ],
+    "skepticism_flags": [
+      "vendor monitoring claims are not evidence",
+      "practitioner summaries inform terminology, not causation",
+      "confident readiness dashboards require independent validation, including G3's own GPI"
+    ]
+  },
+  "data_entities": {
+    "sport_demand_profile": [
+      "sport",
+      "position_group",
+      "level",
+      "demand_categories[12]",
+      "evidence_label",
+      "ranked_top_5",
+      "review_date"
+    ],
+    "athlete_profile": [
+      "training_age",
+      "availability_injury",
+      "schedule",
+      "movement_competency",
+      "performance_measures",
+      "individual_context",
+      "test_records[]",
+      "gpi_ref"
+    ],
+    "test_record": [
+      "measure",
+      "value",
+      "date",
+      "conditions{equipment,surface,footwear,warmup,time_of_day,week_position,administrator}",
+      "typical_error_ref"
+    ],
+    "gap_statement": [
+      "real_and_relevant[]",
+      "real_low_relevance[]",
+      "within_noise[]",
+      "reasoning"
+    ],
+    "priority_sheet": [
+      "quality_tiers[]",
+      "opportunity_cost_statement",
+      "primary_defense"
+    ],
+    "program": [
+      "phases[]"
+    ],
+    "phase": [
+      "objective",
+      "progression_plan",
+      "maintenance_prescriptions[]",
+      "verification_tests[]",
+      "review_points[]",
+      "weeks[]"
+    ],
+    "week": [
+      "slots_available",
+      "slots_reliable",
+      "qualities[]{tier}",
+      "sequencing_notes",
+      "spacing_notes{label:convention|evidence}",
+      "sessions[]"
+    ],
+    "session": [
+      "architecture_blocks[]",
+      "protection_order",
+      "exercises[]"
+    ],
+    "exercise": [
+      "name",
+      "movement_category",
+      "intended_adaptation",
+      "emphasis_tier",
+      "load",
+      "volume",
+      "individualization_channel",
+      "regression",
+      "progression"
+    ],
+    "response_review": [
+      "process[]",
+      "training[]",
+      "performance[]",
+      "outcome[]",
+      "verdict"
+    ],
+    "adjustment_log_entry": [
+      "date",
+      "action",
+      "trigger",
+      "reasoning",
+      "expected_effect",
+      "review_date"
+    ]
+  },
+  "data_layer_constraints": [
+    "A session cannot publish unless every exercise carries intended_adaptation and emphasis_tier. (AS-12)",
+    "A phase cannot publish if any maintenance-tier quality lacks a scheduled verification test. (AS-19, AS-20)",
+    "A priority_sheet cannot publish without a complete opportunity_cost_statement. (AS-10)",
+    "A test_record without recorded conditions is flagged and treated as a new baseline. (AS-06)",
+    "No entity may expose a computed priority, composite readiness recommendation, or automated training instruction. (AS-11, AS-26)",
+    "gap_statement requires all three arrays present; empty arrays must be explicitly confirmed.",
+    "Free text containing 'confirmed limiting factor' is rejected at save. (AS-08)"
+  ],
+  "tagging_schema": [
+    "course_id",
+    "module_id",
+    "doctrine_ids",
+    "applied_standard_ids",
+    "competency_ids",
+    "evidence_class",
+    "reference_ids",
+    "environment_tags",
+    "version"
+  ],
+  "environment_tags": [
+    "youth",
+    "scholastic",
+    "collegiate",
+    "small_group",
+    "individual",
+    "volleyball"
+  ],
+  "sequencing": {
+    "order": [
+      "M1",
+      "M2",
+      "M3",
+      "M4",
+      "PS-1",
+      "M5",
+      "M6",
+      "M7",
+      "M8",
+      "PS-2",
+      "M9",
+      "M10",
+      "PS-3",
+      "M11",
+      "M12",
+      "PS-4",
+      "T-01"
+    ],
+    "hard_gates": [
+      "PS-1 gates M5",
+      "PS-2 gates M9"
+    ],
+    "rules": [
+      "Module assessments must be at standard before the next module unlocks.",
+      "The four-week delivery window may run in parallel with M9-M11.",
+      "PS-4 cannot be scheduled until the delivery window is complete.",
+      "Completed modules remain accessible."
+    ]
+  },
+  "governance": {
+    "approver": "Director of Training",
+    "review_cycle_months": 24,
+    "review_triggers": [
+      "Class A or B claim contradicted by new evidence",
+      "Class C claim strengthens enough to change practice",
+      "citation integrity flag resolved"
+    ],
+    "version_rules": [
+      "Course version stamped on every certification record",
+      "Doctrine changes require minor version increment and delta notice",
+      "Evidence class change on A/B claims triggers content review of all tagged objects",
+      "Prohibited-claims register changes are major and require re-acknowledgment"
+    ],
+    "production_checklist": [
+      "All twelve content objects present and in order",
+      "Every claim carries an evidence class",
+      "Three-column discipline rendered visually",
+      "No prohibited claim present",
+      "No key depends on a Class C, D, or E claim",
+      "No key depends on an unmapped citation tag",
+      "Glossary terms linked on first use",
+      "Every scenario commits the learner before feedback",
+      "Every applied assessment states criteria and rubric",
+      "All references resolve to EP IDs",
+      "Voice conforms to G3 Performance Brand Standards v1.0",
+      "Doctrine, standard, and judgment distinguishable without prompting"
+    ]
+  },
+  "reusable_components": [
+    "evidence_classification_system",
+    "decision_model_and_artifacts",
+    "glossary",
+    "applied_standards_register",
+    "prohibited_claims_register",
+    "defense_rubric",
+    "sign_off_record_model"
+  ],
+  "foundations": {
+    "series": "G3 Performance Foundations",
+    "series_version": "v1.0",
+    "gate": "G3 Performance Foundations — 101–105 Curriculum Review Gate v1.0",
+    "gate_status": "CONDITIONAL PASS — corrections applied; see the Foundations manifest for the post-correction gate status",
+    "sequence": [
+      "G3-101",
+      "G3-102",
+      "G3-103",
+      "G3-104",
+      "G3-105"
+    ],
+    "position": 2,
+    "series_prerequisite": "G3-101",
+    "series_completion_rule": "A learner completes G3 Performance Foundations only when G3 101 through G3 105 are complete in sequence, all required module assessments are at standard, all 20 practical sign-offs are recorded, all 5 terminal defenses are passed, required practical windows are satisfied, and no required remediation remains open.",
+    "course_role": "Programming Decision System",
+    "authority_rule": {
+      "this_course_is_authoritative_on": "the G3 programming decision model: DEMAND → PROFILE → GAP → PRIORITY → PRESCRIPTION → RESPONSE → ADJUST, including programming priority and change governance",
+      "hierarchy": [
+        {
+          "course": "G3-101",
+          "authoritative_on": "the G3 reasoning system: evidence classes, certainty language, Evidence / G3 Applied Standard / Coach Judgment separation, population-transfer disclosure, testing and monitoring interpretation, claim-correction symmetry, scope of practice, and evidence restraint"
+        },
+        {
+          "course": "G3-102",
+          "authoritative_on": "the G3 programming decision model: DEMAND → PROFILE → GAP → PRIORITY → PRESCRIPTION → RESPONSE → ADJUST, including programming priority and change governance"
+        },
+        {
+          "course": "G3-103",
+          "authoritative_on": "speed, deceleration, COD, and agility — where its standard is narrower than the upstream rule"
+        },
+        {
+          "course": "G3-104",
+          "authoritative_on": "strength development — where its standard is narrower than the upstream rule"
+        },
+        {
+          "course": "G3-105",
+          "authoritative_on": "power development — where its standard is narrower than the upstream rule"
+        }
+      ],
+      "binding_rules": [
+        "No downstream course may loosen an upstream evidence, scope, measurement, or programming-integrity standard.",
+        "Where domain courses overlap, the more specific domain governs only inside that domain; otherwise the upstream standard controls."
+      ],
+      "specification_reference": "§0.6"
+    },
+    "series_attribution": {
+      "three_layer_discipline": "G3 101",
+      "population_transfer_standard": "AS-101-16",
+      "population_transfer_local_restatements": {
+        "G3-103": "AS-103-12",
+        "G3-104": "carries the G3 103 restatement",
+        "G3-105": "carries the G3 103 restatement"
+      },
+      "programming_decision_model": "G3 102",
+      "evidence_taxonomy": "G3 101"
+    },
+    "series_evidence_taxonomy": [
+      {
+        "class": "A",
+        "name": "Established Evidence"
+      },
+      {
+        "class": "B",
+        "name": "Supported Practice"
+      },
+      {
+        "class": "C",
+        "name": "Emerging / Conditional Evidence"
+      },
+      {
+        "class": "D",
+        "name": "Applied Coaching Inference"
+      },
+      {
+        "class": "E",
+        "name": "Historical / Practitioner Framework"
+      },
+      {
+        "class": "F",
+        "name": "Unsupported / Overstated Claim"
+      },
+      {
+        "class": "U",
+        "name": "Unresolved / Unknown"
+      }
+    ],
+    "classes_used_by_this_course": [
+      "A",
+      "B",
+      "C",
+      "D",
+      "E"
+    ],
+    "classes_note": "F and U are recognized but not used: overstated claims are held in the Prohibited Claims Register (§15) and unresolved questions in the Conditional & Professional-Judgment Register (§16), neither of which has been reclassified.",
+    "taxonomy_rule": "U is the machine-readable series class for a question about which no defensible evidence-class assignment can be made. 'Unknown' remains the human-facing certainty label. Every course recognizes all seven classes; no course must use all of them; no claim is reclassified to populate a class.",
+    "parent_artifacts": [
+      "G3-Performance-Foundations-Curriculum-v1.0-FINAL.md",
+      "G3-Performance-Foundations-Manifest-v1.0-FINAL.json"
+    ],
+    "ingestion_rule": "The Foundations manifest is ingested into NovaKore first. Course builds are not ingested independently.",
+    "harmonization": {
+      "pass": "Foundations Harmonization Pass v1.0",
+      "scope": "mechanical",
+      "changed": "governance text, metadata, inheritance references, and JSON authority fields",
+      "unchanged": [
+        "doctrine",
+        "evidence classes",
+        "module architecture",
+        "course outcomes",
+        "practical sign-offs",
+        "terminal defense",
+        "assessment architecture",
+        "the G3 programming decision model",
+        "reference mapping",
+        "numerical positions"
+      ]
+    }
+  }
+}

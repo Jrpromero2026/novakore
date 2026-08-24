@@ -1,0 +1,3927 @@
+{
+  "schema_version": "1.0",
+  "generated_for": "NovaKore course build",
+  "source_specification": "G3-103-Course-Specification-v1.0-FINAL.md",
+  "build_file_name": "G3-103-NovaKore-Build-v1.0-FINAL.json",
+  "production_precedent": [
+    "G3-102-Course-Specification-v1.0-FINAL.md",
+    "G3-102-NovaKore-Build-v1.0-FINAL.json"
+  ],
+  "review_gates": {
+    "evidence_review_gate": {
+      "applies_to": "G3 103 Evidence Pack FINAL",
+      "status": "PASS WITH EVIDENCE-INTEGRITY CONDITIONS",
+      "conditions_count": 10
+    },
+    "intellectual_development": {
+      "applies_to": "G3 103 Production Handoff v1.0",
+      "status": "COMPLETE"
+    },
+    "production_qa": {
+      "applies_to": "this specification and build file",
+      "status": "PASSED",
+      "checks": 79,
+      "unresolved": 0
+    }
+  },
+  "production_status": "APPROVED FOR NOVAKORE PRODUCTION",
+  "course": {
+    "id": "G3-103",
+    "code": "G3-103",
+    "title": "Speed, Agility & Change of Direction",
+    "division": "G3 Performance",
+    "parent_org": "G3 Sports & Fitness",
+    "version": "1.0",
+    "status": "APPROVED FOR NOVAKORE PRODUCTION",
+    "authority": "G3 Performance",
+    "date": "2026-08",
+    "owner": "JR Romero, CSCS - Director of Training",
+    "evidence_pack": "G3-103 Speed, Agility and Change of Direction Evidence Pack FINAL",
+    "purpose": "Teach coaches to understand, distinguish, develop, assess, and coach the speed and multidirectional movement qualities that appear in athletic performance - without collapsing them into 'speed and agility'.",
+    "governing_sequence": [
+      "LINEAR SPEED",
+      "DECELERATION",
+      "CHANGE OF DIRECTION",
+      "AGILITY"
+    ],
+    "governing_distinction": "ACCELERATION != MAXIMAL VELOCITY",
+    "sequence_note": "Conceptual organizer for classification. NOT a mandatory training progression.",
+    "prerequisite": "G3 102 complete including T-01; active G3 Performance coaching status",
+    "audience": [
+      "G3 Performance coaches",
+      "G3 Youth S&C staff",
+      "G3 Volleyball Development staff",
+      "scholastic and collegiate contract coaches"
+    ],
+    "delivery": "NovaKore self-paced modules with four observed practical sign-offs (PS-1 to PS-4) plus the final oral defense (T-01).",
+    "practical_sign_offs": [
+      "PS-1",
+      "PS-2",
+      "PS-3",
+      "PS-4"
+    ],
+    "final_defense": "T-01",
+    "module_count": 12,
+    "directed_study_minutes": 1170,
+    "directed_study_hours": 19.5,
+    "practical_window_weeks_min": 4,
+    "seven_obligations": [
+      "Distinguish the quality",
+      "Identify the demand",
+      "Select the method",
+      "Coach the task",
+      "Measure the right construct",
+      "Interpret the response",
+      "Defend the decision"
+    ],
+    "five_task_identification_questions": [
+      "What velocity is involved, and where does it come from?",
+      "Is velocity being built, held, or reduced?",
+      "Is direction changing, and is the change known in advance?",
+      "What information must the athlete perceive to solve the task?",
+      "What is the intended adaptation, and does the task's demand match it?"
+    ],
+    "outcomes": [
+      "CO-1 Define and distinguish acceleration, maximal velocity, deceleration, COD, and agility",
+      "CO-2 Identify the primary performance demand of a drill, test, or training task",
+      "CO-3 Explain acceleration and maximal-velocity mechanics without converting correlations into universal prescriptions",
+      "CO-4 Design basic acceleration and maximal-velocity exposures",
+      "CO-5 Select resisted sprint methods by intended adaptation without a universal load rule",
+      "CO-6 Integrate strength and plyometric methods as supporting contributors",
+      "CO-7 Coach and progress deceleration demands",
+      "CO-8 Distinguish COD training from agility training",
+      "CO-9 Manipulate approach velocity, cut angle, braking, reacceleration, and information demand",
+      "CO-10 Design reactive agility tasks with meaningful perception-action requirements",
+      "CO-11 Select tests matching the construct evaluated",
+      "CO-12 Interpret results within reliability and measurement limits",
+      "CO-13 Design developmentally appropriate youth speed and multidirectional work",
+      "CO-14 Organize work to protect intended output quality",
+      "CO-15 Identify unsupported coaching claims",
+      "CO-16 Defend a speed-development prescription using evidence, G3 standards, and athlete context"
+    ],
+    "terminal_defense": "T-01"
+  },
+  "foundations_continuity": {
+    "inherited_rules": [
+      "training exists to create relevant adaptation, not merely fatigue",
+      "specificity is based on correspondence to target demands, not visual resemblance",
+      "progression is purposeful manipulation of demand relative to capacity",
+      "individual response matters",
+      "multiple qualities may be trained concurrently",
+      "evidence, G3 Applied Standard, and Coach Judgment must remain distinguishable",
+      "testing should inform decisions without pretending to reveal more than the measurement supports"
+    ],
+    "decision_model": [
+      "DEMAND",
+      "PROFILE",
+      "GAP",
+      "PRIORITY",
+      "PRESCRIPTION",
+      "RESPONSE",
+      "ADJUST"
+    ],
+    "decision_model_source": "G3 102 - inherited unchanged; G3 103 supplies domain content per stage",
+    "conflict_rule": "Where G3 103 and G3 102 appear to disagree, G3 102 is authoritative."
+  },
+  "evidence_classes": [
+    {
+      "class": "A",
+      "name": "Established Evidence",
+      "teaching_rule": "May be taught as established, bounded by population and task."
+    },
+    {
+      "class": "B",
+      "name": "Supported Practice",
+      "teaching_rule": "Taught as well-supported practice with the moderator stated."
+    },
+    {
+      "class": "C",
+      "name": "Emerging / Conditional Evidence",
+      "teaching_rule": "Taught as conditional; never the sole basis for a required behavior."
+    },
+    {
+      "class": "D",
+      "name": "Applied Coaching Inference",
+      "teaching_rule": "Taught explicitly as inference, labeled aloud."
+    },
+    {
+      "class": "E",
+      "name": "Historical / Practitioner Framework",
+      "teaching_rule": "Taught as framework and history; never as proof."
+    },
+    {
+      "class": "F",
+      "name": "Unsupported / Overstated Claim",
+      "teaching_rule": "NEVER taught as true. Used only to name and correct the error."
+    }
+  ],
+  "standing_labels": [
+    {
+      "label": "G3 Doctrine",
+      "binding": true
+    },
+    {
+      "label": "G3 Applied Standard",
+      "binding": true,
+      "note": "organizational, not scientific"
+    },
+    {
+      "label": "Coach Judgment",
+      "binding": false,
+      "note": "reasoning must be documented"
+    }
+  ],
+  "description_to_prescription_rule": "A statement of the form 'faster athletes display X' may never be rendered as 'coach X' without intervention evidence in a comparable population. Where G3 coaches X anyway, it is a labeled Applied Standard or Coach Judgment with the descriptive basis stated.",
+  "doctrine": [
+    {
+      "id": "D103-1",
+      "title": "Speed Is Phase-Specific",
+      "statement": "Acceleration and maximal velocity are related but distinct sprint qualities. Coaches identify which speed demand is being trained or assessed rather than treating sprint performance as one undifferentiated quality.",
+      "evidence_class": "A",
+      "teaching_boundary": "The distinction is established; exact phase boundaries are not. G3 publishes no universal distance cut-point.",
+      "modules": [
+        "M1",
+        "M2",
+        "M3"
+      ],
+      "anchor_refs": [
+        "EP103-01",
+        "EP103-13",
+        "EP103-12"
+      ],
+      "citation_tags": [
+        "cite:96",
+        "cite:101",
+        "cite:104"
+      ],
+      "standing": "G3 Doctrine"
+    },
+    {
+      "id": "D103-2",
+      "title": "Exposure Is Irreplaceable",
+      "statement": "General strength, power, and plyometric training can support sprint development, but they do not fully replace sprint-specific exposure when the desired adaptation is sprint performance.",
+      "evidence_class": "B",
+      "teaching_boundary": "Not a claim that the weight room is unimportant, and not a dose statement. Sets no minimum sprint volume (CJ-01).",
+      "modules": [
+        "M5",
+        "M6"
+      ],
+      "anchor_refs": [
+        "EP103-07",
+        "EP103-08",
+        "EP103-09",
+        "EP103-01"
+      ],
+      "citation_tags": [
+        "cite:87",
+        "cite:89",
+        "cite:91",
+        "cite:96"
+      ],
+      "standing": "G3 Doctrine"
+    },
+    {
+      "id": "D103-3",
+      "title": "Mechanics Inform; They Do Not Dictate",
+      "statement": "Biomechanics can describe characteristics associated with better sprint performance. A descriptive characteristic does not automatically become a causal coaching target. G3 does not impose one universal sprint-mechanics model on every athlete.",
+      "evidence_class": "B",
+      "teaching_boundary": "Descriptive support is A-class; technique-intervention evidence is limited by comparison; universalizing an elite track model is F. Technique coaching is not forbidden - gating exposure on it is.",
+      "modules": [
+        "M4"
+      ],
+      "anchor_refs": [
+        "EP103-01",
+        "EP103-11",
+        "EP103-12"
+      ],
+      "citation_tags": [
+        "cite:96",
+        "cite:104",
+        "cite:105"
+      ],
+      "standing": "G3 Doctrine"
+    },
+    {
+      "id": "D103-4",
+      "title": "Deceleration Is a Performance Quality",
+      "statement": "Deceleration is not merely the first half of a COD drill. Braking capacity, momentum control, approach velocity, posture, and eccentric demands justify treating deceleration as a distinct training and assessment consideration.",
+      "evidence_class": "A",
+      "teaching_boundary": "Distinctness is A; diagnostics and the qualities that best develop it are C. No progression ladder is evidence-derived; AS-103-05 is an applied standard.",
+      "modules": [
+        "M7"
+      ],
+      "anchor_refs": [
+        "EP103-14",
+        "EP103-15",
+        "EP103-16"
+      ],
+      "citation_tags": [
+        "cite:98",
+        "cite:108",
+        "cite:100"
+      ],
+      "standing": "G3 Doctrine"
+    },
+    {
+      "id": "D103-5",
+      "title": "COD Is Not Agility",
+      "statement": "Pre-planned COD and agility are different constructs. COD involves a known movement solution. Agility requires perception, decision, and response to external information.",
+      "evidence_class": "A",
+      "teaching_boundary": "Distinct does not mean unrelated. The doctrine forbids treating them as the same, not as connected.",
+      "modules": [
+        "M8",
+        "M9"
+      ],
+      "anchor_refs": [
+        "EP103-04",
+        "EP103-19",
+        "EP103-21",
+        "EP103-22"
+      ],
+      "citation_tags": [
+        "cite:85",
+        "cite:90",
+        "cite:107",
+        "cite:110"
+      ],
+      "standing": "G3 Doctrine"
+    },
+    {
+      "id": "D103-6",
+      "title": "Closed Drills Do Not Automatically Train Agility",
+      "statement": "Cone patterns, ladders, and pre-planned movement drills may train coordination, rhythm, movement skill, or COD. They are not labeled true agility development unless meaningful external information and response demands are present.",
+      "evidence_class": "B",
+      "teaching_boundary": "Closed drills are not condemned. The error is the label, not the drill.",
+      "modules": [
+        "M9"
+      ],
+      "anchor_refs": [
+        "EP103-04",
+        "EP103-19",
+        "EP103-21"
+      ],
+      "citation_tags": [
+        "cite:85",
+        "cite:90",
+        "cite:107"
+      ],
+      "standing": "G3 Doctrine"
+    },
+    {
+      "id": "D103-7",
+      "title": "Transfer Is Demand-Based, Not Appearance-Based",
+      "statement": "A drill does not transfer because it looks athletic or resembles sport. Transfer claims are tied to relevant force-time, velocity, coordination, braking, movement, or perception-action demands.",
+      "evidence_class": "B",
+      "teaching_boundary": "Not a rejection of specificity - a rejection of resemblance as evidence of it. Inherited from G3 102 Doctrine 5.",
+      "modules": [
+        "M6",
+        "M9"
+      ],
+      "anchor_refs": [
+        "EP103-23",
+        "EP103-01"
+      ],
+      "citation_tags": [
+        "cite:75",
+        "cite:96"
+      ],
+      "standing": "G3 Doctrine"
+    },
+    {
+      "id": "D103-8",
+      "title": "Speed Quality Requires Quality Exposure",
+      "statement": "High-speed and high-intensity multidirectional work is generally organized to preserve meaningful output and technical quality. Fatigue is not evidence that speed training became more sport-specific.",
+      "evidence_class": "B",
+      "teaching_boundary": "No rest ratio, repetition count, or velocity-decrement threshold is established (CJ-03, CJ-07). Training under fatigue is not forbidden; claiming the fatigue made it specific is.",
+      "modules": [
+        "M5",
+        "M11"
+      ],
+      "anchor_refs": [
+        "EP103-01",
+        "EP103-14"
+      ],
+      "citation_tags": [
+        "cite:96",
+        "cite:98"
+      ],
+      "standing": "G3 Doctrine"
+    },
+    {
+      "id": "D103-9",
+      "title": "Load Serves the Intended Sprint Adaptation",
+      "statement": "Resisted sprinting is a supported training tool, especially for acceleration, but G3 does not adopt one universal sled load or percentage for every athlete and outcome.",
+      "evidence_class": "A",
+      "teaching_boundary": "A that RST improves sprint performance; C for loading strategy. No percentage, decrement number, or load table appears anywhere in G3 103. Both absolutist claims rejected (CA-06, CA-07).",
+      "modules": [
+        "M6"
+      ],
+      "anchor_refs": [
+        "EP103-05",
+        "EP103-06",
+        "EP103-27"
+      ],
+      "citation_tags": [
+        "cite:81",
+        "cite:84",
+        "cite:92"
+      ],
+      "standing": "G3 Doctrine"
+    },
+    {
+      "id": "D103-10",
+      "title": "Testing Measures Tasks, Not Labels",
+      "statement": "A sprint split, COD test, or reactive test measures performance under its specific constraints. Coaches do not infer maximal velocity, agility, or isolated physical qualities from a test that does not directly establish them.",
+      "evidence_class": "A",
+      "teaching_boundary": "A labeling and inference rule, not a rejection of field testing. No universal smallest-worthwhile-change threshold is created.",
+      "modules": [
+        "M10"
+      ],
+      "anchor_refs": [
+        "EP103-02",
+        "EP103-18",
+        "EP103-19",
+        "EP103-20",
+        "EP103-21"
+      ],
+      "citation_tags": [
+        "cite:97",
+        "cite:79",
+        "cite:90",
+        "cite:102",
+        "cite:107"
+      ],
+      "standing": "G3 Doctrine"
+    },
+    {
+      "id": "D103-11",
+      "title": "Youth Speed Development Is Readiness- and Development-Aware",
+      "statement": "Youth athletes can improve sprint, COD, and agility-related qualities. Programming considers maturation, coordination, training age, readiness, and exposure history rather than relying on rigid chronological-age windows.",
+      "evidence_class": "B",
+      "teaching_boundary": "Rejecting age-window mythology is not a claim that maturation is irrelevant. Youth sprint-mechanics prescriptions remain extrapolated and are labeled (AS-103-12).",
+      "modules": [
+        "M11"
+      ],
+      "anchor_refs": [
+        "EP103-03",
+        "EP103-24",
+        "EP103-09"
+      ],
+      "citation_tags": [
+        "cite:88",
+        "cite:76",
+        "cite:91"
+      ],
+      "standing": "G3 Doctrine"
+    },
+    {
+      "id": "D103-12",
+      "title": "Injury Claims Require Causal Restraint",
+      "statement": "G3 distinguishes tissue demand, association, mechanistic plausibility, risk-factor evidence, and intervention evidence. Sprinting, deceleration, or COD training is not marketed as inherently dangerous or inherently injury-preventive without appropriate evidence.",
+      "evidence_class": "B",
+      "teaching_boundary": "Restraint runs both directions: no protection promises, and no withholding exposure on an unsupported danger claim. Binds marketing, parent, and athlete communication.",
+      "modules": [
+        "M7",
+        "M12"
+      ],
+      "anchor_refs": [
+        "EP103-14",
+        "EP103-16",
+        "EP103-11"
+      ],
+      "citation_tags": [
+        "cite:98",
+        "cite:100",
+        "cite:105"
+      ],
+      "standing": "G3 Doctrine"
+    }
+  ],
+  "applied_standards": [
+    {
+      "id": "AS-103-01",
+      "title": "Name the Quality",
+      "text": "Every speed/COD/agility prescription identifies the primary quality being targeted: acceleration, maximal velocity, deceleration, planned COD, or reactive agility.",
+      "evidence_basis": "D",
+      "standing": "applied_standard",
+      "boundary_or_enforcement": "speed_task requires primary_quality"
+    },
+    {
+      "id": "AS-103-02",
+      "title": "Preserve Sprint Exposure",
+      "text": "When sprint performance is a priority, the program includes actual sprint exposure appropriate to the targeted phase rather than relying solely on weight-room or plyometric proxies.",
+      "evidence_basis": "B",
+      "standing": "applied_standard",
+      "boundary_or_enforcement": "sets no volume, distance, or frequency (CJ-01, CJ-02)"
+    },
+    {
+      "id": "AS-103-03",
+      "title": "Technique With Restraint",
+      "text": "Technique coaching is used to improve task execution. Athletes are not required to conform to a single visual model before meaningful sprint exposure is allowed.",
+      "evidence_basis": "B",
+      "standing": "applied_standard",
+      "boundary_or_enforcement": "restrains the gate, not the coaching"
+    },
+    {
+      "id": "AS-103-04",
+      "title": "Resisted Sprint Intent",
+      "text": "Resisted sprint load and method are selected according to intended adaptation, athlete capacity, equipment, and output quality. No universal loading percentage is G3 law.",
+      "evidence_basis": "A/C",
+      "standing": "applied_standard",
+      "boundary_or_enforcement": "CJ-06 owns the number; any percentage stated as a rule fails production review"
+    },
+    {
+      "id": "AS-103-05",
+      "title": "Deceleration Before Directional Complexity",
+      "text": "Where appropriate, athletes are taught and exposed to braking and momentum-control demands before approach velocity, cut severity, reactive complexity, or total multidirectional density are escalated.",
+      "evidence_basis": "D",
+      "standing": "applied_standard",
+      "boundary_or_enforcement": "explicitly an Applied Standard, NOT a universal research-derived progression ladder (CJ-10)"
+    },
+    {
+      "id": "AS-103-06",
+      "title": "COD Task Specificity",
+      "text": "COD is programmed and evaluated with awareness of approach velocity, cut angle, braking demand, reacceleration demand, and test/task structure.",
+      "evidence_basis": "A",
+      "standing": "applied_standard",
+      "boundary_or_enforcement": "no angle progression sequence prescribed (CJ-09)"
+    },
+    {
+      "id": "AS-103-07",
+      "title": "Agility Requires Information",
+      "text": "At least part of an agility-development progression requires athletes to perceive relevant information and select and execute a movement response.",
+      "evidence_basis": "A/B/C",
+      "standing": "applied_standard",
+      "boundary_or_enforcement": "'at least part' is deliberate; no proven dose of reactive work is claimed"
+    },
+    {
+      "id": "AS-103-08",
+      "title": "Quality Preservation",
+      "text": "Rest and repetition structure are sufficient to preserve the intended performance quality. Exact rest ratios are not universal G3 doctrine.",
+      "evidence_basis": "B",
+      "standing": "applied_standard",
+      "boundary_or_enforcement": "criterion is output, not the clock (CJ-03)"
+    },
+    {
+      "id": "AS-103-09",
+      "title": "Testing Standardization",
+      "text": "G3 testing uses objective timing where practical, standardized setups, familiarization, consistent surfaces and conditions, and known measurement error before small changes are interpreted.",
+      "evidence_basis": "A",
+      "standing": "applied_standard",
+      "boundary_or_enforcement": "no universal smallest-worthwhile-change threshold is created"
+    },
+    {
+      "id": "AS-103-10",
+      "title": "Construct-Appropriate Testing",
+      "text": "A pre-planned COD test is not called an agility test. A short acceleration split is not called a maximal-velocity test. G3 labels what was actually measured.",
+      "evidence_basis": "A",
+      "standing": "applied_standard + language rule",
+      "boundary_or_enforcement": "test_record requires construct_measured; mislabeling is a scored error"
+    },
+    {
+      "id": "AS-103-11",
+      "title": "Multi-Measure Interpretation",
+      "text": "When profiling multidirectional performance, relevant measures are combined rather than using one test to diagnose all speed, COD, braking, and agility qualities.",
+      "evidence_basis": "D",
+      "standing": "applied_standard",
+      "boundary_or_enforcement": "no battery, weighting, or composite score prescribed"
+    },
+    {
+      "id": "AS-103-12",
+      "title": "Population Transfer Disclosure",
+      "text": "When a prescription is substantially extrapolated from elite track, adult, soccer-heavy, or male-dominant evidence, the educational content says so.",
+      "evidence_basis": "A",
+      "standing": "applied_standard",
+      "boundary_or_enforcement": "every module evidence block carries a population-transfer line where extrapolation occurs"
+    }
+  ],
+  "inherited_g3_102_standards": [
+    "AS-06 test conditions recorded at time of testing",
+    "AS-09 emphasis tier for every trained quality",
+    "AS-10 written opportunity-cost statement",
+    "AS-11 no tool may compute a priority",
+    "AS-12 stated intended adaptation for every exercise",
+    "AS-14 session order reflects priority",
+    "AS-26 no automated readiness recommendation",
+    "AS-27 adjustment log",
+    "AS-30 youth entry by readiness, not age",
+    "AS-31 no sex-specific rules without direct evidence",
+    "AS-32 return to performance re-enters the model at DEMAND"
+  ],
+  "coach_judgment": [
+    {
+      "id": "CJ-01",
+      "area": "Exact sprint volume",
+      "evidence_position": "No fixed prescription across populations and tasks",
+      "g3_supplies": "AS-103-02, AS-103-08",
+      "coach_call": "Volume for this athlete, phase, and schedule"
+    },
+    {
+      "id": "CJ-02",
+      "area": "Exact sprint distance prescription",
+      "evidence_position": "Phase boundaries vary by task, athlete, distance",
+      "g3_supplies": "The phase concept (D103-1)",
+      "coach_call": "Distances used to target a phase"
+    },
+    {
+      "id": "CJ-03",
+      "area": "Exact rest intervals",
+      "evidence_position": "No universal rest ratio established",
+      "g3_supplies": "Quality preservation as the criterion (AS-103-08)",
+      "coach_call": "The interval"
+    },
+    {
+      "id": "CJ-04",
+      "area": "Exact weekly placement",
+      "evidence_position": "No universal microcycle model supported",
+      "g3_supplies": "The principle of protecting high-quality exposures",
+      "coach_call": "Placement in this week"
+    },
+    {
+      "id": "CJ-05",
+      "area": "High/low microcycle organization",
+      "evidence_position": "E/D - historically influential, limited direct comparative evidence",
+      "g3_supplies": "Taught as a practitioner framework",
+      "coach_call": "Whether to use it"
+    },
+    {
+      "id": "CJ-06",
+      "area": "Exact resisted-sprint load",
+      "evidence_position": "C - loading strategy contested; no universal threshold",
+      "g3_supplies": "AS-103-04 intent-based selection",
+      "coach_call": "The load and method"
+    },
+    {
+      "id": "CJ-07",
+      "area": "Exact velocity-decrement threshold",
+      "evidence_position": "Operationally useful; no one threshold supported",
+      "g3_supplies": "Quality preservation as the criterion",
+      "coach_call": "Whether and where to set one"
+    },
+    {
+      "id": "CJ-08",
+      "area": "Assisted / overspeed use",
+      "evidence_position": "C - less secure than RST; not clearly superior to normal sprinting",
+      "g3_supplies": "The evidence position stated plainly",
+      "coach_call": "Whether to use it at all"
+    },
+    {
+      "id": "CJ-09",
+      "area": "Exact COD angle progression",
+      "evidence_position": "No universal ladder",
+      "g3_supplies": "AS-103-06 variables",
+      "coach_call": "The sequence for this athlete"
+    },
+    {
+      "id": "CJ-10",
+      "area": "Exact deceleration progression",
+      "evidence_position": "No universal ladder",
+      "g3_supplies": "AS-103-05 as a labeled Applied Standard",
+      "coach_call": "The sequence for this athlete"
+    },
+    {
+      "id": "CJ-11",
+      "area": "Exact reactive-agility progression",
+      "evidence_position": "Intervention evidence smaller and heterogeneous",
+      "g3_supplies": "AS-103-07 - information must be present",
+      "coach_call": "The progression"
+    },
+    {
+      "id": "CJ-12",
+      "area": "Exact technique thresholds before faster sprinting",
+      "evidence_position": "F - delaying exposure to a universal standard is unsupported",
+      "g3_supplies": "AS-103-03",
+      "coach_call": "Coaching emphasis and task constraints"
+    },
+    {
+      "id": "CJ-13",
+      "area": "Deterministic COD-deficit interpretation",
+      "evidence_position": "Task-dependent; not a complete isolate",
+      "g3_supplies": "The lens and its limits (M8, M10)",
+      "coach_call": "How much weight to give it"
+    },
+    {
+      "id": "CJ-14",
+      "area": "Deterministic deceleration-deficit interpretation",
+      "evidence_position": "C - emerging analytical concept",
+      "g3_supplies": "The concept and its limits (M7, M10)",
+      "coach_call": "How much weight to give it"
+    },
+    {
+      "id": "CJ-15",
+      "area": "Sex-specific programming rules",
+      "evidence_position": "Evidence limited across several domains",
+      "g3_supplies": "AS-103-12 disclosure; restraint position",
+      "coach_call": "Individual modification on individual grounds"
+    },
+    {
+      "id": "CJ-16",
+      "area": "Injury-prevention guarantees from sprint, deceleration, or COD exposure",
+      "evidence_position": "F in both directions",
+      "g3_supplies": "D103-12 restraint",
+      "coach_call": "Exposure decisions, communicated without guarantees"
+    }
+  ],
+  "claim_audit": [
+    {
+      "id": "CA-01",
+      "claim": "Speed cannot be trained",
+      "class": "F",
+      "taught_instead": "Sprint and sprint-related qualities are trainable; adaptations vary by quality and population.",
+      "citation_tags": [
+        "cite:81",
+        "cite:87",
+        "cite:96"
+      ]
+    },
+    {
+      "id": "CA-02",
+      "claim": "Athletes either have speed or they do not",
+      "class": "F",
+      "taught_instead": "Athlete qualities differ, and sprint performance responds to multiple training methods.",
+      "citation_tags": [
+        "cite:81",
+        "cite:89",
+        "cite:96"
+      ]
+    },
+    {
+      "id": "CA-03",
+      "claim": "Strength automatically makes athletes faster",
+      "class": "F",
+      "taught_instead": "Strength transfers partially and outcome-specifically; it does not replace sprint exposure.",
+      "citation_tags": [
+        "cite:87",
+        "cite:89"
+      ]
+    },
+    {
+      "id": "CA-04",
+      "claim": "Horizontal force is all that matters in acceleration",
+      "class": "F",
+      "taught_instead": "Horizontal impulse and force orientation matter within a whole-system task.",
+      "citation_tags": [
+        "cite:96",
+        "cite:105"
+      ]
+    },
+    {
+      "id": "CA-05",
+      "claim": "Vertical force is all that matters at maximal velocity",
+      "class": "F",
+      "taught_instead": "Vertical force is important; top speed is not reducible to one variable.",
+      "citation_tags": [
+        "cite:96",
+        "cite:101"
+      ]
+    },
+    {
+      "id": "CA-06",
+      "claim": "Heavier resisted sprint loads are always better",
+      "class": "F",
+      "taught_instead": "Load magnitude matters; no universal monotonic rule is established.",
+      "citation_tags": [
+        "cite:81",
+        "cite:92"
+      ]
+    },
+    {
+      "id": "CA-07",
+      "claim": "Sleds make athletes slow",
+      "class": "F",
+      "taught_instead": "RST can improve acceleration; the blanket negative claim is unsupported.",
+      "citation_tags": [
+        "cite:81",
+        "cite:84"
+      ]
+    },
+    {
+      "id": "CA-08",
+      "claim": "Overspeed is necessary for top-speed development",
+      "class": "F",
+      "taught_instead": "Evidence is limited and does not establish superiority over normal sprinting.",
+      "citation_tags": [
+        "cite:84"
+      ]
+    },
+    {
+      "id": "CA-09",
+      "claim": "Ladder drills inherently improve agility",
+      "class": "F",
+      "taught_instead": "Ladders may train footwork rhythm and coordination - useful, and not agility.",
+      "citation_tags": [
+        "cite:85",
+        "cite:90"
+      ]
+    },
+    {
+      "id": "CA-10",
+      "claim": "Cone drills are automatically agility training",
+      "class": "F",
+      "taught_instead": "Pre-planned cone work trains COD unless reactive information is added.",
+      "citation_tags": [
+        "cite:85",
+        "cite:107"
+      ]
+    },
+    {
+      "id": "CA-11",
+      "claim": "COD and agility are the same",
+      "class": "F",
+      "taught_instead": "Distinct constructs; agility requires perception and decision.",
+      "citation_tags": [
+        "cite:85",
+        "cite:90"
+      ]
+    },
+    {
+      "id": "CA-12",
+      "claim": "The fastest linear sprinter should automatically have the best COD",
+      "class": "F",
+      "taught_instead": "COD is influenced by braking, angle, technique, orientation, and reacceleration beyond linear speed.",
+      "citation_tags": [
+        "cite:79",
+        "cite:80"
+      ]
+    },
+    {
+      "id": "CA-13",
+      "claim": "Every athlete needs the same sprint mechanics",
+      "class": "F",
+      "taught_instead": "Descriptive elite mechanics do not become one universal model.",
+      "citation_tags": [
+        "cite:96",
+        "cite:104"
+      ]
+    },
+    {
+      "id": "CA-14",
+      "claim": "Perfect technique must precede meaningful speed exposure",
+      "class": "F",
+      "taught_instead": "Exposure is not gated on a universal technique threshold; coaching happens alongside it.",
+      "citation_tags": [
+        "cite:96"
+      ]
+    },
+    {
+      "id": "CA-15",
+      "claim": "Fatigued sprint work is automatically more sport-specific",
+      "class": "C/F",
+      "taught_instead": "Fatigue changes mechanics; the specificity claim is unsupported. Quality preservation is better supported.",
+      "citation_tags": [
+        "cite:96",
+        "cite:98"
+      ]
+    },
+    {
+      "id": "CA-16",
+      "claim": "Maximal-velocity sprinting is inherently dangerous",
+      "class": "F",
+      "taught_instead": "Risk exists and is managed through exposure and preparation; blanket danger claims exceed the evidence.",
+      "citation_tags": [
+        "cite:98",
+        "cite:105"
+      ]
+    },
+    {
+      "id": "CA-17",
+      "claim": "Sprinting inherently prevents hamstring injuries",
+      "class": "F",
+      "taught_instead": "Exposure and eccentric capacity are relevant; prevention guarantees exceed intervention evidence.",
+      "citation_tags": [
+        "cite:98",
+        "cite:105"
+      ]
+    },
+    {
+      "id": "CA-18",
+      "claim": "Constant drill variation is required",
+      "class": "D/F",
+      "taught_instead": "Variation may aid engagement and adaptability; a universal need for novelty is unsupported.",
+      "citation_tags": [
+        "cite:75",
+        "cite:96"
+      ]
+    },
+    {
+      "id": "CA-19",
+      "claim": "Sport-looking drills transfer better",
+      "class": "F",
+      "taught_instead": "Transfer depends on relevant demands, not appearance.",
+      "citation_tags": [
+        "cite:75",
+        "cite:96"
+      ]
+    }
+  ],
+  "claim_audit_symmetry_rule": "Every correction is a correction, not an inversion. Correcting a Class F claim by asserting its opposite reproduces the error.",
+  "competencies": [
+    {
+      "id": "C103-01",
+      "title": "Terminology discrimination",
+      "ladder_level": "KNOW -> APPLY",
+      "observable_standard": "Classifies any drill or test by primary quality using the G3 definitions; never labels a pre-planned task agility.",
+      "modules": [
+        "M1",
+        "M9",
+        "M10"
+      ],
+      "assessments": [
+        "A1"
+      ],
+      "cases": [
+        "case-1",
+        "case-2",
+        "case-4"
+      ],
+      "sign_off": "PS-3"
+    },
+    {
+      "id": "C103-02",
+      "title": "Sprint-phase analysis",
+      "ladder_level": "UNDERSTAND -> APPLY",
+      "observable_standard": "Identifies whether a task or test targets acceleration or maximal velocity and states why, without asserting a universal phase boundary.",
+      "modules": [
+        "M2",
+        "M3",
+        "M8"
+      ],
+      "assessments": [
+        "A2",
+        "A3"
+      ],
+      "cases": [
+        "case-2"
+      ],
+      "sign_off": "PS-1"
+    },
+    {
+      "id": "C103-03",
+      "title": "Mechanics interpretation",
+      "ladder_level": "UNDERSTAND -> EVALUATE",
+      "observable_standard": "Distinguishes a descriptive mechanical finding from an intervention-supported coaching target, and discloses population transfer.",
+      "modules": [
+        "M2",
+        "M3",
+        "M4"
+      ],
+      "assessments": [
+        "A4"
+      ],
+      "cases": [],
+      "sign_off": "PS-1"
+    },
+    {
+      "id": "C103-04",
+      "title": "Acceleration prescription",
+      "ladder_level": "APPLY -> COACH",
+      "observable_standard": "Designs and delivers an acceleration exposure with named phase, entry condition, intent, and quality criterion.",
+      "modules": [
+        "M5"
+      ],
+      "assessments": [
+        "A5"
+      ],
+      "cases": [
+        "case-1",
+        "case-5"
+      ],
+      "sign_off": "PS-1, PS-4"
+    },
+    {
+      "id": "C103-05",
+      "title": "Max-velocity prescription",
+      "ladder_level": "APPLY -> COACH",
+      "observable_standard": "Designs a genuine maximal-velocity exposure or states defensibly why it is not a priority.",
+      "modules": [
+        "M3",
+        "M5"
+      ],
+      "assessments": [
+        "A3",
+        "A5"
+      ],
+      "cases": [
+        "case-2",
+        "case-7"
+      ],
+      "sign_off": "PS-4"
+    },
+    {
+      "id": "C103-06",
+      "title": "Resisted sprint decision-making",
+      "ladder_level": "APPLY -> DEFEND",
+      "observable_standard": "Selects RST method and load by intent, capacity, equipment, and output quality, asserting no universal percentage.",
+      "modules": [
+        "M6"
+      ],
+      "assessments": [
+        "A6"
+      ],
+      "cases": [
+        "case-6"
+      ],
+      "sign_off": "PS-4"
+    },
+    {
+      "id": "C103-07",
+      "title": "Supporting strength/plyometric integration",
+      "ladder_level": "UNDERSTAND -> APPLY",
+      "observable_standard": "Positions supporting modalities as contributors with stated intended adaptations, never as sprint substitutes.",
+      "modules": [
+        "M6"
+      ],
+      "assessments": [
+        "A6"
+      ],
+      "cases": [],
+      "sign_off": "PS-4"
+    },
+    {
+      "id": "C103-08",
+      "title": "Deceleration coaching",
+      "ladder_level": "APPLY -> COACH",
+      "observable_standard": "Coaches a braking task, manipulates approach velocity, and progresses or regresses with an observable criterion.",
+      "modules": [
+        "M7",
+        "M8"
+      ],
+      "assessments": [
+        "A7"
+      ],
+      "cases": [
+        "case-1",
+        "case-3",
+        "case-5"
+      ],
+      "sign_off": "PS-2"
+    },
+    {
+      "id": "C103-09",
+      "title": "COD task design",
+      "ladder_level": "APPLY -> COACH",
+      "observable_standard": "Designs COD tasks manipulating entry velocity, angle, braking, and reacceleration, justified by sport demand.",
+      "modules": [
+        "M8"
+      ],
+      "assessments": [
+        "A8"
+      ],
+      "cases": [
+        "case-3",
+        "case-4"
+      ],
+      "sign_off": "PS-3"
+    },
+    {
+      "id": "C103-10",
+      "title": "Reactive agility design",
+      "ladder_level": "APPLY -> COACH",
+      "observable_standard": "Designs a task in which perceiving relevant information is required to solve it, and says how it differs from the COD version.",
+      "modules": [
+        "M9"
+      ],
+      "assessments": [
+        "A9"
+      ],
+      "cases": [
+        "case-4",
+        "case-5"
+      ],
+      "sign_off": "PS-3"
+    },
+    {
+      "id": "C103-11",
+      "title": "Testing selection",
+      "ladder_level": "APPLY -> EVALUATE",
+      "observable_standard": "Selects tests matching the construct evaluated and labels outputs accurately.",
+      "modules": [
+        "M10"
+      ],
+      "assessments": [
+        "A10"
+      ],
+      "cases": [
+        "case-2"
+      ],
+      "sign_off": "PS-4"
+    },
+    {
+      "id": "C103-12",
+      "title": "Measurement interpretation",
+      "ladder_level": "EVALUATE",
+      "observable_standard": "Interprets results within reliability and typical error; declines to act inside the noise band; asserts no universal threshold.",
+      "modules": [
+        "M10",
+        "M8"
+      ],
+      "assessments": [
+        "A10"
+      ],
+      "cases": [
+        "case-3"
+      ],
+      "sign_off": "PS-4"
+    },
+    {
+      "id": "C103-13",
+      "title": "Youth/developmental modification",
+      "ladder_level": "APPLY -> COACH",
+      "observable_standard": "Applies readiness-based reasoning, rejects age-window claims, and discloses extrapolation.",
+      "modules": [
+        "M11"
+      ],
+      "assessments": [
+        "A11"
+      ],
+      "cases": [
+        "case-1",
+        "case-6"
+      ],
+      "sign_off": "PS-3, PS-4"
+    },
+    {
+      "id": "C103-14",
+      "title": "Session/week integration",
+      "ladder_level": "APPLY -> DEFEND",
+      "observable_standard": "Places speed, braking, and reactive work to protect output quality within a real schedule; asserts no validated microcycle model.",
+      "modules": [
+        "M5",
+        "M11",
+        "M12"
+      ],
+      "assessments": [
+        "A11",
+        "A12"
+      ],
+      "cases": [
+        "case-5"
+      ],
+      "sign_off": "PS-4"
+    },
+    {
+      "id": "C103-15",
+      "title": "Evidence-boundary recognition",
+      "ladder_level": "EVALUATE -> DEFEND",
+      "observable_standard": "Identifies unsupported coaching claims and states, for any G3 practice, whether it is evidence, applied standard, or judgment.",
+      "modules": [
+        "M4",
+        "M6",
+        "M9",
+        "M12"
+      ],
+      "assessments": [
+        "A12"
+      ],
+      "cases": [
+        "case-6",
+        "case-7"
+      ],
+      "sign_off": "PS-4, T-01"
+    },
+    {
+      "id": "C103-16",
+      "title": "Programming defense",
+      "ladder_level": "DEFEND",
+      "observable_standard": "Defends a full speed-development prescription under questioning across the seven obligations.",
+      "modules": [
+        "M12"
+      ],
+      "assessments": [
+        "A12"
+      ],
+      "cases": [
+        "case-7"
+      ],
+      "sign_off": "T-01"
+    }
+  ],
+  "competency_ladder": [
+    "KNOW",
+    "UNDERSTAND",
+    "APPLY",
+    "COACH",
+    "EVALUATE",
+    "DEFEND"
+  ],
+  "modules": [
+    {
+      "id": "M1",
+      "title": "Language Before Programming",
+      "quality_focus": "all",
+      "duration_minutes": 75,
+      "framing_statement": "Every bad speed program starts with a word.",
+      "purpose": "To install the controlled vocabulary the rest of the course depends on, and to make the learner capable of naming the quality a task actually trains before any programming decision is made.",
+      "objectives": [
+        "M1.1 Define speed, acceleration, maximal velocity, deceleration, COD, agility, reactive agility using G3 definitions",
+        "M1.2 Explain why acceleration and maximal velocity are distinct qualities",
+        "M1.3 Explain why COD and agility are distinct constructs",
+        "M1.4 Apply the five task-identification questions",
+        "M1.5 Describe COD deficit as a task-dependent lens",
+        "M1.6 State why G3 does not use SAQ as a precise category",
+        "M1.7 Identify where terminology remains unsettled"
+      ],
+      "doctrine_ids": [
+        "D103-1",
+        "D103-5",
+        "D103-6"
+      ],
+      "applied_standard_ids": [
+        "AS-103-01",
+        "AS-103-10"
+      ],
+      "competency_ids": [
+        "C103-01",
+        "C103-02"
+      ],
+      "lessons": [
+        {
+          "index": 1,
+          "title": "Why the word matters"
+        },
+        {
+          "index": 2,
+          "title": "Speed, acceleration, maximal velocity"
+        },
+        {
+          "index": 3,
+          "title": "Deceleration"
+        },
+        {
+          "index": 4,
+          "title": "COD and agility"
+        },
+        {
+          "index": 5,
+          "title": "The five task-identification questions"
+        },
+        {
+          "index": 6,
+          "title": "COD deficit, honestly"
+        },
+        {
+          "index": 7,
+          "title": "SAQ and unsettled language"
+        }
+      ],
+      "common_errors": [
+        "Using 'speed' as the label for every fast activity",
+        "Calling a pre-planned cone pattern an agility drill",
+        "Treating a 10 m time as top speed",
+        "Absorbing deceleration into 'the cut'",
+        "Publishing a fixed acceleration/max-velocity boundary",
+        "Using COD deficit as an isolate",
+        "Using SAQ as a technical taxonomy"
+      ],
+      "scenario_id": "M1-A",
+      "applied_assessment_id": "A1",
+      "sign_off": null,
+      "reference_ids": [
+        "EP103-01",
+        "EP103-13",
+        "EP103-04",
+        "EP103-19",
+        "EP103-21",
+        "EP103-14",
+        "EP103-15",
+        "EP103-18",
+        "EP103-03",
+        "EP103-25"
+      ],
+      "assessment_counts": {
+        "knowledge": 6,
+        "interpretation": 2,
+        "decision": 1,
+        "drill_classification": 2,
+        "claim_audit": 1
+      },
+      "gating": {
+        "prerequisite": "G3 102 complete including T-01; active G3 coaching status",
+        "unlocks": "M2",
+        "gate": null
+      },
+      "content_objects": [
+        "module_id",
+        "module_header",
+        "purpose",
+        "objectives",
+        "doctrine_refs",
+        "applied_standard_refs",
+        "competency_refs",
+        "evidence_block",
+        "lesson",
+        "coaching_application",
+        "error_list",
+        "scenario",
+        "knowledge_assessment",
+        "applied_assessment",
+        "sign_off_link",
+        "references",
+        "gating"
+      ]
+    },
+    {
+      "id": "M2",
+      "title": "Understanding Acceleration",
+      "quality_focus": "acceleration",
+      "duration_minutes": 90,
+      "framing_statement": "Acceleration is the phase most G3 athletes actually live in - and where a real mechanical finding gets flattened into a slogan.",
+      "purpose": "To give coaches a working understanding of acceleration demands and mechanics accurate enough to inform observation and method selection, without converting descriptive findings into universal cueing prescriptions.",
+      "objectives": [
+        "M2.1 Describe primary acceleration demands",
+        "M2.2 Explain horizontal impulse and force orientation without overclaiming",
+        "M2.3 Distinguish associational findings from intervention-supported targets",
+        "M2.4 Identify physical qualities associated with acceleration",
+        "M2.5 Recognize population limits of the acceleration-mechanics literature",
+        "M2.6 Identify acceleration demands within a sport or position"
+      ],
+      "doctrine_ids": [
+        "D103-1",
+        "D103-3"
+      ],
+      "applied_standard_ids": [
+        "AS-103-01",
+        "AS-103-12"
+      ],
+      "competency_ids": [
+        "C103-02",
+        "C103-03",
+        "C103-15"
+      ],
+      "lessons": [
+        {
+          "index": 1,
+          "title": "What the task demands"
+        },
+        {
+          "index": 2,
+          "title": "Force orientation, stated accurately"
+        },
+        {
+          "index": 3,
+          "title": "Association versus intervention"
+        },
+        {
+          "index": 4,
+          "title": "Physical qualities associated with acceleration"
+        },
+        {
+          "index": 5,
+          "title": "Where the evidence comes from"
+        },
+        {
+          "index": 6,
+          "title": "Acceleration in the sport"
+        }
+      ],
+      "common_errors": [
+        "Coaching 'horizontal force' as a cue",
+        "Importing a track sprint-start model wholesale",
+        "Treating a correlate as a cause",
+        "Assuming every acceleration starts static",
+        "Failing to disclose adult track provenance"
+      ],
+      "scenario_id": "M2-A",
+      "applied_assessment_id": "A2",
+      "sign_off": null,
+      "reference_ids": [
+        "EP103-01",
+        "EP103-11",
+        "EP103-12",
+        "EP103-13",
+        "EP103-05"
+      ],
+      "assessment_counts": {
+        "knowledge": 5,
+        "interpretation": 2,
+        "decision": 1,
+        "drill_classification": 1,
+        "claim_audit": 2
+      },
+      "gating": {
+        "prerequisite": "M1 at standard",
+        "unlocks": "M3",
+        "gate": null
+      },
+      "content_objects": [
+        "module_id",
+        "module_header",
+        "purpose",
+        "objectives",
+        "doctrine_refs",
+        "applied_standard_refs",
+        "competency_refs",
+        "evidence_block",
+        "lesson",
+        "coaching_application",
+        "error_list",
+        "scenario",
+        "knowledge_assessment",
+        "applied_assessment",
+        "sign_off_link",
+        "references",
+        "gating"
+      ]
+    },
+    {
+      "id": "M3",
+      "title": "Understanding Maximal Velocity",
+      "quality_focus": "maximal velocity",
+      "duration_minutes": 90,
+      "framing_statement": "The quality most often claimed and least often trained.",
+      "purpose": "To establish maximal velocity as a distinct quality with its own demands and exposure requirement, and to make clear how rarely typical team-sport training or testing actually addresses it.",
+      "objectives": [
+        "M3.1 Describe maximal-velocity demands",
+        "M3.2 Explain why maximal velocity is not reducible to one variable",
+        "M3.3 Explain why short distances rarely develop or measure maximal velocity",
+        "M3.4 State population limits of elite-sprinter evidence",
+        "M3.5 Identify what a meaningful maximal-velocity exposure requires",
+        "M3.6 Determine whether a sport and athlete need maximal-velocity development"
+      ],
+      "doctrine_ids": [
+        "D103-1",
+        "D103-3",
+        "D103-2"
+      ],
+      "applied_standard_ids": [
+        "AS-103-01",
+        "AS-103-02",
+        "AS-103-12"
+      ],
+      "competency_ids": [
+        "C103-02",
+        "C103-03",
+        "C103-05"
+      ],
+      "lessons": [
+        {
+          "index": 1,
+          "title": "What top speed demands"
+        },
+        {
+          "index": 2,
+          "title": "Not one variable"
+        },
+        {
+          "index": 3,
+          "title": "The exposure problem"
+        },
+        {
+          "index": 4,
+          "title": "Where the evidence comes from, and where it stops"
+        },
+        {
+          "index": 5,
+          "title": "What a meaningful exposure looks like"
+        },
+        {
+          "index": 6,
+          "title": "Does this athlete need it?"
+        }
+      ],
+      "common_errors": [
+        "Labeling short sprint work as maximal-velocity training",
+        "Reporting a 10 m split as an athlete's speed",
+        "Prescribing an elite track model without disclosure",
+        "Reducing maximal velocity to one variable",
+        "Assuming every athlete requires it",
+        "Filling the youth/team-sport gap with assertion"
+      ],
+      "scenario_id": "case-2",
+      "applied_assessment_id": "A3",
+      "sign_off": null,
+      "reference_ids": [
+        "EP103-01",
+        "EP103-13",
+        "EP103-02",
+        "EP103-12",
+        "EP103-06"
+      ],
+      "assessment_counts": {
+        "knowledge": 5,
+        "interpretation": 3,
+        "decision": 2,
+        "drill_classification": 1,
+        "claim_audit": 1
+      },
+      "gating": {
+        "prerequisite": "M2 at standard",
+        "unlocks": "M4",
+        "gate": null
+      },
+      "content_objects": [
+        "module_id",
+        "module_header",
+        "purpose",
+        "objectives",
+        "doctrine_refs",
+        "applied_standard_refs",
+        "competency_refs",
+        "evidence_block",
+        "lesson",
+        "coaching_application",
+        "error_list",
+        "scenario",
+        "knowledge_assessment",
+        "applied_assessment",
+        "sign_off_link",
+        "references",
+        "gating"
+      ]
+    },
+    {
+      "id": "M4",
+      "title": "Coaching Sprint Mechanics",
+      "quality_focus": "linear speed",
+      "duration_minutes": 105,
+      "framing_statement": "You are allowed to coach sprinting. You are not allowed to hold an athlete's sprint exposure hostage to a picture in your head.",
+      "purpose": "To build observation and coaching capability for sprinting that improves task execution while respecting the gap between descriptive biomechanics and intervention evidence, and while preserving meaningful sprint exposure.",
+      "objectives": [
+        "M4.1 Observe sprinting and describe it in task-relevant terms",
+        "M4.2 Distinguish technical error from individual variation",
+        "M4.3 Select a small number of relevant interventions",
+        "M4.4 Use constraints and task design alongside verbal cueing",
+        "M4.5 Explain why descriptive biomechanics cannot become a universal checklist",
+        "M4.6 Preserve meaningful sprint exposure while coaching",
+        "M4.7 State the evidence boundary of any technical intervention"
+      ],
+      "doctrine_ids": [
+        "D103-3",
+        "D103-1",
+        "D103-2"
+      ],
+      "applied_standard_ids": [
+        "AS-103-03",
+        "AS-103-01",
+        "AS-103-12"
+      ],
+      "competency_ids": [
+        "C103-03",
+        "C103-02",
+        "C103-15"
+      ],
+      "lessons": [
+        {
+          "index": 1,
+          "title": "Observation before intervention"
+        },
+        {
+          "index": 2,
+          "title": "Error or variation?"
+        },
+        {
+          "index": 3,
+          "title": "Few interventions, chosen well"
+        },
+        {
+          "index": 4,
+          "title": "Constraints as coaching"
+        },
+        {
+          "index": 5,
+          "title": "Front-side, back-side, and the checklist problem"
+        },
+        {
+          "index": 6,
+          "title": "Exposure is protected"
+        },
+        {
+          "index": 7,
+          "title": "Saying the boundary out loud"
+        }
+      ],
+      "common_errors": [
+        "Running a technical checklist and gating exposure on it",
+        "Cueing every athlete toward one visual model",
+        "Giving too many cues to evaluate any",
+        "Treating drills as the training",
+        "Claiming a cue 'fixes' a characteristic without evidence",
+        "Coaching a track model with no disclosure"
+      ],
+      "scenario_id": "M4-A",
+      "applied_assessment_id": "A4",
+      "sign_off": "PS-1",
+      "reference_ids": [
+        "EP103-01",
+        "EP103-11",
+        "EP103-12",
+        "EP103-13"
+      ],
+      "assessment_counts": {
+        "knowledge": 5,
+        "interpretation": 2,
+        "decision": 2,
+        "drill_classification": 0,
+        "claim_audit": 2
+      },
+      "gating": {
+        "prerequisite": "M3 at standard",
+        "unlocks": "PS-1",
+        "gate": "PS-1 must be recorded before M5 opens"
+      },
+      "content_objects": [
+        "module_id",
+        "module_header",
+        "purpose",
+        "objectives",
+        "doctrine_refs",
+        "applied_standard_refs",
+        "competency_refs",
+        "evidence_block",
+        "lesson",
+        "coaching_application",
+        "error_list",
+        "scenario",
+        "knowledge_assessment",
+        "applied_assessment",
+        "sign_off_link",
+        "references",
+        "gating"
+      ]
+    },
+    {
+      "id": "M5",
+      "title": "Training Linear Speed",
+      "quality_focus": "acceleration + maximal velocity",
+      "duration_minutes": 105,
+      "framing_statement": "The most reliable way to make an athlete faster is to let them run fast, often enough to adapt and fresh enough to mean it.",
+      "purpose": "To build capability to design unresisted sprint exposures targeting a named phase, and to organize them so the intended quality survives contact with the session.",
+      "objectives": [
+        "M5.1 Design an acceleration exposure targeting a named phase",
+        "M5.2 Design a maximal-velocity exposure including entry conditions",
+        "M5.3 Use flying sprints and rolling entries appropriately",
+        "M5.4 State the evidence position on hill sprinting",
+        "M5.5 State the evidence position on assisted/overspeed sprinting",
+        "M5.6 Apply quality-preservation principles",
+        "M5.7 Explain why fatigue does not make speed work more sport-specific"
+      ],
+      "doctrine_ids": [
+        "D103-2",
+        "D103-8",
+        "D103-1"
+      ],
+      "applied_standard_ids": [
+        "AS-103-02",
+        "AS-103-08",
+        "AS-103-01"
+      ],
+      "competency_ids": [
+        "C103-04",
+        "C103-05",
+        "C103-14"
+      ],
+      "lessons": [
+        {
+          "index": 1,
+          "title": "Sprinting is the method"
+        },
+        {
+          "index": 2,
+          "title": "Building an acceleration exposure"
+        },
+        {
+          "index": 3,
+          "title": "Building a maximal-velocity exposure"
+        },
+        {
+          "index": 4,
+          "title": "Hills and sprint-specific resistance"
+        },
+        {
+          "index": 5,
+          "title": "Assisted and overspeed work: the honest position"
+        },
+        {
+          "index": 6,
+          "title": "Quality preservation in practice"
+        },
+        {
+          "index": 7,
+          "title": "The fatigue trap"
+        }
+      ],
+      "common_errors": [
+        "Speed work placed after conditioning",
+        "Repetition counts that guarantee quality loss",
+        "Copied rest ratios",
+        "Presenting overspeed as established",
+        "Justifying tired sprint work as sport-specific",
+        "Treating hills as equivalent to sled work on evidence"
+      ],
+      "scenario_id": "M5-A",
+      "applied_assessment_id": "A5",
+      "sign_off": null,
+      "reference_ids": [
+        "EP103-01",
+        "EP103-06",
+        "EP103-28",
+        "EP103-02",
+        "EP103-14"
+      ],
+      "assessment_counts": {
+        "knowledge": 5,
+        "interpretation": 2,
+        "decision": 3,
+        "drill_classification": 1,
+        "claim_audit": 2
+      },
+      "gating": {
+        "prerequisite": "PS-1 recorded (hard gate) and M4 at standard",
+        "unlocks": "M6",
+        "gate": "PS-1"
+      },
+      "content_objects": [
+        "module_id",
+        "module_header",
+        "purpose",
+        "objectives",
+        "doctrine_refs",
+        "applied_standard_refs",
+        "competency_refs",
+        "evidence_block",
+        "lesson",
+        "coaching_application",
+        "error_list",
+        "scenario",
+        "knowledge_assessment",
+        "applied_assessment",
+        "sign_off_link",
+        "references",
+        "gating"
+      ]
+    },
+    {
+      "id": "M6",
+      "title": "Resisted Sprinting + Supporting Physical Qualities",
+      "quality_focus": "acceleration",
+      "duration_minutes": 105,
+      "framing_statement": "The sled works. The number on the sled is not doctrine. And nothing in the weight room is a substitute for running.",
+      "purpose": "To make coaches capable of selecting resisted sprint methods by intended adaptation, and of integrating strength, power, and plyometric work as supporting contributors without treating them as sprint substitutes.",
+      "objectives": [
+        "M6.1 State what RST is supported to improve",
+        "M6.2 Select RST load and method by intended adaptation",
+        "M6.3 Explain why no universal loading percentage is adopted",
+        "M6.4 Describe velocity decrement without treating a threshold as established",
+        "M6.5 State what resistance and plyometric training transfer to",
+        "M6.6 Explain why supporting modalities do not replace sprint exposure",
+        "M6.7 Apply demand-based transfer reasoning"
+      ],
+      "doctrine_ids": [
+        "D103-9",
+        "D103-2",
+        "D103-7"
+      ],
+      "applied_standard_ids": [
+        "AS-103-04",
+        "AS-103-02",
+        "AS-103-01",
+        "AS-103-12"
+      ],
+      "competency_ids": [
+        "C103-06",
+        "C103-07",
+        "C103-15"
+      ],
+      "lessons": [
+        {
+          "index": 1,
+          "title": "What RST is supported to do"
+        },
+        {
+          "index": 2,
+          "title": "Why there is no G3 load rule"
+        },
+        {
+          "index": 3,
+          "title": "Selecting by intent"
+        },
+        {
+          "index": 4,
+          "title": "Velocity decrement, carefully"
+        },
+        {
+          "index": 5,
+          "title": "Supporting qualities: what transfers"
+        },
+        {
+          "index": 6,
+          "title": "The substitution error"
+        },
+        {
+          "index": 7,
+          "title": "Demand-based method selection"
+        }
+      ],
+      "common_errors": [
+        "Prescribing a sled percentage as established",
+        "Concluding sleds are harmful",
+        "Replacing sprinting with jumps and lifts",
+        "Claiming a plyometric family develops braking",
+        "Treating one pending meta-analysis as settling a contested question",
+        "Failing to disclose soccer-heavy adult evidence"
+      ],
+      "scenario_id": "case-6",
+      "applied_assessment_id": "A6",
+      "sign_off": null,
+      "reference_ids": [
+        "EP103-05",
+        "EP103-06",
+        "EP103-27",
+        "EP103-07",
+        "EP103-08",
+        "EP103-09",
+        "EP103-10",
+        "EP103-26",
+        "EP103-01"
+      ],
+      "assessment_counts": {
+        "knowledge": 5,
+        "interpretation": 2,
+        "decision": 3,
+        "drill_classification": 0,
+        "claim_audit": 2
+      },
+      "gating": {
+        "prerequisite": "M5 at standard",
+        "unlocks": "M7",
+        "gate": null
+      },
+      "content_objects": [
+        "module_id",
+        "module_header",
+        "purpose",
+        "objectives",
+        "doctrine_refs",
+        "applied_standard_refs",
+        "competency_refs",
+        "evidence_block",
+        "lesson",
+        "coaching_application",
+        "error_list",
+        "scenario",
+        "knowledge_assessment",
+        "applied_assessment",
+        "sign_off_link",
+        "references",
+        "gating"
+      ]
+    },
+    {
+      "id": "M7",
+      "title": "Deceleration as a Performance Quality",
+      "quality_focus": "deceleration",
+      "duration_minutes": 105,
+      "framing_statement": "Deceleration is not the boring half of the cut - it is a demand with its own physics, coaching, and measurement limits.",
+      "purpose": "To establish deceleration as a trainable, coachable performance quality in its own right, and to build coaching capability for braking tasks without overclaiming diagnostics or injury protection.",
+      "objectives": [
+        "M7.1 Describe the demands of horizontal deceleration",
+        "M7.2 Explain why approach velocity is the primary constraint",
+        "M7.3 Coach a braking task including regression and progression",
+        "M7.4 Identify physical qualities associated with deceleration",
+        "M7.5 State the limits of deceleration diagnostics",
+        "M7.6 Explain fatigue effects without an injury guarantee",
+        "M7.7 Apply causal restraint to deceleration injury claims"
+      ],
+      "doctrine_ids": [
+        "D103-4",
+        "D103-12",
+        "D103-8"
+      ],
+      "applied_standard_ids": [
+        "AS-103-05",
+        "AS-103-01",
+        "AS-103-06"
+      ],
+      "competency_ids": [
+        "C103-08",
+        "C103-15"
+      ],
+      "lessons": [
+        {
+          "index": 1,
+          "title": "The physics of stopping"
+        },
+        {
+          "index": 2,
+          "title": "Deceleration is not 'the first half of the cut'"
+        },
+        {
+          "index": 3,
+          "title": "Coaching the braking task"
+        },
+        {
+          "index": 4,
+          "title": "Regression and progression"
+        },
+        {
+          "index": 5,
+          "title": "Physical qualities"
+        },
+        {
+          "index": 6,
+          "title": "Diagnostics and their limits"
+        },
+        {
+          "index": 7,
+          "title": "Injury language"
+        }
+      ],
+      "common_errors": [
+        "Treating deceleration as a warm-up drill",
+        "Escalating cut severity before braking competence",
+        "Coaching 'stop faster'",
+        "Using deceleration deficit as established",
+        "Telling athletes braking drills prevent injuries",
+        "Ignoring total volume of high-force stops"
+      ],
+      "scenario_id": "M7-A",
+      "applied_assessment_id": "A7",
+      "sign_off": "PS-2",
+      "reference_ids": [
+        "EP103-14",
+        "EP103-15",
+        "EP103-16",
+        "EP103-01"
+      ],
+      "assessment_counts": {
+        "knowledge": 5,
+        "interpretation": 2,
+        "decision": 2,
+        "drill_classification": 1,
+        "claim_audit": 2
+      },
+      "gating": {
+        "prerequisite": "M6 at standard",
+        "unlocks": "PS-2",
+        "gate": "PS-2 must be recorded before M8 opens"
+      },
+      "content_objects": [
+        "module_id",
+        "module_header",
+        "purpose",
+        "objectives",
+        "doctrine_refs",
+        "applied_standard_refs",
+        "competency_refs",
+        "evidence_block",
+        "lesson",
+        "coaching_application",
+        "error_list",
+        "scenario",
+        "knowledge_assessment",
+        "applied_assessment",
+        "sign_off_link",
+        "references",
+        "gating"
+      ]
+    },
+    {
+      "id": "M8",
+      "title": "Change of Direction",
+      "quality_focus": "COD",
+      "duration_minutes": 105,
+      "framing_statement": "A COD time is a number produced by several abilities at once.",
+      "purpose": "To build capability to analyze, design, and progress pre-planned directional-change tasks, and to interpret COD performance as the multi-determinant outcome it is.",
+      "objectives": [
+        "M8.1 Name the contributors to COD performance",
+        "M8.2 Explain why a faster COD time does not identify one quality",
+        "M8.3 Explain how cut angle changes determinants",
+        "M8.4 Design COD tasks manipulating velocity, angle, braking, reacceleration",
+        "M8.5 Use COD deficit while stating its task dependence",
+        "M8.6 Explain why the fastest sprinter is not automatically the best cutter",
+        "M8.7 Progress and regress without a universal angle ladder"
+      ],
+      "doctrine_ids": [
+        "D103-5",
+        "D103-10",
+        "D103-4"
+      ],
+      "applied_standard_ids": [
+        "AS-103-06",
+        "AS-103-01",
+        "AS-103-10",
+        "AS-103-11"
+      ],
+      "competency_ids": [
+        "C103-09",
+        "C103-12",
+        "C103-02"
+      ],
+      "lessons": [
+        {
+          "index": 1,
+          "title": "What a COD time contains"
+        },
+        {
+          "index": 2,
+          "title": "Angle changes the task"
+        },
+        {
+          "index": 3,
+          "title": "Entry velocity as the design variable"
+        },
+        {
+          "index": 4,
+          "title": "Reacceleration"
+        },
+        {
+          "index": 5,
+          "title": "COD deficit as a lens"
+        },
+        {
+          "index": 6,
+          "title": "Why fast athletes are not automatically good cutters"
+        },
+        {
+          "index": 7,
+          "title": "Progression without a ladder"
+        }
+      ],
+      "common_errors": [
+        "Reading a COD time as 'agility' or one quality",
+        "Programming one angle because one test uses it",
+        "Ignoring entry velocity while adding cones",
+        "Ignoring the exit",
+        "Using COD deficit deterministically",
+        "Assuming the fastest sprinter needs no COD work"
+      ],
+      "scenario_id": "case-3",
+      "applied_assessment_id": "A8",
+      "sign_off": null,
+      "reference_ids": [
+        "EP103-18",
+        "EP103-17",
+        "EP103-14",
+        "EP103-04",
+        "EP103-02",
+        "EP103-16"
+      ],
+      "assessment_counts": {
+        "knowledge": 5,
+        "interpretation": 3,
+        "decision": 2,
+        "drill_classification": 1,
+        "claim_audit": 1
+      },
+      "gating": {
+        "prerequisite": "PS-2 recorded (hard gate) and M7 at standard",
+        "unlocks": "M9",
+        "gate": "PS-2"
+      },
+      "content_objects": [
+        "module_id",
+        "module_header",
+        "purpose",
+        "objectives",
+        "doctrine_refs",
+        "applied_standard_refs",
+        "competency_refs",
+        "evidence_block",
+        "lesson",
+        "coaching_application",
+        "error_list",
+        "scenario",
+        "knowledge_assessment",
+        "applied_assessment",
+        "sign_off_link",
+        "references",
+        "gating"
+      ]
+    },
+    {
+      "id": "M9",
+      "title": "Agility & Perception-Action Coupling",
+      "quality_focus": "agility",
+      "duration_minutes": 105,
+      "framing_statement": "If the athlete knows what they are going to do before they do it, you are not training agility.",
+      "purpose": "To make the COD/agility distinction operational: to build tasks containing genuine information demand, and to stop the labeling error that lets closed drills be sold as agility development.",
+      "objectives": [
+        "M9.1 Explain perception-action coupling",
+        "M9.2 Distinguish artificial cues from representative information",
+        "M9.3 Design reactive agility tasks with meaningful perception-action requirements",
+        "M9.4 Manipulate information demand as a training variable",
+        "M9.5 State what closed drills do and do not train",
+        "M9.6 State the actual strength of the agility-intervention evidence base",
+        "M9.7 Apply demand-based transfer reasoning to agility drill selection"
+      ],
+      "doctrine_ids": [
+        "D103-5",
+        "D103-6",
+        "D103-7"
+      ],
+      "applied_standard_ids": [
+        "AS-103-07",
+        "AS-103-01",
+        "AS-103-10"
+      ],
+      "competency_ids": [
+        "C103-10",
+        "C103-01",
+        "C103-15"
+      ],
+      "lessons": [
+        {
+          "index": 1,
+          "title": "Perception-action coupling"
+        },
+        {
+          "index": 2,
+          "title": "Artificial versus representative information"
+        },
+        {
+          "index": 3,
+          "title": "Information demand as a variable"
+        },
+        {
+          "index": 4,
+          "title": "What closed drills train"
+        },
+        {
+          "index": 5,
+          "title": "Designing a reactive task"
+        },
+        {
+          "index": 6,
+          "title": "The honest evidence position"
+        },
+        {
+          "index": 7,
+          "title": "Busy is not open"
+        }
+      ],
+      "common_errors": [
+        "Calling ladder or cone work agility training",
+        "Cues arriving too late to be read",
+        "Mistaking complexity for information demand",
+        "Running only artificial cues and claiming sport transfer",
+        "Claiming a validated reactive dose",
+        "Abandoning closed drills entirely"
+      ],
+      "scenario_id": "case-4",
+      "applied_assessment_id": "A9",
+      "sign_off": "PS-3",
+      "reference_ids": [
+        "EP103-04",
+        "EP103-19",
+        "EP103-21",
+        "EP103-22",
+        "EP103-23",
+        "EP103-03",
+        "EP103-20"
+      ],
+      "assessment_counts": {
+        "knowledge": 5,
+        "interpretation": 2,
+        "decision": 2,
+        "drill_classification": 3,
+        "claim_audit": 2
+      },
+      "gating": {
+        "prerequisite": "M8 at standard",
+        "unlocks": "PS-3",
+        "gate": "PS-3 must be recorded before M10 opens"
+      },
+      "content_objects": [
+        "module_id",
+        "module_header",
+        "purpose",
+        "objectives",
+        "doctrine_refs",
+        "applied_standard_refs",
+        "competency_refs",
+        "evidence_block",
+        "lesson",
+        "coaching_application",
+        "error_list",
+        "scenario",
+        "knowledge_assessment",
+        "applied_assessment",
+        "sign_off_link",
+        "references",
+        "gating"
+      ]
+    },
+    {
+      "id": "M10",
+      "title": "Testing Speed, COD & Agility",
+      "quality_focus": "all",
+      "duration_minutes": 90,
+      "framing_statement": "The test measures what the test measures. Everything else you say about it is a claim you have to defend.",
+      "purpose": "To make coaches capable of selecting tests that match the construct being evaluated, standardizing them well enough that results mean something, and interpreting change inside measurement limits.",
+      "objectives": [
+        "M10.1 Select a test matching the construct evaluated",
+        "M10.2 State what common tests actually measure",
+        "M10.3 Apply standardization requirements",
+        "M10.4 Interpret results using reliability and typical error",
+        "M10.5 Explain why no universal change threshold is published",
+        "M10.6 Combine measures rather than over-diagnosing",
+        "M10.7 Label test outputs accurately"
+      ],
+      "doctrine_ids": [
+        "D103-10",
+        "D103-1",
+        "D103-5",
+        "D103-4"
+      ],
+      "applied_standard_ids": [
+        "AS-103-09",
+        "AS-103-10",
+        "AS-103-11",
+        "AS-103-12"
+      ],
+      "competency_ids": [
+        "C103-11",
+        "C103-12",
+        "C103-01"
+      ],
+      "lessons": [
+        {
+          "index": 1,
+          "title": "Construct first"
+        },
+        {
+          "index": 2,
+          "title": "What common tests measure"
+        },
+        {
+          "index": 3,
+          "title": "Standardization"
+        },
+        {
+          "index": 4,
+          "title": "Reliability and typical error"
+        },
+        {
+          "index": 5,
+          "title": "Why G3 publishes no universal change threshold"
+        },
+        {
+          "index": 6,
+          "title": "Multiple measures"
+        },
+        {
+          "index": 7,
+          "title": "Labeling in reports and conversations"
+        }
+      ],
+      "common_errors": [
+        "Choosing the familiar test then deciding what it proves",
+        "Reporting a 10 m time as speed",
+        "Calling a COD test an agility test",
+        "Comparing across surfaces or timing methods",
+        "Acting inside the noise band",
+        "Borrowing a change threshold as universal",
+        "Building a composite athleticism score"
+      ],
+      "scenario_id": "M10-A",
+      "applied_assessment_id": "A10",
+      "sign_off": null,
+      "reference_ids": [
+        "EP103-02",
+        "EP103-20",
+        "EP103-21",
+        "EP103-18",
+        "EP103-19",
+        "EP103-14",
+        "EP103-01",
+        "EP103-04"
+      ],
+      "assessment_counts": {
+        "knowledge": 5,
+        "interpretation": 4,
+        "decision": 2,
+        "drill_classification": 1,
+        "claim_audit": 2
+      },
+      "gating": {
+        "prerequisite": "PS-3 recorded (hard gate) and M9 at standard",
+        "unlocks": "M11",
+        "gate": "PS-3"
+      },
+      "content_objects": [
+        "module_id",
+        "module_header",
+        "purpose",
+        "objectives",
+        "doctrine_refs",
+        "applied_standard_refs",
+        "competency_refs",
+        "evidence_block",
+        "lesson",
+        "coaching_application",
+        "error_list",
+        "scenario",
+        "knowledge_assessment",
+        "applied_assessment",
+        "sign_off_link",
+        "references",
+        "gating"
+      ]
+    },
+    {
+      "id": "M11",
+      "title": "Youth Development + Programming Integration",
+      "quality_focus": "all",
+      "duration_minutes": 90,
+      "framing_statement": "Youth athletes are not small elite sprinters, and the week is not a formula.",
+      "purpose": "To build developmentally appropriate youth speed and multidirectional programming, and to integrate speed, COD, and agility work into a real week without pretending any microcycle model is validated.",
+      "objectives": [
+        "M11.1 Apply readiness-based reasoning to youth speed development",
+        "M11.2 Reject rigid age-window mythology while accounting for maturation",
+        "M11.3 Select methods appropriate to training age and exposure history",
+        "M11.4 Place speed and high-braking work where high outputs can be expressed",
+        "M11.5 Integrate speed work with practice and competition",
+        "M11.6 Explain why exact weekly placement remains Coach Judgment",
+        "M11.7 Disclose population transfer when applying adult or elite models"
+      ],
+      "doctrine_ids": [
+        "D103-11",
+        "D103-8",
+        "D103-2"
+      ],
+      "applied_standard_ids": [
+        "AS-103-12",
+        "AS-103-08",
+        "AS-103-02",
+        "AS-103-01"
+      ],
+      "competency_ids": [
+        "C103-13",
+        "C103-14"
+      ],
+      "lessons": [
+        {
+          "index": 1,
+          "title": "What the youth evidence supports"
+        },
+        {
+          "index": 2,
+          "title": "Readiness over age windows"
+        },
+        {
+          "index": 3,
+          "title": "Complexity is the expensive variable"
+        },
+        {
+          "index": 4,
+          "title": "Do not delay sprinting"
+        },
+        {
+          "index": 5,
+          "title": "Placement in the week"
+        },
+        {
+          "index": 6,
+          "title": "High/low and other practitioner systems"
+        },
+        {
+          "index": 7,
+          "title": "Integration with practice and competition"
+        }
+      ],
+      "common_errors": [
+        "Age-window claims",
+        "Delaying sprint exposure pending technique",
+        "Applying adult elite mechanics without disclosure",
+        "Presenting high/low as validated",
+        "Adding sessions without counting practice load",
+        "Inventing sex-specific rules to fill a gap"
+      ],
+      "scenario_id": "case-5",
+      "applied_assessment_id": "A11",
+      "sign_off": null,
+      "reference_ids": [
+        "EP103-03",
+        "EP103-24",
+        "EP103-09",
+        "EP103-01",
+        "EP103-14"
+      ],
+      "assessment_counts": {
+        "knowledge": 5,
+        "interpretation": 2,
+        "decision": 2,
+        "drill_classification": 0,
+        "claim_audit": 2
+      },
+      "gating": {
+        "prerequisite": "M10 at standard",
+        "unlocks": "M12",
+        "gate": null
+      },
+      "content_objects": [
+        "module_id",
+        "module_header",
+        "purpose",
+        "objectives",
+        "doctrine_refs",
+        "applied_standard_refs",
+        "competency_refs",
+        "evidence_block",
+        "lesson",
+        "coaching_application",
+        "error_list",
+        "scenario",
+        "knowledge_assessment",
+        "applied_assessment",
+        "sign_off_link",
+        "references",
+        "gating"
+      ]
+    },
+    {
+      "id": "M12",
+      "title": "Integrated G3 Speed Decision-Making",
+      "quality_focus": "all",
+      "duration_minutes": 105,
+      "framing_statement": "Why this, for this athlete, now - and what would change your mind?",
+      "purpose": "To integrate the course into the G3 102 decision model, applied end to end to a speed/COD/agility case, and to prepare the learner to defend the resulting decisions under questioning.",
+      "objectives": [
+        "M12.1 Run the G3 102 decision model on a speed/COD/agility case",
+        "M12.2 Build a speed demand profile",
+        "M12.3 Identify the priority quality and state its opportunity cost",
+        "M12.4 Audit a coaching claim against the evidence classes",
+        "M12.5 Apply causal restraint to injury claims in communication",
+        "M12.6 Separate evidence, applied standard, and judgment on demand",
+        "M12.7 Defend a full speed-development prescription"
+      ],
+      "doctrine_ids": [
+        "D103-1",
+        "D103-2",
+        "D103-3",
+        "D103-4",
+        "D103-5",
+        "D103-6",
+        "D103-7",
+        "D103-8",
+        "D103-9",
+        "D103-10",
+        "D103-11",
+        "D103-12"
+      ],
+      "applied_standard_ids": [
+        "AS-103-01",
+        "AS-103-02",
+        "AS-103-03",
+        "AS-103-04",
+        "AS-103-05",
+        "AS-103-06",
+        "AS-103-07",
+        "AS-103-08",
+        "AS-103-09",
+        "AS-103-10",
+        "AS-103-11",
+        "AS-103-12"
+      ],
+      "competency_ids": [
+        "C103-16",
+        "C103-14",
+        "C103-15"
+      ],
+      "lessons": [
+        {
+          "index": 1,
+          "title": "The speed demand profile"
+        },
+        {
+          "index": 2,
+          "title": "Profile and gap in speed terms"
+        },
+        {
+          "index": 3,
+          "title": "Priority and cost"
+        },
+        {
+          "index": 4,
+          "title": "Prescription"
+        },
+        {
+          "index": 5,
+          "title": "Response and adjustment"
+        },
+        {
+          "index": 6,
+          "title": "The claim audit"
+        },
+        {
+          "index": 7,
+          "title": "The defense"
+        }
+      ],
+      "common_errors": [
+        "Running the model without naming the primary quality",
+        "A prescription contradicting its own priority in session order",
+        "Testing one construct and claiming another",
+        "Injury-prevention language in parent or marketing communication",
+        "Presenting judgment as evidence under questioning",
+        "Unable to name anything that would change the plan"
+      ],
+      "scenario_id": "case-7",
+      "applied_assessment_id": "A12",
+      "sign_off": "PS-4",
+      "reference_ids": [
+        "EP103-01",
+        "EP103-14",
+        "EP103-11",
+        "EP103-16",
+        "EP103-02",
+        "EP103-18",
+        "EP103-04",
+        "EP103-05",
+        "EP103-23"
+      ],
+      "assessment_counts": {
+        "knowledge": 5,
+        "interpretation": 3,
+        "decision": 3,
+        "drill_classification": 0,
+        "claim_audit": 3
+      },
+      "gating": {
+        "prerequisite": "M11 at standard; four-week delivery window complete",
+        "unlocks": "PS-4 then T-01",
+        "gate": "T-01 required for course competency completion"
+      },
+      "content_objects": [
+        "module_id",
+        "module_header",
+        "purpose",
+        "objectives",
+        "doctrine_refs",
+        "applied_standard_refs",
+        "competency_refs",
+        "evidence_block",
+        "lesson",
+        "coaching_application",
+        "error_list",
+        "scenario",
+        "knowledge_assessment",
+        "applied_assessment",
+        "sign_off_link",
+        "references",
+        "gating"
+      ]
+    }
+  ],
+  "cases": [
+    {
+      "id": "case-1",
+      "title": "Middle-School Field/Court Athlete",
+      "competencies": [
+        "C103-01",
+        "C103-04",
+        "C103-08",
+        "C103-13"
+      ],
+      "doctrine": [
+        "D103-11",
+        "D103-3",
+        "D103-2"
+      ],
+      "modules": [
+        "M1",
+        "M4",
+        "M7",
+        "M11"
+      ],
+      "situation_summary": "12-year-old, two seasonal sports, no training history, high instructional responsiveness, poor braking organization at speed. Group of 16, one coach, two 50-minute sessions. Parent asks about 'proper sprint mechanics work' and sled sprints.",
+      "decision_prompt": "What does the speed and multidirectional work consist of, what is deliberately excluded, and what do you tell the parent?",
+      "failure_modes": [
+        "Age-window claims",
+        "Delaying sprinting for technique",
+        "Adult track model applied without disclosure",
+        "A sled percentage quoted as a rule",
+        "Complexity beyond coordination and supervision",
+        "Deceleration left untrained"
+      ],
+      "delivery": [
+        "situation",
+        "decision (commit before feedback)",
+        "defense",
+        "discussion"
+      ],
+      "rubric": "universal_case_rubric"
+    },
+    {
+      "id": "case-2",
+      "title": "High-School Athlete With Strong 10 m but Poorer High-Speed Capacity",
+      "competencies": [
+        "C103-01",
+        "C103-02",
+        "C103-05",
+        "C103-11"
+      ],
+      "doctrine": [
+        "D103-1",
+        "D103-2",
+        "D103-10"
+      ],
+      "modules": [
+        "M2",
+        "M3",
+        "M5",
+        "M10"
+      ],
+      "situation_summary": "16-year-old wide midfielder. 10 m among the best on the team; flying 10 m velocity in the bottom third; consistent across two occasions on the same surface with electronic gates. Program has run 6 x 20 m standing starts labeled 'speed'.",
+      "decision_prompt": "What quality is actually deficient, what has the program been training, and what changes?",
+      "failure_modes": [
+        "Calling every sprint exposure 'speed'",
+        "Treating the 10 m result as top-speed evidence",
+        "Adding volume rather than changing entry conditions and distance",
+        "Attributing the difference to noise when data rules it out",
+        "Prescribing max-velocity work with no demand justification"
+      ],
+      "delivery": [
+        "situation",
+        "decision (commit before feedback)",
+        "defense",
+        "discussion"
+      ],
+      "rubric": "universal_case_rubric"
+    },
+    {
+      "id": "case-3",
+      "title": "Fast Linear Speed, Weak Planned COD",
+      "competencies": [
+        "C103-08",
+        "C103-09",
+        "C103-12"
+      ],
+      "doctrine": [
+        "D103-5",
+        "D103-10",
+        "D103-4"
+      ],
+      "modules": [
+        "M7",
+        "M8",
+        "M10"
+      ],
+      "situation_summary": "17-year-old outside back. Among the fastest at 10 m and flying 10 m; among the poorest 505-style results with a large left/right difference and a correspondingly large COD deficit. No pain. Video shows high entry velocity, four short braking steps, upright plant, slow exit.",
+      "decision_prompt": "What is the probable limiting factor, what would distinguish the candidates, and what is the first block?",
+      "failure_modes": [
+        "Reading COD deficit deterministically",
+        "Ignoring entry velocity",
+        "Ignoring the exit",
+        "Treating asymmetry as injury prediction",
+        "Assuming linear speed means no COD work needed",
+        "Adding pattern volume without changing the constraint"
+      ],
+      "delivery": [
+        "situation",
+        "decision (commit before feedback)",
+        "defense",
+        "discussion"
+      ],
+      "rubric": "universal_case_rubric"
+    },
+    {
+      "id": "case-4",
+      "title": "Excellent on Cone Drills, Poor in Live Play",
+      "competencies": [
+        "C103-01",
+        "C103-09",
+        "C103-10"
+      ],
+      "doctrine": [
+        "D103-5",
+        "D103-6",
+        "D103-7"
+      ],
+      "modules": [
+        "M1",
+        "M8",
+        "M9"
+      ],
+      "situation_summary": "16-year-old in a reactive defensive role. Best times in the program on every pre-planned drill; consistently a step late in live play, commits early to the wrong side. Physical testing strong. Program has responded by adding faster cone work.",
+      "decision_prompt": "What is the actual gap, and what does the next block look like?",
+      "failure_modes": [
+        "Adding cone volume",
+        "Adding complexity and calling it information demand",
+        "Cues arriving too late to be read",
+        "Claiming a validated reactive progression",
+        "Labeling closed work 'agility'",
+        "Concluding a physical deficit when testing says otherwise"
+      ],
+      "delivery": [
+        "situation",
+        "decision (commit before feedback)",
+        "defense",
+        "discussion"
+      ],
+      "rubric": "universal_case_rubric"
+    },
+    {
+      "id": "case-5",
+      "title": "Team With Limited Weekly Training Time",
+      "competencies": [
+        "C103-04",
+        "C103-08",
+        "C103-10",
+        "C103-14"
+      ],
+      "doctrine": [
+        "D103-8",
+        "D103-2",
+        "D103-11"
+      ],
+      "modules": [
+        "M5",
+        "M9",
+        "M11"
+      ],
+      "situation_summary": "Scholastic squad of 30, in-season. Five practices, one match, two 40-minute G3 slots with one lost roughly every other week. Practice already contains substantial sprinting, braking, and directional change, uncounted. Sport coach wants speed, agility, and conditioning every session.",
+      "decision_prompt": "What goes in the two slots, what is protected, what is compromised, and what do you tell the sport coach cannot be achieved?",
+      "failure_modes": [
+        "Ignoring practice load",
+        "Promising all three outcomes",
+        "A 'speed' block placed after conditioning",
+        "A copied rest ratio",
+        "A validated-microcycle claim",
+        "Dropping reactive work silently"
+      ],
+      "delivery": [
+        "situation",
+        "decision (commit before feedback)",
+        "defense",
+        "discussion"
+      ],
+      "rubric": "universal_case_rubric"
+    },
+    {
+      "id": "case-6",
+      "title": "Youth Athlete and the Heavy Sled Question",
+      "competencies": [
+        "C103-06",
+        "C103-13",
+        "C103-15"
+      ],
+      "doctrine": [
+        "D103-9",
+        "D103-11",
+        "D103-2"
+      ],
+      "modules": [
+        "M6",
+        "M11"
+      ],
+      "situation_summary": "Parent asks what percentage of body weight a 15-year-old with one year of structured training should pull, citing conflicting figures and an article claiming heavy sleds are fastest for acceleration. One sled, 30 m indoor lane.",
+      "decision_prompt": "What do you say, what do you program, and how do you decide the load?",
+      "failure_modes": [
+        "Inventing a number",
+        "Deferring to the parent's article",
+        "Claiming sleds are harmful",
+        "Treating one pending-verification meta-analysis as settling loading",
+        "Dropping sprint exposure for the tool",
+        "Adding an injury-prevention claim"
+      ],
+      "delivery": [
+        "situation",
+        "decision (commit before feedback)",
+        "defense",
+        "discussion"
+      ],
+      "rubric": "universal_case_rubric"
+    },
+    {
+      "id": "case-7",
+      "title": "Hamstring / Maximal-Velocity Claim Audit",
+      "competencies": [
+        "C103-05",
+        "C103-15",
+        "C103-16"
+      ],
+      "doctrine": [
+        "D103-12",
+        "D103-3"
+      ],
+      "modules": [
+        "M3",
+        "M12"
+      ],
+      "situation_summary": "Draft program copy claims maximal-velocity sprinting prevents hamstring injuries. A second coach argues maximal-velocity sprinting is dangerous for high-school athletes and should be removed. A parent asks whether sprinting is safe after her son's hamstring strain.",
+      "decision_prompt": "Audit both claims, write the replacement copy, and script the parent conversation.",
+      "failure_modes": [
+        "Softening a prevention claim rather than removing it",
+        "Removing max-velocity sprinting to satisfy the danger claim",
+        "Treating mechanistic rationale as intervention evidence",
+        "Reassurance instead of accuracy with the parent",
+        "Publishing external copy without Director of Training approval"
+      ],
+      "delivery": [
+        "situation",
+        "decision (commit before feedback)",
+        "defense",
+        "discussion"
+      ],
+      "rubric": "universal_case_rubric"
+    }
+  ],
+  "sign_offs": [
+    {
+      "id": "PS-1",
+      "title": "Sprint Observation & Coaching",
+      "completed_at": "M4",
+      "function": "gates M5",
+      "artifacts": [
+        "A1",
+        "A2",
+        "A3",
+        "A4"
+      ],
+      "observed_behaviors": [
+        "Distinguishes acceleration from higher-speed sprinting in setup and language",
+        "Observes without forcing a universal visual model",
+        "Selects a limited number of relevant interventions and holds them long enough to evaluate",
+        "Preserves meaningful sprint exposure - athletes actually sprint at intensity",
+        "Explains the evidence boundary of any technical intervention",
+        "Names the quality being trained without prompting"
+      ],
+      "assessor_questions": [
+        "Which phase is this exposure targeting, and how do you know?",
+        "Why that cue for that athlete?",
+        "What would tell you the cue isn't helping?",
+        "Where did that model come from, and does it apply to this athlete?"
+      ],
+      "record_fields": [
+        "coach_id",
+        "sign_off_id",
+        "assessor_id",
+        "date",
+        "environment",
+        "athlete_or_group_ref",
+        "behaviors_observed",
+        "artifacts",
+        "questions_asked",
+        "outcome",
+        "expiry_date",
+        "notes"
+      ],
+      "expiry_months": 24
+    },
+    {
+      "id": "PS-2",
+      "title": "Deceleration Coaching",
+      "completed_at": "M7",
+      "function": "gates M8",
+      "artifacts": [
+        "A5",
+        "A6",
+        "A7"
+      ],
+      "observed_behaviors": [
+        "Identifies braking demand in momentum and entry-velocity terms",
+        "Manipulates approach velocity and complexity deliberately",
+        "Selects an appropriate regression or progression and states the criterion",
+        "Coaches control and organization rather than 'stop faster'",
+        "Avoids injury-prevention overclaims in everything said to athletes",
+        "Names AS-103-05 as an applied standard when asked"
+      ],
+      "assessor_questions": [
+        "What makes this task hard for this athlete?",
+        "What are you changing to progress it, and why that variable?",
+        "What would you say to a parent who asks whether this prevents knee injuries?",
+        "Is the order you're using evidence or G3 standard?"
+      ],
+      "record_fields": [
+        "coach_id",
+        "sign_off_id",
+        "assessor_id",
+        "date",
+        "environment",
+        "athlete_or_group_ref",
+        "behaviors_observed",
+        "artifacts",
+        "questions_asked",
+        "outcome",
+        "expiry_date",
+        "notes"
+      ],
+      "expiry_months": 24
+    },
+    {
+      "id": "PS-3",
+      "title": "COD vs Agility Design",
+      "completed_at": "M9",
+      "function": "gates M10",
+      "artifacts": [
+        "A8",
+        "A9"
+      ],
+      "observed_behaviors": [
+        "Designs and delivers a pre-planned COD task with deliberate entry velocity, angle, and exit demand",
+        "Designs and delivers a reactive task where perceiving the information is required to solve it",
+        "Identifies the informational difference out loud in perception-action terms",
+        "Manipulates movement and decision constraints separately",
+        "Labels each construct correctly to athletes and in the session document",
+        "Coaches both appropriately"
+      ],
+      "assessor_questions": [
+        "Which of these is agility, and what makes it so?",
+        "What information is the athlete actually reading?",
+        "What happens to this task if I remove the cue?",
+        "Is this drill complex or is it open - and what is the difference?"
+      ],
+      "record_fields": [
+        "coach_id",
+        "sign_off_id",
+        "assessor_id",
+        "date",
+        "environment",
+        "athlete_or_group_ref",
+        "behaviors_observed",
+        "artifacts",
+        "questions_asked",
+        "outcome",
+        "expiry_date",
+        "notes"
+      ],
+      "expiry_months": 24
+    },
+    {
+      "id": "PS-4",
+      "title": "Integrated Speed Session / Microcycle",
+      "completed_at": "M12",
+      "function": "completion requirement; requires four-week delivery window",
+      "artifacts": [
+        "A10",
+        "A11",
+        "A12",
+        "delivered plan (4-week minimum)"
+      ],
+      "observed_behaviors": [
+        "Identifies primary and secondary qualities unprompted",
+        "Organizes exposures to protect output quality and adjusts when quality degrades",
+        "Integrates supporting strength and plyometric work with stated intended adaptations",
+        "Justifies weekly placement in terms of where high outputs can be expressed",
+        "Identifies what remains Coach Judgment",
+        "Delivers the session as planned or can say what was traded"
+      ],
+      "assessor_questions": [
+        "What is the primary quality this week, and what is it costing?",
+        "What told you the quality had degraded?",
+        "Which placement decisions are evidence and which are your call?",
+        "What did practice already give these athletes this week?"
+      ],
+      "record_fields": [
+        "coach_id",
+        "sign_off_id",
+        "assessor_id",
+        "date",
+        "environment",
+        "athlete_or_group_ref",
+        "behaviors_observed",
+        "artifacts",
+        "questions_asked",
+        "outcome",
+        "expiry_date",
+        "notes"
+      ],
+      "expiry_months": 24
+    }
+  ],
+  "terminal_defense": {
+    "id": "T-01",
+    "title": "Speed, COD & Agility Programming Defense",
+    "requires": [
+      "PS-1",
+      "PS-2",
+      "PS-3",
+      "PS-4",
+      "all module assessments at standard"
+    ],
+    "format": "20-30 minutes with an approved assessor using the coach's own athlete and artifacts; assessor works the seven obligations in order and probes at least four",
+    "must_defend": [
+      "demand analysis",
+      "terminology",
+      "priority",
+      "method selection",
+      "dosage logic",
+      "testing",
+      "progression",
+      "evidence classification",
+      "G3 Applied Standards applied",
+      "remaining uncertainty"
+    ],
+    "mandatory_probes": [
+      "Name the primary quality in this plan, and show me where it appears in the session order.",
+      "This test - what does it actually measure, and what did you claim from it?",
+      "Why this method rather than the alternative, and what adaptation are you buying?",
+      "Which part of what you just told me is evidence, which is G3 standard, and which is your judgment?",
+      "What would make you change this plan? Be specific.",
+      "Say what you would tell this athlete's parent about injury risk."
+    ],
+    "non_compensable_failures": [
+      "cannot answer probe 4",
+      "makes an injury-prevention claim on probe 6"
+    ],
+    "rubric": "defense_rubric",
+    "required_for": "course competency completion"
+  },
+  "assessment_system": {
+    "levels": [
+      {
+        "level": "knowledge",
+        "weight": 0.12
+      },
+      {
+        "level": "interpretation",
+        "weight": 0.18
+      },
+      {
+        "level": "decision",
+        "weight": 0.18
+      },
+      {
+        "level": "application",
+        "weight": 0.26
+      },
+      {
+        "level": "coaching",
+        "weight": 0.14
+      },
+      {
+        "level": "defense",
+        "weight": 0.12
+      }
+    ],
+    "required_types": [
+      "multiple choice",
+      "scenario-based questions",
+      "claim-audit / error-identification items",
+      "test-selection cases",
+      "drill-classification tasks",
+      "programming assignments",
+      "four practical sign-offs",
+      "final defense"
+    ],
+    "design_rule": "Applied coaching competencies are never certified by multiple-choice questions alone. No learner passes with a failing score in Application, Coaching, or Defense.",
+    "pass_standards": {
+      "knowledge": "80% per module",
+      "interpretation_decision": "80% per module",
+      "applied": "at standard or better, one revision permitted",
+      "cases": "11/15 no dimension below 2",
+      "sign_offs": "all four recorded",
+      "terminal_defense": "pass required, non-compensable"
+    },
+    "item_writing_rules": [
+      "No item answerable from a single memorized sentence outside the knowledge band.",
+      "Every scenario item commits the learner before feedback.",
+      "Distractors are real coaching errors drawn from the claim audit and module error lists.",
+      "No key may depend on a claim classified C, D, or E.",
+      "No key may depend on a verification-pending or unmapped source as sole support.",
+      "No key may require a Class F claim to be treated as true.",
+      "No key may require a number G3 has not established (load, rest, decrement, phase boundary, angle progression, change threshold).",
+      "Where multiple answers are defensible, the item is a decision item scored on reasoning.",
+      "Every item carries module, competency, doctrine, applied standard, evidence class, level, and key source metadata."
+    ]
+  },
+  "rubrics": {
+    "universal_case_rubric": {
+      "dimensions": [
+        "quality identification",
+        "demand fidelity",
+        "method reasoning",
+        "measurement discipline",
+        "evidence honesty"
+      ],
+      "scale": "0-3",
+      "pass": "11/15 with no dimension below 2"
+    },
+    "applied_competency_rubric": {
+      "dimensions": [
+        "completeness",
+        "reasoning quality",
+        "deliverability",
+        "evidence honesty"
+      ],
+      "scale": "0-3",
+      "pass": "2 = at standard",
+      "automatic_zero_conditions": [
+        "a Class F claim presented as true",
+        "a universal load, rest ratio, velocity-decrement threshold, phase-boundary distance, angle progression, or change threshold asserted as established",
+        "a pre-planned task labeled agility, or an acceleration measure labeled maximal velocity",
+        "any injury-prevention guarantee or inherent-danger claim",
+        "a descriptive mechanical finding presented as a proven causal coaching target",
+        "a composite athlete score or automated training recommendation"
+      ]
+    },
+    "coaching_rubric": {
+      "dimensions": [
+        "quality naming",
+        "observation",
+        "intervention",
+        "progression control",
+        "evidence honesty"
+      ],
+      "scale": "0-3",
+      "pass": "11/15, no dimension below 2, never 0 on evidence honesty"
+    },
+    "defense_rubric": {
+      "dimensions": [
+        "quality and demand fluency",
+        "method reasoning",
+        "measurement discipline",
+        "evidence honesty",
+        "falsifiability"
+      ],
+      "scale": "0-3",
+      "pass": "11/15, no dimension below 2, never 0 on evidence honesty"
+    }
+  },
+  "references": [
+    {
+      "id": "EP103-01",
+      "citation": "Haugen T, Tonnessen E, Seiler S. The Training and Development of Elite Sprint Performance. IJSPP, 2019.",
+      "type": "narrative review",
+      "citation_tag": "cite:96",
+      "domain": "sprint performance, training, programming",
+      "limitation": "Much evidence from elite/track populations",
+      "verification_status": "verified"
+    },
+    {
+      "id": "EP103-02",
+      "citation": "Altmann S et al. Validity and reliability of speed tests used in soccer: a systematic review. PLoS One, 2019.",
+      "type": "systematic review",
+      "citation_tag": "cite:97",
+      "domain": "sprint/COD/agility testing",
+      "limitation": "Soccer-focused population",
+      "verification_status": "verified"
+    },
+    {
+      "id": "EP103-03",
+      "citation": "Development and trainability of agility in youth: a systematic scoping review. 2022.",
+      "type": "scoping review",
+      "citation_tag": "cite:88",
+      "domain": "youth agility development and testing",
+      "limitation": "Heterogeneous definitions and designs",
+      "verification_status": "verified"
+    },
+    {
+      "id": "EP103-04",
+      "citation": "Hojka V et al. A systematic review of the main factors that determine agility in sport. J Hum Kinet, 2016.",
+      "type": "systematic review",
+      "citation_tag": "cite:85",
+      "domain": "agility definitions and determinants",
+      "limitation": "Mixed sports and testing paradigms",
+      "verification_status": "verified"
+    },
+    {
+      "id": "EP103-05",
+      "citation": "Ward C et al. Does Resisted Sprint Training Improve the Sprint Performance of Field-Based Athletes? Sports Med, 2024.",
+      "type": "SR/meta-analysis",
+      "citation_tag": "cite:81",
+      "domain": "resisted sprint training",
+      "limitation": "Field-based athletes; mixed methods and devices",
+      "verification_status": "verified"
+    },
+    {
+      "id": "EP103-06",
+      "citation": "Myrvang S et al. The Longitudinal Effects of Resisted and Assisted Sprint Training on Sprint Performance and Kinematics. 2024.",
+      "type": "SR/meta-analysis",
+      "citation_tag": "cite:84",
+      "domain": "resisted and assisted sprint methods",
+      "limitation": "Mixed intervention designs",
+      "verification_status": "verified"
+    },
+    {
+      "id": "EP103-07",
+      "citation": "Effect of plyometric training compared to resistance training on sprint and jump performance in athletes. 2025.",
+      "type": "SR/meta-analysis",
+      "citation_tag": "cite:87",
+      "domain": "plyometrics vs resistance training",
+      "limitation": "Full final bibliographic confirmation recommended",
+      "verification_status": "pending"
+    },
+    {
+      "id": "EP103-08",
+      "citation": "Effects of combined resistance and plyometric training modalities on vertical jump and sprint. 2026.",
+      "type": "SR/network meta-analysis",
+      "citation_tag": "cite:89",
+      "domain": "combined modalities",
+      "limitation": "Newer source",
+      "verification_status": "pending"
+    },
+    {
+      "id": "EP103-09",
+      "citation": "Effects of plyometric training on jump, sprint, and COD performance in adolescent soccer players. 2025.",
+      "type": "SR/meta-analysis",
+      "citation_tag": "cite:91",
+      "domain": "adolescent plyometric effects",
+      "limitation": "Soccer-specific population; 2025",
+      "verification_status": "pending"
+    },
+    {
+      "id": "EP103-10",
+      "citation": "Ramirez-Campillo R et al. Effects of Plyometric Jump Training on Repeated Sprint Ability in Athletes. 2021.",
+      "type": "SR/meta-analysis (repository record)",
+      "citation_tag": "cite:95",
+      "domain": "plyometrics and repeated sprint ability",
+      "limitation": "DOI/journal verification recommended",
+      "verification_status": "pending"
+    },
+    {
+      "id": "EP103-11",
+      "citation": "Morin JB et al. Sprint Acceleration Mechanics: The Major Role of Hamstrings in Horizontal Force Production. Front Physiol, 2015.",
+      "type": "primary research",
+      "citation_tag": "cite:105",
+      "domain": "acceleration mechanics",
+      "limitation": "Influential but often oversimplified in coaching translation",
+      "verification_status": "verified"
+    },
+    {
+      "id": "EP103-12",
+      "citation": "Bezodis NE et al. The Biomechanics of the Track and Field Sprint Start: A Narrative Review. Sports Med, 2019.",
+      "type": "narrative review",
+      "citation_tag": "cite:104",
+      "domain": "sprint start and early acceleration",
+      "limitation": "Track sprint emphasis",
+      "verification_status": "verified"
+    },
+    {
+      "id": "EP103-13",
+      "citation": "Nicholson B et al. The Training of Medium- to Long-Distance Sprint Performance: A Systematic Review. 2021.",
+      "type": "systematic review",
+      "citation_tag": "cite:101",
+      "domain": "sprint-phase performance and training",
+      "limitation": "Longer sprint-distance orientation than many team sports",
+      "verification_status": "verified"
+    },
+    {
+      "id": "EP103-14",
+      "citation": "Harper DJ et al. Biomechanical and Neuromuscular Performance Requirements of Horizontal Deceleration. Sports Med, 2022.",
+      "type": "review",
+      "citation_tag": "cite:98",
+      "domain": "deceleration",
+      "limitation": "Review-heavy base with fewer direct interventions",
+      "verification_status": "verified"
+    },
+    {
+      "id": "EP103-15",
+      "citation": "Publisher record for the horizontal deceleration review (Springer).",
+      "type": "verification support",
+      "citation_tag": "cite:108",
+      "domain": "deceleration",
+      "limitation": "Verification support only",
+      "verification_status": "verified"
+    },
+    {
+      "id": "EP103-16",
+      "citation": "Smajla D et al. Associations between lower limb eccentric muscle capability and COD and sprint performance. 2022.",
+      "type": "systematic review",
+      "citation_tag": "cite:100",
+      "domain": "eccentric strength, sprint, COD",
+      "limitation": "Associative more than interventional",
+      "verification_status": "verified"
+    },
+    {
+      "id": "EP103-17",
+      "citation": "Singh U et al. Biomechanical Determinants of Change of Direction Performance: A Systematic Review. 2025.",
+      "type": "systematic review",
+      "citation_tag": "cite:80",
+      "domain": "COD determinants",
+      "limitation": "Newer source",
+      "verification_status": "pending"
+    },
+    {
+      "id": "EP103-18",
+      "citation": "Forster JWD et al. Training to Improve Pro-Agility Performance: A Systematic Review. 2023.",
+      "type": "systematic review",
+      "citation_tag": "cite:79",
+      "domain": "pro-agility / COD training",
+      "limitation": "Pro-agility specificity may not capture all COD tasks",
+      "verification_status": "verified"
+    },
+    {
+      "id": "EP103-19",
+      "citation": "Are change of direction speed and agility different abilities from time and entropy-based perspective? 2023.",
+      "type": "primary research",
+      "citation_tag": "cite:90",
+      "domain": "COD versus agility distinction",
+      "limitation": "Specific test paradigm",
+      "verification_status": "verified"
+    },
+    {
+      "id": "EP103-20",
+      "citation": "Pojskic H et al. Reliability, Validity and Usefulness of a New Response Time Test Battery for Agility-Based Sports. 2019.",
+      "type": "primary research",
+      "citation_tag": "cite:102",
+      "domain": "reactive testing",
+      "limitation": "Sport/test specificity",
+      "verification_status": "verified"
+    },
+    {
+      "id": "EP103-21",
+      "citation": "The Importance of Reactive Agility Tests in Differentiating Adolescent Soccer Players. 2020.",
+      "type": "primary research",
+      "citation_tag": "cite:107",
+      "domain": "reactive agility discrimination",
+      "limitation": "Adolescent soccer population",
+      "verification_status": "verified"
+    },
+    {
+      "id": "EP103-22",
+      "citation": "Importance of Reactive Agility and COD Speed in Differentiating Performance Levels in Youth Soccer Players. 2018.",
+      "type": "primary research",
+      "citation_tag": "cite:110",
+      "domain": "youth reactive agility and CODS",
+      "limitation": "Soccer-specific sample",
+      "verification_status": "verified"
+    },
+    {
+      "id": "EP103-23",
+      "citation": "Optimizing Agility Training in Team Sport Players - The Role of Specificity and Transfer. 2026.",
+      "type": "review",
+      "citation_tag": "cite:75",
+      "domain": "agility training and transfer",
+      "limitation": "Newer source",
+      "verification_status": "pending"
+    },
+    {
+      "id": "EP103-24",
+      "citation": "The effect of repeated-sprint training on performance in youth athletes: a meta-analysis. 2026.",
+      "type": "meta-analysis",
+      "citation_tag": "cite:76",
+      "domain": "youth repeated sprint ability",
+      "limitation": "Newer source",
+      "verification_status": "pending"
+    },
+    {
+      "id": "EP103-25",
+      "citation": "Effects of speed, agility, and quickness training on athletic performance in soccer players. 2025.",
+      "type": "primary/review",
+      "citation_tag": "cite:94",
+      "domain": "SAQ outcomes",
+      "limitation": "Soccer-specific; conceptually broad category",
+      "verification_status": "pending"
+    },
+    {
+      "id": "EP103-26",
+      "citation": "Thapa RK et al. Effects of Complex Training on Sprint, Jump, and COD Ability among Soccer Players: A Meta-Analysis. 2021.",
+      "type": "meta-analysis",
+      "citation_tag": "cite:83",
+      "domain": "combined training effects",
+      "limitation": "Soccer concentration",
+      "verification_status": "verified"
+    },
+    {
+      "id": "EP103-27",
+      "citation": "Effects of Resisted Sprint Training on Sprint Performance and Mechanics, focusing on load magnitude. 2025/2026 repository record.",
+      "type": "SR/meta-analysis (repository)",
+      "citation_tag": "cite:92",
+      "domain": "RST load magnitude",
+      "limitation": "Repository-hosted; final publication details to be confirmed",
+      "verification_status": "pending"
+    },
+    {
+      "id": "EP103-28",
+      "citation": "Matusinski A et al. Acute effects of resisted and assisted locomotor activation on sprint performance. 2022.",
+      "type": "primary research",
+      "citation_tag": "cite:74",
+      "domain": "acute resisted/assisted activation",
+      "limitation": "Acute response data, not long-term adaptation",
+      "verification_status": "verified"
+    }
+  ],
+  "evidence_integrity": {
+    "conditions_carried_forward": [
+      {
+        "n": 1,
+        "condition": "Several 2025-2026 sources require final bibliographic confirmation before becoming anchor citations for external publication",
+        "discharge": "verification_pending list; none is sole support for any doctrine, standard, or key"
+      },
+      {
+        "n": 2,
+        "condition": "Do not invent missing bibliographic details",
+        "discharge": "one unmapped tag flagged, not resolved by assumption"
+      },
+      {
+        "n": 3,
+        "condition": "Newer/unconfirmed sources must not independently support hard doctrine or assessment keys",
+        "discharge": "item-writing rule 5 and production checklist; every doctrine carries a verified anchor"
+      },
+      {
+        "n": 4,
+        "condition": "Overspeed/assisted sprinting remains conditional",
+        "discharge": "Class C in M5; no G3 recommendation either way; CJ-08"
+      },
+      {
+        "n": 5,
+        "condition": "Exact RST loading remains conditional",
+        "discharge": "AS-103-04 governs intent, not percentage; no load figure anywhere in the course; CJ-06"
+      },
+      {
+        "n": 6,
+        "condition": "Deceleration diagnostics remain emerging",
+        "discharge": "Class C in M7 and M10; CJ-14"
+      },
+      {
+        "n": 7,
+        "condition": "Ecologically valid reactive-agility intervention evidence is smaller and heterogeneous",
+        "discharge": "stated in M9 and M10; construct distinction A, intervention evidence presented at actual strength"
+      },
+      {
+        "n": 8,
+        "condition": "Exact sprint dosage and weekly programming remain principle-driven and partly Coach Judgment",
+        "discharge": "AS-103-08 preserves quality without ratios; CJ-01 to CJ-05"
+      },
+      {
+        "n": 9,
+        "condition": "Female-specific intervention evidence is limited",
+        "discharge": "AS-103-12 disclosure; restraint standard; CJ-15"
+      },
+      {
+        "n": 10,
+        "condition": "Injury-prevention language must remain conservative",
+        "discharge": "D103-12 governs all injury language; Case 7 assesses it; CA-16, CA-17"
+      }
+    ],
+    "verification_pending": [
+      "EP103-07",
+      "EP103-08",
+      "EP103-09",
+      "EP103-10",
+      "EP103-17",
+      "EP103-23",
+      "EP103-24",
+      "EP103-25",
+      "EP103-27"
+    ],
+    "verification_pending_criterion": "Dated 2025-2026 (the Evidence Pack's stated sweep of newer reviews not yet deeply indexed), or a repository-hosted record whose DOI/final journal details the pack says should be confirmed.",
+    "unmapped_tags": [
+      "cite:103"
+    ],
+    "unmapped_handling": "Carried at reduced confidence, never used alone. Dependent claims in M6 and M7 rest on EP103-14 and EP103-16, both verified. No assessment key depends on it. Resolve or rewrite before external publication.",
+    "anchor_rule": "Every doctrine, applied standard, and assessment key has at least one verified anchor. No content object rests on verification-pending sources alone.",
+    "external_use_gate": {
+      "internal_g3_and_novakore": "permitted",
+      "gated_uses": [
+        "external publication",
+        "third-party CEU recognition",
+        "accreditation submission",
+        "public release"
+      ],
+      "gate_requirement": "all verification-pending sources confirmed and cite:103 resolved or dependent language rewritten"
+    },
+    "population_transfer_limitations": [
+      "adult and elite track sprint-mechanics evidence",
+      "soccer-heavy intervention literature",
+      "male-dominant samples in several domains",
+      "limited overspeed evidence",
+      "emerging deceleration diagnostics",
+      "heterogeneous agility interventions",
+      "incomplete exact dose-response evidence"
+    ],
+    "research_gaps_taught": [
+      "youth/team-sport maximal-velocity intervention evidence",
+      "applied overspeed evidence",
+      "direct comparisons among RST loading models",
+      "ecologically valid reactive agility interventions",
+      "clean field diagnostics for deceleration",
+      "exact dose-response in mixed-demand schedules",
+      "robust sex-specific intervention evidence"
+    ]
+  },
+  "testing_governance": {
+    "rule": "WHAT THE TEST MEASURES != WHAT THE COACH WANTS TO CALL IT",
+    "test_constructs": [
+      {
+        "test": "short sprint split (5-10 m)",
+        "measures": "acceleration qualities",
+        "does_not_establish": "maximal velocity"
+      },
+      {
+        "test": "longer sprint with splits",
+        "measures": "acceleration plus later-phase capability by distance",
+        "does_not_establish": "a single 'speed' quality"
+      },
+      {
+        "test": "flying sprint (rolling entry)",
+        "measures": "higher-speed / maximal-velocity performance when appropriately set up",
+        "does_not_establish": "acceleration capability"
+      },
+      {
+        "test": "pre-planned COD test (505-style, pro-agility)",
+        "measures": "mixture of linear speed, braking, technique, orientation, reacceleration",
+        "does_not_establish": "agility or any single isolated quality"
+      },
+      {
+        "test": "COD deficit",
+        "measures": "context for COD relative to linear speed",
+        "does_not_establish": "'true COD ability' as an isolate"
+      },
+      {
+        "test": "reactive agility test",
+        "measures": "construct relevance for perception-action demands",
+        "does_not_establish": "precision - often more variable reliability"
+      },
+      {
+        "test": "deceleration field metrics",
+        "measures": "emerging descriptive information",
+        "does_not_establish": "an established diagnostic"
+      }
+    ],
+    "standardization": [
+      "objective timing where practical",
+      "consistent setup and start procedure",
+      "familiarization before interpretation",
+      "consistent surface, footwear, environment",
+      "recorded conditions at time of testing",
+      "consistent administration",
+      "known measurement error before interpreting small changes"
+    ],
+    "threshold_prohibition": "G3 103 creates no universal smallest-worthwhile-change threshold for any test. Local working figures are environment-scoped Applied Standards with a review date, never evidence-derived.",
+    "reporting": "Every output carries test, construct measured, conditions, and interpretation limits. No composite score. No automated recommendation."
+  },
+  "population_governance": {
+    "youth": {
+      "considerations": [
+        "maturation",
+        "coordination",
+        "training age",
+        "readiness",
+        "movement competency",
+        "exposure history",
+        "supervision",
+        "task complexity"
+      ],
+      "binding_rules": [
+        "sprinting is not delayed pending perfect technique",
+        "adult elite track mechanics are not assumed to transfer and are disclosed when borrowed",
+        "entry to loaded or high-intensity progressions is governed by readiness, not chronological age",
+        "well-designed youth speed development is not treated as inherently unsafe, and no protective guarantee is offered"
+      ]
+    },
+    "female_athletes": {
+      "position": "G3 applies foundational speed, COD, and agility principles across sexes and does not publish sex-specific programming rules where direct intervention evidence is insufficient. Individual modification proceeds on individual grounds. Deliberate restraint; under review.",
+      "continuous_with": "G3 102 AS-31",
+      "judgment_ref": "CJ-15"
+    },
+    "population_transfer_disclosure": "Required at the point of the claim, not as an end-of-module disclaimer (AS-103-12)."
+  },
+  "progression_governance": {
+    "variables": [
+      "velocity (entry and target)",
+      "braking demand",
+      "cut angle",
+      "reacceleration demand",
+      "information demand",
+      "complexity",
+      "volume",
+      "density",
+      "specificity of information present"
+    ],
+    "no_universal_ladder": "G3 supplies variables and worked examples, not a sequence (CJ-09 to CJ-11).",
+    "quality_preservation": "Criterion is output, not the clock (AS-103-08).",
+    "practitioner_frameworks": [
+      {
+        "framework": "sprint phase segmentation",
+        "class": "E/B"
+      },
+      {
+        "framework": "force-orientation / force-vector framing",
+        "class": "E/B/F"
+      },
+      {
+        "framework": "COD deficit as a diagnostic lens",
+        "class": "E/C"
+      },
+      {
+        "framework": "deceleration deficit",
+        "class": "E/C"
+      },
+      {
+        "framework": "high/low speed organization",
+        "class": "E/D"
+      },
+      {
+        "framework": "SAQ as a broad category",
+        "class": "E/F"
+      }
+    ]
+  },
+  "novakore": {
+    "reusable_components": [
+      {
+        "component": "Doctrine callout",
+        "status": "inherited"
+      },
+      {
+        "component": "Applied Standard callout",
+        "status": "inherited"
+      },
+      {
+        "component": "Evidence Classification block",
+        "status": "extended with population-transfer line"
+      },
+      {
+        "component": "Coach Judgment boundary",
+        "status": "inherited"
+      },
+      {
+        "component": "Common Claim Audit",
+        "status": "new"
+      },
+      {
+        "component": "Case Decision",
+        "status": "inherited"
+      },
+      {
+        "component": "Practical Sign-Off",
+        "status": "inherited"
+      },
+      {
+        "component": "Final Defense",
+        "status": "inherited"
+      },
+      {
+        "component": "Quality Identifier",
+        "status": "new"
+      }
+    ],
+    "data_entities": {
+      "speed_task": [
+        "id",
+        "primary_quality",
+        "entry_condition",
+        "distance_or_space",
+        "braking_demand",
+        "cut_angle",
+        "reacceleration_demand",
+        "information_demand",
+        "intended_adaptation",
+        "progression",
+        "regression",
+        "quality_criterion"
+      ],
+      "test_record": [
+        "test",
+        "construct_measured",
+        "value",
+        "date",
+        "conditions{timing_method,surface,footwear,setup,familiarization,administrator}",
+        "typical_error_ref"
+      ],
+      "doctrine": [
+        "id",
+        "title",
+        "statement",
+        "evidence_class",
+        "anchor_refs",
+        "teaching_boundary",
+        "modules"
+      ],
+      "applied_standard": [
+        "id",
+        "text",
+        "evidence_basis",
+        "standing",
+        "boundary",
+        "enforcement"
+      ],
+      "coach_judgment": [
+        "id",
+        "area",
+        "evidence_position",
+        "g3_supplies",
+        "coach_call"
+      ],
+      "claim_audit": [
+        "id",
+        "claim",
+        "class",
+        "taught_instead",
+        "doctrine_ref",
+        "citation_tags"
+      ],
+      "competency": [
+        "id",
+        "title",
+        "ladder_level",
+        "observable_standard",
+        "modules",
+        "assessments",
+        "cases",
+        "sign_off"
+      ],
+      "reference": [
+        "id",
+        "citation",
+        "type",
+        "citation_tag",
+        "domain",
+        "limitation",
+        "verification_status"
+      ],
+      "assessment_item": [
+        "id",
+        "module",
+        "level",
+        "competency",
+        "doctrine",
+        "applied_standard",
+        "evidence_class",
+        "stem",
+        "options",
+        "key",
+        "key_source"
+      ],
+      "sign_off_record": [
+        "coach_id",
+        "sign_off_id",
+        "assessor_id",
+        "date",
+        "environment",
+        "athlete_or_group_ref",
+        "behaviors_observed",
+        "artifacts",
+        "questions_asked",
+        "outcome",
+        "expiry_date",
+        "notes"
+      ]
+    },
+    "data_layer_constraints": [
+      "A speed_task cannot be published without primary_quality and intended_adaptation. (AS-103-01)",
+      "A speed_task with information_demand: none cannot be tagged agility. (D103-6, AS-103-07)",
+      "A test_record cannot be published without construct_measured and recorded conditions. (AS-103-09, AS-103-10)",
+      "A test_record whose construct_measured conflicts with its test type is rejected at save. (AS-103-10)",
+      "No entity may expose a computed athlete score, composite speed index, automated training-priority recommendation, or automated progression instruction.",
+      "No field may store a G3-published universal sled load, rest ratio, velocity-decrement threshold, phase-boundary distance, angle progression, or change threshold as a course constant.",
+      "Free text containing an injury-prevention guarantee pattern is flagged for review before publication. (D103-12)"
+    ],
+    "tagging_schema": [
+      "course_id",
+      "module_id",
+      "doctrine_ids",
+      "applied_standard_ids",
+      "competency_ids",
+      "claim_audit_ids",
+      "coach_judgment_ids",
+      "evidence_class",
+      "reference_ids",
+      "environment_tags",
+      "version"
+    ],
+    "environment_tags": [
+      "youth",
+      "scholastic",
+      "collegiate",
+      "small_group",
+      "individual",
+      "volleyball",
+      "field_sport",
+      "court_sport"
+    ],
+    "production_checklist": [
+      "All seventeen content objects present and in order",
+      "Every claim carries an evidence class",
+      "Population-transfer line present wherever extrapolation occurs",
+      "Three-column discipline rendered visually",
+      "No Class F claim asserted as true",
+      "No assessment key depends on a Class C, D, or E claim",
+      "No assessment key depends on a verification-pending or unmapped source as sole support",
+      "No universal load, dose, rest, threshold, or angle progression published as established",
+      "No injury-prevention guarantee and no inherent-danger claim",
+      "No descriptive mechanical finding rendered as a proven causal coaching target",
+      "COD and agility never treated as synonyms; acceleration and maximal velocity never treated as identical",
+      "Deceleration presented as a distinct performance domain",
+      "All glossary terms linked on first use",
+      "Every scenario commits the learner before feedback",
+      "All references resolve to EP103 IDs with verification status",
+      "Voice conforms to G3 Performance Brand Standards v1.0",
+      "Doctrine, applied standard, and coach judgment distinguishable without prompting"
+    ]
+  },
+  "sequencing": {
+    "order": [
+      "M1",
+      "M2",
+      "M3",
+      "M4",
+      "PS-1",
+      "M5",
+      "M6",
+      "M7",
+      "PS-2",
+      "M8",
+      "M9",
+      "PS-3",
+      "M10",
+      "M11",
+      "M12",
+      "PS-4",
+      "T-01"
+    ],
+    "hard_gates": [
+      "PS-1 gates M5",
+      "PS-2 gates M8",
+      "PS-3 gates M10"
+    ],
+    "rules": [
+      "Modules unlock sequentially; module assessments must be at standard before the next module unlocks.",
+      "PS-1 is required before advanced training-method application (M5 onward).",
+      "PS-4 requires the four-week delivery window complete.",
+      "T-01 requires PS-1 through PS-4 recorded and all module assessments at standard.",
+      "T-01 is required for course competency completion.",
+      "Completed modules remain accessible."
+    ]
+  },
+  "governance": {
+    "approver": "Director of Training",
+    "review_cycle_months": 24,
+    "review_triggers": [
+      "Class A or B claim contradicted by new evidence",
+      "Class C claim strengthens enough to change practice",
+      "a verification-pending source or cite:103 is resolved"
+    ],
+    "version_rules": [
+      "Course version stamped on every certification record",
+      "Doctrine changes require a minor version increment and delta notice",
+      "Resolving a pending source or cite:103 triggers content review of every object tagged with it",
+      "Claim Audit register changes are major and require re-acknowledgment"
+    ],
+    "approval_matrix": [
+      {
+        "item": "doctrine or applied standard change",
+        "approver": "Director of Training"
+      },
+      {
+        "item": "elevating a verification-pending source to anchor status",
+        "approver": "Director of Training, with confirmed bibliographic record"
+      },
+      {
+        "item": "local working figure (load, rest, threshold) adopted in a G3 environment",
+        "approver": "Director of Training, documented with review date"
+      },
+      {
+        "item": "external copy referencing speed, deceleration, or injury",
+        "approver": "Director of Training (Brand Standards governance)"
+      },
+      {
+        "item": "any tool that automates a training recommendation",
+        "approver": "Director of Training, with documented evidence basis"
+      }
+    ]
+  },
+  "foundations": {
+    "series": "G3 Performance Foundations",
+    "series_version": "v1.0",
+    "gate": "G3 Performance Foundations — 101–105 Curriculum Review Gate v1.0",
+    "gate_status": "CONDITIONAL PASS — corrections applied; see the Foundations manifest for the post-correction gate status",
+    "sequence": [
+      "G3-101",
+      "G3-102",
+      "G3-103",
+      "G3-104",
+      "G3-105"
+    ],
+    "position": 3,
+    "series_prerequisite": "G3-102",
+    "series_completion_rule": "A learner completes G3 Performance Foundations only when G3 101 through G3 105 are complete in sequence, all required module assessments are at standard, all 20 practical sign-offs are recorded, all 5 terminal defenses are passed, required practical windows are satisfied, and no required remediation remains open.",
+    "course_role": "Speed / Multidirectional Domain",
+    "authority_rule": {
+      "this_course_is_authoritative_on": "speed, deceleration, COD, and agility — where its standard is narrower than the upstream rule",
+      "hierarchy": [
+        {
+          "course": "G3-101",
+          "authoritative_on": "the G3 reasoning system: evidence classes, certainty language, Evidence / G3 Applied Standard / Coach Judgment separation, population-transfer disclosure, testing and monitoring interpretation, claim-correction symmetry, scope of practice, and evidence restraint"
+        },
+        {
+          "course": "G3-102",
+          "authoritative_on": "the G3 programming decision model: DEMAND → PROFILE → GAP → PRIORITY → PRESCRIPTION → RESPONSE → ADJUST, including programming priority and change governance"
+        },
+        {
+          "course": "G3-103",
+          "authoritative_on": "speed, deceleration, COD, and agility — where its standard is narrower than the upstream rule"
+        },
+        {
+          "course": "G3-104",
+          "authoritative_on": "strength development — where its standard is narrower than the upstream rule"
+        },
+        {
+          "course": "G3-105",
+          "authoritative_on": "power development — where its standard is narrower than the upstream rule"
+        }
+      ],
+      "binding_rules": [
+        "No downstream course may loosen an upstream evidence, scope, measurement, or programming-integrity standard.",
+        "Where domain courses overlap, the more specific domain governs only inside that domain; otherwise the upstream standard controls."
+      ],
+      "specification_reference": "§0.6"
+    },
+    "series_attribution": {
+      "three_layer_discipline": "G3 101",
+      "population_transfer_standard": "AS-101-16",
+      "population_transfer_local_restatements": {
+        "G3-103": "AS-103-12",
+        "G3-104": "carries the G3 103 restatement",
+        "G3-105": "carries the G3 103 restatement"
+      },
+      "programming_decision_model": "G3 102",
+      "evidence_taxonomy": "G3 101"
+    },
+    "series_evidence_taxonomy": [
+      {
+        "class": "A",
+        "name": "Established Evidence"
+      },
+      {
+        "class": "B",
+        "name": "Supported Practice"
+      },
+      {
+        "class": "C",
+        "name": "Emerging / Conditional Evidence"
+      },
+      {
+        "class": "D",
+        "name": "Applied Coaching Inference"
+      },
+      {
+        "class": "E",
+        "name": "Historical / Practitioner Framework"
+      },
+      {
+        "class": "F",
+        "name": "Unsupported / Overstated Claim"
+      },
+      {
+        "class": "U",
+        "name": "Unresolved / Unknown"
+      }
+    ],
+    "classes_used_by_this_course": [
+      "A",
+      "B",
+      "C",
+      "D",
+      "E",
+      "F"
+    ],
+    "classes_note": "U is recognized but not used: unresolved questions are held in the Coach Judgment register (§8). Nothing has been reclassified.",
+    "taxonomy_rule": "U is the machine-readable series class for a question about which no defensible evidence-class assignment can be made. 'Unknown' remains the human-facing certainty label. Every course recognizes all seven classes; no course must use all of them; no claim is reclassified to populate a class.",
+    "parent_artifacts": [
+      "G3-Performance-Foundations-Curriculum-v1.0-FINAL.md",
+      "G3-Performance-Foundations-Manifest-v1.0-FINAL.json"
+    ],
+    "ingestion_rule": "The Foundations manifest is ingested into NovaKore first. Course builds are not ingested independently.",
+    "harmonization": {
+      "pass": "Foundations Harmonization Pass v1.0",
+      "scope": "mechanical",
+      "changed": "governance text, metadata, inheritance references, and JSON authority fields",
+      "unchanged": [
+        "doctrine",
+        "evidence classes",
+        "module architecture",
+        "course outcomes",
+        "practical sign-offs",
+        "terminal defense",
+        "assessment architecture",
+        "the G3 programming decision model",
+        "reference mapping",
+        "numerical positions"
+      ]
+    }
+  }
+}

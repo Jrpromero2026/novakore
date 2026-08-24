@@ -1,0 +1,85 @@
+{
+  "generatedAt": null,
+  "org": "26f6aa4a-4ade-4bb0-842f-12ca2e5bc115",
+  "path": "aed3b787-9c29-5338-a8b7-6e6f1624722b",
+  "courses": [
+    {
+      "code": "G3-101",
+      "courseId": "b17cac49-2d2b-59c4-bc80-5de456998e75",
+      "version": "2.0",
+      "modules": 12,
+      "lessons": 65,
+      "blocks": 539,
+      "assessments": 12,
+      "assessmentItems": 72,
+      "practicalRequirements": 5,
+      "minutes": 1050,
+      "registryRecords": 171
+    },
+    {
+      "code": "G3-102",
+      "courseId": "4832fade-c765-5fcd-b784-d1a4103394fd",
+      "version": "1.0",
+      "modules": 12,
+      "lessons": 65,
+      "blocks": 376,
+      "assessments": 12,
+      "assessmentItems": 72,
+      "practicalRequirements": 5,
+      "minutes": 1110,
+      "registryRecords": 140
+    },
+    {
+      "code": "G3-103",
+      "courseId": "f066bff2-1c9a-5388-b12a-d77b430200f6",
+      "version": "1.0",
+      "modules": 12,
+      "lessons": 65,
+      "blocks": 464,
+      "assessments": 12,
+      "assessmentItems": 73,
+      "practicalRequirements": 5,
+      "minutes": 1170,
+      "registryRecords": 123
+    },
+    {
+      "code": "G3-104",
+      "courseId": "815eac17-e5d1-5010-88fc-c3fa412e47ee",
+      "version": "1.0",
+      "modules": 12,
+      "lessons": 65,
+      "blocks": 491,
+      "assessments": 12,
+      "assessmentItems": 72,
+      "practicalRequirements": 5,
+      "minutes": 1245,
+      "registryRecords": 171
+    },
+    {
+      "code": "G3-105",
+      "courseId": "9104a610-53ae-5fc5-b565-23db55089bb0",
+      "version": "1.0",
+      "modules": 12,
+      "lessons": 65,
+      "blocks": 571,
+      "assessments": 12,
+      "assessmentItems": 72,
+      "practicalRequirements": 5,
+      "minutes": 1275,
+      "registryRecords": 149
+    }
+  ],
+  "totals": {
+    "modules": 60,
+    "minutes": 5850,
+    "hours": 97.5,
+    "signOffs": 20,
+    "defenses": 5,
+    "prerequisites": 7,
+    "seriesRecords": 9
+  },
+  "checks": {
+    "passed": 823,
+    "failed": 0
+  }
+}

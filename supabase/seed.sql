@@ -512,3 +512,9 @@ on conflict (id) do nothing;
 -- secret-loading process, never committed here.
 \ir seeds/bfh-academy-alpha.sql
 
+-- G3 Performance Foundations v1.0 — generated curriculum seed (internal G3
+-- tenant). Regenerate with `node scripts/g3-foundations/generate.mjs` from the
+-- canonical package in curriculum/g3-performance-foundations/; never edit the
+-- seed by hand. Establishes the series record first, then G3 101 → 105.
+\ir seeds/g3-performance-foundations.sql
+

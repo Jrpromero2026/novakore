@@ -1,0 +1,4741 @@
+{
+  "schema_version": "1.0",
+  "generated_for": "NovaKore course build",
+  "source_specification": "G3-104-Course-Specification-v1.0-FINAL.md",
+  "build_file_name": "G3-104-NovaKore-Build-v1.0-FINAL.json",
+  "production_precedent": [
+    "G3-102-Course-Specification-v1.0-FINAL.md",
+    "G3-102-NovaKore-Build-v1.0-FINAL.json",
+    "G3-103-Course-Specification-v1.0-FINAL.md",
+    "G3-103-NovaKore-Build-v1.0-FINAL.json"
+  ],
+  "review_gates": {
+    "evidence_review_gate": {
+      "applies_to": "G3 104 Strength Development Evidence Pack FINAL",
+      "status": "PASS WITH EVIDENCE-INTEGRITY CONDITIONS",
+      "conditions_count": 10
+    },
+    "intellectual_development": {
+      "applies_to": "G3 104 Production Handoff v1.0",
+      "status": "COMPLETE"
+    },
+    "production_qa": {
+      "applies_to": "this specification and build file",
+      "status": "PASSED",
+      "checks": 92,
+      "unresolved": 0,
+      "derivation": "The handoff section 23 verification points and the specification section 21.5 production checklist expanded into machine-verifiable assertions; several handoff points require more than one assertion to verify.",
+      "checks_run": [
+        "12-module architecture, sequential in spec",
+        "JSON module IDs M1-M12",
+        "JSON module titles match spec headings",
+        "every module carries all 17 production elements",
+        "module durations sum consistently (1,245 min / 20.75 h)",
+        "PS-1 through PS-4 exist in spec",
+        "PS-1 through PS-4 exist in JSON",
+        "T-01 exists in both",
+        "T-01 required for completion in both",
+        "doctrine IDs D104-1..15 in JSON",
+        "doctrine IDs referenced in spec resolve",
+        "module doctrine refs resolve",
+        "applied-standard IDs AS-104-01..14 in JSON",
+        "applied-standard IDs referenced in spec resolve",
+        "module applied-standard refs resolve",
+        "no applied standard invented beyond the handoff set",
+        "competency IDs C104-01..17 in JSON",
+        "competency IDs referenced in spec resolve",
+        "coach-judgment IDs CJ-01..21 complete",
+        "CJ IDs referenced in spec resolve",
+        "claim-audit IDs CA-01..28 complete",
+        "CA IDs referenced in spec resolve",
+        "every competency maps to assessment evidence and a sign-off",
+        "competency sign-off refs resolve",
+        "competency module refs resolve",
+        "every competency appears in the spec competency table",
+        "competency case refs resolve",
+        "JSON sequencing order matches spec §6.3",
+        "spec §6.3 gating flow intact",
+        "hard gate consistent MD/JSON: PS-1 gates M5",
+        "hard gate consistent MD/JSON: PS-2 gates M8",
+        "hard gate consistent MD/JSON: PS-3 gates M12",
+        "JSON module-level gates match hard gates",
+        "JSON module sign-off assignment matches spec",
+        "reference IDs EP104-01..54 complete",
+        "every module reference ID resolves to the register",
+        "spec EP104 references all within register",
+        "every PMID in the register appears in the Evidence Pack",
+        "PMID duplication limited to the known ACSM duplicate record",
+        "ACSM duplicate record disclosed in both files",
+        "citation-integrity finding a: tag count/range matches the pack",
+        "citation-integrity finding a stated accurately in spec",
+        "no inline citation tag reproduced as a citation in the spec",
+        "both citation-integrity findings carried in JSON",
+        "citation-integrity finding b stated in spec",
+        "all ten evidence-integrity conditions carried forward",
+        "four U topics registered",
+        "U topic registered: deadlift safety",
+        "U topic registered: kinetic-chain",
+        "U topic registered: asymmetry threshold",
+        "U topic registered: microdosing",
+        "C/D/E/U answer-key prohibition in spec §11.4",
+        "C/D/E/U answer-key rule in JSON",
+        "U-topic key prohibition enforced at data layer",
+        "no-invention rule honored and stated",
+        "strength/power/RFD not collapsed - distinction stated",
+        "gym strength not equated with sport performance",
+        "five governing distinctions in JSON",
+        "no rigid repetition-zone doctrine created",
+        "no failure requirement created",
+        "no failure prohibition created either",
+        "no mandatory lift list created",
+        "no free-weight superiority rule created",
+        "no unilateral superiority rule created",
+        "no universal ROM rule created",
+        "no universal RIR/RPE/VBT threshold created",
+        "no universal strength ratio or asymmetry threshold created",
+        "no universal in-season microdose created",
+        "no female-specific deterministic system created",
+        "no youth growth-stunting mythology reproduced",
+        "no universal number published as a G3 rule",
+        "no unsupported injury-prevention guarantee asserted",
+        "injury-risk-reduction language standard present",
+        "no automated athlete prescription - prohibition in spec",
+        "automation prohibition in JSON",
+        "every mention of automation or composite scoring is a prohibition",
+        "module count agrees MD/JSON",
+        "study hours agree MD/JSON",
+        "nine required cases in both",
+        "twenty-eight claim-audit entries in both",
+        "twenty-one coach-judgment entries in both",
+        "fourteen applied standards in both",
+        "fifteen doctrines in both",
+        "twenty course outcomes in both",
+        "status line matches handoff-specified header",
+        "evidence gate status agrees MD/JSON",
+        "G3 102 decision model carried unchanged",
+        "G3 102 precedence rule in both",
+        "governing sequence matches handoff",
+        "eight obligations in JSON",
+        "seven assessment levels in JSON",
+        "all nine required assessment types in JSON"
+      ]
+    }
+  },
+  "production_status": "APPROVED FOR NOVAKORE PRODUCTION",
+  "course": {
+    "id": "G3-104",
+    "code": "G3-104",
+    "title": "Strength Development",
+    "division": "G3 Performance",
+    "parent_org": "G3 Sports & Fitness",
+    "version": "1.0",
+    "status": "APPROVED FOR NOVAKORE PRODUCTION",
+    "authority": "G3 Performance",
+    "date": "2026-08",
+    "owner": "JR Romero, CSCS - Director of Training",
+    "evidence_pack": "G3-104 Strength Development Evidence Pack FINAL",
+    "purpose": "Teach coaches to understand strength as a task-specific physical quality, develop it through defensible resistance-training decisions, measure it appropriately, and integrate it into athletic preparation without confusing gym performance with sport performance.",
+    "governing_sequence": [
+      "DEMAND",
+      "REQUIRED FORCE CAPACITY",
+      "TRAINING METHOD",
+      "ADAPTATION",
+      "TRANSFER",
+      "RESPONSE"
+    ],
+    "governing_distinctions": [
+      "STRENGTH != POWER != RATE OF FORCE DEVELOPMENT",
+      "GYM STRENGTH != SPORT PERFORMANCE",
+      "ASSOCIATION != TRANSFER",
+      "METHOD != DOCTRINE",
+      "TOOL != OUTCOME"
+    ],
+    "prerequisite": "G3 102 and G3 103 complete including both terminal defenses; active G3 Performance coaching status",
+    "audience": [
+      "G3 Performance coaches",
+      "G3 Youth S&C staff",
+      "G3 Volleyball Development staff",
+      "scholastic and collegiate contract coaches"
+    ],
+    "delivery": "NovaKore self-paced modules with four observed practical sign-offs (PS-1 to PS-4) plus the final oral defense (T-01).",
+    "practical_sign_offs": [
+      "PS-1",
+      "PS-2",
+      "PS-3",
+      "PS-4"
+    ],
+    "final_defense": "T-01",
+    "module_count": 12,
+    "directed_study_minutes": 1245,
+    "directed_study_hours": 20.75,
+    "practical_window_weeks_min": 4,
+    "eight_obligations": [
+      "Define the demand",
+      "Identify the strength requirement",
+      "Select the method",
+      "Coach the task",
+      "Manage the dose",
+      "Measure the response",
+      "Adjust the plan",
+      "Defend the decision"
+    ],
+    "outcomes": [
+      "CO-1 Define strength and distinguish it from force, impulse, power, and RFD",
+      "CO-2 Identify the strength demand relevant to an athlete or task",
+      "CO-3 Explain neural, morphological, technical, and connective-tissue contributors",
+      "CO-4 Select loading strategies appropriate to maximal-strength goals",
+      "CO-5 Explain why adaptation zones overlap",
+      "CO-6 Prescribe volume, frequency, rest, and effort without universal rules",
+      "CO-7 Decide when failure is or is not appropriate",
+      "CO-8 Select exercises using objective constraints rather than ideology",
+      "CO-9 Justify bilateral/unilateral and free-weight/machine choices",
+      "CO-10 Use ROM intentionally",
+      "CO-11 Explain appropriate roles for eccentric and isometric methods",
+      "CO-12 Distinguish concentric intent from deliberately slow movement",
+      "CO-13 Use or interpret RPE/RIR/VBT/autoregulation appropriately",
+      "CO-14 Organize progression and periodization without claiming one universal model",
+      "CO-15 Integrate strength with sprint, plyometric, conditioning, practice, and competition demands",
+      "CO-16 Design developmentally appropriate youth strength training",
+      "CO-17 Select and interpret strength tests",
+      "CO-18 Reject unsupported universal strength ratios and asymmetry thresholds",
+      "CO-19 Distinguish injury-risk evidence from injury-prevention guarantees",
+      "CO-20 Defend a strength prescription using evidence, G3 standards, and athlete context"
+    ],
+    "terminal_defense": "T-01"
+  },
+  "foundations_continuity": {
+    "from_g3_101": [
+      "adaptation, overload, specificity, variation, individualization, recovery, and transfer are conditional decision frameworks",
+      "specificity is deeper than visual resemblance",
+      "fatigue is not the goal",
+      "athlete development requires context"
+    ],
+    "from_g3_102": [
+      "programming follows DEMAND -> PROFILE -> GAP -> PRIORITY -> PRESCRIPTION -> RESPONSE -> ADJUST",
+      "evidence, G3 Applied Standards, and Coach Judgment remain distinguishable"
+    ],
+    "from_g3_103": [
+      "physical qualities must be named precisely",
+      "descriptive relationships do not automatically create prescriptions",
+      "supporting strength work does not automatically transfer to speed/COD/agility",
+      "testing measures the task actually performed"
+    ],
+    "decision_model": [
+      "DEMAND",
+      "PROFILE",
+      "GAP",
+      "PRIORITY",
+      "PRESCRIPTION",
+      "RESPONSE",
+      "ADJUST"
+    ],
+    "conflict_rule": "Where G3 104 and G3 102 appear to disagree, G3 102 is authoritative."
+  },
+  "evidence_classes": [
+    {
+      "class": "A",
+      "name": "Established Evidence",
+      "pack_equivalent": "Established findings",
+      "teaching_rule": "May be taught as established, bounded by population and task."
+    },
+    {
+      "class": "B",
+      "name": "Supported Practice",
+      "pack_equivalent": "Supported but conditional findings",
+      "teaching_rule": "Taught as well-supported practice with the moderator stated."
+    },
+    {
+      "class": "C",
+      "name": "Emerging / Conditional Evidence",
+      "pack_equivalent": "Emerging findings",
+      "teaching_rule": "Taught as conditional; never the sole basis for a required behavior."
+    },
+    {
+      "class": "D",
+      "name": "Applied Coaching Inference",
+      "pack_equivalent": "Applied coaching inference candidates",
+      "teaching_rule": "Taught explicitly as inference, labeled aloud."
+    },
+    {
+      "class": "E",
+      "name": "Historical / Practitioner Framework",
+      "pack_equivalent": "Historical / practitioner frameworks",
+      "teaching_rule": "Taught as framework and history; never as proof."
+    },
+    {
+      "class": "F",
+      "name": "Unsupported / Overstated Claim",
+      "pack_equivalent": "Overstated coaching claims",
+      "teaching_rule": "NEVER taught as true; used only to name and correct the error."
+    },
+    {
+      "class": "U",
+      "name": "Unresolved",
+      "pack_equivalent": "Source verification issues / evidence gaps",
+      "teaching_rule": "Taught as an open question; may never anchor a required behavior or an assessment key."
+    }
+  ],
+  "unresolved_topics": [
+    "exact deadlift safety comparisons",
+    "open- versus closed-kinetic-chain superiority for athletic strength development",
+    "universal asymmetry thresholds",
+    "exact in-season microdosing dose rules for team-sport athletes"
+  ],
+  "mechanism_association_transfer_rule": "A mechanism explains how an adaptation could occur; an association shows two things vary together; transfer is a demonstrated change in the target task caused by the training. These are three claims with three evidence requirements, and a lesson may never present one as another.",
+  "doctrine": [
+    {
+      "id": "D104-1",
+      "title": "Strength Is Task-Specific",
+      "statement": "Strength must be interpreted relative to the task used to express or measure it. A barbell result is evidence of performance in that lift, not a complete measure of athletic strength.",
+      "evidence_class": "A",
+      "teaching_boundary": "Does not devalue the barbell. Governs what may be concluded from a result, not whether it is worth testing.",
+      "modules": [
+        "M1",
+        "M12"
+      ],
+      "anchor_refs": [
+        "EP104-14",
+        "EP104-13",
+        "EP104-43",
+        "EP104-44"
+      ],
+      "standing": "G3 Doctrine"
+    },
+    {
+      "id": "D104-2",
+      "title": "Strength Is Foundational, Not Sufficient",
+      "statement": "Strength supports many athletic outcomes, but increases in gym strength do not guarantee proportional improvements in sprinting, jumping, COD, or sport performance. Transfer depends on the athlete, task, training status, body mass, technical exposure, and surrounding program.",
+      "evidence_class": "B",
+      "teaching_boundary": "Cuts both ways: 'get strong and everything follows' and 'strength doesn't transfer' are both unsupported.",
+      "modules": [
+        "M3"
+      ],
+      "anchor_refs": [
+        "EP104-21",
+        "EP104-03",
+        "EP104-31",
+        "EP104-12"
+      ],
+      "standing": "G3 Doctrine"
+    },
+    {
+      "id": "D104-3",
+      "title": "Adaptation Zones Overlap",
+      "statement": "Rep ranges and loading zones influence adaptation but are not discrete biological compartments. G3 rejects rigid rules such as '1-5 strength, 6-12 hypertrophy, 12+ endurance.'",
+      "evidence_class": "A",
+      "teaching_boundary": "Overlapping is not identical; load still matters (D104-4). The rejection is of the boxes.",
+      "modules": [
+        "M4"
+      ],
+      "anchor_refs": [
+        "EP104-06",
+        "EP104-25",
+        "EP104-13"
+      ],
+      "standing": "G3 Doctrine"
+    },
+    {
+      "id": "D104-4",
+      "title": "Heavy Loading Is a Tool for Maximal Strength",
+      "statement": "Higher loads are generally effective for maximizing dynamic 1RM strength, but lower and moderate loads can still produce strength adaptation. G3 does not define strength training exclusively by heavy loading.",
+      "evidence_class": "A/B",
+      "teaching_boundary": "No percentage, rep number, or loading table is published as a G3 rule. CA-01 and its mirror are both F.",
+      "modules": [
+        "M4"
+      ],
+      "anchor_refs": [
+        "EP104-06",
+        "EP104-25",
+        "EP104-13"
+      ],
+      "standing": "G3 Doctrine"
+    },
+    {
+      "id": "D104-5",
+      "title": "Failure Is Optional",
+      "statement": "Momentary muscular failure is not required for strength development. Failure may be used selectively when its benefits justify fatigue, technical, and recovery costs.",
+      "evidence_class": "A",
+      "teaching_boundary": "'Failure is necessary' and 'failure should never be used' are both F. No RIR target is published.",
+      "modules": [
+        "M5"
+      ],
+      "anchor_refs": [
+        "EP104-19",
+        "EP104-08",
+        "EP104-07"
+      ],
+      "standing": "G3 Doctrine"
+    },
+    {
+      "id": "D104-6",
+      "title": "Exercise Selection Is Constraint-Based",
+      "statement": "G3 does not prescribe universal 'best lifts.' Exercise selection reflects objective, athlete competence, anthropometry, loadability, stability, technical demand, fatigue cost, equipment, and transfer needs.",
+      "evidence_class": "B",
+      "teaching_boundary": "Not a claim that all exercises are equivalent for an objective. No mandatory lift list exists in G3 104.",
+      "modules": [
+        "M6"
+      ],
+      "anchor_refs": [
+        "EP104-14",
+        "EP104-54",
+        "EP104-26",
+        "EP104-29"
+      ],
+      "standing": "G3 Doctrine"
+    },
+    {
+      "id": "D104-7",
+      "title": "Specificity Governs Modality",
+      "statement": "Free weights and machines, bilateral and unilateral exercises, dynamic and isometric methods, and full or partial ROM can all be useful. Their value depends on the adaptation and task, not ideological hierarchy.",
+      "evidence_class": "A",
+      "teaching_boundary": "Four F claims corrected without inversion (CA-07 to CA-10); instability functionality also F. Open- vs closed-kinetic-chain superiority is U.",
+      "modules": [
+        "M6",
+        "M7"
+      ],
+      "anchor_refs": [
+        "EP104-24",
+        "EP104-27",
+        "EP104-40",
+        "EP104-26",
+        "EP104-29",
+        "EP104-30"
+      ],
+      "standing": "G3 Doctrine"
+    },
+    {
+      "id": "D104-8",
+      "title": "Full ROM Is a Broad Default, Not a Law",
+      "statement": "Full ROM is a strong general default for broad strength development, while partial ROM can be used intentionally for joint-angle specificity, overload, progression, exposure, or contextual demands.",
+      "evidence_class": "B",
+      "teaching_boundary": "'On average' is taught explicitly. Partial ROM requires a stated rationale; 'sport-specific' alone does not qualify.",
+      "modules": [
+        "M7"
+      ],
+      "anchor_refs": [
+        "EP104-36",
+        "EP104-38"
+      ],
+      "standing": "G3 Doctrine"
+    },
+    {
+      "id": "D104-9",
+      "title": "Strength Programming Is Dose Management",
+      "statement": "Volume, frequency, intensity, rest, effort, and exercise selection interact. No single variable is treated as an independent universal prescription.",
+      "evidence_class": "B",
+      "teaching_boundary": "No weekly set target, frequency prescription, or rest duration is published. The rest finding is directional, not numeric.",
+      "modules": [
+        "M5"
+      ],
+      "anchor_refs": [
+        "EP104-37",
+        "EP104-09",
+        "EP104-10",
+        "EP104-11",
+        "EP104-05",
+        "EP104-14"
+      ],
+      "standing": "G3 Doctrine"
+    },
+    {
+      "id": "D104-10",
+      "title": "Autoregulation Is a Decision Tool",
+      "statement": "RPE, RIR, APRE, VBT, and percentage-based methods are tools for prescription and adjustment. No one system is G3 doctrine or universally superior.",
+      "evidence_class": "C",
+      "teaching_boundary": "'VBT is inherently superior' is F; so is dismissing it. No velocity-loss threshold, zone, RIR, or RPE cut-point is published.",
+      "modules": [
+        "M8"
+      ],
+      "anchor_refs": [
+        "EP104-15",
+        "EP104-16",
+        "EP104-17",
+        "EP104-23"
+      ],
+      "standing": "G3 Doctrine"
+    },
+    {
+      "id": "D104-11",
+      "title": "Periodization Organizes Adaptation",
+      "statement": "Periodization is the purposeful organization of training variables over time. No single named periodization model is universally superior across athletes and contexts.",
+      "evidence_class": "B/A",
+      "teaching_boundary": "Two findings held together: organizing beats not organizing; no organization wins. Named models are Class E.",
+      "modules": [
+        "M9"
+      ],
+      "anchor_refs": [
+        "EP104-20",
+        "EP104-22",
+        "EP104-45"
+      ],
+      "standing": "G3 Doctrine"
+    },
+    {
+      "id": "D104-12",
+      "title": "Concurrent Interference Is Conditional",
+      "statement": "Strength development can coexist with sprinting, conditioning, plyometrics, and sport practice. Interference depends on modality, dose, sequence, recovery, and athlete context rather than being inevitable.",
+      "evidence_class": "B",
+      "teaching_boundary": "Concurrent evidence base is older and adult-weighted; no numeric spacing or sequencing threshold is created.",
+      "modules": [
+        "M10"
+      ],
+      "anchor_refs": [
+        "EP104-28",
+        "EP104-12"
+      ],
+      "standing": "G3 Doctrine"
+    },
+    {
+      "id": "D104-13",
+      "title": "Youth Can Train Strength",
+      "statement": "Properly supervised and progressively loaded resistance training is appropriate for youth. Readiness, technique, training age, maturation, supervision, and context matter more than outdated prohibitions based solely on chronological age.",
+      "evidence_class": "A",
+      "teaching_boundary": "Claim is conditioned on supervision, technical coaching, and progression, stated every time. 'Technique first' must not become indefinite underloading.",
+      "modules": [
+        "M11"
+      ],
+      "anchor_refs": [
+        "EP104-01",
+        "EP104-02",
+        "EP104-04"
+      ],
+      "standing": "G3 Doctrine"
+    },
+    {
+      "id": "D104-14",
+      "title": "Standards Must Earn Their Authority",
+      "statement": "Universal bodyweight ratios, 'strong enough' thresholds, mandatory exercise prerequisites, and fixed asymmetry cutoffs are not treated as G3 scientific standards without adequate population- and outcome-specific evidence.",
+      "evidence_class": "A/U",
+      "teaching_boundary": "Relative strength contextualizes; it may not gate a method. No replacement number is published.",
+      "modules": [
+        "M12"
+      ],
+      "anchor_refs": [
+        "EP104-21",
+        "EP104-14",
+        "EP104-49"
+      ],
+      "standing": "G3 Doctrine"
+    },
+    {
+      "id": "D104-15",
+      "title": "Safety Claims Require Evidence",
+      "statement": "No exercise is automatically safe or dangerous independent of loading, technique, athlete capacity, exposure, and context. G3 avoids simplistic claims about deep squats, knees-over-toes, deadlifts, or individual exercises 'preventing' injury.",
+      "evidence_class": "B/A/U",
+      "teaching_boundary": "Restraint runs both directions. G3 uses injury-risk-reduction language, not prevention guarantees. Binds marketing and parent communication.",
+      "modules": [
+        "M11",
+        "M12"
+      ],
+      "anchor_refs": [
+        "EP104-18",
+        "EP104-48",
+        "EP104-47",
+        "EP104-35",
+        "EP104-44"
+      ],
+      "standing": "G3 Doctrine"
+    }
+  ],
+  "applied_standards": [
+    {
+      "id": "AS-104-01",
+      "title": "Define the Strength Task",
+      "text": "Every assessment or prescription identifies what form of strength is being trained or measured.",
+      "evidence_basis": "A",
+      "standing": "applied_standard",
+      "boundary_or_enforcement": "strength_task and test_record require strength_expression and task"
+    },
+    {
+      "id": "AS-104-02",
+      "title": "Match Load to Adaptation",
+      "text": "Loading is selected for the desired adaptation and athlete. Heavy loading is prioritized when maximal dynamic strength is the main target, without making it the only valid loading strategy.",
+      "evidence_basis": "A/B",
+      "standing": "applied_standard",
+      "boundary_or_enforcement": "no percentage, rep number, or loading table published (CJ-09)"
+    },
+    {
+      "id": "AS-104-03",
+      "title": "Preserve Technical Quality",
+      "text": "Load progression is subordinate to acceptable execution, task intent, and athlete readiness.",
+      "evidence_basis": "D",
+      "standing": "applied_standard",
+      "boundary_or_enforcement": "does not license indefinite underloading (section 18.1)"
+    },
+    {
+      "id": "AS-104-04",
+      "title": "Use Failure Deliberately",
+      "text": "Failure is not a default requirement. Its use accounts for exercise complexity, athlete experience, fatigue cost, recovery, and session purpose.",
+      "evidence_basis": "A",
+      "standing": "applied_standard",
+      "boundary_or_enforcement": "no RIR target or proximity rule published (CJ-04)"
+    },
+    {
+      "id": "AS-104-05",
+      "title": "Exercise Categories Before Exercise Dogma",
+      "text": "Coaches select movement and exercise categories and constraints before declaring individual exercises mandatory.",
+      "evidence_basis": "B",
+      "standing": "applied_standard",
+      "boundary_or_enforcement": "naming a specific lift as mandatory fails production review"
+    },
+    {
+      "id": "AS-104-06",
+      "title": "Use ROM Intentionally",
+      "text": "Full ROM is the broad default where appropriate. Partial ROM requires an explicit rationale rather than a generic 'sport-specific' claim.",
+      "evidence_basis": "B",
+      "standing": "applied_standard",
+      "boundary_or_enforcement": "no universal full-ROM-only rule (CJ-14)"
+    },
+    {
+      "id": "AS-104-07",
+      "title": "Rest to Preserve the Intended Output",
+      "text": "For demanding strength work, rest generally supports force output and technical quality. Exact rest intervals remain contextual.",
+      "evidence_basis": "B",
+      "standing": "applied_standard",
+      "boundary_or_enforcement": "criterion is output, not the clock (CJ-03)"
+    },
+    {
+      "id": "AS-104-08",
+      "title": "Frequency Organizes the Dose",
+      "text": "Frequency is used to distribute volume, technical exposures, fatigue, and recovery. It is not prescribed as an isolated magic variable.",
+      "evidence_basis": "B",
+      "standing": "applied_standard",
+      "boundary_or_enforcement": "no frequency prescription published (CJ-02)"
+    },
+    {
+      "id": "AS-104-09",
+      "title": "Autoregulate With Known Limits",
+      "text": "If RPE, RIR, VBT, or APRE are used, coaches must understand measurement error, athlete skill, exercise specificity, and the decision being informed.",
+      "evidence_basis": "C",
+      "standing": "applied_standard",
+      "boundary_or_enforcement": "no threshold, zone, or velocity-loss figure published (CJ-05 to CJ-07)"
+    },
+    {
+      "id": "AS-104-10",
+      "title": "Test the Construct",
+      "text": "1RM, submaximal RM, isometric tests, dynamometry, and velocity estimates measure different expressions of strength. G3 labels results according to what was actually measured.",
+      "evidence_basis": "A",
+      "standing": "applied_standard + language rule",
+      "boundary_or_enforcement": "test_record requires construct_measured; mislabeling is a scored error"
+    },
+    {
+      "id": "AS-104-11",
+      "title": "Avoid Universal Ratio Thresholds",
+      "text": "Relative-strength metrics may contextualize athlete performance, but universal bodyweight ratios cannot automatically gate advanced training methods.",
+      "evidence_basis": "A",
+      "standing": "applied_standard + prohibition",
+      "boundary_or_enforcement": "CJ-10, CJ-11, CJ-20"
+    },
+    {
+      "id": "AS-104-12",
+      "title": "Interpret Asymmetry Cautiously",
+      "text": "Asymmetry values require reliable measurement, task context, repeated observation, and athlete-specific interpretation. A single fixed percentage does not automatically mandate correction.",
+      "evidence_basis": "A/U",
+      "standing": "applied_standard",
+      "boundary_or_enforcement": "no threshold published; local adoption requires Director of Training approval and a measurement-error basis (CJ-18)"
+    },
+    {
+      "id": "AS-104-13",
+      "title": "Youth Training Requires Qualified Supervision",
+      "text": "Youth resistance training is technically coached, progressively dosed, developmentally appropriate, and supervised.",
+      "evidence_basis": "A",
+      "standing": "applied_standard",
+      "boundary_or_enforcement": "supervision ratio documented for every youth group; safety claim stated with conditions"
+    },
+    {
+      "id": "AS-104-14",
+      "title": "In-Season Strength Is Constraint-Driven",
+      "text": "In-season strength decisions protect meaningful exposure while adapting volume and frequency to sport load, competition density, recovery, and priority.",
+      "evidence_basis": "B/C",
+      "standing": "applied_standard",
+      "boundary_or_enforcement": "no maintenance dose or microdose model published (CJ-16, CJ-17)"
+    }
+  ],
+  "inherited_standards": [
+    "G3 102 AS-06 test conditions recorded at time of testing",
+    "G3 102 AS-09 emphasis tier for every trained quality",
+    "G3 102 AS-10 written opportunity-cost statement",
+    "G3 102 AS-11 no tool may compute a priority",
+    "G3 102 AS-12 stated intended adaptation for every exercise",
+    "G3 102 AS-14 session order reflects priority",
+    "G3 102 AS-27 adjustment log",
+    "G3 102 AS-30 youth entry by readiness, not age",
+    "G3 102 AS-31 no sex-specific rules without direct evidence",
+    "G3 102 AS-32 medical clearance is a precondition, not a programming decision",
+    "G3 103 AS-103-12 population-transfer disclosure"
+  ],
+  "coach_judgment": [
+    {
+      "id": "CJ-01",
+      "area": "Exact weekly sets",
+      "evidence_position": "Volume links more clearly to hypertrophy than maximal strength; physique set rules do not import",
+      "g3_supplies": "AS-104-09 dose-management framing",
+      "coach_call": "Weekly volume for this athlete and phase"
+    },
+    {
+      "id": "CJ-02",
+      "area": "Exact frequency",
+      "evidence_position": "Frequency distributes volume; independent effect limited when volume equated",
+      "g3_supplies": "AS-104-08",
+      "coach_call": "Frequency"
+    },
+    {
+      "id": "CJ-03",
+      "area": "Exact rest duration",
+      "evidence_position": "Longer rest generally preserves output; no universal interval",
+      "g3_supplies": "AS-104-07, output as criterion",
+      "coach_call": "The interval"
+    },
+    {
+      "id": "CJ-04",
+      "area": "Exact RIR",
+      "evidence_position": "Failure not required; no target established",
+      "g3_supplies": "AS-104-04",
+      "coach_call": "Proximity to failure"
+    },
+    {
+      "id": "CJ-05",
+      "area": "Exact RPE",
+      "evidence_position": "Scale- and context-dependent",
+      "g3_supplies": "AS-104-09",
+      "coach_call": "The rating used and its weight"
+    },
+    {
+      "id": "CJ-06",
+      "area": "Exact velocity-loss threshold",
+      "evidence_position": "No threshold established",
+      "g3_supplies": "AS-104-09",
+      "coach_call": "Whether and where to set one locally"
+    },
+    {
+      "id": "CJ-07",
+      "area": "Exact VBT zones across exercises/athletes",
+      "evidence_position": "Load-velocity relationships are exercise-, athlete-, and device-specific",
+      "g3_supplies": "AS-104-09",
+      "coach_call": "Zones, if used, established locally per exercise and athlete"
+    },
+    {
+      "id": "CJ-08",
+      "area": "Exact exercise rotation frequency",
+      "evidence_position": "Constant variation unsupported",
+      "g3_supplies": "AS-104-05",
+      "coach_call": "When an exercise has done its work"
+    },
+    {
+      "id": "CJ-09",
+      "area": "Exact progression rate",
+      "evidence_position": "Not established",
+      "g3_supplies": "AS-104-02, AS-104-03",
+      "coach_call": "Rate of progression"
+    },
+    {
+      "id": "CJ-10",
+      "area": "Mandatory squat/deadlift/bench numbers",
+      "evidence_position": "Universal standards unsupported",
+      "g3_supplies": "AS-104-11",
+      "coach_call": "Whether a local target is useful for this athlete"
+    },
+    {
+      "id": "CJ-11",
+      "area": "Mandatory bodyweight ratios",
+      "evidence_position": "Unsupported as universal predictors",
+      "g3_supplies": "AS-104-11",
+      "coach_call": "How to contextualize relative strength"
+    },
+    {
+      "id": "CJ-12",
+      "area": "Universal bilateral/unilateral allocation",
+      "evidence_position": "Both effective; specificity explains differences",
+      "g3_supplies": "AS-104-05, D104-7",
+      "coach_call": "The allocation"
+    },
+    {
+      "id": "CJ-13",
+      "area": "Universal free-weight/machine allocation",
+      "evidence_position": "Both effective; outcome differences reflect testing modality",
+      "g3_supplies": "AS-104-05, D104-7",
+      "coach_call": "The allocation"
+    },
+    {
+      "id": "CJ-14",
+      "area": "Universal full-ROM-only programming",
+      "evidence_position": "Full ROM better on average; not always",
+      "g3_supplies": "AS-104-06",
+      "coach_call": "When partial ROM is justified"
+    },
+    {
+      "id": "CJ-15",
+      "area": "Universal eccentric/isometric dose",
+      "evidence_position": "Contraction-specific benefits; no foundational superiority",
+      "g3_supplies": "AS-104-05, D104-7",
+      "coach_call": "The dose and placement"
+    },
+    {
+      "id": "CJ-16",
+      "area": "Universal in-season maintenance dose",
+      "evidence_position": "Maintenance possible at reduced dose; exact doses unjustified; minimum-dose evidence largely powerlifting",
+      "g3_supplies": "AS-104-14",
+      "coach_call": "The in-season dose"
+    },
+    {
+      "id": "CJ-17",
+      "area": "Universal microdosing model",
+      "evidence_position": "U - Unresolved for team sport",
+      "g3_supplies": "AS-104-14",
+      "coach_call": "Whether to distribute the dose this way"
+    },
+    {
+      "id": "CJ-18",
+      "area": "Universal asymmetry cutoff",
+      "evidence_position": "U - Unresolved; no threshold justified",
+      "g3_supplies": "AS-104-12",
+      "coach_call": "How to interpret a measured difference"
+    },
+    {
+      "id": "CJ-19",
+      "area": "Universal female-specific programming modifications",
+      "evidence_position": "Foundational principles do not require a separate system; evidence underrepresented; cycle evidence not a basis for phase rules",
+      "g3_supplies": "Section 18.2 restraint standard",
+      "coach_call": "Individual modification on individual grounds"
+    },
+    {
+      "id": "CJ-20",
+      "area": "Universal prerequisites for plyometrics/power/speed",
+      "evidence_position": "Strength thresholds as prerequisites unsupported",
+      "g3_supplies": "AS-104-11",
+      "coach_call": "Readiness judgment for this athlete and task"
+    },
+    {
+      "id": "CJ-21",
+      "area": "Exercise-specific injury-prevention guarantees",
+      "evidence_position": "F - RT contributes to risk reduction; no lift prevents an injury",
+      "g3_supplies": "D104-15, section 19",
+      "coach_call": "Exposure and progression decisions, communicated without guarantees"
+    }
+  ],
+  "claim_audit": [
+    {
+      "id": "CA-01",
+      "claim": "Only heavy loads build strength",
+      "class": "F",
+      "taught_instead": "Higher loads generally maximize dynamic 1RM; lower and moderate loads still build strength, especially at high effort.",
+      "doctrine_ref": "D104-4"
+    },
+    {
+      "id": "CA-02",
+      "claim": "1-5 reps are exclusively for strength",
+      "class": "F",
+      "taught_instead": "Adaptation zones overlap; the repetition continuum is too rigid.",
+      "doctrine_ref": "D104-3"
+    },
+    {
+      "id": "CA-03",
+      "claim": "Athletes should never hypertrophy",
+      "class": "F",
+      "taught_instead": "Hypertrophy may support force capacity; value judged on contribution, not ideology.",
+      "doctrine_ref": "D104-3"
+    },
+    {
+      "id": "CA-04",
+      "claim": "Hypertrophy automatically makes athletes slow",
+      "class": "F",
+      "taught_instead": "Mass has consequences in tasks the athlete must move; a programming consideration, not an automatic penalty.",
+      "doctrine_ref": "D104-2"
+    },
+    {
+      "id": "CA-05",
+      "claim": "Training to failure is necessary",
+      "class": "F",
+      "taught_instead": "Failure is not required for strength or hypertrophy gains.",
+      "doctrine_ref": "D104-5"
+    },
+    {
+      "id": "CA-06",
+      "claim": "Training to failure should never be used",
+      "class": "F",
+      "taught_instead": "Failure is a deliberate tool with real costs; selective use is defensible.",
+      "doctrine_ref": "D104-5"
+    },
+    {
+      "id": "CA-07",
+      "claim": "Free weights are always superior",
+      "class": "F",
+      "taught_instead": "Both modalities effective; differences tend to reflect the testing modality.",
+      "doctrine_ref": "D104-7"
+    },
+    {
+      "id": "CA-08",
+      "claim": "Machines are not functional",
+      "class": "F",
+      "taught_instead": "Machines are a valid tool judged on the adaptation produced.",
+      "doctrine_ref": "D104-7"
+    },
+    {
+      "id": "CA-09",
+      "claim": "Unilateral training is inherently more athletic",
+      "class": "F",
+      "taught_instead": "Both improve strength and athletic outcomes; specificity explains differences.",
+      "doctrine_ref": "D104-7"
+    },
+    {
+      "id": "CA-10",
+      "claim": "Bilateral training is less athletic",
+      "class": "F",
+      "taught_instead": "As above, in the opposite direction.",
+      "doctrine_ref": "D104-7"
+    },
+    {
+      "id": "CA-11",
+      "claim": "Unstable surfaces are inherently more functional",
+      "class": "F",
+      "taught_instead": "Instability work is not inherently more functional for athletic strength development.",
+      "doctrine_ref": "D104-7"
+    },
+    {
+      "id": "CA-12",
+      "claim": "Deep squats are inherently bad for knees",
+      "class": "F",
+      "taught_instead": "Review-level evidence does not support inherent harm to healthy knees with appropriate technique and loading.",
+      "doctrine_ref": "D104-15"
+    },
+    {
+      "id": "CA-13",
+      "claim": "Knees should never pass the toes",
+      "class": "F",
+      "taught_instead": "The prohibition is not supported by the current evidence set.",
+      "doctrine_ref": "D104-15"
+    },
+    {
+      "id": "CA-14",
+      "claim": "Deadlifts are inherently dangerous",
+      "class": "F",
+      "taught_instead": "Exact safety comparisons are U - Unresolved; no exercise is dangerous independent of context.",
+      "doctrine_ref": "D104-15"
+    },
+    {
+      "id": "CA-15",
+      "claim": "Youth should not lift heavy",
+      "class": "F",
+      "taught_instead": "Progressive loading is appropriate when competence, readiness, and supervision support it.",
+      "doctrine_ref": "D104-13"
+    },
+    {
+      "id": "CA-16",
+      "claim": "Resistance training stunts growth",
+      "class": "F",
+      "taught_instead": "Current evidence does not support the claim; supervised, progressed training is safe and effective.",
+      "doctrine_ref": "D104-13"
+    },
+    {
+      "id": "CA-17",
+      "claim": "Olympic lifts are required for athletes",
+      "class": "F",
+      "taught_instead": "No lift is mandatory; selection is constraint-based.",
+      "doctrine_ref": "D104-6"
+    },
+    {
+      "id": "CA-18",
+      "claim": "Slow eccentrics are always superior",
+      "class": "F",
+      "taught_instead": "Contraction-mode specificity, not universal superiority; costs must be accounted.",
+      "doctrine_ref": "D104-7"
+    },
+    {
+      "id": "CA-19",
+      "claim": "Time under tension determines strength development",
+      "class": "F",
+      "taught_instead": "Deliberately slow tempo is not inherently better for maximal strength; concentric intent is more relevant.",
+      "doctrine_ref": "D104-7"
+    },
+    {
+      "id": "CA-20",
+      "claim": "Muscle confusion is required",
+      "class": "F",
+      "taught_instead": "Variation serves adaptation; novelty is not a mechanism.",
+      "doctrine_ref": "D104-11"
+    },
+    {
+      "id": "CA-21",
+      "claim": "Exercises must rotate constantly",
+      "class": "F",
+      "taught_instead": "Constant variation is unsupported and obstructs evaluation of adaptation.",
+      "doctrine_ref": "D104-11"
+    },
+    {
+      "id": "CA-22",
+      "claim": "Soreness proves effectiveness",
+      "class": "F",
+      "taught_instead": "Soreness is not an outcome measure.",
+      "doctrine_ref": "D104-9"
+    },
+    {
+      "id": "CA-23",
+      "claim": "More volume always means more strength",
+      "class": "F",
+      "taught_instead": "Volume links more clearly to hypertrophy than to maximal strength; physique set rules do not import.",
+      "doctrine_ref": "D104-9"
+    },
+    {
+      "id": "CA-24",
+      "claim": "Stronger is always better",
+      "class": "F",
+      "taught_instead": "Strength is foundational, not sufficient; transfer is conditional.",
+      "doctrine_ref": "D104-2"
+    },
+    {
+      "id": "CA-25",
+      "claim": "Every athlete needs a 2x bodyweight squat",
+      "class": "F",
+      "taught_instead": "Universal ratios are unsupported as predictors and may not gate methods.",
+      "doctrine_ref": "D104-14"
+    },
+    {
+      "id": "CA-26",
+      "claim": "Asymmetry above 10% is automatically a problem",
+      "class": "F",
+      "taught_instead": "No single threshold is justified; interpretation requires measurement, context, and repetition.",
+      "doctrine_ref": "D104-14"
+    },
+    {
+      "id": "CA-27",
+      "claim": "VBT is inherently superior",
+      "class": "F",
+      "taught_instead": "VBT can improve outcomes; comparative evidence does not establish programming superiority.",
+      "doctrine_ref": "D104-10"
+    },
+    {
+      "id": "CA-28",
+      "claim": "Women require fundamentally different strength principles",
+      "class": "F",
+      "taught_instead": "Foundational principles do not require a separate system; individual differences and evidence underrepresentation are both disclosed.",
+      "doctrine_ref": "D104-14"
+    }
+  ],
+  "claim_audit_symmetry_rule": "Every correction is a correction, not an inversion. Correcting a Class F claim by asserting its opposite reproduces the error.",
+  "competencies": [
+    {
+      "id": "C104-01",
+      "title": "Strength terminology",
+      "ladder_level": "KNOW -> APPLY",
+      "observable_standard": "Names the strength expression, task, and metric in every claim; never collapses strength, power, and RFD.",
+      "modules": [
+        "M1",
+        "M12"
+      ],
+      "assessments": [
+        "A1"
+      ],
+      "cases": [],
+      "sign_off": "PS-1"
+    },
+    {
+      "id": "C104-02",
+      "title": "Adaptation mechanisms",
+      "ladder_level": "UNDERSTAND",
+      "observable_standard": "Gives a multifactorial account of a strength change and distinguishes mechanism from outcome.",
+      "modules": [
+        "M2"
+      ],
+      "assessments": [
+        "A2"
+      ],
+      "cases": [],
+      "sign_off": "PS-1"
+    },
+    {
+      "id": "C104-03",
+      "title": "Strength-to-performance transfer",
+      "ladder_level": "UNDERSTAND -> DEFEND",
+      "observable_standard": "States what strength-performance evidence licenses; distinguishes association from transfer; states a transfer pathway.",
+      "modules": [
+        "M3"
+      ],
+      "assessments": [
+        "A3"
+      ],
+      "cases": [
+        "case-2",
+        "case-3"
+      ],
+      "sign_off": "PS-1, PS-4"
+    },
+    {
+      "id": "C104-04",
+      "title": "Loading selection",
+      "ladder_level": "APPLY -> COACH",
+      "observable_standard": "Selects loading for a named adaptation and athlete, without a rep-range rule or universal percentage.",
+      "modules": [
+        "M4"
+      ],
+      "assessments": [
+        "A4"
+      ],
+      "cases": [
+        "case-2"
+      ],
+      "sign_off": "PS-1"
+    },
+    {
+      "id": "C104-05",
+      "title": "Volume/frequency/rest management",
+      "ladder_level": "APPLY -> DEFEND",
+      "observable_standard": "Sets four dose variables as interacting, with criteria and no imported figures.",
+      "modules": [
+        "M5",
+        "M10"
+      ],
+      "assessments": [
+        "A5",
+        "A10"
+      ],
+      "cases": [
+        "case-4",
+        "case-6"
+      ],
+      "sign_off": "PS-2, PS-4"
+    },
+    {
+      "id": "C104-06",
+      "title": "Proximity-to-failure decisions",
+      "ladder_level": "APPLY -> COACH",
+      "observable_standard": "Decides failure use from complexity, experience, fatigue, recovery, and purpose; asserts no RIR rule.",
+      "modules": [
+        "M5"
+      ],
+      "assessments": [
+        "A5"
+      ],
+      "cases": [
+        "case-6"
+      ],
+      "sign_off": "PS-2"
+    },
+    {
+      "id": "C104-07",
+      "title": "Exercise selection",
+      "ladder_level": "APPLY -> COACH",
+      "observable_standard": "Selects from constraints and categories; substitutes preserving intended adaptation; asserts no mandatory lift.",
+      "modules": [
+        "M6",
+        "M11"
+      ],
+      "assessments": [
+        "A6"
+      ],
+      "cases": [
+        "case-1",
+        "case-5",
+        "case-9"
+      ],
+      "sign_off": "PS-2"
+    },
+    {
+      "id": "C104-08",
+      "title": "ROM/method selection",
+      "ladder_level": "APPLY -> COACH",
+      "observable_standard": "Applies full ROM as default and justifies partial ROM specifically when used.",
+      "modules": [
+        "M6",
+        "M7"
+      ],
+      "assessments": [
+        "A7"
+      ],
+      "cases": [
+        "case-5"
+      ],
+      "sign_off": "PS-2"
+    },
+    {
+      "id": "C104-09",
+      "title": "Eccentric/isometric application",
+      "ladder_level": "UNDERSTAND -> APPLY",
+      "observable_standard": "Uses contraction-mode methods for stated specificity, with cost accounted and no superiority claim.",
+      "modules": [
+        "M7"
+      ],
+      "assessments": [
+        "A7"
+      ],
+      "cases": [],
+      "sign_off": "PS-2"
+    },
+    {
+      "id": "C104-10",
+      "title": "Autoregulation/VBT interpretation",
+      "ladder_level": "APPLY -> EVALUATE",
+      "observable_standard": "Uses RPE/RIR/velocity within stated limits; imports no threshold; ties each input to a decision it can change.",
+      "modules": [
+        "M8"
+      ],
+      "assessments": [
+        "A8"
+      ],
+      "cases": [
+        "case-7"
+      ],
+      "sign_off": "PS-4"
+    },
+    {
+      "id": "C104-11",
+      "title": "Progression/periodization",
+      "ladder_level": "APPLY -> DEFEND",
+      "observable_standard": "Organizes training over time with a stated rationale; claims no universal model; defends stability as well as change.",
+      "modules": [
+        "M9",
+        "M3"
+      ],
+      "assessments": [
+        "A9"
+      ],
+      "cases": [
+        "case-3"
+      ],
+      "sign_off": "PS-4"
+    },
+    {
+      "id": "C104-12",
+      "title": "Concurrent/in-season integration",
+      "ladder_level": "APPLY -> DEFEND",
+      "observable_standard": "Counts existing load, protects meaningful exposure, defines in-season success, asserts no microdose rule.",
+      "modules": [
+        "M10"
+      ],
+      "assessments": [
+        "A10"
+      ],
+      "cases": [
+        "case-4"
+      ],
+      "sign_off": "PS-4"
+    },
+    {
+      "id": "C104-13",
+      "title": "Youth strength coaching",
+      "ladder_level": "APPLY -> COACH",
+      "observable_standard": "Applies readiness reasoning, progresses load when competence supports it, states the safety claim with its conditions.",
+      "modules": [
+        "M11"
+      ],
+      "assessments": [
+        "A11"
+      ],
+      "cases": [
+        "case-1"
+      ],
+      "sign_off": "PS-3"
+    },
+    {
+      "id": "C104-14",
+      "title": "Strength testing",
+      "ladder_level": "APPLY -> EVALUATE",
+      "observable_standard": "Selects construct-appropriate tests, records conditions, labels results by task, interprets inside error.",
+      "modules": [
+        "M12",
+        "M8"
+      ],
+      "assessments": [
+        "A12"
+      ],
+      "cases": [
+        "case-7",
+        "case-8"
+      ],
+      "sign_off": "PS-4"
+    },
+    {
+      "id": "C104-15",
+      "title": "Standards/asymmetry interpretation",
+      "ladder_level": "EVALUATE -> DEFEND",
+      "observable_standard": "Refuses universal ratios and thresholds without substituting new ones; interprets asymmetry with measurement and context.",
+      "modules": [
+        "M12",
+        "M3"
+      ],
+      "assessments": [
+        "A12"
+      ],
+      "cases": [
+        "case-2",
+        "case-8"
+      ],
+      "sign_off": "PS-4, T-01"
+    },
+    {
+      "id": "C104-16",
+      "title": "Safety/evidence boundaries",
+      "ladder_level": "EVALUATE -> DEFEND",
+      "observable_standard": "Distinguishes injury-risk reduction from prevention; identifies unsupported claims; corrects without inverting.",
+      "modules": [
+        "M2",
+        "M6",
+        "M11",
+        "M12"
+      ],
+      "assessments": [
+        "A12"
+      ],
+      "cases": [
+        "case-1",
+        "case-5",
+        "case-6",
+        "case-7",
+        "case-8",
+        "case-9"
+      ],
+      "sign_off": "PS-3, T-01"
+    },
+    {
+      "id": "C104-17",
+      "title": "Programming defense",
+      "ladder_level": "DEFEND",
+      "observable_standard": "Defends a full strength prescription under questioning across the eight obligations.",
+      "modules": [
+        "M12"
+      ],
+      "assessments": [
+        "A12"
+      ],
+      "cases": [
+        "case-3",
+        "case-4",
+        "case-9"
+      ],
+      "sign_off": "T-01"
+    }
+  ],
+  "competency_ladder": [
+    "KNOW",
+    "UNDERSTAND",
+    "APPLY",
+    "COACH",
+    "EVALUATE",
+    "DEFEND"
+  ],
+  "modules": [
+    {
+      "id": "M1",
+      "title": "What Strength Actually Is",
+      "focus": "definitions and task specificity",
+      "duration_minutes": 90,
+      "framing_statement": "\"He's strong\" is not a coaching statement.",
+      "purpose": "To install the vocabulary and the task-specific conception of strength the course depends on, and to end the habit of treating one lift result as a global athletic attribute.",
+      "objectives": [
+        "M1.1 Define strength as capacity to produce force or torque under specified task constraints",
+        "M1.2 Distinguish the expressions of strength",
+        "M1.3 Distinguish force, impulse, power, and RFD",
+        "M1.4 Explain why a 1RM measures performance in that lift",
+        "M1.5 State task and metric whenever a strength claim is made",
+        "M1.6 Identify which expression a given athletic task demands"
+      ],
+      "doctrine_ids": [
+        "D104-1",
+        "D104-14"
+      ],
+      "applied_standard_ids": [
+        "AS-104-01",
+        "AS-104-10"
+      ],
+      "competency_ids": [
+        "C104-01",
+        "C104-14"
+      ],
+      "lessons": [
+        {
+          "index": 1,
+          "title": "The question behind the number"
+        },
+        {
+          "index": 2,
+          "title": "The expressions of strength"
+        },
+        {
+          "index": 3,
+          "title": "Force, impulse, power, RFD"
+        },
+        {
+          "index": 4,
+          "title": "Why the lift is not the athlete"
+        },
+        {
+          "index": 5,
+          "title": "Naming the task, every time"
+        },
+        {
+          "index": 6,
+          "title": "Which strength does this task demand?"
+        }
+      ],
+      "common_errors": [
+        "Reporting a lift number as 'strength' with no task",
+        "Using power, strength, and RFD as synonyms",
+        "Treating relative strength as an athlete standard",
+        "Assuming an isometric result describes dynamic capability",
+        "Assuming stronger is always better"
+      ],
+      "scenario_id": "M1-A",
+      "applied_assessment_id": "A1",
+      "sign_off": null,
+      "reference_ids": [
+        "EP104-14",
+        "EP104-13",
+        "EP104-43",
+        "EP104-44",
+        "EP104-21"
+      ],
+      "assessment_counts": {
+        "knowledge": 5,
+        "interpretation": 2,
+        "decision": 1,
+        "claim_audit": 2,
+        "testing_interpretation": 1
+      },
+      "gating": {
+        "prerequisite": "G3 102 and G3 103 complete including both terminal defenses; active G3 coaching status",
+        "unlocks": "M2",
+        "gate": null
+      },
+      "content_objects": [
+        "module_id",
+        "module_header",
+        "purpose",
+        "objectives",
+        "doctrine_refs",
+        "applied_standard_refs",
+        "competency_refs",
+        "evidence_block",
+        "lesson",
+        "coaching_application",
+        "error_list",
+        "scenario",
+        "knowledge_assessment",
+        "applied_assessment",
+        "sign_off_link",
+        "references",
+        "gating"
+      ]
+    },
+    {
+      "id": "M2",
+      "title": "How Strength Adapts",
+      "focus": "mechanisms",
+      "duration_minutes": 90,
+      "framing_statement": "Knowing why strength improves is what stops a coach from believing that one variable caused it.",
+      "purpose": "To give coaches an accurate, multifactorial account of strength adaptation so that method selection is grounded in what actually changes.",
+      "objectives": [
+        "M2.1 Describe neural contributions",
+        "M2.2 Describe morphological contributions",
+        "M2.3 Describe technical and coordinative contributions",
+        "M2.4 Describe tendon and connective-tissue adaptation",
+        "M2.5 Explain training history and leverage",
+        "M2.6 Explain why adaptation is multifactorial",
+        "M2.7 Distinguish a mechanism from an outcome"
+      ],
+      "doctrine_ids": [
+        "D104-1",
+        "D104-9"
+      ],
+      "applied_standard_ids": [
+        "AS-104-01",
+        "AS-104-03"
+      ],
+      "competency_ids": [
+        "C104-02",
+        "C104-16"
+      ],
+      "lessons": [
+        {
+          "index": 1,
+          "title": "Multifactorial, stated plainly"
+        },
+        {
+          "index": 2,
+          "title": "Neural adaptation"
+        },
+        {
+          "index": 3,
+          "title": "Morphology and architecture"
+        },
+        {
+          "index": 4,
+          "title": "Technique and coordination"
+        },
+        {
+          "index": 5,
+          "title": "Tendon and connective tissue"
+        },
+        {
+          "index": 6,
+          "title": "Training history and leverage"
+        },
+        {
+          "index": 7,
+          "title": "Mechanism is not outcome"
+        }
+      ],
+      "common_errors": [
+        "Attributing all early gains to one mechanism",
+        "Treating a mechanism as evidence a method works",
+        "Assuming a test improvement is a capacity improvement",
+        "Treating hypertrophy as inherently harmful or inherently required",
+        "Explaining mechanisms in place of coaching the task"
+      ],
+      "scenario_id": "M2-A",
+      "applied_assessment_id": "A2",
+      "sign_off": null,
+      "reference_ids": [
+        "EP104-32",
+        "EP104-33",
+        "EP104-34",
+        "EP104-39",
+        "EP104-25",
+        "EP104-37",
+        "EP104-38"
+      ],
+      "assessment_counts": {
+        "knowledge": 5,
+        "interpretation": 3,
+        "decision": 1,
+        "claim_audit": 2,
+        "testing_interpretation": 0
+      },
+      "gating": {
+        "prerequisite": "M1 at standard",
+        "unlocks": "M3",
+        "gate": null
+      },
+      "content_objects": [
+        "module_id",
+        "module_header",
+        "purpose",
+        "objectives",
+        "doctrine_refs",
+        "applied_standard_refs",
+        "competency_refs",
+        "evidence_block",
+        "lesson",
+        "coaching_application",
+        "error_list",
+        "scenario",
+        "knowledge_assessment",
+        "applied_assessment",
+        "sign_off_link",
+        "references",
+        "gating"
+      ]
+    },
+    {
+      "id": "M3",
+      "title": "Strength and Athletic Transfer",
+      "focus": "transfer versus correlation",
+      "duration_minutes": 105,
+      "framing_statement": "Stronger athletes tend to sprint faster. That sentence is true, and it is not a training plan.",
+      "purpose": "To establish strength as foundational but not sufficient, and to give coaches the reasoning that separates a correlation from a transfer claim.",
+      "objectives": [
+        "M3.1 State what the strength-to-sprint and jump evidence supports",
+        "M3.2 Distinguish association, transfer, and mechanism",
+        "M3.3 Explain the conditions on transfer",
+        "M3.4 Identify when strength is not the limiting factor",
+        "M3.5 Explain body mass and relative strength in transfer reasoning",
+        "M3.6 State the transfer pathway for any method selected",
+        "M3.7 Reject 'stronger is always better' without inverting it"
+      ],
+      "doctrine_ids": [
+        "D104-2",
+        "D104-1",
+        "D104-14"
+      ],
+      "applied_standard_ids": [
+        "AS-104-01",
+        "AS-104-11"
+      ],
+      "competency_ids": [
+        "C104-03",
+        "C104-15",
+        "C104-16"
+      ],
+      "lessons": [
+        {
+          "index": 1,
+          "title": "What the evidence actually says"
+        },
+        {
+          "index": 2,
+          "title": "Three different claims"
+        },
+        {
+          "index": 3,
+          "title": "What makes transfer more or less likely"
+        },
+        {
+          "index": 4,
+          "title": "When strength is not the limiting factor"
+        },
+        {
+          "index": 5,
+          "title": "Relative strength and body mass, carefully"
+        },
+        {
+          "index": 6,
+          "title": "Stating the transfer pathway"
+        },
+        {
+          "index": 7,
+          "title": "Neither slogan"
+        }
+      ],
+      "common_errors": [
+        "Converting a correlation into a prescription",
+        "Assuming gym improvement is sport improvement",
+        "Adding strength work by default when performance stalls",
+        "Ignoring body-mass consequences",
+        "Using a ratio as a gate",
+        "Applying elite findings unchanged to scholastic athletes"
+      ],
+      "scenario_id": "case-3",
+      "applied_assessment_id": "A3",
+      "sign_off": null,
+      "reference_ids": [
+        "EP104-21",
+        "EP104-03",
+        "EP104-31",
+        "EP104-12",
+        "EP104-14"
+      ],
+      "assessment_counts": {
+        "knowledge": 5,
+        "interpretation": 3,
+        "decision": 2,
+        "claim_audit": 2,
+        "testing_interpretation": 1
+      },
+      "gating": {
+        "prerequisite": "M2 at standard",
+        "unlocks": "M4",
+        "gate": null
+      },
+      "content_objects": [
+        "module_id",
+        "module_header",
+        "purpose",
+        "objectives",
+        "doctrine_refs",
+        "applied_standard_refs",
+        "competency_refs",
+        "evidence_block",
+        "lesson",
+        "coaching_application",
+        "error_list",
+        "scenario",
+        "knowledge_assessment",
+        "applied_assessment",
+        "sign_off_link",
+        "references",
+        "gating"
+      ]
+    },
+    {
+      "id": "M4",
+      "title": "Loading for Strength",
+      "focus": "load and repetition ranges",
+      "duration_minutes": 105,
+      "framing_statement": "Load matters, and the boxes we drew around it do not.",
+      "purpose": "To make coaches capable of selecting loading strategies for a named adaptation, and to remove rigid repetition-continuum thinking.",
+      "objectives": [
+        "M4.1 State what higher loads are supported to do",
+        "M4.2 State what lower and moderate loads can and cannot do",
+        "M4.3 Explain why adaptation zones overlap",
+        "M4.4 Explain the role of effort at lower loads",
+        "M4.5 Describe the load-hypertrophy relationship",
+        "M4.6 Select a loading strategy without a universal rule",
+        "M4.7 Explain 1RM adaptation specificity"
+      ],
+      "doctrine_ids": [
+        "D104-3",
+        "D104-4",
+        "D104-1"
+      ],
+      "applied_standard_ids": [
+        "AS-104-02",
+        "AS-104-01",
+        "AS-104-03"
+      ],
+      "competency_ids": [
+        "C104-04",
+        "C104-01"
+      ],
+      "lessons": [
+        {
+          "index": 1,
+          "title": "The strongest loading finding, stated precisely"
+        },
+        {
+          "index": 2,
+          "title": "What lower and moderate loads do"
+        },
+        {
+          "index": 3,
+          "title": "Why the boxes fail"
+        },
+        {
+          "index": 4,
+          "title": "Effort as the moderator at lower loads"
+        },
+        {
+          "index": 5,
+          "title": "Hypertrophy in an athletic program"
+        },
+        {
+          "index": 6,
+          "title": "Selecting for the athlete"
+        },
+        {
+          "index": 7,
+          "title": "Specificity of 1RM adaptation"
+        }
+      ],
+      "common_errors": [
+        "Programming rep ranges as though they select adaptations",
+        "Believing only heavy work counts",
+        "Avoiding all hypertrophy work",
+        "Assuming athletes should never hypertrophy",
+        "Loading beyond technical execution",
+        "Copying a percentage scheme and calling it evidence-based"
+      ],
+      "scenario_id": "M4-A",
+      "applied_assessment_id": "A4",
+      "sign_off": "PS-1",
+      "reference_ids": [
+        "EP104-06",
+        "EP104-25",
+        "EP104-37",
+        "EP104-13",
+        "EP104-14"
+      ],
+      "assessment_counts": {
+        "knowledge": 5,
+        "interpretation": 2,
+        "decision": 3,
+        "claim_audit": 3,
+        "testing_interpretation": 0
+      },
+      "gating": {
+        "prerequisite": "M3 at standard",
+        "unlocks": "PS-1",
+        "gate": "PS-1 must be recorded before M5 opens"
+      },
+      "content_objects": [
+        "module_id",
+        "module_header",
+        "purpose",
+        "objectives",
+        "doctrine_refs",
+        "applied_standard_refs",
+        "competency_refs",
+        "evidence_block",
+        "lesson",
+        "coaching_application",
+        "error_list",
+        "scenario",
+        "knowledge_assessment",
+        "applied_assessment",
+        "sign_off_link",
+        "references",
+        "gating"
+      ]
+    },
+    {
+      "id": "M5",
+      "title": "Volume, Frequency, Rest & Failure",
+      "focus": "dose management",
+      "duration_minutes": 105,
+      "framing_statement": "Dose is not a number you look up.",
+      "purpose": "To make coaches capable of organizing volume, frequency, rest, and effort as an interacting dose, and to end both the 'more is better' and 'train to failure' defaults.",
+      "objectives": [
+        "M5.1 Explain volume in relation to strength versus hypertrophy",
+        "M5.2 Explain why physique set rules do not import",
+        "M5.3 Describe frequency as a distribution variable",
+        "M5.4 Apply rest to preserve intended output",
+        "M5.5 Decide when failure is appropriate",
+        "M5.6 Use RIR and RPE with limitations stated",
+        "M5.7 Manage the four dose variables as interacting"
+      ],
+      "doctrine_ids": [
+        "D104-9",
+        "D104-5",
+        "D104-3"
+      ],
+      "applied_standard_ids": [
+        "AS-104-04",
+        "AS-104-07",
+        "AS-104-08",
+        "AS-104-09",
+        "AS-104-03"
+      ],
+      "competency_ids": [
+        "C104-05",
+        "C104-06",
+        "C104-10"
+      ],
+      "lessons": [
+        {
+          "index": 1,
+          "title": "Volume, honestly"
+        },
+        {
+          "index": 2,
+          "title": "Frequency as distribution"
+        },
+        {
+          "index": 3,
+          "title": "Rest for output"
+        },
+        {
+          "index": 4,
+          "title": "Failure, decided rather than defaulted"
+        },
+        {
+          "index": 5,
+          "title": "RIR and RPE with their limits"
+        },
+        {
+          "index": 6,
+          "title": "The four variables interact"
+        },
+        {
+          "index": 7,
+          "title": "Athlete context versus physique-training context"
+        }
+      ],
+      "common_errors": [
+        "Importing physique weekly-set targets",
+        "Treating frequency as an independent driver",
+        "Cutting rest to make it harder",
+        "Defaulting every set to failure or forbidding it",
+        "Treating soreness as evidence",
+        "Using RIR with uncalibrated athletes"
+      ],
+      "scenario_id": "case-6",
+      "applied_assessment_id": "A5",
+      "sign_off": null,
+      "reference_ids": [
+        "EP104-37",
+        "EP104-09",
+        "EP104-10",
+        "EP104-11",
+        "EP104-05",
+        "EP104-19",
+        "EP104-08",
+        "EP104-07",
+        "EP104-14"
+      ],
+      "assessment_counts": {
+        "knowledge": 5,
+        "interpretation": 2,
+        "decision": 3,
+        "claim_audit": 3,
+        "testing_interpretation": 0
+      },
+      "gating": {
+        "prerequisite": "PS-1 recorded (hard gate) and M4 at standard",
+        "unlocks": "M6",
+        "gate": "PS-1"
+      },
+      "content_objects": [
+        "module_id",
+        "module_header",
+        "purpose",
+        "objectives",
+        "doctrine_refs",
+        "applied_standard_refs",
+        "competency_refs",
+        "evidence_block",
+        "lesson",
+        "coaching_application",
+        "error_list",
+        "scenario",
+        "knowledge_assessment",
+        "applied_assessment",
+        "sign_off_link",
+        "references",
+        "gating"
+      ]
+    },
+    {
+      "id": "M6",
+      "title": "Exercise Selection Without Dogma",
+      "focus": "selection constraints",
+      "duration_minutes": 105,
+      "framing_statement": "There is no mandatory lift.",
+      "purpose": "To replace exercise ideology with constraint-based selection, and to settle the modality arguments with what the evidence shows.",
+      "objectives": [
+        "M6.1 Select from objective, competence, loadability, stability, technical demand, fatigue cost, anthropometry, equipment, transfer",
+        "M6.2 Use movement categories rather than mandatory lifts",
+        "M6.3 State what the bilateral/unilateral evidence supports",
+        "M6.4 State what the free-weight/machine evidence supports",
+        "M6.5 Explain how testing modality shapes apparent superiority",
+        "M6.6 Evaluate functional-training claims",
+        "M6.7 State the unresolved status of open- versus closed-kinetic-chain superiority"
+      ],
+      "doctrine_ids": [
+        "D104-6",
+        "D104-7",
+        "D104-1"
+      ],
+      "applied_standard_ids": [
+        "AS-104-05",
+        "AS-104-01",
+        "AS-104-03"
+      ],
+      "competency_ids": [
+        "C104-07",
+        "C104-08",
+        "C104-16"
+      ],
+      "lessons": [
+        {
+          "index": 1,
+          "title": "Start with the objective, then the constraints"
+        },
+        {
+          "index": 2,
+          "title": "Categories before lifts"
+        },
+        {
+          "index": 3,
+          "title": "Bilateral and unilateral"
+        },
+        {
+          "index": 4,
+          "title": "Free weights and machines"
+        },
+        {
+          "index": 5,
+          "title": "The 'functional' argument"
+        },
+        {
+          "index": 6,
+          "title": "What remains unresolved"
+        },
+        {
+          "index": 7,
+          "title": "Anthropometry, equipment, and the real room"
+        }
+      ],
+      "common_errors": [
+        "Declaring a lift mandatory",
+        "Free-weight superiority claims or machine dismissal",
+        "Unilateral or bilateral superiority claims",
+        "Adding instability to make work functional",
+        "Selecting by tradition or coach preference",
+        "Ignoring anthropometry then coaching against it"
+      ],
+      "scenario_id": "case-5",
+      "applied_assessment_id": "A6",
+      "sign_off": null,
+      "reference_ids": [
+        "EP104-24",
+        "EP104-27",
+        "EP104-40",
+        "EP104-26",
+        "EP104-29",
+        "EP104-30",
+        "EP104-35",
+        "EP104-50",
+        "EP104-53",
+        "EP104-54",
+        "EP104-14"
+      ],
+      "assessment_counts": {
+        "knowledge": 5,
+        "interpretation": 2,
+        "decision": 3,
+        "claim_audit": 4,
+        "testing_interpretation": 0
+      },
+      "gating": {
+        "prerequisite": "M5 at standard",
+        "unlocks": "M7",
+        "gate": null
+      },
+      "content_objects": [
+        "module_id",
+        "module_header",
+        "purpose",
+        "objectives",
+        "doctrine_refs",
+        "applied_standard_refs",
+        "competency_refs",
+        "evidence_block",
+        "lesson",
+        "coaching_application",
+        "error_list",
+        "scenario",
+        "knowledge_assessment",
+        "applied_assessment",
+        "sign_off_link",
+        "references",
+        "gating"
+      ]
+    },
+    {
+      "id": "M7",
+      "title": "ROM, Eccentric, Isometric & Tempo Methods",
+      "focus": "method specificity",
+      "duration_minutes": 105,
+      "framing_statement": "Every method in this module works for something. None works for everything.",
+      "purpose": "To teach ROM, eccentric, isometric, and tempo methods as contraction- and context-specific tools with their evidence stated at actual strength.",
+      "objectives": [
+        "M7.1 Apply full ROM as default and justify partial ROM",
+        "M7.2 Explain joint-angle specificity",
+        "M7.3 State what eccentric-only training is supported to produce",
+        "M7.4 State what isometric training is supported to produce",
+        "M7.5 Distinguish concentric intent from slow movement",
+        "M7.6 Explain why tempo is not a determinant of strength development",
+        "M7.7 Select methods for contraction-mode specificity"
+      ],
+      "doctrine_ids": [
+        "D104-8",
+        "D104-7",
+        "D104-1"
+      ],
+      "applied_standard_ids": [
+        "AS-104-06",
+        "AS-104-01",
+        "AS-104-03",
+        "AS-104-05"
+      ],
+      "competency_ids": [
+        "C104-08",
+        "C104-09"
+      ],
+      "lessons": [
+        {
+          "index": 1,
+          "title": "Full ROM as default, stated with its qualifier"
+        },
+        {
+          "index": 2,
+          "title": "Using partial ROM on purpose"
+        },
+        {
+          "index": 3,
+          "title": "Eccentric methods"
+        },
+        {
+          "index": 4,
+          "title": "Isometric methods"
+        },
+        {
+          "index": 5,
+          "title": "Isometric and dynamic are related, not the same"
+        },
+        {
+          "index": 6,
+          "title": "Intent versus tempo"
+        },
+        {
+          "index": 7,
+          "title": "Choosing the method for the mode"
+        }
+      ],
+      "common_errors": [
+        "Treating partial ROM as automatically inferior or automatically sport-specific",
+        "Adopting eccentric emphasis as a default",
+        "Using isometrics as a substitute for dynamic training",
+        "Prescribing slow tempo for time under tension",
+        "Coaching slowness when intent should be maximal",
+        "Reading an isometric test as dynamic capability"
+      ],
+      "scenario_id": "M7-A",
+      "applied_assessment_id": "A7",
+      "sign_off": "PS-2",
+      "reference_ids": [
+        "EP104-36",
+        "EP104-38",
+        "EP104-42",
+        "EP104-43",
+        "EP104-44",
+        "EP104-14",
+        "EP104-53"
+      ],
+      "assessment_counts": {
+        "knowledge": 5,
+        "interpretation": 2,
+        "decision": 2,
+        "claim_audit": 3,
+        "testing_interpretation": 1
+      },
+      "gating": {
+        "prerequisite": "M6 at standard",
+        "unlocks": "PS-2",
+        "gate": "PS-2 must be recorded before M8 opens"
+      },
+      "content_objects": [
+        "module_id",
+        "module_header",
+        "purpose",
+        "objectives",
+        "doctrine_refs",
+        "applied_standard_refs",
+        "competency_refs",
+        "evidence_block",
+        "lesson",
+        "coaching_application",
+        "error_list",
+        "scenario",
+        "knowledge_assessment",
+        "applied_assessment",
+        "sign_off_link",
+        "references",
+        "gating"
+      ]
+    },
+    {
+      "id": "M8",
+      "title": "Autoregulation & Velocity-Based Training",
+      "focus": "prescription tools",
+      "duration_minutes": 105,
+      "framing_statement": "Measuring something precisely is not the same as knowing what to do about it.",
+      "purpose": "To teach percentage-based prescription, RPE, RIR, APRE, and VBT as tools with defined uses and limits.",
+      "objectives": [
+        "M8.1 Describe percentage-based prescription and its assumptions",
+        "M8.2 Apply RPE and RIR with limitations stated",
+        "M8.3 Describe APRE as one structured approach",
+        "M8.4 Explain load-velocity relationships and their specificity",
+        "M8.5 State what the VBT comparative evidence establishes",
+        "M8.6 Decide when an autoregulation method informs a real decision",
+        "M8.7 Evaluate device and measurement limitations"
+      ],
+      "doctrine_ids": [
+        "D104-10",
+        "D104-9",
+        "D104-1"
+      ],
+      "applied_standard_ids": [
+        "AS-104-09",
+        "AS-104-02",
+        "AS-104-04",
+        "AS-104-10"
+      ],
+      "competency_ids": [
+        "C104-10",
+        "C104-05",
+        "C104-16"
+      ],
+      "lessons": [
+        {
+          "index": 1,
+          "title": "Percentage prescription and its assumptions"
+        },
+        {
+          "index": 2,
+          "title": "RPE and RIR"
+        },
+        {
+          "index": 3,
+          "title": "APRE and structured autoregulation"
+        },
+        {
+          "index": 4,
+          "title": "Load-velocity relationships"
+        },
+        {
+          "index": 5,
+          "title": "What the comparison actually shows"
+        },
+        {
+          "index": 6,
+          "title": "Does the number change a decision?"
+        },
+        {
+          "index": 7,
+          "title": "Devices and measurement"
+        }
+      ],
+      "common_errors": [
+        "Presenting VBT as inherently superior",
+        "Importing a velocity-loss threshold",
+        "Using RIR with uncalibrated athletes",
+        "Quoting an RPE without its scale",
+        "Collecting data that changes no decision",
+        "Dismissing autoregulation reflexively"
+      ],
+      "scenario_id": "case-7",
+      "applied_assessment_id": "A8",
+      "sign_off": null,
+      "reference_ids": [
+        "EP104-15",
+        "EP104-16",
+        "EP104-17",
+        "EP104-23",
+        "EP104-14"
+      ],
+      "assessment_counts": {
+        "knowledge": 5,
+        "interpretation": 3,
+        "decision": 2,
+        "claim_audit": 2,
+        "testing_interpretation": 2
+      },
+      "gating": {
+        "prerequisite": "PS-2 recorded (hard gate) and M7 at standard",
+        "unlocks": "M9",
+        "gate": "PS-2"
+      },
+      "content_objects": [
+        "module_id",
+        "module_header",
+        "purpose",
+        "objectives",
+        "doctrine_refs",
+        "applied_standard_refs",
+        "competency_refs",
+        "evidence_block",
+        "lesson",
+        "coaching_application",
+        "error_list",
+        "scenario",
+        "knowledge_assessment",
+        "applied_assessment",
+        "sign_off_link",
+        "references",
+        "gating"
+      ]
+    },
+    {
+      "id": "M9",
+      "title": "Progression, Periodization & Maintenance",
+      "focus": "organization over time",
+      "duration_minutes": 105,
+      "framing_statement": "Organizing training beats not organizing it. Which organization wins is a question the evidence has not answered.",
+      "purpose": "To teach progression and periodization as purposeful organization with a bounded evidence base, and maintenance as a defended reduction.",
+      "objectives": [
+        "M9.1 Apply progressive overload properly",
+        "M9.2 State what the periodization evidence supports",
+        "M9.3 Describe linear, undulating, block, and historical models as frameworks",
+        "M9.4 Explain why no named model is universally superior",
+        "M9.5 Prescribe maintenance as a defended reduction",
+        "M9.6 State the population origin of minimum-dose evidence",
+        "M9.7 Justify a change with a stated reason"
+      ],
+      "doctrine_ids": [
+        "D104-11",
+        "D104-9",
+        "D104-1"
+      ],
+      "applied_standard_ids": [
+        "AS-104-02",
+        "AS-104-03",
+        "AS-104-08",
+        "AS-104-14"
+      ],
+      "competency_ids": [
+        "C104-11",
+        "C104-05",
+        "C104-12"
+      ],
+      "lessons": [
+        {
+          "index": 1,
+          "title": "Progressive overload, defined properly"
+        },
+        {
+          "index": 2,
+          "title": "The two findings that sit together"
+        },
+        {
+          "index": 3,
+          "title": "The models as frameworks"
+        },
+        {
+          "index": 4,
+          "title": "Choosing an organization and defending it"
+        },
+        {
+          "index": 5,
+          "title": "Maintenance as a defended reduction"
+        },
+        {
+          "index": 6,
+          "title": "Where the minimum-dose evidence comes from"
+        },
+        {
+          "index": 7,
+          "title": "Change for reasons"
+        }
+      ],
+      "common_errors": [
+        "Claiming a named model is superior",
+        "Rotating exercises on a calendar or invoking muscle confusion",
+        "Publishing a maintenance dose as a rule",
+        "Applying powerlifting minimum-dose figures without disclosure",
+        "Progressing load past technical execution",
+        "Treating periodization as paperwork"
+      ],
+      "scenario_id": "M9-A",
+      "applied_assessment_id": "A9",
+      "sign_off": null,
+      "reference_ids": [
+        "EP104-20",
+        "EP104-22",
+        "EP104-45",
+        "EP104-41",
+        "EP104-14"
+      ],
+      "assessment_counts": {
+        "knowledge": 5,
+        "interpretation": 2,
+        "decision": 2,
+        "claim_audit": 3,
+        "testing_interpretation": 0
+      },
+      "gating": {
+        "prerequisite": "M8 at standard",
+        "unlocks": "M10",
+        "gate": null
+      },
+      "content_objects": [
+        "module_id",
+        "module_header",
+        "purpose",
+        "objectives",
+        "doctrine_refs",
+        "applied_standard_refs",
+        "competency_refs",
+        "evidence_block",
+        "lesson",
+        "coaching_application",
+        "error_list",
+        "scenario",
+        "knowledge_assessment",
+        "applied_assessment",
+        "sign_off_link",
+        "references",
+        "gating"
+      ]
+    },
+    {
+      "id": "M10",
+      "title": "Concurrent & In-Season Strength",
+      "focus": "integration",
+      "duration_minutes": 105,
+      "framing_statement": "In-season strength work is not a smaller version of off-season strength work.",
+      "purpose": "To integrate strength with other qualities and to teach in-season decision-making without inventing a microdose prescription.",
+      "objectives": [
+        "M10.1 State what the concurrent-training evidence supports",
+        "M10.2 Explain what modifies interference",
+        "M10.3 Sequence and space strength work",
+        "M10.4 Protect meaningful exposure under in-season constraints",
+        "M10.5 State the unresolved status of exact in-season and microdosing prescriptions",
+        "M10.6 Define success for an in-season block",
+        "M10.7 Integrate with G3 103 demands already in the week"
+      ],
+      "doctrine_ids": [
+        "D104-12",
+        "D104-9",
+        "D104-2"
+      ],
+      "applied_standard_ids": [
+        "AS-104-14",
+        "AS-104-08",
+        "AS-104-07",
+        "AS-104-02"
+      ],
+      "competency_ids": [
+        "C104-12",
+        "C104-05",
+        "C104-11"
+      ],
+      "lessons": [
+        {
+          "index": 1,
+          "title": "Concurrent development is normal"
+        },
+        {
+          "index": 2,
+          "title": "What actually competes"
+        },
+        {
+          "index": 3,
+          "title": "Sequencing and spacing"
+        },
+        {
+          "index": 4,
+          "title": "Protecting exposure in-season"
+        },
+        {
+          "index": 5,
+          "title": "Microdosing, stated at its actual strength"
+        },
+        {
+          "index": 6,
+          "title": "Defining success in-season"
+        },
+        {
+          "index": 7,
+          "title": "One athlete, one week"
+        }
+      ],
+      "common_errors": [
+        "Publishing an in-season microdose as a rule",
+        "Treating interference as inevitable",
+        "Treating interference as a myth",
+        "Failing to count what practice supplies",
+        "Promising in-season strength gains",
+        "Using plyometric microdosing evidence for a resistance prescription without stating the modality difference"
+      ],
+      "scenario_id": "case-4",
+      "applied_assessment_id": "A10",
+      "sign_off": null,
+      "reference_ids": [
+        "EP104-28",
+        "EP104-12",
+        "EP104-41",
+        "EP104-51",
+        "EP104-52",
+        "EP104-14"
+      ],
+      "assessment_counts": {
+        "knowledge": 5,
+        "interpretation": 2,
+        "decision": 3,
+        "claim_audit": 2,
+        "testing_interpretation": 0
+      },
+      "gating": {
+        "prerequisite": "M9 at standard",
+        "unlocks": "M11",
+        "gate": null
+      },
+      "content_objects": [
+        "module_id",
+        "module_header",
+        "purpose",
+        "objectives",
+        "doctrine_refs",
+        "applied_standard_refs",
+        "competency_refs",
+        "evidence_block",
+        "lesson",
+        "coaching_application",
+        "error_list",
+        "scenario",
+        "knowledge_assessment",
+        "applied_assessment",
+        "sign_off_link",
+        "references",
+        "gating"
+      ]
+    },
+    {
+      "id": "M11",
+      "title": "Youth Strength Development",
+      "focus": "population and safety",
+      "duration_minutes": 105,
+      "framing_statement": "The evidence on youth strength training is strong, old, and consistently ignored in both directions.",
+      "purpose": "To build developmentally appropriate youth strength coaching on the actual evidence, and to establish the female-athlete and safety boundaries this course carries.",
+      "objectives": [
+        "M11.1 State what the youth evidence supports and on what conditions",
+        "M11.2 Reject growth-stunting mythology accurately",
+        "M11.3 Apply readiness reasoning rather than chronological age",
+        "M11.4 Progress loading when competence supports it",
+        "M11.5 Avoid converting technique-first into indefinite underloading",
+        "M11.6 State the female-athlete evidence position",
+        "M11.7 Apply conservative causal language to youth safety claims",
+        "M11.8 Explain maximal-strength testing considerations in youth"
+      ],
+      "doctrine_ids": [
+        "D104-13",
+        "D104-15",
+        "D104-1"
+      ],
+      "applied_standard_ids": [
+        "AS-104-13",
+        "AS-104-03",
+        "AS-104-02",
+        "AS-104-05"
+      ],
+      "competency_ids": [
+        "C104-13",
+        "C104-16",
+        "C104-07"
+      ],
+      "lessons": [
+        {
+          "index": 1,
+          "title": "What the evidence supports, with its conditions"
+        },
+        {
+          "index": 2,
+          "title": "Growth-stunting mythology, retired accurately"
+        },
+        {
+          "index": 3,
+          "title": "Readiness over age"
+        },
+        {
+          "index": 4,
+          "title": "Progressive loading is appropriate when competence supports it"
+        },
+        {
+          "index": 5,
+          "title": "Technique first is not technique forever"
+        },
+        {
+          "index": 6,
+          "title": "Female athletes"
+        },
+        {
+          "index": 7,
+          "title": "Safety language with youth audiences"
+        },
+        {
+          "index": 8,
+          "title": "Testing maximal strength in youth"
+        }
+      ],
+      "common_errors": [
+        "Repeating growth-stunting mythology",
+        "Refusing to load youth athletes",
+        "Waiting for perfect technique indefinitely",
+        "Treating youth as requiring a different doctrine",
+        "Building phase-based programming from cycle evidence",
+        "Adding instability work on a functionality claim",
+        "Promising parents injury prevention"
+      ],
+      "scenario_id": "case-1",
+      "applied_assessment_id": "A11",
+      "sign_off": "PS-3",
+      "reference_ids": [
+        "EP104-01",
+        "EP104-02",
+        "EP104-04",
+        "EP104-46",
+        "EP104-50",
+        "EP104-18",
+        "EP104-14"
+      ],
+      "assessment_counts": {
+        "knowledge": 5,
+        "interpretation": 2,
+        "decision": 2,
+        "claim_audit": 4,
+        "testing_interpretation": 1
+      },
+      "gating": {
+        "prerequisite": "M10 at standard",
+        "unlocks": "PS-3",
+        "gate": "PS-3 must be recorded before M12 opens"
+      },
+      "content_objects": [
+        "module_id",
+        "module_header",
+        "purpose",
+        "objectives",
+        "doctrine_refs",
+        "applied_standard_refs",
+        "competency_refs",
+        "evidence_block",
+        "lesson",
+        "coaching_application",
+        "error_list",
+        "scenario",
+        "knowledge_assessment",
+        "applied_assessment",
+        "sign_off_link",
+        "references",
+        "gating"
+      ]
+    },
+    {
+      "id": "M12",
+      "title": "Testing, Standards & Integrated G3 Decision-Making",
+      "focus": "measurement and integration",
+      "duration_minutes": 120,
+      "framing_statement": "The last thing this course does is take away the numbers coaches most want to keep.",
+      "purpose": "To make coaches capable of selecting and interpreting strength tests, refusing unsupported standards, applying conservative safety language, and running the full G3 decision model on a strength case.",
+      "objectives": [
+        "M12.1 Select a construct-appropriate strength test",
+        "M12.2 Interpret 1RM, submaximal, estimated, isometric, dynamometry, and velocity results within limits",
+        "M12.3 Apply familiarization, technique, reliability, repeatability",
+        "M12.4 Use body-mass normalization appropriately",
+        "M12.5 Reject universal ratios and thresholds without inventing replacements",
+        "M12.6 Interpret asymmetry with measurement and context",
+        "M12.7 Distinguish injury-risk reduction from prevention",
+        "M12.8 Run the G3 102 decision model on a strength case and defend it"
+      ],
+      "doctrine_ids": [
+        "D104-1",
+        "D104-14",
+        "D104-15",
+        "D104-2",
+        "D104-3",
+        "D104-4",
+        "D104-5",
+        "D104-6",
+        "D104-7",
+        "D104-8",
+        "D104-9",
+        "D104-10",
+        "D104-11",
+        "D104-12",
+        "D104-13"
+      ],
+      "applied_standard_ids": [
+        "AS-104-10",
+        "AS-104-11",
+        "AS-104-12",
+        "AS-104-01",
+        "AS-104-02",
+        "AS-104-03",
+        "AS-104-04",
+        "AS-104-05",
+        "AS-104-06",
+        "AS-104-07",
+        "AS-104-08",
+        "AS-104-09",
+        "AS-104-13",
+        "AS-104-14"
+      ],
+      "competency_ids": [
+        "C104-14",
+        "C104-15",
+        "C104-16",
+        "C104-17"
+      ],
+      "lessons": [
+        {
+          "index": 1,
+          "title": "Construct first"
+        },
+        {
+          "index": 2,
+          "title": "Estimated 1RM as an estimate"
+        },
+        {
+          "index": 3,
+          "title": "Standardization and reliability"
+        },
+        {
+          "index": 4,
+          "title": "Body-mass normalization"
+        },
+        {
+          "index": 5,
+          "title": "Standards that have not earned authority"
+        },
+        {
+          "index": 6,
+          "title": "Asymmetry, carefully"
+        },
+        {
+          "index": 7,
+          "title": "Safety and injury language"
+        },
+        {
+          "index": 8,
+          "title": "The integrated case"
+        }
+      ],
+      "common_errors": [
+        "Reporting a lift result as global strength",
+        "Comparing estimated 1RMs across equations",
+        "Using a ratio to gate a method",
+        "Acting on an asymmetry percentage",
+        "Promising injury prevention or prohibiting on unsupported danger claims",
+        "Running the model without naming the strength expression",
+        "Building a composite strength score"
+      ],
+      "scenario_id": "case-9",
+      "applied_assessment_id": "A12",
+      "sign_off": "PS-4",
+      "reference_ids": [
+        "EP104-14",
+        "EP104-44",
+        "EP104-42",
+        "EP104-43",
+        "EP104-15",
+        "EP104-16",
+        "EP104-17",
+        "EP104-21",
+        "EP104-49",
+        "EP104-18",
+        "EP104-47",
+        "EP104-48"
+      ],
+      "assessment_counts": {
+        "knowledge": 5,
+        "interpretation": 3,
+        "decision": 2,
+        "claim_audit": 4,
+        "testing_interpretation": 4
+      },
+      "gating": {
+        "prerequisite": "PS-3 recorded (hard gate) and M11 at standard; four-week delivery window complete",
+        "unlocks": "PS-4 then T-01",
+        "gate": "PS-3; T-01 required for course competency completion"
+      },
+      "content_objects": [
+        "module_id",
+        "module_header",
+        "purpose",
+        "objectives",
+        "doctrine_refs",
+        "applied_standard_refs",
+        "competency_refs",
+        "evidence_block",
+        "lesson",
+        "coaching_application",
+        "error_list",
+        "scenario",
+        "knowledge_assessment",
+        "applied_assessment",
+        "sign_off_link",
+        "references",
+        "gating"
+      ]
+    }
+  ],
+  "cases": [
+    {
+      "id": "case-1",
+      "title": "Middle-School Athlete New to Resistance Training",
+      "competencies": [
+        "C104-07",
+        "C104-13",
+        "C104-16"
+      ],
+      "doctrine": [
+        "D104-13",
+        "D104-15",
+        "D104-6"
+      ],
+      "modules": [
+        "M6",
+        "M11"
+      ],
+      "situation_summary": "12-year-old, no resistance-training history, group of 16 with one coach, two 50-minute sessions weekly. Parent asks whether lifting will stunt growth and cites a school coach who says children should not lift until they finish growing.",
+      "decision_prompt": "What does the program consist of, how does loading progress, and what do you tell the parent?",
+      "failure_modes": [
+        "Repeating growth mythology",
+        "Refusing to load at all",
+        "Waiting for perfect technique indefinitely",
+        "A mandatory-lift program for a novice",
+        "Failure work in a youth novice session",
+        "An injury-prevention promise",
+        "A supervision ratio that makes the safety claim untrue"
+      ],
+      "delivery": [
+        "situation",
+        "decision (commit before feedback)",
+        "defense",
+        "discussion"
+      ],
+      "rubric": "universal_case_rubric"
+    },
+    {
+      "id": "case-2",
+      "title": "High-School Athlete With Low Relative Strength",
+      "competencies": [
+        "C104-03",
+        "C104-04",
+        "C104-15"
+      ],
+      "doctrine": [
+        "D104-14",
+        "D104-2",
+        "D104-4"
+      ],
+      "modules": [
+        "M3",
+        "M4",
+        "M12"
+      ],
+      "situation_summary": "16-year-old, two years inconsistent training, lowest lower-body results absolutely and relative to body mass, acceptable competence. Previous coach's report requires a 2x bodyweight squat before power work.",
+      "decision_prompt": "Is low relative strength the priority, what is the target, and what do you do with the previous coach's threshold?",
+      "failure_modes": [
+        "Adopting the 2x threshold",
+        "Replacing it with a different ratio",
+        "Treating a norm table as the requirement",
+        "Gating power or plyometric work on a strength number",
+        "Prescribing heavy loading beyond competent execution",
+        "Assuming low relative strength is automatically the top priority"
+      ],
+      "delivery": [
+        "situation",
+        "decision (commit before feedback)",
+        "defense",
+        "discussion"
+      ],
+      "rubric": "universal_case_rubric"
+    },
+    {
+      "id": "case-3",
+      "title": "Strong Athlete Whose Sprint and Jump Performance Has Plateaued",
+      "competencies": [
+        "C104-03",
+        "C104-11",
+        "C104-17"
+      ],
+      "doctrine": [
+        "D104-2",
+        "D104-1",
+        "D104-11"
+      ],
+      "modules": [
+        "M3",
+        "M9"
+      ],
+      "situation_summary": "17-year-old, three years consistent strength training, steadily improving lifts, unchanged sprint and jump results over two years, 6 kg body-mass increase, dense practice, minimal sprint exposure, no speed or plyometric block in 18 months.",
+      "decision_prompt": "Is more strength the answer, and what is the plan?",
+      "failure_modes": [
+        "Treating strength acquisition as the goal",
+        "Ignoring body mass",
+        "Ignoring absence of expression exposure",
+        "Declaring the transfer evidence wrong",
+        "Adding a new lift as the intervention",
+        "Setting a 'strong enough' threshold"
+      ],
+      "delivery": [
+        "situation",
+        "decision (commit before feedback)",
+        "defense",
+        "discussion"
+      ],
+      "rubric": "universal_case_rubric"
+    },
+    {
+      "id": "case-4",
+      "title": "In-Season Team-Sport Athlete",
+      "competencies": [
+        "C104-05",
+        "C104-12",
+        "C104-17"
+      ],
+      "doctrine": [
+        "D104-12",
+        "D104-9",
+        "D104-2"
+      ],
+      "modules": [
+        "M5",
+        "M10"
+      ],
+      "situation_summary": "Scholastic squad mid-season, twelve weeks remaining, five practices and one to two matches weekly, two 40-minute slots with one regularly lost. Sport coach asks whether strength work should stop; an assistant proposes daily ten-minute microdosing citing research.",
+      "decision_prompt": "What is the in-season plan, how is it dosed, and what do you say to both coaches?",
+      "failure_modes": [
+        "Stopping strength work entirely",
+        "Maintaining off-season volume",
+        "Quoting a microdose prescription as research-backed",
+        "Promising in-season strength gains",
+        "Failure work on complex lifts in a congested week",
+        "Ignoring the regularly lost slot"
+      ],
+      "delivery": [
+        "situation",
+        "decision (commit before feedback)",
+        "defense",
+        "discussion"
+      ],
+      "rubric": "universal_case_rubric"
+    },
+    {
+      "id": "case-5",
+      "title": "Athlete Who Cannot Comfortably Use a Conventional Barbell Back Squat",
+      "competencies": [
+        "C104-07",
+        "C104-08",
+        "C104-16"
+      ],
+      "doctrine": [
+        "D104-6",
+        "D104-7",
+        "D104-8"
+      ],
+      "modules": [
+        "M6",
+        "M7"
+      ],
+      "situation_summary": "18-year-old collegiate athlete, long femurs, limited comfortable bar placement, history of discomfort (not pathology) in loaded back squatting. A visiting coach says machines and unilateral work are not functional.",
+      "decision_prompt": "What does her lower-body strength program look like, and how do you answer the visiting coach?",
+      "failure_modes": [
+        "Treating the back squat as mandatory",
+        "Describing alternatives as inferior or corrective",
+        "Dismissing machines",
+        "Claiming unilateral work is more athletic",
+        "Leaving her untested",
+        "Coaching technique against her anthropometry"
+      ],
+      "delivery": [
+        "situation",
+        "decision (commit before feedback)",
+        "defense",
+        "discussion"
+      ],
+      "rubric": "universal_case_rubric"
+    },
+    {
+      "id": "case-6",
+      "title": "Coach Wants Every Set to Failure",
+      "competencies": [
+        "C104-05",
+        "C104-06",
+        "C104-16"
+      ],
+      "doctrine": [
+        "D104-5",
+        "D104-9",
+        "D104-3"
+      ],
+      "modules": [
+        "M4",
+        "M5"
+      ],
+      "situation_summary": "New G3 coach programs every working set to failure across all exercises including heavy compound lifts for a mixed scholastic group. Athletes report heavy soreness, two technical breakdowns on heavy lifts, attendance dipping.",
+      "decision_prompt": "What is the correction, and what do you say to the coach?",
+      "failure_modes": [
+        "Banning failure outright",
+        "Leaving the program unchanged",
+        "Publishing an RIR rule as the fix",
+        "Treating soreness as validation",
+        "Ignoring the technical breakdown",
+        "Addressing the coach by seniority rather than evidence"
+      ],
+      "delivery": [
+        "situation",
+        "decision (commit before feedback)",
+        "defense",
+        "discussion"
+      ],
+      "rubric": "universal_case_rubric"
+    },
+    {
+      "id": "case-7",
+      "title": "VBT-Heavy Program",
+      "competencies": [
+        "C104-10",
+        "C104-14",
+        "C104-16"
+      ],
+      "doctrine": [
+        "D104-10",
+        "D104-1",
+        "D104-9"
+      ],
+      "modules": [
+        "M8",
+        "M12"
+      ],
+      "situation_summary": "Program rebuilt around velocity devices: every main lift prescribed by velocity target, sets terminated at a fixed velocity-loss percentage from a published study, one back-squat load-velocity profile applied across all lower-body lifts, and a claim of objective superiority over percentage-based training.",
+      "decision_prompt": "What is defensible, what is not, and what is the rewrite?",
+      "failure_modes": [
+        "Keeping the superiority claim in any hedged form",
+        "Retaining the imported threshold",
+        "Applying one profile across exercises or athletes",
+        "Discarding the devices in reaction",
+        "Collecting data that changes no decision",
+        "Treating device output as error-free"
+      ],
+      "delivery": [
+        "situation",
+        "decision (commit before feedback)",
+        "defense",
+        "discussion"
+      ],
+      "rubric": "universal_case_rubric"
+    },
+    {
+      "id": "case-8",
+      "title": "12% Interlimb Asymmetry",
+      "competencies": [
+        "C104-14",
+        "C104-15",
+        "C104-16"
+      ],
+      "doctrine": [
+        "D104-14",
+        "D104-1",
+        "D104-15"
+      ],
+      "modules": [
+        "M11",
+        "M12"
+      ],
+      "situation_summary": "Single-leg countermovement jump screening returns a 12% interlimb difference, tested once, portable system, end of training week. No pain, no injury history, normal practice and competition performance, unremarkable bilateral results. A staff member flags a corrective block citing a 10% threshold.",
+      "decision_prompt": "Does this finding change the program?",
+      "failure_modes": [
+        "Acting on a single measurement",
+        "Adopting the 10% threshold",
+        "Adopting a different threshold instead",
+        "Declaring an injury risk",
+        "Dismissing the finding without re-measurement",
+        "Running a corrective block that displaces the actual priority"
+      ],
+      "delivery": [
+        "situation",
+        "decision (commit before feedback)",
+        "defense",
+        "discussion"
+      ],
+      "rubric": "universal_case_rubric"
+    },
+    {
+      "id": "case-9",
+      "title": "Knees Over Toes / Deep Squat Is Dangerous",
+      "competencies": [
+        "C104-07",
+        "C104-16",
+        "C104-17"
+      ],
+      "doctrine": [
+        "D104-15",
+        "D104-6",
+        "D104-8"
+      ],
+      "modules": [
+        "M6",
+        "M7",
+        "M12"
+      ],
+      "situation_summary": "A parent asks that her daughter not squat below parallel and that knees never pass the toes. A sport coach tells athletes deadlifts are dangerous for teenagers. The athlete squats competently to depth under moderate load with no discomfort; another athlete in the group cannot yet control depth under load.",
+      "decision_prompt": "What do you say, and what changes in the program?",
+      "failure_modes": [
+        "Complying with the prohibition to avoid conflict",
+        "Asserting deep squats are safe for everyone",
+        "Claiming the deadlift question is settled either way",
+        "Promising injury prevention",
+        "Treating an individual competence limit as a rule about the exercise",
+        "Answering the parent with a citation rather than a decision"
+      ],
+      "delivery": [
+        "situation",
+        "decision (commit before feedback)",
+        "defense",
+        "discussion"
+      ],
+      "rubric": "universal_case_rubric"
+    }
+  ],
+  "sign_offs": [
+    {
+      "id": "PS-1",
+      "title": "Strength Prescription Fundamentals",
+      "completed_at": "M4",
+      "function": "gates M5",
+      "artifacts": [
+        "A1",
+        "A2",
+        "A3",
+        "A4"
+      ],
+      "observed_behaviors": [
+        "Identifies the objective and strength expression unprompted",
+        "Chooses exercise, load, repetition structure, and rest for that objective and athlete",
+        "Explains the expected adaptation before the set",
+        "Preserves technical quality - progression visibly subordinate to execution",
+        "Distinguishes evidence from judgment when asked",
+        "Uses no universal rule, ratio, or imported number as justification"
+      ],
+      "assessor_questions": [
+        "What expression of strength is this set training, and in what task?",
+        "Why that load for this athlete?",
+        "What would make you stop the set or reduce the load?",
+        "Which part of that answer is evidence and which is your call?"
+      ],
+      "record_fields": [
+        "coach_id",
+        "sign_off_id",
+        "assessor_id",
+        "date",
+        "environment",
+        "athlete_or_group_ref",
+        "behaviors_observed",
+        "artifacts",
+        "questions_asked",
+        "outcome",
+        "expiry_date",
+        "notes"
+      ],
+      "expiry_months": 24
+    },
+    {
+      "id": "PS-2",
+      "title": "Exercise Selection & Coaching",
+      "completed_at": "M7",
+      "function": "gates M8",
+      "artifacts": [
+        "A5",
+        "A6",
+        "A7"
+      ],
+      "observed_behaviors": [
+        "Selects exercises from athlete and task constraints, naming category and constraint",
+        "Coaches setup and execution to a standard that makes the adaptation achievable",
+        "Regresses or progresses appropriately, changing the right variable",
+        "Justifies ROM and modality in adaptation terms",
+        "Avoids mandatory-lift ideology and modality superiority language",
+        "Makes a failure-use decision or explains why failure is not used"
+      ],
+      "assessor_questions": [
+        "Why this exercise rather than the obvious one?",
+        "What is the category, and what would substitute for it?",
+        "Why that range of motion?",
+        "Is this athlete near failure, and does that matter here?"
+      ],
+      "record_fields": [
+        "coach_id",
+        "sign_off_id",
+        "assessor_id",
+        "date",
+        "environment",
+        "athlete_or_group_ref",
+        "behaviors_observed",
+        "artifacts",
+        "questions_asked",
+        "outcome",
+        "expiry_date",
+        "notes"
+      ],
+      "expiry_months": 24
+    },
+    {
+      "id": "PS-3",
+      "title": "Youth / Contextual Strength Coaching",
+      "completed_at": "M11",
+      "function": "gates M12",
+      "artifacts": [
+        "A6",
+        "A10",
+        "A11"
+      ],
+      "observed_behaviors": [
+        "Accounts for training age, readiness, and maturation in setup and coaching",
+        "Provides genuine technical instruction and maintains the documented supervision ratio",
+        "Selects loading and progression appropriate to competence and actually progresses load when competence supports it",
+        "Rejects unsupported youth restrictions accurately without inverting them",
+        "States safety boundaries in conservative causal language",
+        "Adapts the session to context without abandoning its objective"
+      ],
+      "assessor_questions": [
+        "What tells you this athlete is ready for more load?",
+        "What would you say to a parent who asks about growth?",
+        "What ratio are you running, and is that enough for what you are coaching?",
+        "What is the safety boundary on this exercise for this athlete?"
+      ],
+      "record_fields": [
+        "coach_id",
+        "sign_off_id",
+        "assessor_id",
+        "date",
+        "environment",
+        "athlete_or_group_ref",
+        "behaviors_observed",
+        "artifacts",
+        "questions_asked",
+        "outcome",
+        "expiry_date",
+        "notes"
+      ],
+      "expiry_months": 24
+    },
+    {
+      "id": "PS-4",
+      "title": "Integrated Strength Program / Microcycle",
+      "completed_at": "M12",
+      "function": "completion requirement; requires four-week delivery window",
+      "artifacts": [
+        "A8",
+        "A9",
+        "A10",
+        "A12",
+        "delivered plan (4-week minimum)"
+      ],
+      "observed_behaviors": [
+        "Analyzes sport and training demands and states what the week already contains",
+        "Identifies the strength priority and what it costs",
+        "Integrates sprint, power, conditioning, practice, and competition demands",
+        "Manages fatigue visibly and adjusts when output or execution degrades",
+        "Defines response measures and adjustment logic in advance",
+        "Identifies which elements are Coach Judgment"
+      ],
+      "assessor_questions": [
+        "What is the strength priority this block, and what is it costing?",
+        "What told you to change the dose?",
+        "What does success look like for this block?",
+        "Which decisions would another qualified coach reasonably make differently?"
+      ],
+      "record_fields": [
+        "coach_id",
+        "sign_off_id",
+        "assessor_id",
+        "date",
+        "environment",
+        "athlete_or_group_ref",
+        "behaviors_observed",
+        "artifacts",
+        "questions_asked",
+        "outcome",
+        "expiry_date",
+        "notes"
+      ],
+      "expiry_months": 24
+    }
+  ],
+  "terminal_defense": {
+    "id": "T-01",
+    "title": "Strength Development Programming Defense",
+    "requires": [
+      "PS-1",
+      "PS-2",
+      "PS-3",
+      "PS-4",
+      "all module assessments at standard"
+    ],
+    "format": "20-30 minutes with an approved assessor using the coach's own athlete and artifacts; assessor works the eight obligations in order and probes at least four",
+    "must_defend": [
+      "terminology",
+      "demand analysis",
+      "priority",
+      "method and exercise selection",
+      "loading",
+      "volume, frequency, and rest",
+      "effort and failure",
+      "progression and periodization",
+      "integration",
+      "testing",
+      "evidence classification",
+      "remaining uncertainty"
+    ],
+    "mandatory_probes": [
+      "What expression of strength does this plan develop, in what task, and how will you know it changed?",
+      "Why this exercise and this load - and what would you use if the equipment weren't here?",
+      "Justify your volume, frequency, and rest. Which of those numbers is evidence?",
+      "Which part of what you just told me is evidence, which is G3 standard, and which is your judgment?",
+      "What would make you change this plan? Be specific.",
+      "Tell me what you would say to this athlete's parent about injury risk."
+    ],
+    "non_compensable_failures": [
+      "cannot answer probe 4",
+      "injury-prevention guarantee on probe 6",
+      "cites a universal ratio, threshold, or mandatory lift as justification anywhere"
+    ],
+    "rubric": "defense_rubric",
+    "required_for": "course competency completion"
+  },
+  "assessment_system": {
+    "levels": [
+      {
+        "level": "knowledge",
+        "weight": 0.12
+      },
+      {
+        "level": "interpretation",
+        "weight": 0.16
+      },
+      {
+        "level": "decision",
+        "weight": 0.16
+      },
+      {
+        "level": "application",
+        "weight": 0.22
+      },
+      {
+        "level": "coaching",
+        "weight": 0.14
+      },
+      {
+        "level": "evaluation",
+        "weight": 0.1
+      },
+      {
+        "level": "defense",
+        "weight": 0.1
+      }
+    ],
+    "required_types": [
+      "multiple choice",
+      "scenario items",
+      "common-claim audits",
+      "program-error identification",
+      "exercise-selection cases",
+      "testing interpretation",
+      "programming assignments",
+      "PS-1 through PS-4",
+      "T-01"
+    ],
+    "design_rule": "Applied competencies are never certified by multiple choice alone. No learner passes with a failing score in Application, Coaching, Evaluation, or Defense.",
+    "pass_standards": {
+      "knowledge": "80% per module",
+      "interpretation_decision_evaluation": "80% per module",
+      "applied": "at standard or better, one revision permitted",
+      "cases": "11/15 no dimension below 2",
+      "sign_offs": "all four recorded",
+      "terminal_defense": "pass required, non-compensable"
+    },
+    "item_writing_rules": [
+      "No item answerable from a single memorized sentence outside the knowledge band.",
+      "Every scenario item commits the learner before feedback.",
+      "Distractors are real coaching errors drawn from the claim audit and module error lists.",
+      "No key may depend on a claim classified C, D, E, or U.",
+      "No key may require a Class F claim to be treated as true.",
+      "No key may depend on a claim whose only support is an Evidence Pack statement without a corresponding verified source record.",
+      "No key may require a number G3 has not established (ratio, asymmetry threshold, weekly sets, rest, RIR, velocity loss, VBT zone, maintenance dose, microdose, mandatory lift).",
+      "Where multiple answers are defensible, the item is a decision item scored on reasoning.",
+      "Every item carries module, competency, doctrine, applied standard, evidence class, level, and key source metadata."
+    ]
+  },
+  "rubrics": {
+    "universal_case_rubric": {
+      "dimensions": [
+        "task definition",
+        "demand fidelity",
+        "method reasoning",
+        "measurement discipline",
+        "evidence honesty"
+      ],
+      "scale": "0-3",
+      "pass": "11/15 with no dimension below 2"
+    },
+    "applied_competency_rubric": {
+      "dimensions": [
+        "completeness",
+        "reasoning quality",
+        "deliverability",
+        "evidence honesty"
+      ],
+      "scale": "0-3",
+      "pass": "2 = at standard",
+      "automatic_zero_conditions": [
+        "a Class F claim presented as true",
+        "a universal ratio, asymmetry threshold, weekly set target, rest interval, RIR target, velocity-loss threshold, VBT zone, maintenance dose, or microdose asserted as established",
+        "a mandatory lift or a modality/laterality superiority claim",
+        "a strength claim, prescription, or test result recorded without its task",
+        "any injury-prevention guarantee or inherent-danger claim",
+        "a rigid repetition-zone prescription presented as doctrine",
+        "a composite strength score, automated prescription, readiness threshold, or asymmetry alert"
+      ]
+    },
+    "coaching_rubric": {
+      "dimensions": [
+        "task definition",
+        "instruction",
+        "observation",
+        "regression/progression",
+        "evidence honesty"
+      ],
+      "scale": "0-3",
+      "pass": "11/15, no dimension below 2, never 0 on evidence honesty"
+    },
+    "defense_rubric": {
+      "dimensions": [
+        "demand and task fluency",
+        "method reasoning",
+        "dose reasoning",
+        "measurement discipline",
+        "evidence honesty"
+      ],
+      "scale": "0-3",
+      "pass": "11/15, no dimension below 2, never 0 on evidence honesty"
+    }
+  },
+  "references": [
+    {
+      "id": "EP104-01",
+      "pack_id": "S1",
+      "authors": "Faigenbaum AD et al.",
+      "year": "2009",
+      "title": "Youth Resistance Training: Updated Position Statement Paper From the National Strength and Conditioning Association",
+      "journal_or_org": "J Strength Cond Res / NSCA",
+      "type": "Position statement",
+      "population": "Children and adolescents",
+      "pmid": "19620931",
+      "url": "https://pubmed.ncbi.nlm.nih.gov/19620931/",
+      "domain": "Youth RT safety and efficacy",
+      "limitation": "Foundational but older"
+    },
+    {
+      "id": "EP104-02",
+      "pack_id": "S2",
+      "authors": "Lloyd RS et al.",
+      "year": "2014",
+      "title": "Position Statement on Youth Resistance Training: The 2014 International Consensus",
+      "journal_or_org": "Br J Sports Med",
+      "type": "Consensus statement",
+      "population": "Youth",
+      "pmid": "24055781",
+      "url": "https://pubmed.ncbi.nlm.nih.gov/24055781/",
+      "domain": "Youth RT consensus",
+      "limitation": "Broad guidance"
+    },
+    {
+      "id": "EP104-03",
+      "pack_id": "S3",
+      "authors": "Huang J et al.",
+      "year": "2024",
+      "title": "Effects of Direction Specific Exercise Training on Athletic Performance",
+      "journal_or_org": "Peer-reviewed journal",
+      "type": "Systematic review/meta-analysis",
+      "population": "Athletes",
+      "pmid": "39301062",
+      "url": "https://pubmed.ncbi.nlm.nih.gov/39301062/",
+      "domain": "Direction specificity and transfer",
+      "limitation": "Sport contexts vary"
+    },
+    {
+      "id": "EP104-04",
+      "pack_id": "S4",
+      "authors": "Faigenbaum AD et al.",
+      "year": "2010",
+      "title": "Resistance Training Among Young Athletes: Safety, Efficacy and Injury Prevention Effects",
+      "journal_or_org": "Br J Sports Med",
+      "type": "Narrative review",
+      "population": "Young athletes",
+      "pmid": "19945973",
+      "url": "https://pubmed.ncbi.nlm.nih.gov/19945973/",
+      "domain": "Youth safety and efficacy",
+      "limitation": "Narrative review"
+    },
+    {
+      "id": "EP104-05",
+      "pack_id": "S5",
+      "authors": "de Salles BF et al.",
+      "year": "2009",
+      "title": "Rest Interval Between Sets in Strength Training",
+      "journal_or_org": "Sports Med",
+      "type": "Narrative review",
+      "population": "Adults",
+      "pmid": "19691365",
+      "url": "https://pubmed.ncbi.nlm.nih.gov/19691365/",
+      "domain": "Rest intervals",
+      "limitation": "Older narrative review"
+    },
+    {
+      "id": "EP104-06",
+      "pack_id": "S6",
+      "authors": "Schoenfeld BJ et al.",
+      "year": "2017",
+      "title": "Strength and Hypertrophy Adaptations Between Low- vs. High-Load Resistance Training: A Systematic Review and Meta-Analysis",
+      "journal_or_org": "J Strength Cond Res",
+      "type": "Systematic review/meta-analysis",
+      "population": "Adults",
+      "pmid": "28834797",
+      "url": "https://pubmed.ncbi.nlm.nih.gov/28834797/",
+      "domain": "Loading for strength and hypertrophy",
+      "limitation": "Mostly non-athlete samples"
+    },
+    {
+      "id": "EP104-07",
+      "pack_id": "S7",
+      "authors": "Robinson ZP et al.",
+      "year": "2024",
+      "title": "Exploring the Dose-Response Relationship Between Estimated Repetitions in Reserve and Muscular Adaptations",
+      "journal_or_org": "Peer-reviewed journal",
+      "type": "Meta-regression",
+      "population": "Adults",
+      "pmid": "38970765",
+      "url": "https://pubmed.ncbi.nlm.nih.gov/38970765/",
+      "domain": "RIR / failure proximity",
+      "limitation": "Estimated effort measure"
+    },
+    {
+      "id": "EP104-08",
+      "pack_id": "S8",
+      "authors": "Refalo MC et al.",
+      "year": "2023",
+      "title": "Influence of Resistance Training Proximity-to-Failure on Muscle Hypertrophy",
+      "journal_or_org": "Peer-reviewed journal",
+      "type": "Systematic review/meta-analysis",
+      "population": "Adults",
+      "pmid": "36334240",
+      "url": "https://pubmed.ncbi.nlm.nih.gov/36334240/",
+      "domain": "Failure proximity and hypertrophy",
+      "limitation": "Hypertrophy-focused"
+    },
+    {
+      "id": "EP104-09",
+      "pack_id": "S9",
+      "authors": "Grgic J et al.",
+      "year": "2018",
+      "title": "Effect of Resistance Training Frequency on Gains in Muscular Strength",
+      "journal_or_org": "Sports Med",
+      "type": "Systematic review/meta-analysis",
+      "population": "Adults",
+      "pmid": "29470825",
+      "url": "https://pubmed.ncbi.nlm.nih.gov/29470825/",
+      "domain": "Frequency and strength",
+      "limitation": "Mixed volume control"
+    },
+    {
+      "id": "EP104-10",
+      "pack_id": "S10",
+      "authors": "Ralston GW et al.",
+      "year": "2018",
+      "title": "Weekly Training Frequency Effects on Strength Gain",
+      "journal_or_org": "Sports Med Open",
+      "type": "Meta-analysis",
+      "population": "Adults",
+      "pmid": "30076500",
+      "url": "https://pubmed.ncbi.nlm.nih.gov/30076500/",
+      "domain": "Volume-equated frequency",
+      "limitation": "Adult samples"
+    },
+    {
+      "id": "EP104-11",
+      "pack_id": "S11",
+      "authors": "Schoenfeld BJ et al.",
+      "year": "2016",
+      "title": "Effects of Resistance Training Frequency on Measures of Muscle Hypertrophy",
+      "journal_or_org": "Sports Med",
+      "type": "Systematic review/meta-analysis",
+      "population": "Adults",
+      "pmid": "27102172",
+      "url": "https://pubmed.ncbi.nlm.nih.gov/27102172/",
+      "domain": "Frequency and hypertrophy",
+      "limitation": "Limited athlete data"
+    },
+    {
+      "id": "EP104-12",
+      "pack_id": "S12",
+      "authors": "Thapa RK et al.",
+      "year": "2021",
+      "title": "Effects of Complex Training on Sprint, Jump, and Change of Direction Ability of Athletes",
+      "journal_or_org": "Sports Med",
+      "type": "Meta-analysis",
+      "population": "Athletes",
+      "pmid": "33551937",
+      "url": "https://pubmed.ncbi.nlm.nih.gov/33551937/",
+      "domain": "Strength-power transfer context",
+      "limitation": "Does not isolate pure strength"
+    },
+    {
+      "id": "EP104-13",
+      "pack_id": "S13",
+      "authors": "Currier BS et al.",
+      "year": "2026",
+      "title": "Resistance Training Prescription for Muscle Function, Hypertrophy, and Physical Performance in Healthy Adults: An Overview of Reviews",
+      "journal_or_org": "Med Sci Sports Exerc / ACSM",
+      "type": "Position stand / overview of reviews",
+      "population": "Healthy adults",
+      "pmid": "41843416",
+      "url": "https://pubmed.ncbi.nlm.nih.gov/41843416/",
+      "domain": "Broad RT prescription",
+      "limitation": "Adult focused"
+    },
+    {
+      "id": "EP104-14",
+      "pack_id": "S14",
+      "authors": "Currier BS et al.",
+      "year": "2026",
+      "title": "American College of Sports Medicine Position Stand: Resistance Training Prescription for Muscle Function, Hypertrophy, and Physical Performance in Healthy Adults: An Overview of Reviews",
+      "journal_or_org": "ACSM / MSSE",
+      "type": "Position stand",
+      "population": "Healthy adults",
+      "pmid": "41843416",
+      "url": "https://pubmed.ncbi.nlm.nih.gov/41843416/",
+      "domain": "Broad RT outcomes",
+      "limitation": "Same record used as ACSM anchor"
+    },
+    {
+      "id": "EP104-15",
+      "pack_id": "S15",
+      "authors": "Orange ST et al.",
+      "year": "2022",
+      "title": "Comparison of the Effects of Velocity-Based versus Traditional Resistance Training Methods on Muscle Strength, Power, and Sprint Speed",
+      "journal_or_org": "Sports Med",
+      "type": "Systematic review/meta-analysis",
+      "population": "Athletes and adults",
+      "pmid": "35380511",
+      "url": "https://pubmed.ncbi.nlm.nih.gov/35380511/",
+      "domain": "VBT versus traditional",
+      "limitation": "Low certainty in some outcomes"
+    },
+    {
+      "id": "EP104-16",
+      "pack_id": "S16",
+      "authors": "Liao KF et al.",
+      "year": "2021",
+      "title": "Effects of Velocity Based Training versus Traditional 1RM Percentage-Based Training",
+      "journal_or_org": "Sports Med Open",
+      "type": "Systematic review/meta-analysis",
+      "population": "Athletes and adults",
+      "pmid": "34793506",
+      "url": "https://pubmed.ncbi.nlm.nih.gov/34793506/",
+      "domain": "VBT vs percentage-based",
+      "limitation": "Device heterogeneity"
+    },
+    {
+      "id": "EP104-17",
+      "pack_id": "S17",
+      "authors": "Hickmott LM et al.",
+      "year": "2022",
+      "title": "The Effect of Load and Volume Autoregulation on Muscular Adaptations",
+      "journal_or_org": "Sports Med",
+      "type": "Systematic review",
+      "population": "Adults",
+      "pmid": "35038063",
+      "url": "https://pubmed.ncbi.nlm.nih.gov/35038063/",
+      "domain": "Autoregulation and velocity loss",
+      "limitation": "Heterogeneous methods"
+    },
+    {
+      "id": "EP104-18",
+      "pack_id": "S18",
+      "authors": "Lauersen JB et al.",
+      "year": "2018",
+      "title": "Strength Training as Superior, Dose-Dependent and Safe Prevention of Acute and Overuse Sports Injuries",
+      "journal_or_org": "Br J Sports Med",
+      "type": "Systematic review/meta-analysis",
+      "population": "Athletic populations",
+      "pmid": "30131332",
+      "url": "https://pubmed.ncbi.nlm.nih.gov/30131332/",
+      "domain": "Injury-risk reduction",
+      "limitation": "Broad injury outcomes"
+    },
+    {
+      "id": "EP104-19",
+      "pack_id": "S19",
+      "authors": "Grgic J et al.",
+      "year": "2022",
+      "title": "Effects of Resistance Training Performed to Repetition Failure or Non-Failure on Muscular Strength and Hypertrophy",
+      "journal_or_org": "Peer-reviewed journal",
+      "type": "Systematic review/meta-analysis",
+      "population": "Adults",
+      "pmid": "33497853",
+      "url": "https://pubmed.ncbi.nlm.nih.gov/33497853/",
+      "domain": "Failure vs non-failure",
+      "limitation": "Protocol heterogeneity"
+    },
+    {
+      "id": "EP104-20",
+      "pack_id": "S20",
+      "authors": "Williams TD et al.",
+      "year": "2017",
+      "title": "Comparison of Periodized and Non-Periodized Resistance Training on Maximal Strength",
+      "journal_or_org": "Sports Med",
+      "type": "Meta-analysis",
+      "population": "Adults",
+      "pmid": "28497285",
+      "url": "https://pubmed.ncbi.nlm.nih.gov/28497285/",
+      "domain": "Periodized vs non-periodized",
+      "limitation": "Mostly non-athlete adults"
+    },
+    {
+      "id": "EP104-21",
+      "pack_id": "S21",
+      "authors": "Seitz LB, Haff GG",
+      "year": "2014",
+      "title": "Increases in Lower-Body Strength Transfer Positively to Sprint Performance",
+      "journal_or_org": "Sports Med",
+      "type": "Systematic review/meta-analysis",
+      "population": "Athletes and adults",
+      "pmid": "25059334",
+      "url": "https://pubmed.ncbi.nlm.nih.gov/25059334/",
+      "domain": "Strength-sprint transfer",
+      "limitation": "Transfer not universal"
+    },
+    {
+      "id": "EP104-22",
+      "pack_id": "S22",
+      "authors": "Harries SK et al.",
+      "year": "2015",
+      "title": "Systematic Review and Meta-analysis of Linear and Undulating Periodized Resistance Training Programs on Muscular Strength",
+      "journal_or_org": "Peer-reviewed journal",
+      "type": "Systematic review/meta-analysis",
+      "population": "Adults",
+      "pmid": "25268290",
+      "url": "https://pubmed.ncbi.nlm.nih.gov/25268290/",
+      "domain": "Linear vs undulating periodization",
+      "limitation": "Broad populations"
+    },
+    {
+      "id": "EP104-23",
+      "pack_id": "S23",
+      "authors": "Zhang X et al.",
+      "year": "2021",
+      "title": "Auto-Regulation Method vs. Fixed-Loading Method in Maximum Strength Training",
+      "journal_or_org": "Peer-reviewed journal",
+      "type": "Systematic review/meta-analysis",
+      "population": "Adults",
+      "pmid": null,
+      "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC7994759/",
+      "domain": "Autoregulation vs fixed loading",
+      "limitation": "Method heterogeneity"
+    },
+    {
+      "id": "EP104-24",
+      "pack_id": "S24",
+      "authors": "Liao KF et al.",
+      "year": "2022",
+      "title": "Effects of Unilateral vs. Bilateral Resistance Training Interventions on Measures of Strength, Jump, Linear and Change of Direction Speed",
+      "journal_or_org": "Biology of Sport",
+      "type": "Systematic review/meta-analysis",
+      "population": "Athletes and adults",
+      "pmid": "35959319",
+      "url": "https://pubmed.ncbi.nlm.nih.gov/35959319/",
+      "domain": "Unilateral vs bilateral",
+      "limitation": "Heterogeneous protocols"
+    },
+    {
+      "id": "EP104-25",
+      "pack_id": "S25",
+      "authors": "Lopez P et al.",
+      "year": "2021",
+      "title": "Resistance Training Load Effects on Muscle Hypertrophy and Strength Gain",
+      "journal_or_org": "Peer-reviewed journal",
+      "type": "Network meta-analysis",
+      "population": "Adults",
+      "pmid": "33433148",
+      "url": "https://pubmed.ncbi.nlm.nih.gov/33433148/",
+      "domain": "Loading for strength/hypertrophy",
+      "limitation": "Adults dominate"
+    },
+    {
+      "id": "EP104-26",
+      "pack_id": "S26",
+      "authors": "Haugen ME et al.",
+      "year": "2023",
+      "title": "Effect of Free-Weight vs. Machine-Based Strength Training on Maximal Strength, Muscle Hypertrophy, and Jump Performance",
+      "journal_or_org": "Sports Med",
+      "type": "Systematic review/meta-analysis",
+      "population": "Adults",
+      "pmid": "37582807",
+      "url": "https://pubmed.ncbi.nlm.nih.gov/37582807/",
+      "domain": "Free weights vs machines",
+      "limitation": "Adult samples"
+    },
+    {
+      "id": "EP104-27",
+      "pack_id": "S27",
+      "authors": "Moran J et al.",
+      "year": "2021",
+      "title": "Effects of Bilateral and Unilateral Resistance Training on Horizontal Movement Performance",
+      "journal_or_org": "Sports Med",
+      "type": "Systematic review/meta-analysis",
+      "population": "Athletes",
+      "pmid": "33104995",
+      "url": "https://pubmed.ncbi.nlm.nih.gov/33104995/",
+      "domain": "Bilateral/unilateral transfer",
+      "limitation": "Outcome specific"
+    },
+    {
+      "id": "EP104-28",
+      "pack_id": "S28",
+      "authors": "Wilson JM et al.",
+      "year": "2012",
+      "title": "Concurrent Training: A Meta-analysis Examining Interference of Aerobic and Resistance Exercises",
+      "journal_or_org": "J Strength Cond Res",
+      "type": "Meta-analysis",
+      "population": "Adults",
+      "pmid": "22002517",
+      "url": "https://pubmed.ncbi.nlm.nih.gov/22002517/",
+      "domain": "Concurrent interference",
+      "limitation": "Older evidence base"
+    },
+    {
+      "id": "EP104-29",
+      "pack_id": "S29",
+      "authors": "Heidel KA et al.",
+      "year": "2022",
+      "title": "Machines and Free Weight Exercises: A Systematic Review of Changes in Strength, Hypertrophy, and Power",
+      "journal_or_org": "Sports Med",
+      "type": "Systematic review",
+      "population": "Adults",
+      "pmid": "34609100",
+      "url": "https://pubmed.ncbi.nlm.nih.gov/34609100/",
+      "domain": "Free weights vs machines",
+      "limitation": "Athlete-specific data limited"
+    },
+    {
+      "id": "EP104-30",
+      "pack_id": "S30",
+      "authors": "Hernández-Belmonte A et al.",
+      "year": "2023",
+      "title": "Free-Weight and Machine-Based Training Are Equally Effective on Strength and Hypertrophy",
+      "journal_or_org": "Peer-reviewed journal",
+      "type": "Primary study",
+      "population": "Adults",
+      "pmid": "37535335",
+      "url": "https://pubmed.ncbi.nlm.nih.gov/37535335/",
+      "domain": "Modality comparison",
+      "limitation": "Single study context"
+    },
+    {
+      "id": "EP104-31",
+      "pack_id": "S31",
+      "authors": "Makaruk H et al.",
+      "year": "2024",
+      "title": "The Effects of Resistance Training on Sport-Specific Performance in Elite Athletes",
+      "journal_or_org": "Peer-reviewed journal",
+      "type": "Systematic review/meta-analysis",
+      "population": "Elite athletes",
+      "pmid": null,
+      "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC11057612/",
+      "domain": "Elite athlete transfer",
+      "limitation": "Elite samples not generalizable to all"
+    },
+    {
+      "id": "EP104-32",
+      "pack_id": "S32",
+      "authors": "Del Vecchio A et al.",
+      "year": "2019",
+      "title": "The Increase in Muscle Force After 4 Weeks of Strength Training Is Mediated by Adaptations in Motor Unit Recruitment and Rate Coding",
+      "journal_or_org": "J Physiol",
+      "type": "Primary study",
+      "population": "Adults",
+      "pmid": "30727028",
+      "url": "https://pubmed.ncbi.nlm.nih.gov/30727028/",
+      "domain": "Neural adaptation",
+      "limitation": "Specific isometric model"
+    },
+    {
+      "id": "EP104-33",
+      "pack_id": "S33",
+      "authors": "Siddique U et al.",
+      "year": "2020",
+      "title": "Determining the Sites of Neural Adaptations to Resistance Training",
+      "journal_or_org": "Sports Med",
+      "type": "Systematic review/meta-analysis",
+      "population": "Adults",
+      "pmid": "31993949",
+      "url": "https://pubmed.ncbi.nlm.nih.gov/31993949/",
+      "domain": "Neural adaptation sites",
+      "limitation": "Measurement heterogeneity"
+    },
+    {
+      "id": "EP104-34",
+      "pack_id": "S34",
+      "authors": "Škarabot J et al.",
+      "year": "2021",
+      "title": "The Knowns and Unknowns of Neural Adaptations to Resistance Training",
+      "journal_or_org": "Eur J Appl Physiol",
+      "type": "Narrative review",
+      "population": "Adults",
+      "pmid": null,
+      "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC7892509/",
+      "domain": "Neural adaptation synthesis",
+      "limitation": "Narrative review"
+    },
+    {
+      "id": "EP104-35",
+      "pack_id": "S35",
+      "authors": "Behm DG, Colado JC",
+      "year": "2012",
+      "title": "The Effectiveness of Resistance Training Using Unstable Surfaces and Devices for Rehabilitation",
+      "journal_or_org": "Int J Sports Phys Ther",
+      "type": "Clinical commentary",
+      "population": "Mixed",
+      "pmid": null,
+      "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC3325639/",
+      "domain": "Instability training",
+      "limitation": "Commentary, not direct superiority trial"
+    },
+    {
+      "id": "EP104-36",
+      "pack_id": "S36",
+      "authors": "Pallarés JG et al.",
+      "year": "2021",
+      "title": "Effects of Range of Motion on Resistance Training Adaptations",
+      "journal_or_org": "Sports Med",
+      "type": "Systematic review/meta-analysis",
+      "population": "Adults",
+      "pmid": "34170576",
+      "url": "https://pubmed.ncbi.nlm.nih.gov/34170576/",
+      "domain": "Full vs partial ROM",
+      "limitation": "Context dependent"
+    },
+    {
+      "id": "EP104-37",
+      "pack_id": "S37",
+      "authors": "Baz-Valle E et al.",
+      "year": "2022",
+      "title": "A Systematic Review of the Effects of Different Resistance Training Volumes on Muscle Hypertrophy",
+      "journal_or_org": "Peer-reviewed journal",
+      "type": "Systematic review/meta-analysis",
+      "population": "Young trained men",
+      "pmid": "35291645",
+      "url": "https://pubmed.ncbi.nlm.nih.gov/35291645/",
+      "domain": "Volume and hypertrophy",
+      "limitation": "Hypertrophy focused"
+    },
+    {
+      "id": "EP104-38",
+      "pack_id": "S38",
+      "authors": "Alizadeh S et al.",
+      "year": "2023",
+      "title": "Resistance Training Induces Improvements in Range of Motion",
+      "journal_or_org": "Sports Med",
+      "type": "Systematic review/meta-analysis",
+      "population": "Adults",
+      "pmid": null,
+      "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC9935664/",
+      "domain": "RT and ROM",
+      "limitation": "Mostly non-athlete samples"
+    },
+    {
+      "id": "EP104-39",
+      "pack_id": "S39",
+      "authors": "Elgueta-Cancino E et al.",
+      "year": "2022",
+      "title": "The Effect of Resistance Training on Motor Unit Firing Properties",
+      "journal_or_org": "Front Physiol",
+      "type": "Systematic review",
+      "population": "Adults",
+      "pmid": null,
+      "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC8918924/",
+      "domain": "Motor-unit firing properties",
+      "limitation": "Mechanism uncertainty"
+    },
+    {
+      "id": "EP104-40",
+      "pack_id": "S40",
+      "authors": "Kassiano W et al.",
+      "year": "2025",
+      "title": "Comparison of Muscle Growth and Dynamic Strength Between Unilateral and Bilateral Resistance Training",
+      "journal_or_org": "Peer-reviewed journal",
+      "type": "Systematic review/meta-analysis",
+      "population": "Adults",
+      "pmid": "39794667",
+      "url": "https://pubmed.ncbi.nlm.nih.gov/39794667/",
+      "domain": "Bilateral vs unilateral",
+      "limitation": "Newer record"
+    },
+    {
+      "id": "EP104-41",
+      "pack_id": "S41",
+      "authors": "Androulakis-Korakakis P et al.",
+      "year": "2021",
+      "title": "The Minimum Effective Training Dose Required for 1RM Strength in Powerlifters",
+      "journal_or_org": "Sports Med",
+      "type": "Review",
+      "population": "Powerlifters",
+      "pmid": null,
+      "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC8435792/",
+      "domain": "Minimum effective dose / maintenance",
+      "limitation": "Strength-sport specific"
+    },
+    {
+      "id": "EP104-42",
+      "pack_id": "S42",
+      "authors": "Lum D, Barbosa TM",
+      "year": "2019",
+      "title": "Brief Review: Effects of Isometric Strength Training on Strength and Dynamic Performance",
+      "journal_or_org": "Peer-reviewed journal",
+      "type": "Brief review",
+      "population": "Adults",
+      "pmid": "30943568",
+      "url": "https://pubmed.ncbi.nlm.nih.gov/30943568/",
+      "domain": "Isometric training",
+      "limitation": "Brief review"
+    },
+    {
+      "id": "EP104-43",
+      "pack_id": "S43",
+      "authors": "Oranchuk DJ et al.",
+      "year": "2019",
+      "title": "Isometric Training and Long-Term Adaptations: Effects of Muscle Length, Intensity, and Intent",
+      "journal_or_org": "Sports Med",
+      "type": "Review",
+      "population": "Adults",
+      "pmid": "30580468",
+      "url": "https://pubmed.ncbi.nlm.nih.gov/30580468/",
+      "domain": "Isometric training variables",
+      "limitation": "Review"
+    },
+    {
+      "id": "EP104-44",
+      "pack_id": "S44",
+      "authors": "James LP et al.",
+      "year": "2023",
+      "title": "The Relationship Between Isometric and Dynamic Strength Changes Following Resistance Training",
+      "journal_or_org": "Sports Med",
+      "type": "Systematic review",
+      "population": "Adults",
+      "pmid": "37741636",
+      "url": "https://pubmed.ncbi.nlm.nih.gov/37741636/",
+      "domain": "Isometric vs dynamic strength",
+      "limitation": "Domain separation"
+    },
+    {
+      "id": "EP104-45",
+      "pack_id": "S45",
+      "authors": "Lorenz D et al.",
+      "year": "2015",
+      "title": "Current Concepts in Periodization of Strength and Conditioning for the Sports Physical Therapist",
+      "journal_or_org": "Int J Sports Phys Ther",
+      "type": "Narrative review",
+      "population": "Mixed",
+      "pmid": null,
+      "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC4637911/",
+      "domain": "Periodization framework",
+      "limitation": "Narrative review"
+    },
+    {
+      "id": "EP104-46",
+      "pack_id": "S46",
+      "authors": "Niering M et al.",
+      "year": "2024",
+      "title": "The Influence of Menstrual Cycle Phases on Maximal Strength Performance",
+      "journal_or_org": "Peer-reviewed journal",
+      "type": "Systematic review/meta-analysis",
+      "population": "Female participants",
+      "pmid": "38251305",
+      "url": "https://pubmed.ncbi.nlm.nih.gov/38251305/",
+      "domain": "Female-athlete evidence",
+      "limitation": "Variable methods"
+    },
+    {
+      "id": "EP104-47",
+      "pack_id": "S47",
+      "authors": "Straub RK, Powers CM",
+      "year": "2024",
+      "title": "A Biomechanical Review of the Squat Exercise",
+      "journal_or_org": "Int J Sports Phys Ther",
+      "type": "Biomechanical review",
+      "population": "Mixed",
+      "pmid": "38576836",
+      "url": "https://pubmed.ncbi.nlm.nih.gov/38576836/",
+      "domain": "Squat biomechanics",
+      "limitation": "Commentary-level evidence"
+    },
+    {
+      "id": "EP104-48",
+      "pack_id": "S48",
+      "authors": "Rojas-Jaramillo A et al.",
+      "year": "2024",
+      "title": "Impact of the Deep Squat on Articular Knee Joint Structures, Friend or Foe?",
+      "journal_or_org": "Peer-reviewed journal",
+      "type": "Review",
+      "population": "Mixed healthy populations",
+      "pmid": null,
+      "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC11618833/",
+      "domain": "Deep squat safety",
+      "limitation": "Mixed study types"
+    },
+    {
+      "id": "EP104-49",
+      "pack_id": "S49",
+      "authors": "Parkinson AO et al.",
+      "year": "2021",
+      "title": "The Calculation, Thresholds and Reporting of Inter-Limb Strength Asymmetry",
+      "journal_or_org": "J Sports Sci Med",
+      "type": "Systematic review",
+      "population": "Athletes and active populations",
+      "pmid": null,
+      "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC8488821/",
+      "domain": "Asymmetry thresholds",
+      "limitation": "Threshold support inconsistent"
+    },
+    {
+      "id": "EP104-50",
+      "pack_id": "S50",
+      "authors": "Hammami R et al.",
+      "year": "2023",
+      "title": "Exploring of Two Different Equated Instability Resistance Training Programs in Adolescent Athletes",
+      "journal_or_org": "Peer-reviewed journal",
+      "type": "Primary study",
+      "population": "Adolescent athletes",
+      "pmid": null,
+      "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC10037902/",
+      "domain": "Instability RT in youth athletes",
+      "limitation": "Low load; not superiority evidence"
+    },
+    {
+      "id": "EP104-51",
+      "pack_id": "S51",
+      "authors": "Liu GY et al.",
+      "year": "2024",
+      "title": "Microdosing Plyometric Training Enhances Jumping Performance and Acceleration in Soccer Players",
+      "journal_or_org": "Peer-reviewed journal",
+      "type": "Primary study",
+      "population": "Soccer players",
+      "pmid": "38841635",
+      "url": "https://pubmed.ncbi.nlm.nih.gov/38841635/",
+      "domain": "Microdosing / in-season distribution concept",
+      "limitation": "Plyometric rather than RT"
+    },
+    {
+      "id": "EP104-52",
+      "pack_id": "S52",
+      "authors": "Maroto-Izquierdo S et al.",
+      "year": "2026",
+      "title": "Effects of Low Versus High Training Frequency on Muscle Architecture, Strength and Power During Congested Schedules",
+      "journal_or_org": "Peer-reviewed journal",
+      "type": "Primary study",
+      "population": "Competitive participants",
+      "pmid": "42086214",
+      "url": "https://pubmed.ncbi.nlm.nih.gov/42086214/",
+      "domain": "Microdosing / congested schedule",
+      "limitation": "Newer and context specific"
+    },
+    {
+      "id": "EP104-53",
+      "pack_id": "S53",
+      "authors": "Stone MH et al.",
+      "year": "2022",
+      "title": "Training Specificity for Athletes: Emphasis on Strength-Power Training",
+      "journal_or_org": "Narrative review",
+      "type": "Review",
+      "population": "Athletes",
+      "pmid": null,
+      "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC9680266/",
+      "domain": "Specificity framework",
+      "limitation": "Narrative review"
+    },
+    {
+      "id": "EP104-54",
+      "pack_id": "S54",
+      "authors": "Stone MH et al.",
+      "year": "2024",
+      "title": "The Use of Free Weight Squats in Sports: A Narrative Review",
+      "journal_or_org": "J Strength Cond Res",
+      "type": "Narrative review",
+      "population": "Athletes",
+      "pmid": "39072660",
+      "url": "https://pubmed.ncbi.nlm.nih.gov/39072660/",
+      "domain": "Squat use in sports",
+      "limitation": "Narrative review"
+    }
+  ],
+  "reference_notes": {
+    "duplicate_record": "EP104-13 and EP104-14 point to the same 2026 ACSM overview of reviews (PMID 41843416). Both IDs are preserved for traceability and treated as ONE source; no claim is counted as doubly supported by them."
+  },
+  "evidence_integrity": {
+    "conditions_carried_forward": [
+      {
+        "n": 1,
+        "condition": "Much prescription research uses healthy adults, often men",
+        "discharge": "population-transfer disclosure (inherited AS-103-12) in every module evidence block where extension occurs"
+      },
+      {
+        "n": 2,
+        "condition": "Athlete-specific dose-response evidence is weaker than general RT evidence",
+        "discharge": "M5 teaches dose as management; no weekly set, frequency, or rest figure published"
+      },
+      {
+        "n": 3,
+        "condition": "Minimum-effective-dose evidence often comes from powerlifting",
+        "discharge": "M9 states the population origin whenever minimum-dose or maintenance reasoning is used"
+      },
+      {
+        "n": 4,
+        "condition": "Exact in-season microdosing prescriptions remain unresolved",
+        "discharge": "M10 teaches microdosing as C - Emerging and U for team sport; Case 4 assesses it"
+      },
+      {
+        "n": 5,
+        "condition": "Exact universal asymmetry thresholds are unsupported",
+        "discharge": "AS-104-12; no threshold anywhere in the course; Case 8 assesses it"
+      },
+      {
+        "n": 6,
+        "condition": "Exact deadlift safety comparisons remain insufficiently resolved",
+        "discharge": "marked U; CA-14 corrects the danger claim without asserting its opposite"
+      },
+      {
+        "n": 7,
+        "condition": "Open-versus-closed kinetic-chain superiority remains insufficiently resolved",
+        "discharge": "marked U in M6; no hierarchy claim permitted in either direction"
+      },
+      {
+        "n": 8,
+        "condition": "Female-athlete evidence is underrepresented in multiple domains",
+        "discharge": "section 18.2 restraint standard; cycle evidence not converted into phase-based rules (CJ-19)"
+      },
+      {
+        "n": 9,
+        "condition": "VBT/autoregulation evidence supports usefulness, not universal superiority",
+        "discharge": "D104-10 classified C; no threshold or zone published; Case 7 assesses it"
+      },
+      {
+        "n": 10,
+        "condition": "Historical/practitioner frameworks must remain separate from empirical doctrine",
+        "discharge": "section 17.4 renders them Class E; none may be sole justification for a prescription"
+      }
+    ],
+    "citation_integrity_findings": [
+      {
+        "id": "CI-a",
+        "finding": "The Evidence Pack's inline citation tags do not resolve to its own source register: 81 distinct cite:NN values ranging to cite:163 against a 54-record library (S1-S54), with no mapping table supplied.",
+        "handling": "Inline tags are treated as non-authoritative. Every claim is anchored to EP104-nn records matched by domain and population. No assessment key may depend on an inline tag. No G3 material may reproduce the inline tags as citations.",
+        "gate": "Before external publication, the pack's tag-to-source mapping must be supplied or affected sentences confirmed as resting on their EP104 anchors alone."
+      },
+      {
+        "id": "CI-b",
+        "finding": "Some Evidence Pack statements have no corresponding itemized record. The instance identified in production is the eccentric-only contraction-mode claim used in M7.",
+        "handling": "Carried at reduced confidence; never sole support for a required behavior; never an assessment key. Further instances are flagged to the Director of Training and given the same restriction. Substitute citations must never be attached.",
+        "gate": "Resolve or rewrite before external publication."
+      }
+    ],
+    "population_transfer_limitations": [
+      "healthy adults, often men, often non-athletes, dominate the prescription evidence",
+      "minimum-effective-dose evidence is largely powerlifting-derived",
+      "autoregulation and VBT studies frequently use trained adults and laboratory tasks",
+      "female-athlete evidence is underrepresented in multiple domains",
+      "several youth records are foundational but older position statements",
+      "some practitioner-facing records are narrative reviews",
+      "microdosing records are single primary studies, one of them plyometric rather than resistance training"
+    ],
+    "research_gaps_taught": [
+      "athlete-specific dose-response for volume, frequency, failure proximity, and maintenance",
+      "direct sport-transfer effects of specific exercise choices and ROM strategies",
+      "reliable asymmetry thresholds linked to performance or injury risk",
+      "exact in-season microdosing models in team sport",
+      "exact deadlift safety comparisons",
+      "open- versus closed-kinetic-chain superiority",
+      "female-athlete evidence across prescription domains"
+    ],
+    "external_use_gate": {
+      "internal_g3_and_novakore": "permitted",
+      "gated_uses": [
+        "external publication",
+        "third-party CEU recognition",
+        "accreditation submission",
+        "public release"
+      ],
+      "gate_requirement": "resolution of citation-integrity findings CI-a and CI-b"
+    }
+  },
+  "testing_governance": {
+    "rule": "WHAT THE TEST MEASURES != GLOBAL ATHLETIC STRENGTH",
+    "test_constructs": [
+      {
+        "test": "true 1RM",
+        "measures": "maximal dynamic performance in that specific lift",
+        "does_not_establish": "global athletic strength; capability in another lift"
+      },
+      {
+        "test": "3RM / 5RM / submaximal RM",
+        "measures": "task-specific performance at that repetition demand",
+        "does_not_establish": "1RM; global strength"
+      },
+      {
+        "test": "estimated 1RM",
+        "measures": "a model-derived estimate with equation and error limitations",
+        "does_not_establish": "a measured maximum; comparability across equations or exercises"
+      },
+      {
+        "test": "isometric test",
+        "measures": "force at the tested joint angle and muscle length",
+        "does_not_establish": "dynamic strength"
+      },
+      {
+        "test": "dynamometry",
+        "measures": "joint- and task-specific force capacity",
+        "does_not_establish": "whole-athlete or multi-joint capability"
+      },
+      {
+        "test": "velocity-based estimation",
+        "measures": "a device-, exercise-, and profile-dependent estimate",
+        "does_not_establish": "a transferable profile across lifts or athletes"
+      },
+      {
+        "test": "relative strength",
+        "measures": "performance contextualized to body mass",
+        "does_not_establish": "athlete readiness; a standard; a gate"
+      }
+    ],
+    "standardization": [
+      "familiarization before interpretation",
+      "consistent technique standard",
+      "consistent equipment, setup, and conditions recorded at time of testing",
+      "consistent administration",
+      "repeatability considered before interpreting change",
+      "body-mass normalization only where it answers the question asked"
+    ],
+    "threshold_prohibition": "G3 104 creates no universal 'strong enough' threshold, bodyweight ratio, or asymmetry cutoff. Local working figures are environment-scoped Applied Standards with population, measurement basis including error, review date, and Director of Training approval; never evidence-derived; never a gate.",
+    "reporting": "Every output carries test, task, construct measured, conditions, and interpretation limits. No composite score, no automated prescription, no readiness threshold, no asymmetry alert."
+  },
+  "population_governance": {
+    "youth": {
+      "established": [
+        "supervised youth resistance training is supported",
+        "growth-stunting claims are not supported by current evidence",
+        "chronological age alone does not determine readiness",
+        "technique, maturity, training age, supervision, and context matter",
+        "progressive loading is appropriate when competence and readiness support it",
+        "youth do not require an entirely different physiology-based strength doctrine",
+        "exact maximal-strength testing prescriptions require contextual judgment"
+      ],
+      "binding_rule": "'Technique first' must not become indefinite underloading. Every youth program states an observable progression criterion and is reviewed against it.",
+      "scored_in": "PS-3"
+    },
+    "female_athletes": {
+      "position": "Foundational strength-training principles do not require a separate female system. Female athletes may differ in absolute and relative performance and individual context. Menstrual-cycle evidence is not converted into deterministic phase-based programming rules. Individual response may justify individual adjustment on individual grounds. Underrepresentation is disclosed at the point of the claim.",
+      "continuous_with": [
+        "G3 102 AS-31",
+        "G3 103 section 18.3"
+      ],
+      "judgment_ref": "CJ-19"
+    },
+    "population_transfer_disclosure": "Required at the point of the claim, not as an end-of-module disclaimer (inherited AS-103-12)."
+  },
+  "safety_governance": {
+    "language_standard": "G3 uses injury-risk reduction, not injury prevention, wherever a causal guarantee would otherwise be implied.",
+    "may_not_be_claimed": [
+      "that any single lift prevents any injury",
+      "that strength alone eliminates injury risk",
+      "that deep squats are inherently harmful to healthy knees",
+      "that knees must never pass the toes",
+      "that unstable training is inherently more functional",
+      "that deadlifts are inherently dangerous, or that the question is settled in their favour",
+      "that any exercise is safe or dangerous independent of athlete, dose, technique, progression, and context"
+    ],
+    "may_be_said": [
+      "the program builds exposure and capacity progressively",
+      "resistance training contributes to injury-risk reduction as part of a broader strategy",
+      "a specific athlete's range, load, or exercise selection is set by their current capability",
+      "medical questions are referred to medical professionals; clearance is a precondition, not a programming decision"
+    ],
+    "unresolved": [
+      "exact deadlift safety comparisons",
+      "open- versus closed-kinetic-chain superiority"
+    ],
+    "governance": "All external copy referencing strength training and injury requires Director of Training approval under the Brand Standards."
+  },
+  "progression_governance": {
+    "dose_variables": [
+      "load",
+      "volume",
+      "frequency",
+      "rest",
+      "effort/proximity to failure",
+      "exercise selection",
+      "ROM and contraction mode",
+      "progression rate"
+    ],
+    "no_universal_figures": "None is prescribed as an independent universal figure (D104-9, CJ-01 to CJ-09).",
+    "change_governance": "Inherited G3 102 Doctrine 12: change is justified by adaptation, stagnation, mastery, pain, response, schedule, phase objectives, progression needs, changing demands, or fit - not by elapsed time, boredom, or novelty.",
+    "practitioner_frameworks": [
+      {
+        "framework": "progressive overload traditions and DeLorme-derived progressions",
+        "class": "E/B"
+      },
+      {
+        "framework": "Matveyev-style planning and classical periodization",
+        "class": "E"
+      },
+      {
+        "framework": "linear and undulating models",
+        "class": "E/B"
+      },
+      {
+        "framework": "block periodization",
+        "class": "E"
+      },
+      {
+        "framework": "conjugate systems",
+        "class": "E"
+      },
+      {
+        "framework": "minimum-effective-dose systems",
+        "class": "E/C"
+      },
+      {
+        "framework": "modern VBT systems",
+        "class": "E/C"
+      }
+    ]
+  },
+  "novakore": {
+    "reusable_components": [
+      {
+        "component": "Doctrine callout",
+        "status": "inherited"
+      },
+      {
+        "component": "Applied Standard callout",
+        "status": "inherited"
+      },
+      {
+        "component": "Evidence Classification block",
+        "status": "inherited from G3 103"
+      },
+      {
+        "component": "Coach Judgment boundary",
+        "status": "inherited"
+      },
+      {
+        "component": "Common Claim Audit",
+        "status": "inherited from G3 103"
+      },
+      {
+        "component": "Case Decision",
+        "status": "inherited"
+      },
+      {
+        "component": "Practical Sign-Off",
+        "status": "inherited"
+      },
+      {
+        "component": "Terminal Defense",
+        "status": "inherited"
+      },
+      {
+        "component": "Task Definer",
+        "status": "new"
+      },
+      {
+        "component": "Unresolved Marker",
+        "status": "new"
+      }
+    ],
+    "data_entities": {
+      "strength_task": [
+        "id",
+        "strength_expression",
+        "task",
+        "intended_adaptation",
+        "load_basis",
+        "volume",
+        "frequency",
+        "rest_basis",
+        "effort_basis",
+        "rom_basis",
+        "modality",
+        "progression",
+        "regression",
+        "technical_criterion"
+      ],
+      "test_record": [
+        "test",
+        "task",
+        "construct_measured",
+        "value",
+        "date",
+        "conditions{equipment,setup,familiarization,technique_standard,administrator}",
+        "normalization",
+        "error_note"
+      ],
+      "doctrine": [
+        "id",
+        "title",
+        "statement",
+        "evidence_class",
+        "anchor_refs",
+        "teaching_boundary",
+        "modules"
+      ],
+      "applied_standard": [
+        "id",
+        "title",
+        "text",
+        "evidence_basis",
+        "standing",
+        "boundary_or_enforcement"
+      ],
+      "coach_judgment": [
+        "id",
+        "area",
+        "evidence_position",
+        "g3_supplies",
+        "coach_call"
+      ],
+      "claim_audit": [
+        "id",
+        "claim",
+        "class",
+        "taught_instead",
+        "doctrine_ref"
+      ],
+      "competency": [
+        "id",
+        "title",
+        "ladder_level",
+        "observable_standard",
+        "modules",
+        "assessments",
+        "cases",
+        "sign_off"
+      ],
+      "reference": [
+        "id",
+        "pack_id",
+        "authors",
+        "year",
+        "title",
+        "journal_or_org",
+        "type",
+        "population",
+        "pmid",
+        "url",
+        "domain",
+        "limitation"
+      ],
+      "assessment_item": [
+        "id",
+        "module",
+        "level",
+        "competency",
+        "doctrine",
+        "applied_standard",
+        "evidence_class",
+        "stem",
+        "options",
+        "key",
+        "key_source"
+      ],
+      "sign_off_record": [
+        "coach_id",
+        "sign_off_id",
+        "assessor_id",
+        "date",
+        "environment",
+        "athlete_or_group_ref",
+        "behaviors_observed",
+        "artifacts",
+        "questions_asked",
+        "outcome",
+        "expiry_date",
+        "notes"
+      ]
+    },
+    "data_layer_constraints": [
+      "A strength_task cannot be published without strength_expression, task, and intended_adaptation. (AS-104-01)",
+      "A test_record cannot be published without task, construct_measured, and recorded conditions. (AS-104-10)",
+      "A test_record whose construct_measured conflicts with its test type is rejected at save. (AS-104-10)",
+      "No entity may expose an automated strength prescription, readiness threshold, asymmetry alert, composite strength score, or automated training-priority recommendation.",
+      "No field may store a G3-published universal bodyweight ratio, asymmetry threshold, weekly set target, rest interval, RIR target, velocity-loss threshold, VBT zone, maintenance dose, or microdose as a course constant.",
+      "A strength_task may not be flagged mandatory at course level. (AS-104-05)",
+      "Free text containing an injury-prevention guarantee pattern is flagged for review before publication. (D104-15)",
+      "Content objects tagged with a U topic cannot be attached to an assessment key."
+    ],
+    "tagging_schema": [
+      "course_id",
+      "module_id",
+      "doctrine_ids",
+      "applied_standard_ids",
+      "competency_ids",
+      "claim_audit_ids",
+      "coach_judgment_ids",
+      "evidence_class",
+      "reference_ids",
+      "environment_tags",
+      "version"
+    ],
+    "environment_tags": [
+      "youth",
+      "scholastic",
+      "collegiate",
+      "small_group",
+      "individual",
+      "volleyball",
+      "field_sport",
+      "court_sport",
+      "in_season",
+      "off_season"
+    ],
+    "production_checklist": [
+      "All seventeen content objects present and in order",
+      "Every claim carries an evidence class",
+      "Population-transfer line present wherever extrapolation occurs",
+      "Three-column discipline rendered visually",
+      "No Class F claim asserted as true",
+      "No assessment key depends on a Class C, D, E, or U claim",
+      "No assessment key depends on an inline citation tag or an unitemized statement",
+      "No universal ratio, threshold, set target, rest interval, RIR, velocity-loss figure, VBT zone, maintenance dose, or microdose published as established",
+      "No mandatory lift; no modality or laterality superiority claim",
+      "No rigid repetition-zone doctrine",
+      "No failure requirement and no failure prohibition",
+      "No injury-prevention guarantee and no inherent-danger claim",
+      "Strength, power, and RFD not collapsed; gym strength not equated with sport performance",
+      "Every strength claim, prescription, and test result carries its task",
+      "All glossary terms linked on first use",
+      "Every scenario commits the learner before feedback",
+      "All references resolve to EP104 IDs with population and limitation attached",
+      "Voice conforms to G3 Performance Brand Standards v1.0",
+      "Doctrine, applied standard, and coach judgment distinguishable without prompting"
+    ]
+  },
+  "sequencing": {
+    "order": [
+      "M1",
+      "M2",
+      "M3",
+      "M4",
+      "PS-1",
+      "M5",
+      "M6",
+      "M7",
+      "PS-2",
+      "M8",
+      "M9",
+      "M10",
+      "M11",
+      "PS-3",
+      "M12",
+      "PS-4",
+      "T-01"
+    ],
+    "hard_gates": [
+      "PS-1 gates M5",
+      "PS-2 gates M8",
+      "PS-3 gates M12"
+    ],
+    "rules": [
+      "Modules unlock sequentially; module assessments must be at standard before the next module unlocks.",
+      "PS-1 is required before advanced applied-method work (M5 onward).",
+      "PS-4 requires the four-week delivery window complete.",
+      "T-01 requires PS-1 through PS-4 recorded and all module assessments at standard.",
+      "T-01 is required for course competency completion.",
+      "Completed modules remain accessible."
+    ]
+  },
+  "governance": {
+    "approver": "Director of Training",
+    "review_cycle_months": 24,
+    "review_triggers": [
+      "Class A or B claim contradicted by new evidence",
+      "Class C claim strengthens enough to change practice",
+      "a U topic is resolved",
+      "the citation-mapping issue is closed"
+    ],
+    "version_rules": [
+      "Course version stamped on every certification record",
+      "Doctrine changes require a minor version increment and delta notice",
+      "Resolution of the citation-mapping issue triggers content review of affected objects",
+      "Claim Audit register changes are major and require re-acknowledgment",
+      "Any locally adopted working figure is reviewed on its stated review date or removed"
+    ],
+    "approval_matrix": [
+      {
+        "item": "doctrine or applied standard change",
+        "approver": "Director of Training"
+      },
+      {
+        "item": "any locally adopted ratio, threshold, dose, or velocity figure",
+        "approver": "Director of Training, with population, measurement basis, and review date documented"
+      },
+      {
+        "item": "external copy referencing strength training, injury, or youth training",
+        "approver": "Director of Training (Brand Standards governance)"
+      },
+      {
+        "item": "any tool that automates a prescription, readiness threshold, or asymmetry alert",
+        "approver": "Director of Training, with documented evidence basis"
+      }
+    ]
+  },
+  "foundations": {
+    "series": "G3 Performance Foundations",
+    "series_version": "v1.0",
+    "gate": "G3 Performance Foundations — 101–105 Curriculum Review Gate v1.0",
+    "gate_status": "CONDITIONAL PASS — corrections applied; see the Foundations manifest for the post-correction gate status",
+    "sequence": [
+      "G3-101",
+      "G3-102",
+      "G3-103",
+      "G3-104",
+      "G3-105"
+    ],
+    "position": 4,
+    "series_prerequisite": "G3-103",
+    "series_completion_rule": "A learner completes G3 Performance Foundations only when G3 101 through G3 105 are complete in sequence, all required module assessments are at standard, all 20 practical sign-offs are recorded, all 5 terminal defenses are passed, required practical windows are satisfied, and no required remediation remains open.",
+    "course_role": "Strength Domain",
+    "authority_rule": {
+      "this_course_is_authoritative_on": "strength development — where its standard is narrower than the upstream rule",
+      "hierarchy": [
+        {
+          "course": "G3-101",
+          "authoritative_on": "the G3 reasoning system: evidence classes, certainty language, Evidence / G3 Applied Standard / Coach Judgment separation, population-transfer disclosure, testing and monitoring interpretation, claim-correction symmetry, scope of practice, and evidence restraint"
+        },
+        {
+          "course": "G3-102",
+          "authoritative_on": "the G3 programming decision model: DEMAND → PROFILE → GAP → PRIORITY → PRESCRIPTION → RESPONSE → ADJUST, including programming priority and change governance"
+        },
+        {
+          "course": "G3-103",
+          "authoritative_on": "speed, deceleration, COD, and agility — where its standard is narrower than the upstream rule"
+        },
+        {
+          "course": "G3-104",
+          "authoritative_on": "strength development — where its standard is narrower than the upstream rule"
+        },
+        {
+          "course": "G3-105",
+          "authoritative_on": "power development — where its standard is narrower than the upstream rule"
+        }
+      ],
+      "binding_rules": [
+        "No downstream course may loosen an upstream evidence, scope, measurement, or programming-integrity standard.",
+        "Where domain courses overlap, the more specific domain governs only inside that domain; otherwise the upstream standard controls."
+      ],
+      "specification_reference": "§0.6"
+    },
+    "series_attribution": {
+      "three_layer_discipline": "G3 101",
+      "population_transfer_standard": "AS-101-16",
+      "population_transfer_local_restatements": {
+        "G3-103": "AS-103-12",
+        "G3-104": "carries the G3 103 restatement",
+        "G3-105": "carries the G3 103 restatement"
+      },
+      "programming_decision_model": "G3 102",
+      "evidence_taxonomy": "G3 101"
+    },
+    "series_evidence_taxonomy": [
+      {
+        "class": "A",
+        "name": "Established Evidence"
+      },
+      {
+        "class": "B",
+        "name": "Supported Practice"
+      },
+      {
+        "class": "C",
+        "name": "Emerging / Conditional Evidence"
+      },
+      {
+        "class": "D",
+        "name": "Applied Coaching Inference"
+      },
+      {
+        "class": "E",
+        "name": "Historical / Practitioner Framework"
+      },
+      {
+        "class": "F",
+        "name": "Unsupported / Overstated Claim"
+      },
+      {
+        "class": "U",
+        "name": "Unresolved / Unknown"
+      }
+    ],
+    "classes_used_by_this_course": [
+      "A",
+      "B",
+      "C",
+      "D",
+      "E",
+      "F",
+      "U"
+    ],
+    "classes_note": "G3 104 introduced U to the series. Its usage is unchanged.",
+    "taxonomy_rule": "U is the machine-readable series class for a question about which no defensible evidence-class assignment can be made. 'Unknown' remains the human-facing certainty label. Every course recognizes all seven classes; no course must use all of them; no claim is reclassified to populate a class.",
+    "parent_artifacts": [
+      "G3-Performance-Foundations-Curriculum-v1.0-FINAL.md",
+      "G3-Performance-Foundations-Manifest-v1.0-FINAL.json"
+    ],
+    "ingestion_rule": "The Foundations manifest is ingested into NovaKore first. Course builds are not ingested independently.",
+    "harmonization": {
+      "pass": "Foundations Harmonization Pass v1.0",
+      "scope": "mechanical",
+      "changed": "governance text, metadata, inheritance references, and JSON authority fields",
+      "unchanged": [
+        "doctrine",
+        "evidence classes",
+        "module architecture",
+        "course outcomes",
+        "practical sign-offs",
+        "terminal defense",
+        "assessment architecture",
+        "the G3 programming decision model",
+        "reference mapping",
+        "numerical positions"
+      ]
+    }
+  }
+}
