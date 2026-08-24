@@ -1,2 +1,6 @@
 # Normalize line endings in the repository to LF
 * text=auto
+
+# Locked curriculum packages are ingested byte-exact and hash-verified
+# (see curriculum/*/SOURCES.md) — never convert their line endings.
+curriculum/** -text
