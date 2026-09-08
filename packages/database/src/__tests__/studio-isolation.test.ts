@@ -41,10 +41,34 @@ describe.skipIf(!configured)("studio isolation + integrity (real RLS)", () => {
   // No sign-out: sessions are shared suite-wide, and signing out revokes the
   // user's refresh tokens for every other file. Global teardown cleans up.
 
+  afterAll(async () => {
+    // Archive the run's fixtures — no DELETE path exists by design, and
+    // unarchived runs accumulated 133 live blocks and sources in the shared
+    // dev tenant. (The webhook endpoint is already revoked in its own test;
+    // review requests and ai_generations persist as governance/budget
+    // history by design.)
+    const archivedAt = new Date().toISOString();
+    if (reusableBlockId) {
+      const { error } = await alphaAuthor
+        .from("reusable_blocks")
+        .update({ status: "archived", archived_at: archivedAt })
+        .eq("id", reusableBlockId);
+      expect(error, "reusable block must archive on teardown").toBeNull();
+    }
+    if (sourceDocId) {
+      const { error } = await alphaAuthor
+        .from("source_documents")
+        .update({ status: "archived", archived_at: archivedAt })
+        .eq("id", sourceDocId);
+      expect(error, "source document must archive on teardown").toBeNull();
+    }
+  });
+
   // -------------------------------------------------------------------------
   // Reusable block library isolation
   // -------------------------------------------------------------------------
   let reusableBlockId: string;
+  let sourceDocId: string;
 
   test("an author creates a reusable block; other tenants cannot read it", async () => {
     const { data, error } = await alphaAuthor
@@ -109,6 +133,7 @@ describe.skipIf(!configured)("studio isolation + integrity (real RLS)", () => {
       .select("id")
       .single();
     expect(error).toBeNull();
+    sourceDocId = source!.id;
 
     const { data: crossOrg } = await bfhOwner
       .from("source_documents")

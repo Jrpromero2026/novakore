@@ -66,6 +66,56 @@ describe.skipIf(!configured)(
 
     afterAll(async () => {
       // No sign-out: sessions are shared suite-wide (see _session.ts).
+
+      // Archive every throwaway artifact this flow published — there is no
+      // DELETE path by design, and unarchived runs accumulated 137 live
+      // courses and assessments in the shared dev tenant. Two rows stay on
+      // purpose: the completed enrollment and the revoked credential are
+      // immutable evidence (set_enrollment_status refuses completed →
+      // anything; issued_credentials rejects deletes outright).
+      const archivedAt = new Date().toISOString();
+      if (courseId) {
+        const { error } = await alphaOwner
+          .from("courses")
+          .update({ status: "archived", archived_at: archivedAt })
+          .eq("id", courseId);
+        expect(error, "flow course must archive on teardown").toBeNull();
+      }
+      if (assessmentId) {
+        const { error } = await alphaOwner
+          .from("assessments")
+          .update({ status: "archived", archived_at: archivedAt })
+          .eq("id", assessmentId);
+        expect(error, "flow assessment must archive on teardown").toBeNull();
+      }
+      if (certificateId) {
+        const { error } = await alphaOwner
+          .from("certificates")
+          .update({ status: "archived" })
+          .eq("id", certificateId);
+        expect(error, "flow certificate must archive on teardown").toBeNull();
+      }
+      const { error: templateError } = await alphaOwner
+        .from("certificate_templates")
+        .update({ status: "archived", archived_at: archivedAt })
+        .eq("organization_id", ORG_A)
+        .eq("name", `Flow Template ${runTag}`);
+      expect(
+        templateError,
+        "flow certificate template must archive on teardown",
+      ).toBeNull();
+
+      // Verified, not assumed (an RLS update matching no rows is silent).
+      if (courseId) {
+        const { data } = await alphaOwner
+          .from("courses")
+          .select("status")
+          .eq("id", courseId)
+          .single();
+        expect(data?.status, "the archive must actually stick").toBe(
+          "archived",
+        );
+      }
     });
 
     // -----------------------------------------------------------------------

@@ -4,10 +4,14 @@ import { bareClient, signedIn, type Client } from "./_session";
 /**
  * G3 Performance Foundations — real-DB gating, isolation, and state tests.
  *
- * Runs against the seeded G3 Performance tenant (seed:
- * supabase/seeds/g3-performance-foundations.sql). The G3 fixture accounts are
- * not in the pooled session file, so `signedIn` performs real sign-ins —
- * four accounts, well inside the auth-rate headroom (the documented
+ * Runs against the SERIES GATING LAB tenant (seed:
+ * supabase/seeds/series-gating-lab.sql), a deterministic clone of the G3
+ * Foundations structure. It originally ran against the real G3 Performance
+ * tenant until G3 staff removed the fixture accounts from their roster
+ * (2026-08-28) and RLS correctly blinded the suite — test fixtures must
+ * never live in a staff-managed tenant. The G3 fixture accounts are not in
+ * the pooled session file, so `signedIn` performs real sign-ins — four
+ * accounts, well inside the auth-rate headroom (the documented
  * bfh-integration exception).
  *
  * DELIBERATELY NON-MUTATING: practical evaluations are immutable (append-only
@@ -18,7 +22,8 @@ import { bareClient, signedIn, type Client } from "./_session";
  * against a throwaway enrollment during implementation QA.
  */
 
-const ORG = "26f6aa4a-4ade-4bb0-842f-12ca2e5bc115";
+// Series Gating Lab (pg_temp.lab_uid('org') in the lab seed).
+const ORG = "92e8d99c-178b-5863-bc8b-9f180842838d";
 
 const skip =
   !process.env.NOVAKORE_TEST_SUPABASE_URL ||
@@ -106,10 +111,20 @@ describe.skipIf(skip)("G3 Foundations — series gating and isolation", () => {
 
   test("a new learner is locked out of G3 102 by the DB prerequisite gate", async () => {
     const g102 = courseBySlug.get("g3-102")!;
+    // The true first lesson: first module, then first lesson within it.
+    // (Positions are per-module fractional indexes, so ordering lessons by
+    // position alone ties across modules and breaks on physical row order.)
+    const { data: firstModule } = await assessor
+      .from("modules")
+      .select("id")
+      .eq("course_id", g102.id)
+      .order("position")
+      .limit(1)
+      .single();
     const { data: lesson } = await assessor
       .from("lessons")
       .select("id")
-      .eq("course_id", g102.id)
+      .eq("module_id", firstModule!.id)
       .order("position")
       .limit(1)
       .single();
@@ -228,9 +243,12 @@ describe.skipIf(skip)("G3 Foundations — series gating and isolation", () => {
   test("fixture states encode the series standard", async () => {
     // learner.101: G3 101 complete (incl. T-01), nothing else completed.
     const c101 = await signedIn("g3.learner.101@novakore.test");
+    // Scoped to the lab: own-progress visibility survives membership removal,
+    // so this account also sees its historical G3-tenant records.
     const { data: p101 } = await c101
       .from("progress_records")
       .select("course_id, status")
+      .eq("organization_id", ORG)
       .eq("subject_type", "course");
     const g101 = courseBySlug.get("g3-101")!;
     const completed = (p101 ?? []).filter((r) => r.status === "completed");

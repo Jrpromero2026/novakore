@@ -53,6 +53,27 @@ describe.skipIf(!configured)(
 
     afterAll(async () => {
       // No sign-out: sessions are shared suite-wide (see _session.ts).
+
+      // Archive the throwaway flow course. The platform deliberately has no
+      // DELETE path (published versions are immutable evidence), and runs
+      // that skipped this step accumulated 143 live published courses in the
+      // shared dev tenant before anyone looked. Verified, not assumed — an
+      // RLS update that matches no rows returns no error.
+      if (testCourseId) {
+        const { error } = await alphaOwner
+          .from("courses")
+          .update({ status: "archived", archived_at: new Date().toISOString() })
+          .eq("id", testCourseId);
+        expect(error, "flow course must archive on teardown").toBeNull();
+        const { data } = await alphaOwner
+          .from("courses")
+          .select("status")
+          .eq("id", testCourseId)
+          .single();
+        expect(data?.status, "the archive must actually stick").toBe(
+          "archived",
+        );
+      }
     });
 
     // -------------------------------------------------------------------------
