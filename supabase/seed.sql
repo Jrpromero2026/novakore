@@ -518,3 +518,12 @@ on conflict (id) do nothing;
 -- seed by hand. Establishes the series record first, then G3 101 → 105.
 \ir seeds/g3-performance-foundations.sql
 
+-- Series Gating Lab: isolated fixtures tenant for the series-gating real-DB
+-- suite (clone of the G3 Foundations structure; must follow the G3 seed).
+\ir seeds/series-gating-lab.sql
+
+-- Deliberate pagination/volume fixtures for the E2E suite (30 courses,
+-- 25 enrollments for alpha.learner) — the honest replacement for the test
+-- residue that used to provide this volume by accident.
+\ir seeds/e2e-volume-fixtures.sql
+

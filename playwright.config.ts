@@ -46,6 +46,9 @@ const baseURL = process.env.NOVAKORE_E2E_BASE_URL ?? "http://localhost:3000";
 
 export default defineConfig({
   testDir: "./e2e",
+  // Identity preflight: refuses to test whatever app happens to hold the
+  // port (see e2e/global-setup.ts for the incident that earned this).
+  globalSetup: "./e2e/global-setup.ts",
   timeout: 60_000,
   expect: { timeout: 15_000 },
   fullyParallel: false,
