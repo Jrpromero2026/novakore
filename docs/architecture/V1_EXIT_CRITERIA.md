@@ -28,10 +28,19 @@ platform". Status is evidence-based as of 2026-08-01 (`main`, Phase 6):
 
 - [x] ✅ Fail-closed env validation in every production build
       (scripts/env-check.mjs; refuses unregistered DBs).
-- [ ] 🟡 `novakore-prod` Supabase project created + migrations applied +
-      fixture-free seed (runbook ready: docs/operations/production-setup.md).
-- [ ] 🟡 Vercel production env pointed at prod; `NOVAKORE_ALLOW_DEV_DB`
-      removed. Until then: **do not onboard paying organizations.**
+- [x] ✅ `novakore-prod` Supabase project created + all 66 migrations applied
+      (history matches repo 1:1; 132 policies; 0 users / 0 orgs —
+      fixture-free). Executed 2026-09-07; evidence in
+      docs/operations/production-setup.md §Execution record.
+- [ ] 🟡 Vercel production env pointed at prod. EXECUTED and verified
+      2026-09-07 (build exit 0 against prod, `/api/health` 200, prod REST
+      logs showed the probe), then **deliberately REVERTED the same day by
+      owner decision**: the platform needs cleanup/fixes first, and the live
+      site is needed for that work with dev data. Production serves dev
+      again (documented warn state); `NOVAKORE_PROD_REF` removed.
+      `NOVAKORE_ALLOW_DEV_DB` confirmed absent in Vercel (drop was a no-op).
+      Re-pointing is runbook §4 (~10 min, proven). **Do not onboard paying
+      organizations.**
 
 ## Data operations
 
@@ -61,8 +70,11 @@ platform". Status is evidence-based as of 2026-08-01 (`main`, Phase 6):
 - [ ] ❌ Customer #2 end-to-end deploy rehearsal (provision → brand →
       terminology → content → learner) executed with evidence.
 - [ ] ❌ Scalability plan step 1 (analytics rollups) implemented.
-- [ ] ❌ No known P1s: P1-ENV (shared dev/prod DB) remains open until the
-      environment split executes.
+- [ ] ❌ No known P1s: P1-ENV (shared dev/prod DB) — `novakore-prod` exists,
+      fully migrated and proven servable (2026-09-07), but production
+      wiring was reverted to dev by owner decision pending platform
+      cleanup. P1-ENV stays OPEN until the repoint is re-executed and the
+      §6 gate passes.
 
 **Exit rule:** all ❌ closed and all 🟡 executed → v1.0. Anything less ships
 as "internal alpha" only.
