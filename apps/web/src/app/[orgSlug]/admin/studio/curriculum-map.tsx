@@ -209,6 +209,9 @@ function CourseNode({
   );
 }
 
+/** Unattached courses shown before "Show all" expands the section. */
+const UNATTACHED_PREVIEW = 10;
+
 export function CurriculumMap({
   data,
   orgSlug,
@@ -218,6 +221,9 @@ export function CurriculumMap({
   orgSlug: string;
   labels: Labels;
 }) {
+  // Collapsed-by-default beyond a preview: a tenant with many unattached
+  // courses (test residue taught us this) must not drown the real hierarchy.
+  const [showAllUnattached, setShowAllUnattached] = useState(false);
   const empty =
     data.journeys.length === 0 && data.unattachedCourses.length === 0;
   if (empty) {
@@ -293,7 +299,10 @@ export function CurriculumMap({
             </span>
           </div>
           <ul className="space-y-0.5 rounded-md border border-border-subtle py-1">
-            {data.unattachedCourses.map((course) => (
+            {(showAllUnattached
+              ? data.unattachedCourses
+              : data.unattachedCourses.slice(0, UNATTACHED_PREVIEW)
+            ).map((course) => (
               <CourseNode
                 key={course.id}
                 course={course}
@@ -303,6 +312,16 @@ export function CurriculumMap({
               />
             ))}
           </ul>
+          {data.unattachedCourses.length > UNATTACHED_PREVIEW &&
+          !showAllUnattached ? (
+            <button
+              type="button"
+              onClick={() => setShowAllUnattached(true)}
+              className="mt-1.5 text-caption font-medium text-accent hover:text-accent-hover"
+            >
+              Show all {data.unattachedCourses.length}
+            </button>
+          ) : null}
         </section>
       ) : null}
 

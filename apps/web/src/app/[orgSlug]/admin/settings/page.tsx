@@ -1,9 +1,9 @@
-import type { Metadata } from "next";
+﻿import type { Metadata } from "next";
 import { requireOrgContext, requirePermission } from "@/lib/org-context";
 import { PageHeader, Panel, SectionHeader } from "@/components/ui/layout";
 import { OrgNameForm } from "./org-name-form";
 
-export const metadata: Metadata = { title: "Settings" };
+export const metadata: Metadata = { title: "Organization profile" };
 
 /**
  * Organization settings. Split out of Overview so the workspace home stays
@@ -57,7 +57,7 @@ export default async function OrgSettingsPage({
             </span>
           </div>
           <p className="px-5 py-3 text-caption text-text-muted">
-            The slug is permanent — contact NovaKore to change it.
+            The slug is permanent â€” contact NovaKore to change it.
           </p>
         </Panel>
       </section>

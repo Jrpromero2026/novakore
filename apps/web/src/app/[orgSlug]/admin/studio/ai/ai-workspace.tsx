@@ -27,29 +27,40 @@ import {
 } from "@/components/ui/primitives";
 import { Alert } from "@/components/ui/feedback";
 
-const OPERATIONS: {
+/** Operation labels speak the tenant's vocabulary, same as the nav. */
+export type AiWorkspaceTerms = {
+  course: string;
+  lesson: string;
+  module: string;
+  assessment: string;
+  learningPath: string;
+};
+
+const operationsFor = (
+  terms: AiWorkspaceTerms,
+): {
   value: AiOperation;
   label: string;
   profile: "drafting" | "structured" | "rewrite";
-}[] = [
+}[] => [
   {
     value: "path_outline",
-    label: "Learning-path outline",
+    label: `${terms.learningPath} outline`,
     profile: "structured",
   },
   {
     value: "course_outline",
-    label: "Course outline (creates draft)",
+    label: `${terms.course} outline (creates draft)`,
     profile: "structured",
   },
   {
     value: "module_suggestions",
-    label: "Module suggestions",
+    label: `${terms.module} suggestions`,
     profile: "structured",
   },
   {
     value: "lesson_draft",
-    label: "Lesson draft (creates draft lesson)",
+    label: `${terms.lesson} draft (creates draft ${terms.lesson.toLowerCase()})`,
     profile: "drafting",
   },
   {
@@ -64,7 +75,7 @@ const OPERATIONS: {
   },
   {
     value: "assessment_questions",
-    label: "Assessment questions",
+    label: `${terms.assessment} questions`,
     profile: "structured",
   },
   { value: "flashcards", label: "Flashcards", profile: "structured" },
@@ -106,6 +117,7 @@ export function AiWorkspace({
   canManageSources,
   canAuthor,
   provider,
+  terms,
 }: {
   orgSlug: string;
   data: AiWorkspaceData;
@@ -113,7 +125,9 @@ export function AiWorkspace({
   canManageSources: boolean;
   canAuthor: boolean;
   provider: string;
+  terms: AiWorkspaceTerms;
 }) {
+  const OPERATIONS = operationsFor(terms);
   const [operation, setOperation] = useState<AiOperation>("course_outline");
   const [objective, setObjective] = useState("");
   const [audience, setAudience] = useState("");

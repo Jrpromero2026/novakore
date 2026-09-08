@@ -34,6 +34,14 @@ export default async function LearnLayout({
     >
       <div className="flex min-h-dvh flex-col">
         <OrgThemeStyle theme={brand.theme} />
+        {/* Visible only on focus — same affordance the admin shell documents:
+            keyboard users skip the branded header on every navigation. */}
+        <a
+          href="#main"
+          className="sr-only rounded-md bg-surface px-4 py-2 text-body-sm font-medium text-accent shadow-lg outline-2 outline-offset-2 outline-accent focus:not-sr-only focus:absolute focus:left-4 focus:top-4 focus:z-50"
+        >
+          Skip to content
+        </a>
         <header
           className="sticky top-0 border-b border-border-default bg-surface"
           style={{ zIndex: "var(--z-nav)" }}
@@ -65,6 +73,8 @@ export default async function LearnLayout({
           </div>
         </header>
         <main
+          id="main"
+          tabIndex={-1}
           className="mx-auto w-full flex-1 px-5 py-8"
           style={{ maxWidth: "var(--layout-form-max)" }}
         >

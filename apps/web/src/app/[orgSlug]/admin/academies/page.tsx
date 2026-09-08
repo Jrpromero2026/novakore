@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+﻿import { termTitleMetadata } from "@/lib/metadata";
 import { can, requireOrgContext } from "@/lib/org-context";
 import { getTerminology } from "@/lib/terminology";
 import { supabaseServer } from "@/lib/supabase/server";
@@ -6,7 +6,7 @@ import { EmptyState } from "@/components/ui/primitives";
 import { PageHeader, Panel, SectionHeader } from "@/components/ui/layout";
 import { AcademyRow, CreateAcademyPanel } from "./academies-ui";
 
-export const metadata: Metadata = { title: "Academies" };
+export const generateMetadata = termTitleMetadata("academy");
 
 export default async function AcademiesPage({
   params,

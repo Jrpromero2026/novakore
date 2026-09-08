@@ -24,5 +24,7 @@ export const Z_LAYERS = {
   nav: 30,
   panel: 40,
   overlay: 50,
+  /** Walkthrough spotlight + coachmark: above overlays, below toasts. */
+  walkthrough: 55,
   toast: 60,
 } as const;

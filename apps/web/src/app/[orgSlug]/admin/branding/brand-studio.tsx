@@ -77,7 +77,7 @@ function ColorField({
         <input
           type="color"
           aria-label={`${label} picker`}
-          value={valid ? value : "#5a5cff"}
+          value={valid ? value : NOVAKORE_BASE.light.accent}
           onChange={(e) => onChange(e.target.value)}
           className="h-9 w-10 shrink-0 cursor-pointer rounded-md border border-border-default bg-surface p-1"
         />
@@ -274,25 +274,31 @@ export function BrandStudio({
           <ColorField
             id="bg-light"
             label="Background — light mode (optional)"
-            value={draft.colors.backgroundLight ?? "#f7f8fa"}
+            value={
+              draft.colors.backgroundLight ?? NOVAKORE_BASE.light.background
+            }
             onChange={(v) => setColor("backgroundLight", v)}
           />
           <ColorField
             id="bg-dark"
             label="Background — dark mode (optional)"
-            value={draft.colors.backgroundDark ?? "#0b0b0d"}
+            value={draft.colors.backgroundDark ?? NOVAKORE_BASE.dark.background}
             onChange={(v) => setColor("backgroundDark", v)}
           />
           <ColorField
             id="text-light"
             label="Primary text — light mode (optional)"
-            value={draft.colors.textPrimaryLight ?? "#101114"}
+            value={
+              draft.colors.textPrimaryLight ?? NOVAKORE_BASE.light.textPrimary
+            }
             onChange={(v) => setColor("textPrimaryLight", v)}
           />
           <ColorField
             id="text-dark"
             label="Primary text — dark mode (optional)"
-            value={draft.colors.textPrimaryDark ?? "#f2f3f7"}
+            value={
+              draft.colors.textPrimaryDark ?? NOVAKORE_BASE.dark.textPrimary
+            }
             onChange={(v) => setColor("textPrimaryDark", v)}
           />
         </div>

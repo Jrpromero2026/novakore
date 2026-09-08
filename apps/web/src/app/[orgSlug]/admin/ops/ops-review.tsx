@@ -158,7 +158,7 @@ function FeedbackRowItem({
         </span>
       </div>
 
-      <p className="whitespace-pre-wrap text-body-sm text-text">
+      <p className="whitespace-pre-wrap text-body-sm text-text-primary">
         {row.message}
       </p>
 

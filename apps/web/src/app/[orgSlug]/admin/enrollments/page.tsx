@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+﻿import { termTitleMetadata } from "@/lib/metadata";
 import { requireOrgContext, requirePermission, can } from "@/lib/org-context";
 import { getTerminology } from "@/lib/terminology";
 import { supabaseServer } from "@/lib/supabase/server";
@@ -10,7 +10,7 @@ import { Pagination } from "@/components/ui/pagination";
 import { CreateEnrollmentPanel, EnrollmentRow } from "./enrollments-ui";
 import { PageHeader } from "@/components/ui/layout";
 
-export const metadata: Metadata = { title: "Enrollments" };
+export const generateMetadata = termTitleMetadata("enrollment");
 
 export default async function EnrollmentsPage({
   params,
@@ -97,7 +97,7 @@ export default async function EnrollmentsPage({
         event="onboarding.progress.reviewed"
       />
       <PageHeader
-        title="Enrollments"
+        title={term("enrollment").plural}
         description={`Assignments pin the exact published version at creation (${term("learner").plural} never migrate silently).`}
       />
 
@@ -114,7 +114,9 @@ export default async function EnrollmentsPage({
       />
 
       <Card>
-        <CardHeader title={`All enrollments (${enrollments?.length ?? 0})`} />
+        <CardHeader
+          title={`All ${term("enrollment").plural.toLowerCase()} (${enrollments?.length ?? 0})`}
+        />
         {enrollments?.length ? (
           <ul className="divide-y divide-border-subtle">
             {enrollments.map((e) => (
@@ -127,8 +129,10 @@ export default async function EnrollmentsPage({
                     emailByMembership.get(e.membership_id) ?? "member",
                   targetTitle:
                     e.target_type === "course"
-                      ? (courseById.get(e.course_id ?? "") ?? "Course")
-                      : (pathById.get(e.learning_path_id ?? "") ?? "Path"),
+                      ? (courseById.get(e.course_id ?? "") ??
+                        term("course").singular)
+                      : (pathById.get(e.learning_path_id ?? "") ??
+                        term("learning_path").singular),
                   targetType: e.target_type,
                   status: e.status,
                   pinned: e.pinned_course_version_id !== null,
@@ -139,7 +143,9 @@ export default async function EnrollmentsPage({
                   .filter((p) => p.enrollment_id === e.id)
                   .map((p) => ({
                     lessonId: p.lesson_id!,
-                    lessonTitle: lessonTitleById.get(p.lesson_id!) ?? "Lesson",
+                    lessonTitle:
+                      lessonTitleById.get(p.lesson_id!) ??
+                      term("lesson").singular,
                     lessonVersionId: p.lesson_version_id,
                     status: p.status,
                     overrideReason: p.override_reason,

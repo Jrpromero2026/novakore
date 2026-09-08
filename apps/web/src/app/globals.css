@@ -54,6 +54,7 @@
 
   /* -- typography -- */
   --tracking-caps: 0.08em;
+  --tracking-hero: 0.32em; /* landing-hero eyebrow only — wider by intent */
 
   /* -- shape (radius profile scales the unit) -- */
   --radius-unit: 1;
@@ -86,7 +87,11 @@
   --z-nav: 30;
   --z-panel: 40;
   --z-overlay: 50;
+  --z-walkthrough: 55; /* spotlight + coachmark: above overlays, below toasts */
   --z-toast: 60;
+
+  /* Dim behind spotlights/overlays — same ink in both themes. */
+  --scrim: rgb(0 0 0 / 0.38);
 
   color-scheme: light;
 }
@@ -193,9 +198,10 @@
 }
 
 /* ---------------------------------------------------------------------------
- * Tailwind mapping. New code prefers the semantic names; Phase 1A aliases
- * (surface-sunken, surface-raised, text, text-faint, border) stay mapped so
- * existing components keep working from the same variables.
+ * Tailwind mapping — one vocabulary. The Phase 1A aliases (surface-sunken,
+ * surface-raised, text, text-faint, border, positive) were retired 2026-09-07
+ * after a codemod moved every usage onto the semantic names; two names for
+ * one pixel made the system impossible to reason about.
  * ------------------------------------------------------------------------- */
 @theme inline {
   /* semantic names */
@@ -223,14 +229,7 @@
   --color-danger: var(--danger);
   --color-danger-soft: var(--danger-soft);
   --color-info: var(--info);
-  --color-positive: var(--success); /* Phase 1A alias */
-
-  /* Phase 1A aliases (same variables, prior utility names) */
-  --color-text: var(--text-primary);
-  --color-text-faint: var(--text-muted);
-  --color-surface-raised: var(--surface-elevated);
-  --color-surface-sunken: var(--background-subtle);
-  --color-border: var(--border-default);
+  --color-scrim: var(--scrim);
 
   --radius-sm: var(--radius-sm);
   --radius-md: var(--radius-md);

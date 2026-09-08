@@ -56,7 +56,7 @@ export default async function LearnerHomePage({
           className="text-caption uppercase text-text-muted"
           style={{ letterSpacing: "var(--tracking-caps)" }}
         >
-          Academy
+          {term("academy").singular}
         </p>
         <h1 className="text-h1 text-text-primary">Welcome back</h1>
         <p className="text-body-sm text-text-secondary">
@@ -111,7 +111,7 @@ export default async function LearnerHomePage({
                 <li key={e.id}>
                   <Link
                     href={`/${orgSlug}/learn/${e.id}`}
-                    className="group flex h-full flex-col justify-between gap-4 rounded-lg border border-border bg-surface p-4 shadow-raised transition-all duration-[var(--motion-fast)] hover:border-border-strong hover:shadow-overlay focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent"
+                    className="group flex h-full flex-col justify-between gap-4 rounded-lg border border-border-default bg-surface p-4 shadow-raised transition-all duration-[var(--motion-fast)] hover:border-border-strong hover:shadow-overlay focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent"
                   >
                     <div className="space-y-1">
                       <p
@@ -161,7 +161,7 @@ export default async function LearnerHomePage({
             {activeCredentials.map((cred) => (
               <li
                 key={cred.id}
-                className="flex flex-wrap items-center gap-3 rounded-lg border border-border bg-surface px-4 py-3 shadow-raised"
+                className="flex flex-wrap items-center gap-3 rounded-lg border border-border-default bg-surface px-4 py-3 shadow-raised"
               >
                 <span aria-hidden className="text-lg text-accent">
                   ◆

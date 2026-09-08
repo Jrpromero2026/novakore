@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+﻿import type { Metadata } from "next";
 import Link from "next/link";
 import { can, requireOrgContext } from "@/lib/org-context";
 import { getTerminology } from "@/lib/terminology";
@@ -13,10 +13,10 @@ import { tourState, tourTarget, TOUR_TARGETS } from "@/lib/onboarding/targets";
 import { IdentityForm } from "./identity-form";
 import { AutoBreadcrumbs } from "@/components/shell/auto-breadcrumbs";
 
-export const metadata: Metadata = { title: "Organization" };
+export const metadata: Metadata = { title: "Mission and values" };
 
 /**
- * The Organization Hub — the organization's digital headquarters. Identity
+ * The Organization Hub â€” the organization's digital headquarters. Identity
  * (culture the organization supplies), real membership growth, the living
  * timeline (every entry a real dated record), knowledge health, and recent
  * publishing. Everything reinforces belonging; nothing is generic filler.
@@ -65,7 +65,7 @@ export default async function OrganizationHubPage({
           />
           {hub.createdAt ? (
             <span className="normal-case tracking-normal">
-              · on NovaKore since{" "}
+              Â· on NovaKore since{" "}
               {new Date(hub.createdAt).toLocaleDateString(undefined, {
                 month: "long",
                 year: "numeric",
@@ -83,7 +83,7 @@ export default async function OrganizationHubPage({
         ) : (
           <p className="mt-3 max-w-2xl text-body-sm text-text-muted">
             {canManage
-              ? "No mission recorded yet — identity added here shapes how the whole workspace reads."
+              ? "No mission recorded yet â€” identity added here shapes how the whole workspace reads."
               : "The organization hasn't recorded its mission yet."}
           </p>
         )}
@@ -144,7 +144,7 @@ export default async function OrganizationHubPage({
                     {dim.pct === null ? "no data" : `${dim.n} of ${dim.m}`}
                   </span>
                   <span className="w-12 text-right text-body-sm font-semibold tabular-nums text-text-primary">
-                    {dim.pct === null ? "—" : `${dim.pct}%`}
+                    {dim.pct === null ? "â€”" : `${dim.pct}%`}
                   </span>
                 </Link>
               ))}
@@ -175,7 +175,7 @@ export default async function OrganizationHubPage({
               <span className="text-caption text-text-muted">
                 active {hub.members.active === 1 ? "member" : "members"}
                 {hub.members.invited > 0
-                  ? ` · ${hub.members.invited} invited`
+                  ? ` Â· ${hub.members.invited} invited`
                   : ""}
               </span>
             </p>
@@ -202,7 +202,7 @@ export default async function OrganizationHubPage({
         <section aria-label="Organization timeline">
           <SectionHeader
             title="Timeline"
-            description="The organization's history on the platform — every entry a real dated record"
+            description="The organization's history on the platform â€” every entry a real dated record"
           />
           <Panel tone="outlined" className="mt-3 p-4">
             {hub.timeline.length === 0 ? (
@@ -237,7 +237,7 @@ export default async function OrganizationHubPage({
                         {entry.title}
                       </p>
                       <p className="text-caption text-text-muted">
-                        {entry.detail ? <>{entry.detail} · </> : null}
+                        {entry.detail ? <>{entry.detail} Â· </> : null}
                         {new Date(entry.at).toLocaleDateString(undefined, {
                           month: "short",
                           day: "numeric",

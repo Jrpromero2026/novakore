@@ -49,7 +49,9 @@ const ADDABLE: { type: AssessmentItemType; label: string }[] = [
   { type: "true_false", label: "True / false" },
   { type: "short_answer", label: "Short answer" },
   { type: "long_answer", label: "Long answer" },
-  { type: "file_submission", label: "File submission" },
+  // file_submission is NOT addable until the submissions bucket ships: an
+  // author must not be able to create an assessment whose evidence cannot
+  // enter the platform. Existing items keep rendering (cases below stay).
 ];
 
 function defaultData(type: AssessmentItemType): Record<string, unknown> {

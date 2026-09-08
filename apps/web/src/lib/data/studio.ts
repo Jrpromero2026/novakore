@@ -22,7 +22,8 @@ export interface StudioHome {
     status: string;
     updatedAt: string;
   }[];
-  draftCourses: { id: string; title: string; status: string }[];
+  /** Recently updated non-archived courses of any status ("in motion"). */
+  recentCourses: { id: string; title: string; status: string }[];
   openReviews: {
     id: string;
     subjectType: string;
@@ -52,9 +53,14 @@ export async function getStudioHome(
     await Promise.all([
       supabase
         .from("lessons")
-        .select("id, course_id, title, status, updated_at")
+        // The inner join hides lessons of archived courses: a retired
+        // course's lessons are not "recent work" however fresh their rows.
+        .select(
+          "id, course_id, title, status, updated_at, courses!inner(status)",
+        )
         .eq("organization_id", organizationId)
         .is("archived_at", null)
+        .neq("courses.status", "archived")
         .order("updated_at", { ascending: false })
         .limit(8),
       supabase
@@ -101,7 +107,7 @@ export async function getStudioHome(
       status: l.status,
       updatedAt: l.updated_at,
     })),
-    draftCourses: courses.data ?? [],
+    recentCourses: courses.data ?? [],
     openReviews: (reviews.data ?? []).map((r) => ({
       id: r.id,
       subjectType: r.subject_type,

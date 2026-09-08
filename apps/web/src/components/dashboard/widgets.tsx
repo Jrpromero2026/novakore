@@ -36,9 +36,11 @@ export function Metric({
       <p
         className={cx(
           "mt-1.5 font-semibold leading-none tracking-tight tabular-nums",
+          // Emphasis is a deliberate off-scale stat size; the base matches
+          // the h1 role exactly.
           emphasis
             ? "text-[2rem] text-text-primary"
-            : "text-[1.5rem] text-text-primary",
+            : "text-h1 text-text-primary",
         )}
       >
         {typeof value === "number" ? <AnimatedNumber value={value} /> : value}

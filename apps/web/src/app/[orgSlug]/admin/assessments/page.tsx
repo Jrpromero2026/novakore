@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+﻿import { termTitleMetadata } from "@/lib/metadata";
 import { requireOrgContext, requirePermission } from "@/lib/org-context";
 import { getTerminology } from "@/lib/terminology";
 import { listAssessments } from "@/lib/data/assessments";
@@ -13,7 +13,7 @@ import { pageMeta, parsePage, rangeFor } from "@/lib/pagination";
 import { Pagination } from "@/components/ui/pagination";
 import { CreateAssessmentPanel } from "./assessments-ui";
 
-export const metadata: Metadata = { title: "Assessments" };
+export const generateMetadata = termTitleMetadata("assessment");
 
 export default async function AssessmentsPage({
   params,
@@ -66,7 +66,7 @@ export default async function AssessmentsPage({
                   <DataRow
                     href={`/${orgSlug}/admin/assessments/${a.id}`}
                     title={a.title}
-                    meta={`${a.assessmentType.replace(/_/g, " ")} · ${a.itemCount} item${a.itemCount === 1 ? "" : "s"}`}
+                    meta={`${a.assessmentType.replace(/_/g, " ")} Â· ${a.itemCount} item${a.itemCount === 1 ? "" : "s"}`}
                     trailing={
                       <Badge
                         tone={a.publishedVersionNumber ? "positive" : "warning"}

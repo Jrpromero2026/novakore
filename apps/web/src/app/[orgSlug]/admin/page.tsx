@@ -151,9 +151,11 @@ export default async function OrgOverviewPage({
     : null;
 
   // Knowledge health = real publishing readiness (published / total courses).
+  // Floored: 100% is reserved for actually-all-published — 284/285 must never
+  // read as 100% beside a visible draft count.
   const publishingReadiness =
     composition && composition.total > 0
-      ? Math.round((composition.published / composition.total) * 100)
+      ? Math.floor((composition.published / composition.total) * 100)
       : null;
 
   // ---- Nova Intelligence — every insight from a real, current condition ----
@@ -193,7 +195,7 @@ export default async function OrgOverviewPage({
     insights.push({
       id: "drafts",
       tone: "neutral",
-      observation: `${composition.draft} ${composition.draft === 1 ? "course is" : "courses are"} in draft, not yet delivered to learners.`,
+      observation: `${composition.draft} ${composition.draft === 1 ? `${term("course").singular.toLowerCase()} is` : `${term("course").plural.toLowerCase()} are`} in draft, not yet delivered to ${term("learner").plural.toLowerCase()}.`,
       action: { label: "Open", href: `${base}/courses` },
     });
   }
@@ -214,7 +216,7 @@ export default async function OrgOverviewPage({
     insights.push({
       id: "healthy",
       tone: "positive",
-      observation: `Publishing is healthy — all ${composition.total} ${composition.total === 1 ? "course is" : "courses are"} live.`,
+      observation: `Publishing is healthy — all ${composition.total} ${composition.total === 1 ? `${term("course").singular.toLowerCase()} is` : `${term("course").plural.toLowerCase()} are`} live.`,
     });
   }
   insights.sort((a, b) => toneWeight[a.tone] - toneWeight[b.tone]);
@@ -233,11 +235,11 @@ export default async function OrgOverviewPage({
       href: `${base}/studio/review`,
     });
   }
-  if (studio && studio.draftCourses.length > 0) {
+  if (composition && composition.draft > 0) {
     priority.push({
       id: "drafts",
       band: "publishing",
-      title: `${studio.draftCourses.length} ${studio.draftCourses.length === 1 ? "course" : "courses"} still in draft`,
+      title: `${composition.draft} ${composition.draft === 1 ? term("course").singular.toLowerCase() : term("course").plural.toLowerCase()} still in draft`,
       meta: "Not yet delivered to learners",
       href: `${base}/courses`,
     });
@@ -468,7 +470,7 @@ export default async function OrgOverviewPage({
                   href={`${base}/courses`}
                   className="rounded-md border border-border-strong px-4 py-2 text-body-sm font-medium text-text-primary transition-colors duration-[var(--motion-fast)] hover:bg-surface-interactive"
                 >
-                  Courses
+                  {term("course").plural}
                 </Link>
               </div>
             ) : null}
@@ -486,7 +488,7 @@ export default async function OrgOverviewPage({
                       {publishingReadiness}%
                     </span>
                     <span className="text-caption text-text-muted">
-                      of courses published
+                      of {term("course").plural.toLowerCase()} published
                     </span>
                   </p>
                   <div className="mt-3">
@@ -504,7 +506,7 @@ export default async function OrgOverviewPage({
             <div className="flex flex-wrap gap-x-8 gap-y-3">
               {ops ? (
                 <HeroStat
-                  label="Active learners"
+                  label={`Active ${term("learner").plural.toLowerCase()}`}
                   value={ops.activeLearners.toLocaleString()}
                 />
               ) : null}
@@ -688,7 +690,8 @@ export default async function OrgOverviewPage({
                       {lesson.title}
                     </p>
                     <p className="mt-0.5 text-caption text-text-muted">
-                      Lesson · edited {relativeTime(lesson.updatedAt)}
+                      {term("lesson").singular} · edited{" "}
+                      {relativeTime(lesson.updatedAt)}
                     </p>
                   </div>
                 </Link>

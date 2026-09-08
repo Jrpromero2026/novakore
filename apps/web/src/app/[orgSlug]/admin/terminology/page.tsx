@@ -31,7 +31,7 @@ export default async function TerminologyPage({
           title="Display terms"
           description="Overridden terms are highlighted. Reset returns a term to the NovaKore default."
         />
-        <ul className="divide-y divide-border">
+        <ul className="divide-y divide-border-default">
           {TERM_KEYS.map((key) => (
             <TermRow
               key={key}

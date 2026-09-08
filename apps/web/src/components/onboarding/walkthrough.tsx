@@ -534,7 +534,10 @@ function WalkthroughOverlay({
   const effectiveStatus: StepStatus = onRoute ? status : "locating";
 
   // Coachmark placement relative to the highlight, clamped to the viewport.
-  const coachmarkStyle: CSSProperties = { position: "fixed", zIndex: 60 };
+  const coachmarkStyle: CSSProperties = {
+    position: "fixed",
+    zIndex: "var(--z-walkthrough)",
+  };
   const MARGIN = 12;
   const WIDTH = 340;
   if (effectiveStatus === "ready" && rect) {
@@ -587,21 +590,21 @@ function WalkthroughOverlay({
         <div
           aria-hidden
           className="pointer-events-none fixed inset-0"
-          style={{ zIndex: 55 }}
+          style={{ zIndex: "var(--z-walkthrough)" }}
         >
           {/* Four dim panels around the highlight hole. */}
           <div
-            className="absolute inset-x-0 top-0 bg-[rgb(0_0_0/0.38)]"
+            className="absolute inset-x-0 top-0 bg-scrim"
             style={{ height: Math.max(0, rect.top - PAD) }}
           />
           <div
-            className="absolute inset-x-0 bottom-0 bg-[rgb(0_0_0/0.38)]"
+            className="absolute inset-x-0 bottom-0 bg-scrim"
             style={{
               top: rect.top + rect.height + PAD,
             }}
           />
           <div
-            className="absolute left-0 bg-[rgb(0_0_0/0.38)]"
+            className="absolute left-0 bg-scrim"
             style={{
               top: Math.max(0, rect.top - PAD),
               height: rect.height + PAD * 2,
@@ -609,7 +612,7 @@ function WalkthroughOverlay({
             }}
           />
           <div
-            className="absolute right-0 bg-[rgb(0_0_0/0.38)]"
+            className="absolute right-0 bg-scrim"
             style={{
               top: Math.max(0, rect.top - PAD),
               height: rect.height + PAD * 2,

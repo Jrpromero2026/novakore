@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { useActionState, useState, useTransition } from "react";
 import {
   addPathNodeAction,
@@ -136,13 +137,19 @@ export function PathCard({
 
   return (
     <div className="rounded-md border border-border-default">
-      <div className="flex items-center justify-between border-b border-border-subtle px-4 py-2.5">
-        <p className="text-title text-text-primary">
+      <div className="flex items-center justify-between gap-3 border-b border-border-subtle px-4 py-2.5">
+        <p className="min-w-0 flex-1 truncate text-title text-text-primary">
           {path.title}{" "}
-          <span className="font-mono text-caption text-text-faint">
+          <span className="font-mono text-caption text-text-muted">
             /{path.slug}
           </span>
         </p>
+        <Link
+          href={`/${orgSlug}/admin/studio/paths/${path.id}`}
+          className="nk-press rounded-md border border-border-default px-2.5 py-1 text-caption font-medium text-text-primary hover:bg-surface-interactive"
+        >
+          Open canvas
+        </Link>
         <Badge tone={path.status === "active" ? "positive" : "neutral"}>
           {path.status}
         </Badge>
@@ -180,7 +187,7 @@ export function PathCard({
                     onClick={() =>
                       run(() => removePrerequisiteAction(orgSlug, p.id))
                     }
-                    className="text-text-faint hover:text-danger"
+                    className="text-text-muted hover:text-danger"
                   >
                     ×
                   </button>

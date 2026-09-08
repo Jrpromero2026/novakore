@@ -75,17 +75,19 @@ export function FeedbackWidget({
         <div
           role="dialog"
           aria-label="Send feedback"
-          className="w-[min(22rem,calc(100vw-2rem))] space-y-3 rounded-lg border border-border bg-surface p-4 shadow-overlay"
+          className="w-[min(22rem,calc(100vw-2rem))] space-y-3 rounded-lg border border-border-default bg-surface p-4 shadow-overlay"
         >
           <div className="flex items-center justify-between">
-            <p className="text-sm font-semibold text-text">Send feedback</p>
+            <p className="text-sm font-semibold text-text-primary">
+              Send feedback
+            </p>
             <button
               onClick={() => {
                 setOpen(false);
                 setDone(null);
               }}
               aria-label="Close feedback"
-              className="rounded px-1 text-text-muted hover:text-text focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent"
+              className="rounded px-1 text-text-muted hover:text-text-primary focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent"
             >
               ✕
             </button>
@@ -93,7 +95,7 @@ export function FeedbackWidget({
 
           {done ? (
             <div className="space-y-3">
-              <p className="rounded-md bg-positive/10 px-3 py-2 text-sm text-positive">
+              <p className="rounded-md bg-success/10 px-3 py-2 text-sm text-success">
                 {done}
               </p>
               <Button
@@ -107,7 +109,7 @@ export function FeedbackWidget({
           ) : (
             <>
               <label className="block space-y-1 text-sm">
-                <span className="font-medium text-text">Type</span>
+                <span className="font-medium text-text-primary">Type</span>
                 <Select
                   value={category}
                   onChange={(e) => setCategory(e.target.value)}
@@ -120,8 +122,8 @@ export function FeedbackWidget({
                 </Select>
               </label>
               <label className="block space-y-1 text-sm">
-                <span className="font-medium text-text">
-                  Severity <span className="text-text-faint">(optional)</span>
+                <span className="font-medium text-text-primary">
+                  Severity <span className="text-text-muted">(optional)</span>
                 </span>
                 <Select
                   value={severity}
@@ -136,7 +138,9 @@ export function FeedbackWidget({
                 </Select>
               </label>
               <label className="block space-y-1 text-sm">
-                <span className="font-medium text-text">What happened?</span>
+                <span className="font-medium text-text-primary">
+                  What happened?
+                </span>
                 <Textarea
                   rows={4}
                   value={message}

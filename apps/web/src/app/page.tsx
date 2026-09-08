@@ -29,7 +29,7 @@ export default async function HomePage() {
           <NovaKoreMark size={72} className="mb-10" />
           <p
             className="text-caption font-medium uppercase text-text-muted"
-            style={{ letterSpacing: "0.32em" }}
+            style={{ letterSpacing: "var(--tracking-hero)" }}
           >
             Knowledge at the{" "}
             <span

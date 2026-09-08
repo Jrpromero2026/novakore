@@ -1,12 +1,14 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { requireOrgContext, requirePermission } from "@/lib/org-context";
+import { getTerminology } from "@/lib/terminology";
 import { getFeedback, getOpsMetrics, getTesterCohorts } from "@/lib/data/ops";
 import { TESTER_LABELS, testerLabelText } from "@/lib/feedback";
 import { Card, CardHeader, cx } from "@/components/ui/primitives";
 import { OnboardingPageMarker } from "@/components/onboarding/page-marker";
 import { pageMeta, parsePage, rangeFor } from "@/lib/pagination";
 import { Pagination } from "@/components/ui/pagination";
+import { MetricCard } from "@/components/dashboard/widgets";
 import { FeedbackReview } from "./ops-review";
 import { PageHeader } from "@/components/ui/layout";
 
@@ -14,15 +16,6 @@ export const metadata: Metadata = { title: "Operations" };
 
 function one(v: string | string[] | undefined): string | undefined {
   return typeof v === "string" && v.length ? v : undefined;
-}
-
-function StatTile({ label, value }: { label: string; value: number }) {
-  return (
-    <div className="rounded-lg border border-border bg-surface p-4 shadow-raised">
-      <p className="text-2xl font-semibold tabular-nums text-text">{value}</p>
-      <p className="mt-0.5 text-caption text-text-muted">{label}</p>
-    </div>
-  );
 }
 
 export default async function OperationsPage({
@@ -36,6 +29,7 @@ export default async function OperationsPage({
   const sp = await searchParams;
   const ctx = await requireOrgContext(orgSlug);
   requirePermission(ctx, "analytics.view");
+  const { term } = await getTerminology(ctx.organization.id);
 
   const cohort = one(sp.cohort);
   const filters = {
@@ -74,7 +68,7 @@ export default async function OperationsPage({
       />
       <PageHeader
         title="Operations"
-        description="Live alpha activity from the event log and tester feedback. Real data only."
+        description="Live workspace activity from the event log and tester feedback. Real data only."
       />
 
       {/* Cohort filter */}
@@ -86,7 +80,7 @@ export default async function OperationsPage({
             "rounded-full px-3 py-1 text-caption",
             !cohort
               ? "bg-accent-soft text-accent"
-              : "bg-surface-sunken text-text-muted hover:text-text",
+              : "bg-background-subtle text-text-muted hover:text-text-primary",
           )}
         >
           All
@@ -99,7 +93,7 @@ export default async function OperationsPage({
               "rounded-full px-3 py-1 text-caption",
               cohort === l.value
                 ? "bg-accent-soft text-accent"
-                : "bg-surface-sunken text-text-muted hover:text-text",
+                : "bg-background-subtle text-text-muted hover:text-text-primary",
             )}
           >
             {l.label}
@@ -111,35 +105,50 @@ export default async function OperationsPage({
         className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-5"
         aria-label="Activity metrics"
       >
-        <StatTile label="Active learners" value={metrics.activeLearners} />
-        <StatTile label="Enrollments" value={metrics.enrollments} />
-        <StatTile label="Lessons started" value={metrics.lessonsStarted} />
-        <StatTile label="Lessons completed" value={metrics.lessonsCompleted} />
-        <StatTile label="Programs completed" value={metrics.coursesCompleted} />
-        <StatTile
-          label="Journeys completed"
+        <MetricCard
+          label={`Active ${term("learner").plural.toLowerCase()}`}
+          value={metrics.activeLearners}
+        />
+        <MetricCard
+          label={term("enrollment").plural}
+          value={metrics.enrollments}
+        />
+        <MetricCard
+          label={`${term("lesson").plural} started`}
+          value={metrics.lessonsStarted}
+        />
+        <MetricCard
+          label={`${term("lesson").plural} completed`}
+          value={metrics.lessonsCompleted}
+        />
+        <MetricCard
+          label={`${term("course").plural} completed`}
+          value={metrics.coursesCompleted}
+        />
+        <MetricCard
+          label={`${term("learning_path").plural} completed`}
           value={metrics.journeysCompleted}
         />
-        <StatTile
+        <MetricCard
           label="Evaluations passed"
           value={metrics.evaluationsPassed}
         />
-        <StatTile
+        <MetricCard
           label="Evaluations failed"
           value={metrics.evaluationsFailed}
         />
-        <StatTile
-          label="Credentials issued"
+        <MetricCard
+          label={`${term("credential").plural} issued`}
           value={metrics.credentialsIssued}
         />
-        <StatTile label="Feedback items" value={feedbackTotal} />
+        <MetricCard label="Feedback items" value={feedbackTotal} />
       </section>
 
       {metrics.dropOff.length > 0 ? (
         <Card>
           <CardHeader
             title="Drop-off — started but not completed"
-            description="Lessons with the largest started → completed gap in the event log."
+            description={`${term("lesson").plural} with the largest started → completed gap in the event log.`}
           />
           <ul className="divide-y divide-border-subtle">
             {metrics.dropOff.map((d) => (
@@ -147,7 +156,7 @@ export default async function OperationsPage({
                 key={d.lessonId}
                 className="flex items-center gap-3 px-5 py-3 text-sm"
               >
-                <span className="min-w-0 flex-1 truncate text-text">
+                <span className="min-w-0 flex-1 truncate text-text-primary">
                   {d.title}
                 </span>
                 <span className="text-caption text-text-muted tabular-nums">
@@ -174,13 +183,13 @@ export default async function OperationsPage({
                 key={m.membershipId}
                 className="flex flex-wrap items-center gap-2 px-5 py-3 text-sm"
               >
-                <span className="min-w-0 flex-1 truncate text-text">
+                <span className="min-w-0 flex-1 truncate text-text-primary">
                   {m.email ?? m.membershipId}
                 </span>
                 {m.labels.map((l) => (
                   <span
                     key={l}
-                    className="rounded-full bg-surface-sunken px-2 py-0.5 text-[11px] text-text-muted"
+                    className="rounded-full bg-background-subtle px-2 py-0.5 text-[11px] text-text-muted"
                   >
                     {testerLabelText(l)}
                   </span>

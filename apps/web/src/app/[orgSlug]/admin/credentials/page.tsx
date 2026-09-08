@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+﻿import { termTitleMetadata } from "@/lib/metadata";
 import { can, requireOrgContext, requirePermission } from "@/lib/org-context";
 import { getTerminology } from "@/lib/terminology";
 import { getCredentialAdminData } from "@/lib/data/assessments";
@@ -8,7 +8,7 @@ import { Pagination } from "@/components/ui/pagination";
 import { CredentialsAdmin } from "./credentials-ui";
 import { PageHeader } from "@/components/ui/layout";
 
-export const metadata: Metadata = { title: "Credentials" };
+export const generateMetadata = termTitleMetadata("credential");
 
 export default async function CredentialsPage({
   params,
@@ -23,7 +23,7 @@ export default async function CredentialsPage({
   requirePermission(ctx, "certificates.manage");
   const { term } = await getTerminology(ctx.organization.id);
 
-  // Issued credentials are unbounded history — page them.
+  // Issued credentials are unbounded history â€” page them.
   const issuedPage = parsePage(sp.issued);
   const data = await getCredentialAdminData(
     ctx.organization.id,
@@ -58,8 +58,10 @@ export default async function CredentialsPage({
 
   return (
     <div className="space-y-6">
+      {/* The nav labels this destination with the `credential` key — the
+          page must resolve the SAME key or a tenant override splits them. */}
       <PageHeader
-        title={term("certificate").plural}
+        title={term("credential").plural}
         description="Templates define the look; certificate rules define eligibility; issued credentials are immutable evidence with public verification codes."
       />
 

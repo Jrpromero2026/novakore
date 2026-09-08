@@ -192,7 +192,7 @@ export function GlobalNav({
           >
             {organizationName.slice(0, 1).toUpperCase()}
           </span>
-          <span className="truncate text-body font-semibold text-text">
+          <span className="truncate text-body font-semibold text-text-primary">
             {organizationName}
           </span>
         </Link>

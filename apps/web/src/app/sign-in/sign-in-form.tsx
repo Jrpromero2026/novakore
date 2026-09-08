@@ -37,7 +37,7 @@ export function SignInForm() {
       <div
         role="tablist"
         aria-label="Sign-in method"
-        className="grid grid-cols-2 gap-1 rounded-md bg-surface-sunken p-1"
+        className="grid grid-cols-2 gap-1 rounded-md bg-background-subtle p-1"
       >
         {(
           [
@@ -55,8 +55,8 @@ export function SignInForm() {
             className={cx(
               "rounded-[5px] px-3 py-1.5 text-sm font-medium transition-colors",
               mode === value
-                ? "bg-surface text-text shadow-raised"
-                : "text-text-muted hover:text-text",
+                ? "bg-surface text-text-primary shadow-raised"
+                : "text-text-muted hover:text-text-primary",
             )}
           >
             {label}
@@ -107,7 +107,7 @@ export function SignInForm() {
           <button
             type="button"
             onClick={() => setMode("reset")}
-            className="w-full text-center text-caption text-text-muted underline underline-offset-2 hover:text-text"
+            className="w-full text-center text-caption text-text-muted underline underline-offset-2 hover:text-text-primary"
           >
             Forgot your password?
           </button>
@@ -174,7 +174,7 @@ export function SignInForm() {
           <button
             type="button"
             onClick={() => setMode("password")}
-            className="w-full text-center text-caption text-text-muted underline underline-offset-2 hover:text-text"
+            className="w-full text-center text-caption text-text-muted underline underline-offset-2 hover:text-text-primary"
           >
             Back to sign in
           </button>

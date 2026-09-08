@@ -18,8 +18,23 @@ import { Breadcrumbs } from "./breadcrumbs";
  * reads it on the client. The domain model arrives as a prop, already
  * permission-filtered on the server.
  */
-export function AutoHeader({ domains }: { domains: readonly Domain[] }) {
+export function AutoHeader({
+  domains,
+  ownHeaderRoutes = [],
+}: {
+  domains: readonly Domain[];
+  /**
+   * Path prefixes whose pages render their own header (a detail page whose
+   * h1 is the entity's name, not the destination label). Without this the
+   * longest nav match would print the parent destination's heading above
+   * the page's own — the double-chrome defect.
+   */
+  ownHeaderRoutes?: readonly string[];
+}) {
   const pathname = usePathname() ?? "";
+  if (ownHeaderRoutes.some((prefix) => pathname.startsWith(prefix))) {
+    return null;
+  }
   const crumbs = buildBreadcrumbs(domains, pathname);
 
   // Longest match, so /studio/library is Library rather than Studio.

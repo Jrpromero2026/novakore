@@ -64,7 +64,7 @@ export default async function EnrollmentOverviewPage({
               href={`/${orgSlug}/learn`}
               className="rounded hover:text-text-primary focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent"
             >
-              Academy
+              {term("academy").singular}
             </Link>{" "}
             / {term("learning_path").singular.toLowerCase()}
           </p>
@@ -79,7 +79,7 @@ export default async function EnrollmentOverviewPage({
               <span className="tabular-nums">{pct}%</span>
             </div>
             <div
-              className="h-1.5 overflow-hidden rounded-full bg-surface-sunken"
+              className="h-1.5 overflow-hidden rounded-full bg-background-subtle"
               role="progressbar"
               aria-valuenow={pct}
               aria-valuemin={0}
@@ -114,8 +114,8 @@ export default async function EnrollmentOverviewPage({
                     node.state === "completed"
                       ? "bg-accent-soft text-accent"
                       : node.state === "available"
-                        ? "bg-surface-sunken text-text-secondary"
-                        : "bg-surface-sunken text-text-muted",
+                        ? "bg-background-subtle text-text-secondary"
+                        : "bg-background-subtle text-text-muted",
                   )}
                 >
                   {node.state === "completed" ? "✓" : index + 1}

@@ -38,7 +38,7 @@ export function ContextRail({
   return (
     <aside
       aria-label="Organization context"
-      className="rounded-xl border border-border bg-surface p-5"
+      className="rounded-xl border border-border-default bg-surface p-5"
     >
       <span
         aria-hidden="true"
@@ -47,7 +47,7 @@ export function ContextRail({
         {organizationName.slice(0, 1).toUpperCase()}
       </span>
 
-      <h2 className="mt-3.5 text-title font-semibold leading-snug text-text">
+      <h2 className="mt-3.5 text-title font-semibold leading-snug text-text-primary">
         {organizationName}
       </h2>
 
@@ -64,7 +64,7 @@ export function ContextRail({
         <div className="mt-5 border-t border-border-subtle pt-4">
           <p className="text-caption text-text-muted">Workspace owner</p>
           {ownerName ? (
-            <p className="mt-1 text-body-sm font-medium text-text">
+            <p className="mt-1 text-body-sm font-medium text-text-primary">
               {ownerName}
             </p>
           ) : null}
@@ -80,7 +80,7 @@ export function ContextRail({
               <li key={link.href}>
                 <Link
                   href={link.href}
-                  className="group -mx-1.5 flex items-center justify-between gap-2 rounded-md px-1.5 py-1.5 text-body-sm text-text-secondary transition-colors hover:bg-surface-sunken hover:text-text focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent"
+                  className="group -mx-1.5 flex items-center justify-between gap-2 rounded-md px-1.5 py-1.5 text-body-sm text-text-secondary transition-colors hover:bg-background-subtle hover:text-text-primary focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent"
                 >
                   <span className="truncate">{link.label}</span>
                   <IconArrowRight

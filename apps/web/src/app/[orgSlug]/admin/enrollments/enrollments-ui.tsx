@@ -246,7 +246,7 @@ export function EnrollmentRow({
                       override: {p.overrideReason}
                     </span>
                   ) : null}
-                  <span className="font-mono text-caption text-text-faint">
+                  <span className="font-mono text-caption text-text-muted">
                     {p.lessonVersionId ?? ""}
                   </span>
                   {canOverride && p.status !== "completed" ? (

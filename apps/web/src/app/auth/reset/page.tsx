@@ -25,7 +25,7 @@ export default async function ResetPasswordPage() {
         {user?.email ? (
           <p className="text-body-sm text-text-secondary">
             You are resetting the password for{" "}
-            <span className="font-medium text-text">{user.email}</span>.
+            <span className="font-medium text-text-primary">{user.email}</span>.
           </p>
         ) : null}
       </div>

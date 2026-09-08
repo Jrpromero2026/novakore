@@ -162,7 +162,7 @@ export function buildDomains(
           items: [
             {
               href: `${base}/studio/review`,
-              label: "Review queue",
+              label: "Content review",
               description: "Content awaiting approval before publication",
               icon: "review",
               needsAny: ["content.view_draft"],
@@ -217,7 +217,7 @@ export function buildDomains(
             },
             {
               href: `${base}/reviews`,
-              label: "Reviews",
+              label: `${term("assessment").singular} reviews`,
               description: "Submissions awaiting a named reviewer decision",
               icon: "review",
               needsAny: ["assessment.grade"],
@@ -307,7 +307,7 @@ export function buildDomains(
           items: [
             {
               href: `${base}/roles`,
-              label: "Roles and permissions",
+              label: "Roles & permissions",
               description: "Define roles and the permissions they carry",
               icon: "roles",
               needsAny: ["org.roles.manage"],

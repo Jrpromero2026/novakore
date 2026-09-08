@@ -132,7 +132,7 @@ export default async function StudioHomePage({
         <Card>
           <CardHeader title={`${term("course").plural} in motion`} />
           <ul className="divide-y divide-border-subtle">
-            {home.draftCourses.map((course) => (
+            {home.recentCourses.map((course) => (
               <li key={course.id}>
                 <Link
                   href={`/${orgSlug}/admin/courses/${course.id}`}

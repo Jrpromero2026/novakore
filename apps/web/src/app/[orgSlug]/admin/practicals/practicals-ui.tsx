@@ -31,15 +31,17 @@ const STATUS_LABEL: Record<
 export function PracticalsWorkbench({
   orgSlug,
   rows,
+  courseTerm,
 }: {
   orgSlug: string;
   rows: PracticalWorkbenchRow[];
+  courseTerm: string;
 }) {
   if (rows.length === 0) {
     return (
       <EmptyState
         title="No practical requirements"
-        description="Courses with observed sign-offs or terminal defenses will appear here."
+        description={`${courseTerm} with observed sign-offs or terminal defenses will appear here.`}
       />
     );
   }

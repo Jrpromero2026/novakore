@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+﻿import type { Metadata } from "next";
 import { requireOrgContext, requirePermission } from "@/lib/org-context";
 import { getTerminology } from "@/lib/terminology";
 import { supabaseServer } from "@/lib/supabase/server";
@@ -9,7 +9,7 @@ import { ContextHelp } from "@/components/onboarding/context-help";
 import { StartWalkthroughButton } from "@/components/onboarding/walkthrough";
 import { CreatePathPanel, CreateSystemPanel, PathCard } from "./learning-ui";
 
-export const metadata: Metadata = { title: "Learning" };
+export const metadata: Metadata = { title: "Learning paths" };
 
 export default async function LearningPage({
   params,
@@ -69,8 +69,8 @@ export default async function LearningPage({
         summary={`What is a ${term("learning_path").singular}?`}
         className="max-w-2xl"
       >
-        A {term("learning_path").singular} is the complete learning experience —
-        for example Coach Certification, Employee Onboarding, or Leadership
+        A {term("learning_path").singular} is the complete learning experience
+        â€” for example Coach Certification, Employee Onboarding, or Leadership
         Development. It sequences {term("course").plural.toLowerCase()} and can
         require some before others. A {term("learning_system").singular} is the
         container that groups related{" "}
@@ -86,7 +86,7 @@ export default async function LearningPage({
         <Card key={system.id}>
           <CardHeader
             title={system.title}
-            description={`${term("learning_system").singular} · /${system.slug} · ${system.status}`}
+            description={`${term("learning_system").singular} Â· /${system.slug} Â· ${system.status}`}
           />
           <div className="space-y-4 px-5 py-4">
             {(paths ?? [])

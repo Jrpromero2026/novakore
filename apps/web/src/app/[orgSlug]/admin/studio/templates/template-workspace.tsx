@@ -119,7 +119,7 @@ export function TemplateWorkspace({
                 <div className="flex flex-wrap items-start justify-between gap-3 px-5 py-4">
                   <div className="min-w-0 flex-1">
                     <div className="flex flex-wrap items-center gap-2">
-                      <h3 className="text-body font-medium text-text">
+                      <h3 className="text-body font-medium text-text-primary">
                         {t.title}
                       </h3>
                       <Badge tone="neutral">{t.category}</Badge>

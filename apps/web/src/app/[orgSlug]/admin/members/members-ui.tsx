@@ -155,10 +155,10 @@ export function MemberRow({
     <li className="px-5 py-3.5">
       <div className="flex flex-wrap items-center gap-3">
         <div className="min-w-0 flex-1">
-          <p className="truncate text-sm font-medium text-text">
+          <p className="truncate text-sm font-medium text-text-primary">
             {label}
             {isSelf ? (
-              <span className="ml-2 text-xs text-text-faint">(you)</span>
+              <span className="ml-2 text-xs text-text-muted">(you)</span>
             ) : null}
           </p>
           <div className="mt-1 flex flex-wrap items-center gap-1.5">
@@ -173,11 +173,11 @@ export function MemberRow({
             {membership.assignments.map((a) => (
               <span
                 key={a.id}
-                className="inline-flex items-center gap-1 rounded-full bg-surface-sunken px-2 py-0.5 text-[11px] text-text-muted"
+                className="inline-flex items-center gap-1 rounded-full bg-background-subtle px-2 py-0.5 text-[11px] text-text-muted"
               >
                 {a.roleName}
                 {a.academyId ? (
-                  <span className="text-text-faint">
+                  <span className="text-text-muted">
                     · {academyName(a.academyId)}
                   </span>
                 ) : null}
@@ -186,7 +186,7 @@ export function MemberRow({
                   aria-label={`Revoke ${a.roleName}`}
                   disabled={pending}
                   onClick={() => run(() => revokeRoleAction(orgSlug, a.id))}
-                  className="text-text-faint hover:text-danger"
+                  className="text-text-muted hover:text-danger"
                 >
                   ×
                 </button>
@@ -268,7 +268,7 @@ export function MemberRow({
       {open ? (
         <div
           className={cx(
-            "mt-3 flex flex-wrap items-end gap-3 rounded-md border border-border bg-surface-sunken p-3",
+            "mt-3 flex flex-wrap items-end gap-3 rounded-md border border-border-default bg-background-subtle p-3",
           )}
         >
           <div className="min-w-40">

@@ -121,9 +121,9 @@ export function AcademyRow({
     <li className="px-5 py-4">
       <div className="flex flex-wrap items-center gap-3">
         <div className="min-w-0 flex-1">
-          <p className="flex items-center gap-2 text-sm font-medium text-text">
+          <p className="flex items-center gap-2 text-sm font-medium text-text-primary">
             {academy.name}
-            <span className="font-mono text-xs text-text-faint">
+            <span className="font-mono text-xs text-text-muted">
               /{academy.slug}
             </span>
             {academy.status !== "active" ? (
@@ -172,7 +172,7 @@ export function AcademyRow({
       {editing ? (
         <form
           action={action}
-          className="mt-3 grid gap-3 rounded-md border border-border bg-surface-sunken p-3 sm:grid-cols-2"
+          className="mt-3 grid gap-3 rounded-md border border-border-default bg-background-subtle p-3 sm:grid-cols-2"
         >
           <Field
             label="Name"

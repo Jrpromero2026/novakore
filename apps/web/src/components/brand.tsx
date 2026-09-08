@@ -14,7 +14,7 @@ export function NovaKoreWordmark({ className }: { className?: string }) {
   return (
     <span
       className={cx(
-        "select-none font-sans font-semibold tracking-tight text-text",
+        "select-none font-sans font-semibold tracking-tight text-text-primary",
         className,
       )}
       aria-label="NovaKore"

@@ -40,9 +40,9 @@ export function TermRow({
     <li className="px-5 py-3">
       <div className="flex flex-wrap items-center gap-3">
         <div className="min-w-0 flex-1">
-          <p className="font-mono text-xs text-text-faint">{termKey}</p>
-          <p className="text-sm font-medium text-text">
-            {effective.singular} <span className="text-text-faint">/</span>{" "}
+          <p className="font-mono text-xs text-text-muted">{termKey}</p>
+          <p className="text-sm font-medium text-text-primary">
+            {effective.singular} <span className="text-text-muted">/</span>{" "}
             {effective.plural}
             {override ? (
               <span className="ml-2 align-middle">
@@ -80,7 +80,7 @@ export function TermRow({
       {open ? (
         <form
           action={action}
-          className="mt-3 grid gap-3 rounded-md border border-border bg-surface-sunken p-3 sm:grid-cols-3"
+          className="mt-3 grid gap-3 rounded-md border border-border-default bg-background-subtle p-3 sm:grid-cols-3"
         >
           <input type="hidden" name="term_key" value={termKey} />
           <Field

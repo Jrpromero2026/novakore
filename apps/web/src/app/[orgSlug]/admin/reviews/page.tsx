@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+﻿import type { Metadata } from "next";
 import { relativeTime } from "@/lib/format";
 import {
   DataRow,
@@ -7,11 +7,12 @@ import {
   SectionHeader,
 } from "@/components/ui/layout";
 import { requireOrgContext, requirePermission } from "@/lib/org-context";
+import { getTerminology } from "@/lib/terminology";
 import { requireUser } from "@/lib/auth";
 import { getReviewQueue } from "@/lib/data/assessments";
 import { Badge, EmptyState } from "@/components/ui/primitives";
 
-export const metadata: Metadata = { title: "Review queue" };
+export const metadata: Metadata = { title: "Assessment reviews" };
 
 export default async function ReviewQueuePage({
   params,
@@ -21,13 +22,14 @@ export default async function ReviewQueuePage({
   const { orgSlug } = await params;
   const ctx = await requireOrgContext(orgSlug);
   requirePermission(ctx, "assessment.grade");
+  const { term } = await getTerminology(ctx.organization.id);
   const user = await requireUser();
   const queue = await getReviewQueue(ctx.organization.id, user.id);
 
   return (
     <div className="space-y-8">
       <PageHeader
-        title="Review queue"
+        title={`${term("assessment").singular} reviews`}
         description="Submitted attempts with subjective work awaiting a decision. Reviewers can never grade their own attempts."
       />
 
@@ -48,7 +50,7 @@ export default async function ReviewQueuePage({
                     title={entry.assessmentTitle}
                     meta={`Attempt ${entry.attemptNumber}${
                       entry.submittedAt
-                        ? ` · submitted ${relativeTime(entry.submittedAt)}`
+                        ? ` Â· submitted ${relativeTime(entry.submittedAt)}`
                         : ""
                     }`}
                     trailing={

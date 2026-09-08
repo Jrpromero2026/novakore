@@ -194,7 +194,11 @@ export function getProvider(): AiProvider {
     return new AnthropicProvider(key, process.env.NOVAKORE_AI_MODEL);
   }
   if (selection === "deterministic") return new DeterministicProvider();
-  return new MockProvider();
+  if (selection === "mock") return new MockProvider();
+  // A typo'd provider must never silently ship fixture content.
+  throw new Error(
+    `Unknown NOVAKORE_AI_PROVIDER "${selection}" — expected "anthropic", "deterministic", or "mock" (default when unset).`,
+  );
 }
 
 /** Sanity gate shared by every adapter path. */

@@ -94,7 +94,20 @@ export async function runGenerationAction(
     return { ok: false, message: "The generation request is invalid." };
   }
 
-  const provider = getProvider();
+  // Provider construction can refuse (missing key, unknown selection) — that
+  // is an operator problem the author should see as a message, not a crash.
+  let provider: ReturnType<typeof getProvider>;
+  try {
+    provider = getProvider();
+  } catch (cause) {
+    return {
+      ok: false,
+      message:
+        cause instanceof Error
+          ? `AI provider is misconfigured: ${cause.message}`
+          : "AI provider is misconfigured.",
+    };
+  }
 
   // 1. budget reservation (hard stop lives in SQL)
   const { data: generationId, error: reserveError } = await supabase.rpc(

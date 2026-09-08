@@ -17,8 +17,10 @@ export default function NotFound() {
       <p className="max-w-sm text-body-sm text-text-secondary">
         The address may be wrong, or you may not have access to what lives here.
       </p>
+      {/* /select-org: signed-in users reach their workspace chooser; signed-out
+          visitors are bounced to sign-in by the proxy — both are "your way in". */}
       <Link
-        href="/"
+        href="/select-org"
         className="mt-2 rounded-md border border-border-strong px-4 py-2 text-body-sm font-medium text-text-primary transition-colors duration-[var(--motion-fast)] hover:bg-surface-interactive"
       >
         Go to your workspace

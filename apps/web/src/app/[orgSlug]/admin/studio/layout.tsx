@@ -29,7 +29,11 @@ export default async function StudioLayout({
 
   return (
     <div>
-      <AutoHeader domains={domains} />
+      <AutoHeader
+        domains={domains}
+        // The path canvas titles itself with the path's own name.
+        ownHeaderRoutes={[`/${orgSlug}/admin/studio/paths/`]}
+      />
       {children}
     </div>
   );

@@ -99,7 +99,7 @@ export default async function OrgAdminLayout({
         id: `assessment-${a.id}`,
         label: a.title,
         group: "Knowledge",
-        href: `${base}/assessments`,
+        href: `${base}/assessments/${a.id}`,
         keywords: ["assessment", "evaluation"],
       })),
     ];

@@ -2,7 +2,8 @@ import type { Metadata } from "next";
 import { supabaseServer } from "@/lib/supabase/server";
 
 export const metadata: Metadata = {
-  title: "Credential verification · NovaKore",
+  // The root layout template appends "· NovaKore" — never suffix it here too.
+  title: "Credential verification",
 };
 
 /**

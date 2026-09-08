@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+﻿import { termTitleMetadata } from "@/lib/metadata";
 import { requireOrgContext, requirePermission } from "@/lib/org-context";
 import { getTerminology } from "@/lib/terminology";
 import { supabaseServer } from "@/lib/supabase/server";
@@ -16,7 +16,7 @@ import { pageMeta, parsePage, rangeFor } from "@/lib/pagination";
 import { Pagination } from "@/components/ui/pagination";
 import { CreateCoursePanel } from "./courses-ui";
 
-export const metadata: Metadata = { title: "Courses" };
+export const generateMetadata = termTitleMetadata("course");
 
 export default async function CoursesPage({
   params,
@@ -36,7 +36,7 @@ export default async function CoursesPage({
   const page = parsePage(sp.page);
   const range = rangeFor(page);
   // The page shows one slice, but the header stats and the onboarding signal
-  // describe the WHOLE collection — so totals come from counts, never from
+  // describe the WHOLE collection â€” so totals come from counts, never from
   // the length of the current page.
   const [{ data: courses, count: total }, { count: publishedCount }] =
     await Promise.all([
@@ -89,7 +89,7 @@ export default async function CoursesPage({
           count={courseTotal}
           description={
             courseTotal
-              ? `${published} published · ${courseTotal - published} draft only`
+              ? `${published} published Â· ${courseTotal - published} draft only`
               : undefined
           }
         />
@@ -123,7 +123,7 @@ export default async function CoursesPage({
             ) : (
               <EmptyState
                 title={`No ${courseTerm.plural.toLowerCase()} yet`}
-                description={`A ${courseTerm.singular.toLowerCase()} is a major section of learning — for example "Foundations of Coaching". Create the first draft above; it stays private until you publish a version.`}
+                description={`A ${courseTerm.singular.toLowerCase()} is a major section of learning â€” for example "Foundations of Coaching". Create the first draft above; it stays private until you publish a version.`}
                 action={
                   <StartWalkthroughButton
                     walkthroughId="create-program"

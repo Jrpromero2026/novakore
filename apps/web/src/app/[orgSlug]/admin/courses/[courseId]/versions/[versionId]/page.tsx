@@ -78,7 +78,7 @@ export default async function CourseVersionPage({
                       {!l.required ? (
                         <Badge tone="neutral">optional</Badge>
                       ) : null}
-                      <span className="font-mono text-caption text-text-faint">
+                      <span className="font-mono text-caption text-text-muted">
                         {l.lessonVersionId}
                       </span>
                     </li>

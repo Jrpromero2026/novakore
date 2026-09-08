@@ -17,9 +17,9 @@ const buttonStyles: Record<ButtonVariant, string> = {
   primary:
     "bg-accent text-accent-contrast hover:bg-accent-hover active:bg-accent-active disabled:opacity-50 border border-transparent",
   secondary:
-    "bg-surface text-text border border-border-strong hover:bg-surface-sunken hover:border-border-strong disabled:opacity-50",
+    "bg-surface text-text-primary border border-border-strong hover:bg-background-subtle hover:border-border-strong disabled:opacity-50",
   ghost:
-    "bg-transparent text-text-muted hover:text-text hover:bg-surface-sunken border border-transparent",
+    "bg-transparent text-text-muted hover:text-text-primary hover:bg-background-subtle border border-transparent",
   danger:
     "bg-danger-soft text-danger border border-transparent hover:opacity-80 disabled:opacity-50",
 };
@@ -58,7 +58,7 @@ export function Input({
     <input
       {...props}
       className={cx(
-        "w-full rounded-md border border-border bg-surface px-3 py-2 text-sm text-text placeholder:text-text-faint",
+        "w-full rounded-md border border-border-default bg-surface px-3 py-2 text-sm text-text-primary placeholder:text-text-muted",
         fieldFocus,
         className,
       )}
@@ -74,7 +74,7 @@ export function Textarea({
     <textarea
       {...props}
       className={cx(
-        "w-full rounded-md border border-border bg-surface px-3 py-2 text-sm text-text placeholder:text-text-faint",
+        "w-full rounded-md border border-border-default bg-surface px-3 py-2 text-sm text-text-primary placeholder:text-text-muted",
         fieldFocus,
         className,
       )}
@@ -90,7 +90,7 @@ export function Select({
     <select
       {...props}
       className={cx(
-        "w-full rounded-md border border-border bg-surface px-3 py-2 text-sm text-text",
+        "w-full rounded-md border border-border-default bg-surface px-3 py-2 text-sm text-text-primary",
         fieldFocus,
         className,
       )}
@@ -114,12 +114,15 @@ export function Field({
 }) {
   return (
     <div className="space-y-1.5">
-      <label htmlFor={htmlFor} className="block text-sm font-medium text-text">
+      <label
+        htmlFor={htmlFor}
+        className="block text-sm font-medium text-text-primary"
+      >
         {label}
       </label>
       {children}
       {hint && !error ? (
-        <p className="text-xs text-text-faint">{hint}</p>
+        <p className="text-xs text-text-muted">{hint}</p>
       ) : null}
       {error ? (
         <p role="alert" className="nk-fade-up text-xs text-danger">
@@ -140,7 +143,7 @@ export function Card({
   return (
     <section
       className={cx(
-        "rounded-lg border border-border bg-surface shadow-raised",
+        "rounded-lg border border-border-default bg-surface shadow-raised",
         className,
       )}
     >
@@ -159,9 +162,9 @@ export function CardHeader({
   actions?: ReactNode;
 }) {
   return (
-    <header className="flex flex-wrap items-start justify-between gap-3 border-b border-border px-5 py-4">
+    <header className="flex flex-wrap items-start justify-between gap-3 border-b border-border-default px-5 py-4">
       <div>
-        <h2 className="text-sm font-semibold tracking-tight text-text">
+        <h2 className="text-sm font-semibold tracking-tight text-text-primary">
           {title}
         </h2>
         {description ? (
@@ -176,9 +179,9 @@ export function CardHeader({
 type BadgeTone = "neutral" | "accent" | "positive" | "warning" | "danger";
 
 const badgeStyles: Record<BadgeTone, string> = {
-  neutral: "bg-surface-sunken text-text-muted",
+  neutral: "bg-background-subtle text-text-muted",
   accent: "bg-accent-soft text-accent",
-  positive: "bg-positive/10 text-positive",
+  positive: "bg-success/10 text-success",
   warning: "bg-warning/10 text-warning",
   danger: "bg-danger-soft text-danger",
 };
@@ -245,7 +248,7 @@ export function EmptyState({
   return (
     <div className="nk-scale-in flex flex-col items-center justify-center gap-2 px-6 py-14 text-center">
       <EmptyGlyph />
-      <p className="mt-2 text-sm font-medium text-text">{title}</p>
+      <p className="mt-2 text-sm font-medium text-text-primary">{title}</p>
       {description ? (
         <p className="max-w-sm text-sm text-text-muted">{description}</p>
       ) : null}
@@ -274,7 +277,7 @@ export function ActionBanner({
             // Outcomes arrive, they don't just appear — a settle-in moment.
             "nk-scale-in rounded-md px-3 py-2 text-sm",
             state.ok
-              ? "bg-positive/10 text-positive"
+              ? "bg-success/10 text-success"
               : "bg-danger-soft text-danger",
           )}
         >

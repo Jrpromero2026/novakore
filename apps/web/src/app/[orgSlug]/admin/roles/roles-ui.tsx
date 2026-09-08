@@ -119,7 +119,7 @@ export function RoleEditor({
   return (
     <div className="flex flex-col md:flex-row">
       <ul
-        className="flex gap-1 overflow-x-auto border-b border-border p-3 md:w-56 md:shrink-0 md:flex-col md:border-b-0 md:border-r"
+        className="flex gap-1 overflow-x-auto border-b border-border-default p-3 md:w-56 md:shrink-0 md:flex-col md:border-b-0 md:border-r"
         aria-label="Roles"
       >
         {roles.map((r) => (
@@ -135,7 +135,7 @@ export function RoleEditor({
                 "flex w-full items-center justify-between gap-2 whitespace-nowrap rounded-md px-3 py-2 text-left text-sm",
                 r.id === selectedId
                   ? "bg-accent-soft font-medium text-accent"
-                  : "text-text-muted hover:bg-surface-sunken hover:text-text",
+                  : "text-text-muted hover:bg-background-subtle hover:text-text-primary",
               )}
             >
               {r.name}
@@ -148,9 +148,9 @@ export function RoleEditor({
       {selected ? (
         <div className="flex-1 space-y-4 p-5">
           <div>
-            <p className="text-sm font-medium text-text">
+            <p className="text-sm font-medium text-text-primary">
               {selected.name}{" "}
-              <span className="text-xs text-text-faint">({selected.key})</span>
+              <span className="text-xs text-text-muted">({selected.key})</span>
             </p>
             {selected.description ? (
               <p className="mt-0.5 text-xs text-text-muted">
@@ -169,7 +169,7 @@ export function RoleEditor({
           <div className="space-y-4">
             {byCategory.map(([category, perms]) => (
               <fieldset key={category}>
-                <legend className="mb-1.5 text-[11px] font-semibold uppercase tracking-widest text-text-faint">
+                <legend className="mb-1.5 text-[11px] font-semibold uppercase tracking-widest text-text-muted">
                   {category}
                 </legend>
                 <div className="grid gap-1 sm:grid-cols-2">
@@ -182,7 +182,7 @@ export function RoleEditor({
                           "flex cursor-pointer items-start gap-2.5 rounded-md border px-3 py-2",
                           granted
                             ? "border-accent/40 bg-accent-soft"
-                            : "border-border",
+                            : "border-border-default",
                           selected.isSystem && "cursor-not-allowed opacity-70",
                         )}
                       >
@@ -194,7 +194,7 @@ export function RoleEditor({
                           className="mt-0.5 accent-[var(--accent)]"
                         />
                         <span>
-                          <span className="block font-mono text-xs font-medium text-text">
+                          <span className="block font-mono text-xs font-medium text-text-primary">
                             {p.code}
                           </span>
                           <span className="block text-xs text-text-muted">

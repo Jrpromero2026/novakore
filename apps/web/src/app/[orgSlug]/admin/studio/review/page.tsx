@@ -6,7 +6,7 @@ import { pageMeta, parsePage, rangeFor } from "@/lib/pagination";
 import { Pagination } from "@/components/ui/pagination";
 import { ReviewWorkspace } from "./review-workspace";
 
-export const metadata: Metadata = { title: "Review · Studio" };
+export const metadata: Metadata = { title: "Content review · Studio" };
 
 const REVIEWS_PER_PAGE = 30;
 

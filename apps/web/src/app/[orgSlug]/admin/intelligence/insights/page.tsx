@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { can, requireOrgContext, requirePermission } from "@/lib/org-context";
+import { getTerminology } from "@/lib/terminology";
 import { getNovaReport } from "@/lib/data/nova";
 import { Panel, PageHeader, SectionHeader } from "@/components/ui/layout";
 import { NovaIntelligence } from "@/components/dashboard/command-center";
@@ -25,6 +26,7 @@ export default async function IntelligencePage({
   const { orgSlug } = await params;
   const ctx = await requireOrgContext(orgSlug);
   requirePermission(ctx, "content.view_draft");
+  const { term } = await getTerminology(ctx.organization.id);
   const includeLearner = can(ctx, "analytics.view");
 
   const report = await getNovaReport(ctx.organization.id, orgSlug, {
@@ -127,11 +129,17 @@ export default async function IntelligencePage({
               <tbody className="text-body-sm">
                 {(
                   [
-                    ["Lessons published", "lessonsPublished"],
-                    ["Journeys completed", "journeysCompleted"],
+                    [`${term("lesson").plural} published`, "lessonsPublished"],
+                    [
+                      `${term("learning_path").plural} completed`,
+                      "journeysCompleted",
+                    ],
                     ["Evaluations passed", "evaluationsPassed"],
                     ["Evaluations failed", "evaluationsFailed"],
-                    ["New enrollments", "enrollments"],
+                    [
+                      `New ${term("enrollment").plural.toLowerCase()}`,
+                      "enrollments",
+                    ],
                   ] as const
                 ).map(([label, key]) => (
                   <tr

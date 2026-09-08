@@ -133,7 +133,7 @@ export default async function SelectOrgPage({
       </div>
       <div className="mt-12 space-y-6">
         <header className="space-y-1">
-          <h1 className="text-2xl font-semibold tracking-tight text-text">
+          <h1 className="text-2xl font-semibold tracking-tight text-text-primary">
             Choose an organization
           </h1>
           <p className="text-sm text-text-muted">Signed in as {user.email}</p>
@@ -151,12 +151,12 @@ export default async function SelectOrgPage({
               <li key={m.id}>
                 <Link
                   href={destinationFor(m)}
-                  className="flex items-center justify-between rounded-lg border border-border bg-surface px-4 py-3.5 shadow-raised transition-colors hover:border-border-strong"
+                  className="flex items-center justify-between rounded-lg border border-border-default bg-surface px-4 py-3.5 shadow-raised transition-colors hover:border-border-strong"
                 >
-                  <span className="text-sm font-medium text-text">
+                  <span className="text-sm font-medium text-text-primary">
                     {m.organizations.name}
                   </span>
-                  <span className="text-xs text-text-faint">
+                  <span className="text-xs text-text-muted">
                     /{m.organizations.slug}
                   </span>
                 </Link>
@@ -177,7 +177,7 @@ export default async function SelectOrgPage({
                   className="flex items-center justify-between gap-3 rounded-lg border border-dashed border-border-strong bg-surface px-4 py-3.5"
                 >
                   <div className="flex items-center gap-2">
-                    <span className="text-sm font-medium text-text">
+                    <span className="text-sm font-medium text-text-primary">
                       {m.organizations.name}
                     </span>
                     <Badge tone="accent">Invited</Badge>

@@ -75,7 +75,7 @@ export function NavigationCard({
         "focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent",
         active
           ? "border-accent/30 bg-accent-soft"
-          : "border-transparent hover:border-border hover:bg-surface-sunken",
+          : "border-transparent hover:border-border-default hover:bg-background-subtle",
       )}
     >
       <span
@@ -91,7 +91,9 @@ export function NavigationCard({
       </span>
 
       <span className="min-w-0 flex-1">
-        <span className="block text-body font-medium text-text">{label}</span>
+        <span className="block text-body font-medium text-text-primary">
+          {label}
+        </span>
         <span className="mt-0.5 block text-body-sm text-text-secondary">
           {description}
         </span>
@@ -120,9 +122,11 @@ export function SectionCard({
   activeHref?: string;
 }) {
   return (
-    <section className="rounded-xl border border-border bg-surface">
+    <section className="rounded-xl border border-border-default bg-surface">
       <div className="border-b border-border-subtle px-5 py-4">
-        <h2 className="text-title font-semibold text-text">{section.label}</h2>
+        <h2 className="text-title font-semibold text-text-primary">
+          {section.label}
+        </h2>
         <p className="mt-0.5 text-body-sm text-text-secondary">
           {section.description}
         </p>
