@@ -32,15 +32,15 @@ platform". Status is evidence-based as of 2026-08-01 (`main`, Phase 6):
       (history matches repo 1:1; 132 policies; 0 users / 0 orgs —
       fixture-free). Executed 2026-09-07; evidence in
       docs/operations/production-setup.md §Execution record.
-- [ ] 🟡 Vercel production env pointed at prod. EXECUTED and verified
-      2026-09-07 (build exit 0 against prod, `/api/health` 200, prod REST
-      logs showed the probe), then **deliberately REVERTED the same day by
-      owner decision**: the platform needs cleanup/fixes first, and the live
-      site is needed for that work with dev data. Production serves dev
-      again (documented warn state); `NOVAKORE_PROD_REF` removed.
-      `NOVAKORE_ALLOW_DEV_DB` confirmed absent in Vercel (drop was a no-op).
-      Re-pointing is runbook §4 (~10 min, proven). **Do not onboard paying
-      organizations.**
+- [x] ✅ Vercel production env pointed at prod. Executed 2026-09-07,
+      reverted same day (owner: cleanup first), **re-executed 2026-09-08
+      after the cleanup pass** to close CTO-review P0-2: env vars +
+      `NOVAKORE_PROD_REF` restored, redeploy `dpl_9673u8JjE…` built with
+      `✓ env-check passed (production → zttrpporfehrrabgbcrh)`, `/api/health`
+      200, prod REST logs show the probe. Tests stay on dev, which no longer
+      serves anything public (P0-2 closed). Prod has zero users until the
+      §6 owner steps (invite + platform admin). **Do not onboard paying
+      organizations until §6 passes.**
 
 ## Data operations
 
@@ -70,11 +70,11 @@ platform". Status is evidence-based as of 2026-08-01 (`main`, Phase 6):
 - [ ] ❌ Customer #2 end-to-end deploy rehearsal (provision → brand →
       terminology → content → learner) executed with evidence.
 - [ ] ❌ Scalability plan step 1 (analytics rollups) implemented.
-- [ ] ❌ No known P1s: P1-ENV (shared dev/prod DB) — `novakore-prod` exists,
-      fully migrated and proven servable (2026-09-07), but production
-      wiring was reverted to dev by owner decision pending platform
-      cleanup. P1-ENV stays OPEN until the repoint is re-executed and the
-      §6 gate passes.
+- [ ] 🟡 No known P1s: P1-ENV (shared dev/prod DB) — repoint re-executed
+      2026-09-08; production serves `novakore-prod`, tests/dev traffic
+      stay on `novakore-dev` (P0-2 closed). Remaining before P1-ENV can be
+      marked ✅: the §6 gate owner steps (owner account, canary org,
+      restore drill, preview-misconfig test).
 
 **Exit rule:** all ❌ closed and all 🟡 executed → v1.0. Anything less ships
 as "internal alpha" only.

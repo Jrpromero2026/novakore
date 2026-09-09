@@ -22,6 +22,18 @@ deployment, and two prior audits — re-examined without deference.
 > **P0-1 is fully closed. Still open:** P0-2 (tests writing to the serving
 > database), unchanged until the environment split.
 >
+> **Remediation log (2026-09-08): P0-2 CLOSED.** The environment split is
+> live: Vercel production points at `novakore-prod` (zttrpporfehrrabgbcrh,
+> fixture-free; re-point executed after the 24-finding cleanup pass), while
+> every test target — `NOVAKORE_TEST_SUPABASE_URL`, CI, E2E — stays on
+> `novakore-dev`, which no longer backs any public deployment. Evidence:
+> deploy `dpl_9673u8JjEwnSATWJ52ZEvckTJL71` built with
+> `✓ env-check passed (production → zttrpporfehrrabgbcrh)`, `/api/health`
+> 200 with `db.ok`, and the probe visible in prod REST logs. `npm run verify`
+> can no longer touch rows any customer-visible deployment serves. The §6
+> go-live gate (owner account, canary, restore drill) remains open —
+> production has zero users until then.
+>
 > **Deploy guard corrected:** the Phase 6 `env-check` failed production
 > builds for the _documented, accepted_ dev-database state — breaking
 > deploys rather than preventing drift. It now warns loudly for the known

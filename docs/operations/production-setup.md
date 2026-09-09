@@ -122,6 +122,23 @@ Auth configured — re-pointing later is just §4 again (~10 min, proven).
 Note: prod's `bfh-handoff` still has `NOVAKORE_SITE_URL=https://www.novakore.io`;
 harmless while nothing points at prod.
 
+### Re-point — 2026-09-08 (owner directed: close P0-2)
+
+Owner chose re-executing §4 over creating a paid test database ($10/mo) to
+close CTO-review **P0-2** (the test suite writes to the serving database).
+Executed exactly as documented: Vercel Production
+`NEXT_PUBLIC_SUPABASE_URL`/`_ANON_KEY` → prod values, `NOVAKORE_PROD_REF=zttrpporfehrrabgbcrh`
+re-added (Production scope only), `NOVAKORE_ALLOW_DEV_DB` confirmed absent.
+Redeployed from `e1cab5c` (dpl_9673u8JjEwnSATWJ52ZEvckTJL71): build 58s
+exit 0 with `✓ env-check passed (production → zttrpporfehrrabgbcrh)` — the
+documented warn state is over; `/api/health` 200 `db.ok:true`; prod REST
+logs show the probe (`verify_credential`, 18:42:39 UTC). Tests/CI/E2E keep
+`NOVAKORE_TEST_SUPABASE_URL` → dev, which no longer serves anything public
+→ **P0-2 closed**. Consequences until gate §6 completes: www.novakore.io
+has zero users (sign-in impossible — owner invite is §6 step 2), and
+new-commit deploys are still blocked by the broken GitHub App repo access
+(`7415a74` not yet deployed; separate task).
+
 **Remaining owner steps when the repoint is re-executed (gate §6 before go-live):**
 
 1. Vercel Preview scope: add `NEXT_PUBLIC_SUPABASE_URL=https://mivqjcxpfanfzjkwwxcc.supabase.co`
