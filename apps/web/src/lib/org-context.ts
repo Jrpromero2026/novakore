@@ -7,8 +7,13 @@ import {
   type ActorGrants,
   type ResourceContext,
 } from "@novakore/authorization";
-import { isPermission, type Permission } from "@novakore/domain";
+import {
+  isPermission,
+  isViewOnlyPermission,
+  type Permission,
+} from "@novakore/domain";
 import { requireUser } from "./auth";
+import { permissionAllowedUnderOrgStatus } from "./read-limited";
 import { supabaseServer } from "./supabase/server";
 
 export interface OrgContext {
@@ -78,6 +83,15 @@ export const getOrgContext = cache(
         })),
     };
 
+    // A non-active organization is READ-LIMITED (runbook: suspension is the
+    // incident containment step): affordances for mutations disappear here,
+    // and `can` below refuses them regardless of what a caller renders.
+    const allOrgPermissions = effectiveOrgPermissions(grants);
+    const orgPermissions =
+      org.status === "active"
+        ? allOrgPermissions
+        : new Set([...allOrgPermissions].filter(isViewOnlyPermission));
+
     return {
       organization: {
         id: org.id,
@@ -88,7 +102,7 @@ export const getOrgContext = cache(
       },
       membershipId: membership.id,
       grants,
-      orgPermissions: effectiveOrgPermissions(grants),
+      orgPermissions,
     };
   },
 );
@@ -100,12 +114,24 @@ export async function requireOrgContext(orgSlug: string): Promise<OrgContext> {
   return ctx;
 }
 
-/** Server-side permission check. Deny by default. */
+/** True when the organization is not active and therefore read-limited. */
+export function isOrgReadLimited(ctx: OrgContext): boolean {
+  return ctx.organization.status !== "active";
+}
+
+/**
+ * Server-side permission check. Deny by default; in a read-limited
+ * organization only view permissions survive (the pure package stays in
+ * parity with the RLS helpers, so the org-status gate lives HERE).
+ */
 export function can(
   ctx: OrgContext,
   permission: Permission,
   resource: ResourceContext = {},
 ) {
+  if (!permissionAllowedUnderOrgStatus(ctx.organization.status, permission)) {
+    return false;
+  }
   return canPure(ctx.grants, permission, resource);
 }
 

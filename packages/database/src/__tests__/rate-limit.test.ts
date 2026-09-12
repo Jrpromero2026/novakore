@@ -17,18 +17,19 @@ import { bareClient, signedIn, type Client as SharedClient } from "./_session";
  * READ-ONLY with respect to tenant data: every call here uses a bogus API key
  * or a bogus external user, so no enrollment can be created.
  *
- * KNOWN COVERAGE GAP — stated rather than papered over. These tests do not
- * drive a real key past its ceiling. Doing so would take 121 authenticated
- * calls per run, and the harness cannot lower a key's limit because the test
- * clients (anon / authenticated) have no privileges on
- * `app.organization_api_keys` — which is exactly the isolation the tests
- * above assert. The trip-the-limit behaviour was instead verified directly
- * against the live function with a temporarily lowered limit: calls 1-2
- * passed, calls 3-4 returned `rate_limited` with `retryAfter`, and the limit
- * was restored. So the mechanism is proven, but a regression that DELETED
- * the limit check would not fail this suite. Closing that gap properly needs
- * a dedicated low-limit test key provisioned through the secret-loading
- * process, not committed here.
+ * CEILING COVERAGE (closes the CTO-review gap): a dedicated LOW-limit key
+ * (prefix nvk_rlt0, rate_limit_per_minute = 3, dev database only) is
+ * provisioned out-of-band and supplied through the same secret-loading
+ * process as the fixture password — `NOVAKORE_TEST_RL_KEY` in the gitignored
+ * .env.test.local. The plaintext is never committed. The ceiling test drives
+ * that key past its limit with a bogus external user, so the only rows it
+ * ever touches are the limiter counter and the key's own last_used_at.
+ * Re-provisioning after a db reset (any admin SQL path):
+ *   insert into app.organization_api_keys
+ *     (organization_id, name, prefix, key_hash, scopes, status, rate_limit_per_minute)
+ *   values ('<bfh org id>', 'Rate-limit ceiling test key', 'nvk_rlt0',
+ *           app.bfh_hash_key('<new secret>'), '{enroll}', 'active', 3);
+ * The test skips (does not silently pass) when the env var is absent.
  */
 
 const url = process.env.NOVAKORE_TEST_SUPABASE_URL;
@@ -78,6 +79,82 @@ describe.skipIf(!configured)("rate limiting (real RLS)", () => {
     expect(error).toBeNull();
     expect((data as { status?: string })?.status).toBe("unauthorized");
   });
+
+  const rlKey = process.env.NOVAKORE_TEST_RL_KEY;
+
+  test.skipIf(!rlKey)(
+    "a key past its ceiling is refused with retryAfter, and the 429 is not cached",
+    async () => {
+      // The key's limit is 3/minute. The bucket may carry residue from a
+      // recent run (60s window), so the property asserted is: within
+      // limit+1 calls the limiter MUST trip, and once tripped it stays
+      // tripped for an immediate retry. Every call uses an unknown external
+      // user, so a call that passes the limiter returns not_found and
+      // writes no tenant data.
+      const limit = 3;
+      const seen: string[] = [];
+      let limited: {
+        retryAfter?: number;
+        limit?: number;
+        replayed?: boolean;
+      } | null = null;
+      const idem = `rl-ceiling-${Date.now()}`;
+
+      for (let i = 0; i <= limit; i++) {
+        const { data, error } = await anon.rpc(
+          "bfh_enroll_or_assign_external",
+          {
+            p_api_key: rlKey!,
+            p_kind: "enroll",
+            p_external_user_id: "nobody-ceiling",
+            p_target_type: "course",
+            p_target_slug: "nothing",
+            p_due_at: null,
+            p_idempotency_key: `${idem}-${i}`,
+          },
+        );
+        expect(error).toBeNull();
+        const body = data as {
+          status?: string;
+          retryAfter?: number;
+          limit?: number;
+          replayed?: boolean;
+        };
+        seen.push(body.status ?? "?");
+        if (body.status === "rate_limited") {
+          limited = body;
+          break;
+        }
+        // Under the ceiling the bogus user is the terminal condition.
+        expect(body.status).toBe("not_found");
+      }
+
+      expect(
+        limited,
+        `limiter never tripped (statuses: ${seen.join(", ")})`,
+      ).not.toBeNull();
+      expect(limited!.retryAfter).toBeGreaterThan(0);
+      expect(limited!.retryAfter).toBeLessThanOrEqual(60);
+      expect(limited!.limit).toBe(limit);
+      // A 429 must never come back as an idempotency replay.
+      expect(limited!.replayed).toBeUndefined();
+
+      // Once tripped, an immediate retry (same idempotency key) is limited
+      // again — and still not served from the idempotency store.
+      const { data: again } = await anon.rpc("bfh_enroll_or_assign_external", {
+        p_api_key: rlKey!,
+        p_kind: "enroll",
+        p_external_user_id: "nobody-ceiling",
+        p_target_type: "course",
+        p_target_slug: "nothing",
+        p_due_at: null,
+        p_idempotency_key: `${idem}-${seen.length - 1}`,
+      });
+      const retry = again as { status?: string; replayed?: boolean };
+      expect(retry.status).toBe("rate_limited");
+      expect(retry.replayed).toBeUndefined();
+    },
+  );
 
   test("an unauthorized caller learns nothing about limits", async () => {
     // Quota state is not an oracle: a caller who fails key verification must

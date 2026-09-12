@@ -21,6 +21,7 @@ import { buildDomains } from "@/lib/navigation/domains";
 import { landingPathFor } from "@/lib/navigation/landing";
 import { GlobalNav } from "@/components/shell/global-nav";
 import { DomainsProvider } from "@/components/shell/domains-context";
+import { ReadLimitedBanner } from "@/components/shell/read-limited-banner";
 
 export default async function OrgAdminLayout({
   children,
@@ -230,6 +231,7 @@ export default async function OrgAdminLayout({
               className="nk-fade-up mx-auto w-full px-4 py-8 sm:px-6 sm:py-10"
               style={{ maxWidth: "var(--layout-page-max)" }}
             >
+              <ReadLimitedBanner ctx={ctx} />
               {children}
             </div>
           </main>

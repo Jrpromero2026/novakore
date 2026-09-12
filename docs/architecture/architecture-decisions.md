@@ -532,3 +532,49 @@ enumeration defense.
 
 **Consequences.** The interface exists to wire enforcement into later;
 dev verification is unthrottled (documented); no premature infrastructure.
+
+---
+
+## ADR-028 — Framework dependency: exactly-pinned upstream Next.js (there is no fork)
+
+**Context.** The CTO adversarial review (P1-4) named a "modified Next.js
+fork" the largest unexamined bet in the codebase — no upstream security
+patches, hiring friction, no ADR for why it exists or how to leave it. The
+characterization had spread into other documents (exit criteria, review
+sections) without anyone checking the dependency itself. Checked
+2026-09-12 against the repository's own evidence:
+
+- `apps/web/package.json` declares `"next": "16.2.12"` — an **exact pin**,
+  no range.
+- `package-lock.json` resolves it to
+  `https://registry.npmjs.org/next/-/next-16.2.12.tgz` with an npm
+  integrity hash — the **upstream published package**, not a git
+  dependency, custom tarball, or private registry.
+- No patching mechanism exists anywhere in the repo: no `patch-package`,
+  no `patches/` directory, no postinstall rewriting. The only `overrides`
+  entry pins `postcss` for `next`'s own dependency tree.
+
+What IS true, and what the "fork" story was standing in for: this Next.js
+version's conventions differ sharply from what most engineers and AI
+coding agents assume (`proxy.ts` instead of middleware, `unstable_retry`
+in error boundaries, changed route/file conventions), so
+`apps/web/AGENTS.md` requires reading the framework's bundled docs
+(`node_modules/next/dist/docs/`) before route work; and the bundled
+`sharp` CVEs are an accepted, time-boxed risk because the fix path
+conflicts with the pinned version (exit criteria).
+
+**Decision.** The platform runs **exactly-pinned upstream Next.js**.
+Upgrades are deliberate events, never floated: bump the pin on a branch,
+run the full verify suite + E2E, re-review the `sharp` CVE acceptance and
+the AGENTS.md convention notes on every bump. The "fork" language is
+retired from all documents this ADR touches; future claims about the
+framework must cite the lockfile.
+
+**Consequences.** The feared lock-out from upstream security patches does
+not exist — patches arrive by bumping the pin, gated by verify. The real,
+smaller risks are named and owned: staying pinned means CVE exposure
+windows are chosen (and recorded) rather than automatic, and the
+convention drift is a documentation/onboarding cost (AGENTS.md), not an
+ecosystem divorce. Diligence gets an evidence-backed answer instead of a
+scary word. The migration-to-upstream exit strategy P1-4 demanded is
+vacuous: it already is upstream.

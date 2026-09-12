@@ -60,8 +60,9 @@ platform". Status is evidence-based as of 2026-08-01 (`main`, Phase 6):
       suspend / diagnostics; 42501 & forbidden proven by tests).
 - [ ] ❌ Error tracking integrated (documented owner choice; not wired).
 - [ ] ❌ Rate limiting on `/v1` + handoff (accepted risk, time-boxed).
-- [ ] 🟡 `sharp` CVEs in the modified Next fork: accepted risk, review on
-      every Next fork update (fix would downgrade the framework).
+- [ ] 🟡 `sharp` CVEs in the pinned Next.js: accepted risk, reviewed on
+      every deliberate version bump (ADR-028 — the framework is
+      exactly-pinned upstream, not a fork).
 
 ## Commercial readiness
 

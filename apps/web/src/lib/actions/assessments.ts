@@ -10,6 +10,7 @@ import {
   type AssessmentItemType,
 } from "@novakore/domain";
 import { can, requireOrgContext } from "../org-context";
+import { orgWriteBlockedMessage } from "../read-limited";
 import { invalidateOrg } from "../cache";
 import { requireUser } from "../auth";
 import { supabaseServer } from "../supabase/server";
@@ -287,7 +288,11 @@ export async function startAttemptAction(
   assignmentId: string,
   enrollmentId: string,
 ): Promise<ActionState> {
-  await requireOrgContext(orgSlug);
+  const ctx = await requireOrgContext(orgSlug);
+  // Ownership-based writes: the read-limited gate is explicit on the
+  // whole attempt flow (start/save/submit).
+  const blocked = orgWriteBlockedMessage(ctx.organization.status);
+  if (blocked) return { ok: false, message: blocked };
   const supabase = await supabaseServer();
   const { data, error } = await supabase.rpc("start_assessment_attempt", {
     p_assignment_id: assignmentId,
@@ -304,7 +309,9 @@ export async function saveResponseAction(
   itemType: AssessmentItemType,
   response: unknown,
 ): Promise<ActionState> {
-  await requireOrgContext(orgSlug);
+  const ctx = await requireOrgContext(orgSlug);
+  const blocked = orgWriteBlockedMessage(ctx.organization.status);
+  if (blocked) return { ok: false, message: blocked };
   const parsed = responseSchemas[itemType]?.safeParse(response);
   if (!parsed || !parsed.success) {
     return {
@@ -326,7 +333,9 @@ export async function submitAttemptAction(
   orgSlug: string,
   attemptId: string,
 ): Promise<ActionState> {
-  await requireOrgContext(orgSlug);
+  const ctx = await requireOrgContext(orgSlug);
+  const blocked = orgWriteBlockedMessage(ctx.organization.status);
+  if (blocked) return { ok: false, message: blocked };
   const supabase = await supabaseServer();
   const { error } = await supabase.rpc("submit_assessment_attempt", {
     p_attempt_id: attemptId,

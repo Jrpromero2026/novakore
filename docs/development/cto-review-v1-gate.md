@@ -34,6 +34,32 @@ deployment, and two prior audits — re-examined without deference.
 > go-live gate (owner account, canary, restore drill) remains open —
 > production has zero users until then.
 >
+> **Remediation log (2026-09-12):** three more findings closed.
+> **[P2 suspended] CLOSED** — `suspended` now has an enforced product
+> meaning: a non-active organization is read-limited at request time.
+> `VIEW_ONLY_PERMISSIONS` (domain) defines the read set; `org-context.can`
+> refuses every other permission and strips write affordances; the
+> ownership-based actions (learner progress, assessment attempt flow,
+> generation rejection) gate explicitly; both shells show a suspension
+> banner. Deliberately still allowed: feedback submission (the runbook's
+> incident-detection path) and invitation acceptance. RLS is unchanged —
+> the pure authorization package stays in parity with the SQL helpers, so
+> the gate lives in the app layer and is unit-tested
+> (apps/web `read-limited.test.ts`).
+> **[Rate-limit test gap] CLOSED** — the suite now drives a dedicated
+> low-limit key (3/min, dev DB, plaintext only in the gitignored
+> `.env.test.local` as `NOVAKORE_TEST_RL_KEY`) past its ceiling and pins:
+> rate_limited within limit+1 calls, `retryAfter` ∈ (0, 60], the limit
+> echoed, still limited on immediate retry, and never served from the
+> idempotency store. A regression deleting the limiter check now fails
+> the suite. The test skips loudly when the secret is absent.
+> **[P1-4] CLOSED as re-characterized by ADR-028** — the "modified
+> Next.js fork" does not exist: the lockfile resolves `next@16.2.12` to
+> the upstream npm registry tarball, integrity-pinned, with no patching
+> mechanism in the repo. The real posture — exactly-pinned upstream,
+> deliberate verify-gated bumps, CVE acceptance reviewed per bump, agent
+> convention notes in AGENTS.md — is now the recorded decision.
+>
 > **Deploy guard corrected:** the Phase 6 `env-check` failed production
 > builds for the _documented, accepted_ dev-database state — breaking
 > deploys rather than preventing drift. It now warns loudly for the known

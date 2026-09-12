@@ -9,6 +9,7 @@ import {
   type ProgressStatus,
 } from "@novakore/domain";
 import { can, requireOrgContext } from "../org-context";
+import { orgWriteBlockedMessage } from "../read-limited";
 import { invalidateOrg } from "../cache";
 import { requireUser } from "../auth";
 import { supabaseServer } from "../supabase/server";
@@ -595,7 +596,10 @@ export async function recordProgressAction(
   action: "start" | "complete",
 ): Promise<ActionState> {
   const ctx = await requireOrgContext(orgSlug); // active membership required
-  void ctx;
+  // Ownership-based write: not permission-gated, so the read-limited gate
+  // has to be explicit here.
+  const blocked = orgWriteBlockedMessage(ctx.organization.status);
+  if (blocked) return { ok: false, message: blocked };
   const user = await requireUser();
   const { getEnrolledCourse } = await import("../data/learning");
   const view = await getEnrolledCourse(enrollmentId, courseId, user.id);

@@ -8,6 +8,7 @@ import { OrgThemeStyle } from "@/components/org-theme";
 import { ThemeToggle } from "@/components/theme-toggle";
 import { FeedbackWidget } from "@/components/feedback/feedback-widget";
 import { WalkthroughProvider } from "@/components/onboarding/walkthrough";
+import { ReadLimitedBanner } from "@/components/shell/read-limited-banner";
 
 /** Learner delivery shell: organization branding + terminology, no admin chrome. */
 export default async function LearnLayout({
@@ -78,6 +79,7 @@ export default async function LearnLayout({
           className="mx-auto w-full flex-1 px-5 py-8"
           style={{ maxWidth: "var(--layout-form-max)" }}
         >
+          <ReadLimitedBanner ctx={ctx} />
           {children}
         </main>
         <FeedbackWidget orgSlug={orgSlug} roleHint="member" />

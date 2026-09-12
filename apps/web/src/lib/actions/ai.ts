@@ -13,6 +13,7 @@ import {
   type AiOperation,
 } from "@novakore/domain";
 import { can, requireOrgContext } from "../org-context";
+import { orgWriteBlockedMessage } from "../read-limited";
 import { requireUser } from "../auth";
 import { supabaseServer } from "../supabase/server";
 import { getProvider } from "../ai/providers";
@@ -182,7 +183,9 @@ export async function rejectGenerationAction(
   orgSlug: string,
   generationId: string,
 ): Promise<ActionState> {
-  await requireOrgContext(orgSlug);
+  const ctx = await requireOrgContext(orgSlug);
+  const blocked = orgWriteBlockedMessage(ctx.organization.status);
+  if (blocked) return { ok: false, message: blocked };
   const supabase = await supabaseServer();
   const { error } = await supabase.rpc("resolve_ai_generation", {
     p_generation_id: generationId,
