@@ -263,7 +263,10 @@ export async function createCourseAction(
   if (error) return { ok: false, message: dbErrorMessage(error) };
   // The author is about to look for this; do not make them wait out the TTL.
   invalidateOrg(ctx.organization.id);
-  revalidatePath(`/${orgSlug}/admin/courses`);
+  // NO revalidatePath here: the caller sits on a paginated page, and the
+  // pinned Next version never resolves `searchParams` inside an action's
+  // re-render — the response stream hangs forever (see
+  // docs/development/known-framework-defects.md). The client refreshes.
   return { ok: true, message: `Course created.`, warnings: [data!.id] };
 }
 
@@ -558,7 +561,7 @@ export async function createEnrollmentAction(
     p_source: "assigned",
   });
   if (error) return { ok: false, message: error.message };
-  revalidatePath(`/${orgSlug}/admin/enrollments`);
+  // No revalidatePath: enrollments is paginated (known-framework-defects.md).
   return { ok: true, message: "Enrollment created (version pinned)." };
 }
 
@@ -580,7 +583,7 @@ export async function setEnrollmentStatusAction(
     p_status: status,
   });
   if (error) return { ok: false, message: error.message };
-  revalidatePath(`/${orgSlug}/admin/enrollments`);
+  // No revalidatePath: enrollments is paginated (known-framework-defects.md).
   return { ok: true };
 }
 
@@ -661,6 +664,6 @@ export async function overrideProgressAction(
     p_reason: input.reason,
   });
   if (error) return { ok: false, message: error.message };
-  revalidatePath(`/${orgSlug}/admin/enrollments`);
+  // No revalidatePath: enrollments is paginated (known-framework-defects.md).
   return { ok: true, message: "Progress overridden (audited)." };
 }

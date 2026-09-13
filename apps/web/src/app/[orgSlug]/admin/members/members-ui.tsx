@@ -1,12 +1,14 @@
 "use client";
 
 import { useActionState, useState, useTransition } from "react";
+import { useRouter } from "next/navigation";
 import {
   assignRoleAction,
   inviteMemberAction,
   revokeRoleAction,
   setMembershipStatusAction,
 } from "@/lib/actions/members";
+import { useRefreshOnSuccess } from "@/lib/use-refresh-on-success";
 import { idle, type ActionState } from "@/lib/actions/types";
 import {
   ActionBanner,
@@ -40,6 +42,9 @@ export function InvitePanel({
     inviteMemberAction.bind(null, orgSlug),
     idle,
   );
+  // The action cannot re-render this paginated page (framework defect);
+  // a client refresh shows the new invitation instead.
+  useRefreshOnSuccess(state);
 
   return (
     <Card>
@@ -141,9 +146,16 @@ export function MemberRow({
   const [pending, startTransition] = useTransition();
   const [roleId, setRoleId] = useState(roles[0]?.id ?? "");
   const [academyId, setAcademyId] = useState<string>("");
+  const router = useRouter();
 
   const run = (fn: () => Promise<ActionState>) =>
-    startTransition(async () => setFeedback(await fn()));
+    startTransition(async () => {
+      const result = await fn();
+      setFeedback(result);
+      // Membership/role actions cannot re-render this paginated page from
+      // inside the action (framework defect); refresh reflects the change.
+      if (result.ok) router.refresh();
+    });
 
   const label = membership.invitedEmail ?? membership.userId ?? "member";
   const academyName = (id: string | null) =>

@@ -85,7 +85,9 @@ export async function createAssessmentAction(
   if (error) return { ok: false, message: dbErrorMessage(error) };
   // The author is about to look for this; do not make them wait out the TTL.
   invalidateOrg(ctx.organization.id);
-  revalidatePath(`/${orgSlug}/admin/assessments`);
+  // No revalidatePath: assessments is paginated, and re-rendering a page
+  // that awaits `searchParams` inside an action response hangs the stream
+  // on the pinned Next version (known-framework-defects.md).
   return { ok: true, message: "Assessment created.", data: { id: data.id } };
 }
 

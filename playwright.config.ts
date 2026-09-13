@@ -10,10 +10,12 @@ import { defineConfig, devices } from "@playwright/test";
  *  - ONE worker, no parallelism. The suite authenticates against the shared
  *    dev database, which rate-limits auth; parallel sign-ins produce false
  *    failures (a documented flake mode in the operations runbook).
- *  - READ-ONLY journey. These tests never publish, never mutate tenant data.
- *    Until the environment split lands, the database under test is the one
- *    the deployment serves — an E2E suite that writes to it would be the
- *    very risk the review flagged (P0-2).
+ *  - SELF-CLEANING mutations only. The environment split (2026-09-08)
+ *    removed the old read-only constraint: the dev database under test no
+ *    longer backs any public deployment. The mutating spec
+ *    (10-authoring-flow) creates artifacts under a unique run id and
+ *    archives/withdraws them in its cleanup hook — leaked residue is the
+ *    failure mode the 2026-09 purge existed to remove.
  */
 
 // Local runs read the gitignored env file; CI injects real secrets.

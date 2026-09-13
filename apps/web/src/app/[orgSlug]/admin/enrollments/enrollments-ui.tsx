@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useTransition } from "react";
+import { useRouter } from "next/navigation";
 import {
   createEnrollmentAction,
   overrideProgressAction,
@@ -37,6 +38,7 @@ export function CreateEnrollmentPanel({
   const [target, setTarget] = useState("");
   const [state, setState] = useState<ActionState>(idle);
   const [pending, startTransition] = useTransition();
+  const router = useRouter();
 
   return (
     <Card>
@@ -102,13 +104,15 @@ export function CreateEnrollmentPanel({
                 "course" | "learning_path",
                 string,
               ];
-              setState(
-                await createEnrollmentAction(orgSlug, {
-                  membershipId,
-                  targetType,
-                  targetId,
-                }),
-              );
+              const result = await createEnrollmentAction(orgSlug, {
+                membershipId,
+                targetType,
+                targetId,
+              });
+              setState(result);
+              // The action cannot re-render this paginated page (framework
+              // defect); refresh shows the new enrollment instead.
+              if (result.ok) router.refresh();
             })
           }
         >
@@ -159,9 +163,16 @@ export function EnrollmentRow({
   const [state, setState] = useState<ActionState>(idle);
   const [pending, startTransition] = useTransition();
   const [overrideReason, setOverrideReason] = useState("");
+  const router = useRouter();
 
   const run = (fn: () => Promise<ActionState>) =>
-    startTransition(async () => setState(await fn()));
+    startTransition(async () => {
+      const result = await fn();
+      setState(result);
+      // Withdraw/override cannot re-render this paginated page from inside
+      // the action (framework defect); refresh reflects the change instead.
+      if (result.ok) router.refresh();
+    });
 
   return (
     <li className="px-5 py-3.5">

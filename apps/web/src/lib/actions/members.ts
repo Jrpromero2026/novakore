@@ -1,6 +1,5 @@
 "use server";
 
-import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { can, requireOrgContext } from "../org-context";
 import { supabaseServer } from "../supabase/server";
@@ -50,7 +49,10 @@ export async function inviteMemberAction(
   });
   if (error) return { ok: false, message: dbErrorMessage(error) };
 
-  revalidatePath(`/${orgSlug}/admin/members`);
+  // No revalidatePath: members is paginated, and re-rendering a page that
+  // awaits `searchParams` inside an action response hangs the stream on the
+  // pinned Next version (docs/development/known-framework-defects.md). The
+  // client refreshes after success.
   return { ok: true, message: `Invitation created for ${parsed.data.email}.` };
 }
 
@@ -81,7 +83,7 @@ export async function setMembershipStatusAction(
           : dbErrorMessage(error),
     };
   }
-  revalidatePath(`/${orgSlug}/admin/members`);
+  // No revalidatePath: members is paginated (known-framework-defects.md).
   return { ok: true };
 }
 
@@ -104,7 +106,7 @@ export async function assignRoleAction(
     academy_id: input.academyId,
   });
   if (error) return { ok: false, message: dbErrorMessage(error) };
-  revalidatePath(`/${orgSlug}/admin/members`);
+  // No revalidatePath: members is paginated (known-framework-defects.md).
   return { ok: true };
 }
 
@@ -126,7 +128,7 @@ export async function revokeRoleAction(
     .eq("id", memberRoleId)
     .eq("organization_id", ctx.organization.id);
   if (error) return { ok: false, message: dbErrorMessage(error) };
-  revalidatePath(`/${orgSlug}/admin/members`);
+  // No revalidatePath: members is paginated (known-framework-defects.md).
   return { ok: true };
 }
 

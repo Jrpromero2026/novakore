@@ -3,6 +3,7 @@
 import { useActionState, useState } from "react";
 import { createCourseAction } from "@/lib/actions/learning";
 import { idle } from "@/lib/actions/types";
+import { useRefreshOnSuccess } from "@/lib/use-refresh-on-success";
 import {
   ActionBanner,
   Button,
@@ -25,6 +26,9 @@ export function CreateCoursePanel({
     createCourseAction.bind(null, orgSlug),
     idle,
   );
+  // The action cannot re-render this paginated page (framework defect);
+  // a client refresh shows the new draft instead.
+  useRefreshOnSuccess(state);
   return (
     <Card>
       <CardHeader

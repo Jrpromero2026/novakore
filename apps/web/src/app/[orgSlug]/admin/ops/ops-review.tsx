@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useTransition } from "react";
+import { useRouter } from "next/navigation";
 import {
   FEEDBACK_CATEGORIES,
   FEEDBACK_SEVERITIES,
@@ -128,6 +129,7 @@ function FeedbackRowItem({
   const [resolution, setResolution] = useState(row.resolution ?? "");
   const [msg, setMsg] = useState<string | null>(null);
   const [pending, startTransition] = useTransition();
+  const router = useRouter();
 
   const ctx = row.context ?? {};
   const route = typeof ctx.route === "string" ? ctx.route : null;
@@ -142,6 +144,9 @@ function FeedbackRowItem({
         resolution: resolution || null,
       });
       setMsg(result.ok ? "Saved" : (result.message ?? "Error"));
+      // Triage cannot re-render this paginated page from inside the
+      // action (framework defect); refresh reflects the change instead.
+      if (result.ok) router.refresh();
     });
   }
 

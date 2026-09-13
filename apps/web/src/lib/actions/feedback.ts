@@ -1,6 +1,5 @@
 "use server";
 
-import { revalidatePath } from "next/cache";
 import { z } from "zod";
 import type { Json } from "@novakore/database";
 import { requireOrgContext, can } from "@/lib/org-context";
@@ -79,7 +78,9 @@ export async function updateFeedbackAction(
     .eq("id", feedbackId)
     .eq("organization_id", ctx.organization.id);
   if (error) return { ok: false, message: dbErrorMessage(error) };
-  revalidatePath(`/${orgSlug}/admin/ops`);
+  // No revalidatePath: ops is paginated, and re-rendering a page that
+  // awaits `searchParams` inside an action response hangs the stream on the
+  // pinned Next version (docs/development/known-framework-defects.md).
   return { ok: true, message: "Updated." };
 }
 
@@ -110,7 +111,7 @@ export async function setTesterLabelAction(
     { onConflict: "membership_id,label", ignoreDuplicates: true },
   );
   if (error) return { ok: false, message: dbErrorMessage(error) };
-  revalidatePath(`/${orgSlug}/admin/ops`);
+  // No revalidatePath: ops is paginated (known-framework-defects.md).
   return { ok: true, message: "Tester label added." };
 }
 
@@ -131,6 +132,6 @@ export async function removeTesterLabelAction(
     .eq("membership_id", membershipId)
     .eq("label", label);
   if (error) return { ok: false, message: dbErrorMessage(error) };
-  revalidatePath(`/${orgSlug}/admin/ops`);
+  // No revalidatePath: ops is paginated (known-framework-defects.md).
   return { ok: true, message: "Tester label removed." };
 }

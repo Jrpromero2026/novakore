@@ -3,6 +3,7 @@
 import { useActionState, useState } from "react";
 import { createAssessmentAction } from "@/lib/actions/assessments";
 import { idle } from "@/lib/actions/types";
+import { useRefreshOnSuccess } from "@/lib/use-refresh-on-success";
 import {
   ActionBanner,
   Button,
@@ -23,6 +24,9 @@ export function CreateAssessmentPanel({
     createAssessmentAction.bind(null, orgSlug),
     idle,
   );
+  // The action cannot re-render this paginated page (framework defect);
+  // a client refresh shows the new draft instead.
+  useRefreshOnSuccess(state);
 
   return (
     <div className="rounded-md border border-dashed border-border-strong px-4 py-3">
