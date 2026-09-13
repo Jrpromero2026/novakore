@@ -1,9 +1,12 @@
 import { describe, expect, test } from "vitest";
 import {
   deriveInsights,
+  deriveOverviewInsights,
   deriveScorecard,
   hasCycle,
+  NOVA_TONE_RANK,
   type NovaInputs,
+  type OverviewSignals,
 } from "./nova-insights";
 
 const BASE = "/acme/admin";
@@ -255,6 +258,98 @@ describe("insights", () => {
     );
     expect(insights.find((i) => i.id === "velocity")?.observation).toMatch(
       /2 lessons this week vs 5 last week/,
+    );
+  });
+});
+
+describe("overview insights (Command Center)", () => {
+  const words = {
+    courseSingular: "course",
+    coursePlural: "courses",
+    learnerPlural: "learners",
+  };
+  const quiet: OverviewSignals = {
+    dropOff: null,
+    evaluationsPassed: null,
+    evaluationsFailed: null,
+    openReviews: null,
+    draftCourses: null,
+    totalCourses: null,
+    openFeedback: null,
+    words,
+  };
+
+  test("no signals, no insights — Nova never invents", () => {
+    expect(deriveOverviewInsights(quiet, BASE)).toEqual([]);
+  });
+
+  test("every condition produces its insight, ordered by tone", () => {
+    const insights = deriveOverviewInsights(
+      {
+        dropOff: { title: "Intro", started: 10, completed: 3 },
+        evaluationsPassed: 2,
+        evaluationsFailed: 8,
+        openReviews: 2,
+        draftCourses: 4,
+        totalCourses: 9,
+        openFeedback: 1,
+        words,
+      },
+      BASE,
+    );
+    expect(insights.map((i) => i.id)).toEqual([
+      "dropoff",
+      "eval-rate",
+      "feedback",
+      "reviews",
+      "drafts",
+    ]);
+    // Warnings lead, accent next, neutral last — the shared tone ranking.
+    const ranks = insights.map((i) => NOVA_TONE_RANK[i.tone]);
+    expect([...ranks].sort((a, b) => a - b)).toEqual(ranks);
+    expect(insights[0]!.observation).toContain("Intro");
+  });
+
+  test("a passing evaluation rate stays silent", () => {
+    const insights = deriveOverviewInsights(
+      { ...quiet, evaluationsPassed: 9, evaluationsFailed: 1 },
+      BASE,
+    );
+    expect(insights.find((i) => i.id === "eval-rate")).toBeUndefined();
+  });
+
+  test("healthy fallback only when everything is published and quiet", () => {
+    const healthy = deriveOverviewInsights(
+      { ...quiet, draftCourses: 0, totalCourses: 7 },
+      BASE,
+    );
+    expect(healthy.map((i) => i.id)).toEqual(["healthy"]);
+    expect(healthy[0]!.observation).toContain("all 7 courses are live");
+
+    // Any other insight suppresses the fallback.
+    const busy = deriveOverviewInsights(
+      { ...quiet, draftCourses: 0, totalCourses: 7, openFeedback: 2 },
+      BASE,
+    );
+    expect(busy.map((i) => i.id)).toEqual(["feedback"]);
+  });
+
+  test("tenant vocabulary lands in the copy", () => {
+    const insights = deriveOverviewInsights(
+      {
+        ...quiet,
+        draftCourses: 1,
+        totalCourses: 3,
+        words: {
+          courseSingular: "playbook",
+          coursePlural: "playbooks",
+          learnerPlural: "athletes",
+        },
+      },
+      BASE,
+    );
+    expect(insights[0]!.observation).toBe(
+      "1 playbook is in draft, not yet delivered to athletes.",
     );
   });
 });

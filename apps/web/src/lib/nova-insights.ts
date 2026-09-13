@@ -223,6 +223,119 @@ export function deriveScorecard(
   return dims;
 }
 
+export const NOVA_TONE_RANK: Record<NovaInsight["tone"], number> = {
+  danger: 0,
+  warning: 1,
+  accent: 2,
+  neutral: 3,
+  positive: 4,
+};
+
+/** Most urgent first — the one ordering every Nova surface shares. */
+export function sortByTone(insights: NovaInsight[]): NovaInsight[] {
+  return insights.sort(
+    (a, b) => NOVA_TONE_RANK[a.tone] - NOVA_TONE_RANK[b.tone],
+  );
+}
+
+/**
+ * The Overview's lighter signal set. The Command Center deliberately does
+ * not pay for the full NovaInputs assembly (that is the Intelligence
+ * page's budget); it derives from the modules the dashboard already
+ * loads. Null means the caller lacked the permission for that signal.
+ */
+export interface OverviewSignals {
+  dropOff: { title: string; started: number; completed: number } | null;
+  evaluationsPassed: number | null;
+  evaluationsFailed: number | null;
+  openReviews: number | null;
+  draftCourses: number | null;
+  totalCourses: number | null;
+  openFeedback: number | null;
+  /** Tenant vocabulary, lowercased by the caller. */
+  words: {
+    courseSingular: string;
+    coursePlural: string;
+    learnerPlural: string;
+  };
+}
+
+/**
+ * Overview insights (Command Center). Same contract as deriveInsights —
+ * rows in, grounded observations out, nothing invented — over the
+ * dashboard's own signals. Lives HERE so the platform has exactly one
+ * module that decides what Nova says (CTO review: the Overview used to
+ * derive these inline, drifting from the engine).
+ */
+export function deriveOverviewInsights(
+  signals: OverviewSignals,
+  base: string,
+): NovaInsight[] {
+  const insights: NovaInsight[] = [];
+  const { words } = signals;
+
+  if (signals.dropOff && signals.dropOff.started > 0) {
+    insights.push({
+      id: "dropoff",
+      tone: "warning",
+      observation: `“${signals.dropOff.title}” has a start-to-complete gap.`,
+      detail: `${signals.dropOff.completed} of ${signals.dropOff.started} learners who started it have finished.`,
+      action: { label: "Review", href: `${base}/ops` },
+    });
+  }
+  const graded =
+    (signals.evaluationsPassed ?? 0) + (signals.evaluationsFailed ?? 0);
+  if (graded > 0) {
+    const rate = Math.round(((signals.evaluationsPassed ?? 0) / graded) * 100);
+    if (rate < 60) {
+      insights.push({
+        id: "eval-rate",
+        tone: "warning",
+        observation: `Evaluation pass rate is ${rate}%.`,
+        detail: `${signals.evaluationsPassed} passed of ${graded} graded attempts.`,
+        action: { label: "Open", href: `${base}/ops` },
+      });
+    }
+  }
+  if (signals.openReviews !== null && signals.openReviews > 0) {
+    insights.push({
+      id: "reviews",
+      tone: "accent",
+      observation: `${signals.openReviews} content ${signals.openReviews === 1 ? "review is" : "reviews are"} awaiting a decision.`,
+      action: { label: "Review", href: `${base}/studio/review` },
+    });
+  }
+  if (signals.draftCourses !== null && signals.draftCourses > 0) {
+    insights.push({
+      id: "drafts",
+      tone: "neutral",
+      observation: `${signals.draftCourses} ${signals.draftCourses === 1 ? `${words.courseSingular} is` : `${words.coursePlural} are`} in draft, not yet delivered to ${words.learnerPlural}.`,
+      action: { label: "Open", href: `${base}/courses` },
+    });
+  }
+  if (signals.openFeedback !== null && signals.openFeedback > 0) {
+    insights.push({
+      id: "feedback",
+      tone: "warning",
+      observation: `${signals.openFeedback} open feedback ${signals.openFeedback === 1 ? "item" : "items"} from testers.`,
+      action: { label: "Open", href: `${base}/ops` },
+    });
+  }
+  if (
+    insights.length === 0 &&
+    signals.totalCourses !== null &&
+    signals.totalCourses > 0 &&
+    signals.draftCourses === 0
+  ) {
+    insights.push({
+      id: "healthy",
+      tone: "positive",
+      observation: `Publishing is healthy — all ${signals.totalCourses} ${signals.totalCourses === 1 ? `${words.courseSingular} is` : `${words.coursePlural} are`} live.`,
+    });
+  }
+  return sortByTone(insights);
+}
+
 export function deriveInsights(
   inputs: NovaInputs,
   base: string,

@@ -41,19 +41,11 @@ import {
   HeroStat,
   NovaIntelligence,
   PriorityCenter,
-  type NovaInsight,
   type PriorityItem,
 } from "@/components/dashboard/command-center";
+import { deriveOverviewInsights } from "@/lib/nova-insights";
 
 export const metadata: Metadata = { title: "Overview" };
-
-const toneWeight: Record<NovaInsight["tone"], number> = {
-  danger: 0,
-  warning: 1,
-  accent: 2,
-  neutral: 3,
-  positive: 4,
-};
 
 export default async function OrgOverviewPage({
   params,
@@ -158,68 +150,26 @@ export default async function OrgOverviewPage({
       ? Math.floor((composition.published / composition.total) * 100)
       : null;
 
-  // ---- Nova Intelligence — every insight from a real, current condition ----
-  const insights: NovaInsight[] = [];
-  const topDropOff = ops?.dropOff[0];
-  if (topDropOff && topDropOff.started > 0) {
-    insights.push({
-      id: "dropoff",
-      tone: "warning",
-      observation: `“${topDropOff.title}” has a start-to-complete gap.`,
-      detail: `${topDropOff.completed} of ${topDropOff.started} learners who started it have finished.`,
-      action: { label: "Review", href: `${base}/ops` },
-    });
-  }
-  if (ops && ops.evaluationsPassed + ops.evaluationsFailed > 0) {
-    const total = ops.evaluationsPassed + ops.evaluationsFailed;
-    const rate = Math.round((ops.evaluationsPassed / total) * 100);
-    if (rate < 60) {
-      insights.push({
-        id: "eval-rate",
-        tone: "warning",
-        observation: `Evaluation pass rate is ${rate}%.`,
-        detail: `${ops.evaluationsPassed} passed of ${total} graded attempts.`,
-        action: { label: "Open", href: `${base}/ops` },
-      });
-    }
-  }
-  if (studio && studio.openReviews.length > 0) {
-    insights.push({
-      id: "reviews",
-      tone: "accent",
-      observation: `${studio.openReviews.length} content ${studio.openReviews.length === 1 ? "review is" : "reviews are"} awaiting a decision.`,
-      action: { label: "Review", href: `${base}/studio/review` },
-    });
-  }
-  if (composition && composition.draft > 0) {
-    insights.push({
-      id: "drafts",
-      tone: "neutral",
-      observation: `${composition.draft} ${composition.draft === 1 ? `${term("course").singular.toLowerCase()} is` : `${term("course").plural.toLowerCase()} are`} in draft, not yet delivered to ${term("learner").plural.toLowerCase()}.`,
-      action: { label: "Open", href: `${base}/courses` },
-    });
-  }
-  if (openFeedback !== null && openFeedback > 0) {
-    insights.push({
-      id: "feedback",
-      tone: "warning",
-      observation: `${openFeedback} open feedback ${openFeedback === 1 ? "item" : "items"} from testers.`,
-      action: { label: "Open", href: `${base}/ops` },
-    });
-  }
-  if (
-    insights.length === 0 &&
-    composition &&
-    composition.total > 0 &&
-    composition.draft === 0
-  ) {
-    insights.push({
-      id: "healthy",
-      tone: "positive",
-      observation: `Publishing is healthy — all ${composition.total} ${composition.total === 1 ? `${term("course").singular.toLowerCase()} is` : `${term("course").plural.toLowerCase()} are`} live.`,
-    });
-  }
-  insights.sort((a, b) => toneWeight[a.tone] - toneWeight[b.tone]);
+  // ---- Nova Intelligence — one engine decides what Nova says --------------
+  // Derivation lives in lib/nova-insights.ts alongside the Intelligence
+  // page's engine (CTO review: this page used to derive inline and drift).
+  const insights = deriveOverviewInsights(
+    {
+      dropOff: ops?.dropOff[0] ?? null,
+      evaluationsPassed: ops?.evaluationsPassed ?? null,
+      evaluationsFailed: ops?.evaluationsFailed ?? null,
+      openReviews: studio ? studio.openReviews.length : null,
+      draftCourses: composition?.draft ?? null,
+      totalCourses: composition?.total ?? null,
+      openFeedback,
+      words: {
+        courseSingular: term("course").singular.toLowerCase(),
+        coursePlural: term("course").plural.toLowerCase(),
+        learnerPlural: term("learner").plural.toLowerCase(),
+      },
+    },
+    base,
+  );
   const heroSummary =
     insights[0]?.observation ??
     `Everything looks healthy across ${ctx.organization.name}.`;
