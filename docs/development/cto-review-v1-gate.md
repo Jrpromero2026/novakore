@@ -60,6 +60,26 @@ deployment, and two prior audits — re-examined without deference.
 > deliberate verify-gated bumps, CVE acceptance reviewed per bump, agent
 > convention notes in AGENTS.md — is now the recorded decision.
 >
+> **Remediation log (2026-09-13, later):** two more.
+> **[P1-8 mutating E2E] CLOSED** — `e2e/10-authoring-flow.spec.ts` runs
+> author → publish → assign → learn through the real UI, self-cleaning;
+> its first run caught a live P1 (server-action responses hung on every
+> paginated page — see docs/development/known-framework-defects.md, fixed
+> the same day). Visual regression remains the open remainder.
+> **[P1 tenant lifecycle: export + deletion] CLOSED at the engineering
+> layer** — `export_organization_data` (full runtime-discovered tenant
+> export, key hashes redacted, identifiable members, audited) and
+> `delete_organization_data` (suspend-first, slug-retyped, credential-
+> acknowledged erasure that legitimately traverses `protect_immutable`
+> and leaf-first-sweeps the FK graph) shipped in migration
+> `20260913191000` with 4 real-DB tests, including a full end-to-end
+> erasure of a provisioned tenant carrying published immutable content.
+> Still business items, unchanged: DPA story and data-retention policy.
+> Also: the god-file finding [P2] closed — Overview insights now derive
+> in lib/nova-insights.ts (one engine, unit-tested), lesson-editor split
+> 1,702 → 595 lines; lib/data/nova.ts deliberately kept whole (cohesive
+> assembly; the drift risk was the duplication, now gone).
+>
 > **Deploy guard corrected:** the Phase 6 `env-check` failed production
 > builds for the _documented, accepted_ dev-database state — breaking
 > deploys rather than preventing drift. It now warns loudly for the known

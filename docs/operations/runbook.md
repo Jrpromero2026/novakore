@@ -78,6 +78,33 @@ seeded dev values is config, never a history rewrite.
 - What IS verified: the migration history + deterministic seed rebuild an
   empty, working platform from zero (rollback-validated in the alpha gate).
 
+## Tenant export & erasure (GDPR/CCPA)
+
+Platform-administrator RPCs (added 2026-09-13, migration
+`20260913191000`; real-DB coverage in `tenant-export-erasure.test.ts`):
+
+- **Export (portability):** `select export_organization_data('<org id>')`
+  → one JSONB document: the organization row, every non-empty org-scoped
+  table in `public` + `app` (discovered at runtime, so new tables are
+  included automatically), and identifiable members (emails). API-key
+  hashes are redacted. Audited as `platform.organization_exported`.
+- **Erasure:** `select delete_organization_data('<org id>')` is a DRY RUN
+  reporting content, credentials, and the blockers. Actually erasing
+  requires, together: the org already **suspended** (contain first), the
+  slug retyped in `p_confirm_slug`, and — when credentials exist — their
+  exact count in `p_acknowledge_broken_credentials` (their public
+  verification URLs break; that is a conscious act). Erasure removes every
+  org-scoped row including immutable versions (the one sanctioned path
+  through `protect_immutable`), audited at platform scope as
+  `platform.organization_erased`. Members' auth accounts are NOT deleted
+  (identities can span organizations); the platform-level audit entry
+  survives, deliberately.
+- `delete_empty_organization` remains the separate never-used-workspace
+  cleanup; do not use it for a real tenant.
+- ⚠ Applied to dev; the prod apply was deferred (automation guardrail) —
+  run the migration on `novakore-prod` before the go-live gate so history
+  stays 1:1.
+
 ## CI (one-time owner setup)
 
 1. GitHub → Settings → Secrets → Actions: add
